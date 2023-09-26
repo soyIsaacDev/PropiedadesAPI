@@ -2,19 +2,19 @@ const server = require("express").Router();
 
 const { ExampleModel } = require("../db");
 
-server.post("/creaerusuario", async (req, res) => { 
+server.post("/creaerpropiedad", async (req, res) => { 
     try {
-      const { nombre, apellido} = req.body;
-      const usuario = await ExampleModel.findOrCreate({
+      const { nombre, calle, colonia} = req.body;
+      const propiedad = await ExampleModel.findOrCreate({
           where: {
             nombre
           },
           defaults: {
-            nombre,
-            apellido
+            calle,
+            colonia
           }      
       });
-      res.json(usuario);
+      res.json(propiedad);
     } catch (error) {
       res.send(error);
     }
@@ -30,7 +30,7 @@ server.get("/usuarios", async (req, res) => {
   }
 });
 
-  module.exports =  server;
+module.exports =  server;
 
   
 module.exports = {
