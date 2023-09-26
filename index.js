@@ -3,8 +3,11 @@
     
     const express = require('express');
     const app = express();
+    const cors = require('cors');
     
     const { rutaEjempo } = require('./src/routes/rutaEjemplo');
+    const { ImagenRoute } = require('./src/routes/imgPropiedad');
+    const { PropiedadRoute } = require('./src/routes/propiedad');
     
     /* app.METHOD(PATH, HANDLER)
     app es una instancia de express.
@@ -17,7 +20,7 @@
     //                                  si no se espcifican rutas se montara el middleware en toda la aplicacion
     
     
-
+    app.use(cors());
     app.use(express.json()); //  -->  habilitamos objetos json con el metodo express.json   
     
     app.use(express.static('public')) // --> habilitamos archivos estaticos con el middleware express.static
@@ -32,7 +35,9 @@
     
     //habilitamos todos los metodos HTTP en la ruta
     app.use("/ruta", rutaEjempo);
-    
+    app.use("/propiedades", PropiedadRoute);
+    app.use("/imagenpropiedad", ImagenRoute)
+
     //Error handling middleware
     app.use(function (err, req, res, next) {
         console.error(err);

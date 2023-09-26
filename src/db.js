@@ -22,14 +22,20 @@ try {
 
 //Modelos DB
 
-const modelExample = require("./models/exampleModel");
+const modelAgente = require("./models/agenteModel");
+const modelPropiedad = require("./models/propiedadModel");
+const modelImgPropiedad = require("./models/imgPropiedadModel");
 
-modelExample(sequelize);
+modelAgente(sequelize);
+modelPropiedad(sequelize);
+modelImgPropiedad(sequelize);
 
-let {ExampleModel} = sequelize.models;
+let {Agente, Propiedad, ImgPropiedad} = sequelize.models;
 
 // Relaciones DB
 
+ImgPropiedad.belongsTo(Propiedad);
+Propiedad.hasOne(ImgPropiedad);
 
 module.exports = {
   ...sequelize.models,
