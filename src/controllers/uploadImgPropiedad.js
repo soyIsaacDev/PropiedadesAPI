@@ -7,6 +7,7 @@ console.log("DIRECTORIO" + carpeta)
 
 const uploadImagenPropiedad = async (req, res) => {
     try {
+      console.log(JSON.stringify(req.file))
       const bodyObj = req.body.data;
       const parsedbodyObj = JSON.parse(bodyObj)
       const {propiedadId, nombrePropiedad, precio, recamaras, baños, calle, 
@@ -58,7 +59,7 @@ const uploadImagenPropiedad = async (req, res) => {
     
      await imagenPropiedad.save();
 
-      res.json(`Se creo la imagen de propiedad ` + imagenPropiedad + " de la propiedad " );
+      //res.json(`Se creo la imagen de propiedad ` + imagenPropiedad + " de la propiedad " );
       
     } catch (error) {
       console.log(error);
