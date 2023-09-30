@@ -5,7 +5,6 @@
     const app = express();
     const cors = require('cors');
     
-    const { rutaEjempo } = require('./src/routes/rutaEjemplo');
     const { ImagenRoute } = require('./src/routes/imgPropiedad');
     const { PropiedadRoute } = require('./src/routes/propiedad');
     
@@ -35,7 +34,6 @@
     });
     
     //habilitamos todos los metodos HTTP en la ruta
-    app.use("/ruta", rutaEjempo);
     app.use("/propiedades", PropiedadRoute);
     app.use("/imagenpropiedad", ImagenRoute)
 
