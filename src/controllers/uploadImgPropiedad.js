@@ -10,7 +10,7 @@ const uploadImagenPropiedad = async (req, res) => {
       console.log(JSON.stringify(req.file))
       const bodyObj = req.body.data;
       const parsedbodyObj = JSON.parse(bodyObj)
-      const {propiedadId, nombrePropiedad, precio, recamaras, baños, calle, 
+      const { nombrePropiedad, precio, recamaras, baños, calle, 
         colonia, numeroCasa, numeroInterior} = parsedbodyObj
       console.log("Nombre de la Propiedad " + nombrePropiedad )
       if (req.file == undefined) {

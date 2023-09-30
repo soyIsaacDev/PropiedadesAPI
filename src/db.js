@@ -34,8 +34,9 @@ let {Agente, Propiedad, ImgPropiedad} = sequelize.models;
 
 // Relaciones DB
 
+
+Propiedad.hasMany(ImgPropiedad);
 ImgPropiedad.belongsTo(Propiedad);
-Propiedad.hasOne(ImgPropiedad);
 
 module.exports = {
   ...sequelize.models,
