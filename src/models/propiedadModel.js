@@ -37,6 +37,10 @@ module.exports = s => {
             type: DataTypes.INTEGER,
             allowNull: true,
         },
+        posicion:{
+            type: DataTypes.JSON,
+            allowNull: true,
+        },
     }, {
     timestamps: false,
     });

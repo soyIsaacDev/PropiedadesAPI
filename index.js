@@ -7,6 +7,7 @@
     
     const { ImagenRoute } = require('./src/routes/imgPropiedad');
     const { PropiedadRoute } = require('./src/routes/propiedad');
+    const { ApikeysRoute } = require('./src/routes/Apikeys');
     
     /* app.METHOD(PATH, HANDLER)
     app es una instancia de express.
@@ -35,7 +36,8 @@
     
     //habilitamos todos los metodos HTTP en la ruta
     app.use("/propiedades", PropiedadRoute);
-    app.use("/imagenpropiedad", ImagenRoute)
+    app.use("/imagenpropiedad", ImagenRoute);
+    app.use("/Apikeys", ApikeysRoute );
 
     //Error handling middleware
     app.use(function (err, req, res, next) {
