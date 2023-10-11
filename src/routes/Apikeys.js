@@ -16,5 +16,5 @@ server.get("/googlemapskey", async (req, res) => {
 module.exports =  server;
   
 module.exports = {
- ApiRoute: server
+  ApikeysRoute: server
 }

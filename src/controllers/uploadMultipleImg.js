@@ -11,7 +11,7 @@ const uploadImagenPropiedad = async (req, res) => {
       const bodyObj = req.body.data;
       const parsedbodyObj = JSON.parse(bodyObj)
       const { nombrePropiedad, precio, recamaras, baños, calle, 
-        colonia, numeroCasa, numeroInterior} = parsedbodyObj
+        colonia, numeroCasa, numeroInterior, posicion} = parsedbodyObj
       
       const PropiedadCreada = await Propiedad.findOrCreate({
         where:{ nombrePropiedad },
@@ -22,7 +22,8 @@ const uploadImagenPropiedad = async (req, res) => {
             calle,
             colonia,
             numeroCasa,
-            numeroInterior
+            numeroInterior,
+            posicion
         }
          
     });
