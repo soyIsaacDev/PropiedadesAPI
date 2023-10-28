@@ -25,18 +25,63 @@ try {
 const modelAgente = require("./models/agenteModel");
 const modelPropiedad = require("./models/propiedadModel");
 const modelImgPropiedad = require("./models/imgPropiedadModel");
+const modelTipodePropiedad = require("./models/tipodePropiedad");
+const modelAmenidadesDesarrollo = require("./models/amenidadesDesarrollo");
+const modelAmenidadPropiedad = require("./models/amenidadesPropiedad");
+const modelTipodeOperacion = require("./models/tipoOperacion");
+const modelEstado = require("./models/estado");
+const modelMunicipio = require("./models/municipio");
+const modelCiudad = require("./models/ciudad");
 
 modelAgente(sequelize);
 modelPropiedad(sequelize);
 modelImgPropiedad(sequelize);
+modelTipodePropiedad(sequelize);
+modelAmenidadesDesarrollo(sequelize);
+modelAmenidadPropiedad(sequelize);
+modelTipodeOperacion(sequelize);
+modelEstado(sequelize);
+modelMunicipio(sequelize);
+modelCiudad(sequelize);
 
-let {Agente, Propiedad, ImgPropiedad} = sequelize.models;
+
+let {Agente, Propiedad, ImgPropiedad, TipodePropiedad, AmenidadesDesarrollo, AmenidadesPropiedad, 
+  TipoOperacion, Estado , Municipio, Ciudad} = sequelize.models;
 
 // Relaciones DB
 
 
 Propiedad.hasMany(ImgPropiedad);
 ImgPropiedad.belongsTo(Propiedad);
+
+Propiedad.hasOne(TipodePropiedad);
+TipodePropiedad.hasMany(Propiedad);
+
+Propiedad.belongsToMany(AmenidadesDesarrollo, { through: 'AmenidadesDesarrollo-Propiedad' });
+AmenidadesDesarrollo.belongsToMany(Propiedad, { through: 'AmenidadesDesarrollo-Propiedad' });
+
+Propiedad.belongsToMany(AmenidadesPropiedad, { through: 'AmenidadesPropiedad-Amenidad' });
+AmenidadesPropiedad.belongsToMany(Propiedad, { through: 'AmenidadesPropiedad-Amenidad' });
+
+TipoOperacion.hasMany(Propiedad);
+Propiedad.belongsTo(TipoOperacion);
+
+Estado.hasMany(Municipio);
+Municipio.belongsTo(Estado);
+
+Municipio.hasMany(Ciudad);
+Ciudad.belongsTo(Municipio);
+
+Estado.hasMany(Propiedad);
+Propiedad.belongsTo(Estado);
+
+Municipio.hasMany(Propiedad);
+Propiedad.belongsTo(Municipio);
+
+Ciudad.hasMany(Propiedad);
+Propiedad.belongsTo(Ciudad);
+
+
 
 module.exports = {
   ...sequelize.models,

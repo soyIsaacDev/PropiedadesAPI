@@ -35,6 +35,23 @@ server.get("/getDataandImagenPropiedades", async (req, res) => {
 }
 );
 
+/* server.get("/detallespropiedad", async (req, res) => {
+  try {
+    const {id} = req.query
+    const dataPropiedad = await Propiedad.findByPk({
+      id,
+      include: [
+        {
+          model: ImgPropiedad,
+          attributes: ['img_name'],
+        },
+      ]
+    })
+    dataPropiedad? res.send(dataPropiedad) : res.json({Mensaje:"No se encontro la propiedad"});
+  } catch (e) {
+    res.send(e);
+  }
+}) */
 // Para ver las imagenes
 server.use('/imagenes', express.static(public));
 

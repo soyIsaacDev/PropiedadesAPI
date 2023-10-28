@@ -18,6 +18,7 @@ const upload = multer({ storage: storage });
 
 // Custom file upload middleware
 const uploadImages = (req, res, next) => {
+  console.log("Upload Imagenes")
   // Use multer upload instance
   upload.array('imagenesfiles', 5)(req, res, (err) => {
     if (err) {
@@ -27,11 +28,11 @@ const uploadImages = (req, res, next) => {
     // Retrieve uploaded files
     const files = req.files;
     const errors = [];
-    req.files.map(file => {
+    /* req.files.map(file => {
       console.log("Mapping")
       console.log(file)
-    })
-    console.log(JSON.stringify(files));
+    }) */
+    //console.log(JSON.stringify(files));
     const data = req.body;
     //console.log("Image Data "+ JSON.stringify(data))
     // Validate file types and sizes
