@@ -7,12 +7,14 @@ console.log("DIRECTORIO" + carpeta)
 
 const uploadImagenPropiedad = async (req, res) => {
     try {
-      // Se obtienen los datos de la form que estan en un objeto FormDatay se pasan a JSON
+      // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
       const bodyObj = req.body.data;
-      const parsedbodyObj = JSON.parse(bodyObj)
+      //console.log("Body OBJ -> " +bodyObj);
+      const parsedbodyObj = JSON.parse(bodyObj);
       const { nombrePropiedad, precio, recamaras, baños, calle, 
-        colonia, numeroCasa, numeroInterior, posicion} = parsedbodyObj
-      
+        colonia, numeroCasa, numeroInterior, posicion} = parsedbodyObj   
+      console.log("Upload Multiple Img Controller Property -> " + nombrePropiedad);
+
       const PropiedadCreada = await Propiedad.findOrCreate({
         where:{ nombrePropiedad },
         defaults:{
@@ -43,8 +45,8 @@ const uploadImagenPropiedad = async (req, res) => {
           });
       })
 
-      res.json(`Se creo la Proepiedad `+ PropiedadCreada.nombrePropiedad +  " y sus imagenes " );
-      
+      //res.json(`Se creo la Propiedad `+ PropiedadCreada[0].nombrePropiedad +  " y sus imagenes " );
+      res.json(`Se creo la Propiedad` );
     } catch (error) {
       console.log(error);
       return res.send(`Error al intentar crear la imagen de la propiedad: ${error}`);
