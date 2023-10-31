@@ -8,7 +8,6 @@
     const { ImagenRoute } = require('./src/routes/imgPropiedad');
     const { PropiedadRoute } = require('./src/routes/propiedad');
     const { ApikeysRoute } = require('./src/routes/Apikeys');
-    const { AmenidadesRoute } = require('./src/routes/amenidades')
     const { DBConstantsRoute } = require('./src/routes/dBConstants');
     
     /* app.METHOD(PATH, HANDLER)
@@ -40,7 +39,6 @@
     app.use("/propiedades", PropiedadRoute);
     app.use("/imagenpropiedad", ImagenRoute);
     app.use("/Apikeys", ApikeysRoute );
-    app.use("/Amenidades", AmenidadesRoute);
     app.use("/dbConstants", DBConstantsRoute);
 
     //Error handling middleware
