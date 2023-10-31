@@ -65,7 +65,7 @@ module.exports = s => {
             type: DataTypes.INTEGER,
             allowNull: true,
         },
-        espaciosCocheraTechada:{
+        cocheraTechada:{
             type: DataTypes.INTEGER,
             allowNull: true,
         },
