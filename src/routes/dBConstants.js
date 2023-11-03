@@ -1,6 +1,6 @@
 const server = require("express").Router();
 
-const { Estado , Municipio, Ciudad, AmenidadesDesarrollo, AmenidadesPropiedad } = require("../db");
+const { Estado , Municipio, Ciudad, Colonia, ColoniaCiudad, AmenidadesDesarrollo, AmenidadesPropiedad, TipoOperacion, TipodePropiedad } = require("../db");
 
 server.post("/agregarEntidadGeografica", async (req, res) => { 
   try {
@@ -34,6 +34,45 @@ server.get("/entidadesGeograficas", async (req, res) => {
     const Municipios = await Municipio.findAll();
     const Estados = await Estado.findAll();
     res.json({Estados, Municipios, Ciudades})
+  } catch (e) {
+    res.send(e)
+  }
+})
+
+server.post("/agregarColonia", async (req, res) => { 
+  try {
+      const {colonia, ciudadId } = req.body;
+      
+      const ColoniaCreada = await Colonia.findOrCreate({
+        where:{ colonia }
+      });
+
+      // agregando relaciones entre ellos
+      await ColoniaCiudad.create({ColoniumId:ColoniaCreada[0].id, CiudadId:ciudadId})
+        console.log(ColoniaCiudad)
+    res.json(ColoniaCreada);
+  } catch (error) {
+    res.send(error);
+  }
+});
+
+server.get("/getColonias/:CiudadId", async (req, res) => { 
+  try {
+    const { CiudadId } = req.params
+
+    const TodaslasCiudades = await Ciudad.findOne({
+      where:{id:CiudadId},
+      include: [
+        {
+          model: Colonia,
+          through: {
+            attributes: []
+          }
+        }
+      ]
+    });
+
+    res.json(TodaslasCiudades)
   } catch (e) {
     res.send(e)
   }
@@ -85,6 +124,34 @@ server.get("/getAmenidadesPropiedad", async (req, res) => {
   try {
     const AmenidadesPropiedadFind = await AmenidadesPropiedad.findAll();
     res.json(AmenidadesPropiedadFind);
+  } catch (e) {
+    res.send(e);
+  }
+})
+
+server.get("/addTipodeOperacion/:TipodeOperacion", async (req, res) => { 
+  try {
+    const { TipodeOperacion } = req.params
+    const TipodeOpCreada = await TipoOperacion.create({tipodeOperacion:TipodeOperacion});
+    res.json(TipodeOpCreada);
+  } catch (e) {
+    res.send(e);
+  }
+})
+
+server.get("/addTipodePropiedad/:TipoPropiedad", async (req, res) => { 
+  try {
+    const { TipoPropiedad } = req.params
+    const TipodePropCreada = await TipodePropiedad.create({tipoPropiedad:TipoPropiedad});
+    res.json(TipodePropCreada);
+  } catch (e) {
+    res.send(e);
+  }
+})
+server.get("/getTipodePropiedades", async (req, res) => { 
+  try {
+    const TipodePropiedades = await TipodePropiedad.findAll();
+    res.json(TipodePropiedades);
   } catch (e) {
     res.send(e);
   }

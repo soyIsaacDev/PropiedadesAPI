@@ -20,8 +20,9 @@ const upload = multer({ storage: storage });
 const uploadImages = (req, res, next) => {
   console.log("Upload Imagenes")
   // Use multer upload instance
-  upload.array('imagenesfiles', 5)(req, res, (err) => {
+  upload.array('imagenesfiles', 25)(req, res, (err) => {
     if (err) {
+      console.log(err)
       return res.status(400).json({ error: err.message });
     }
 
