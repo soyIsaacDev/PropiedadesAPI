@@ -32,6 +32,7 @@ const modelTipodeOperacion = require("./models/tipoOperacion");
 const modelEstado = require("./models/estado");
 const modelMunicipio = require("./models/municipio");
 const modelCiudad = require("./models/ciudad");
+const modelColonia = require("./models/colonia");
 
 modelAgente(sequelize);
 modelPropiedad(sequelize);
@@ -43,10 +44,11 @@ modelTipodeOperacion(sequelize);
 modelEstado(sequelize);
 modelMunicipio(sequelize);
 modelCiudad(sequelize);
+modelColonia(sequelize)
 
 
 let {Agente, Propiedad, ImgPropiedad, TipodePropiedad, AmenidadesDesarrollo, AmenidadesPropiedad, 
-  TipoOperacion, Estado , Municipio, Ciudad} = sequelize.models;
+  TipoOperacion, Estado , Municipio, Ciudad, Colonia} = sequelize.models;
 
 // Relaciones DB
 
@@ -54,14 +56,15 @@ let {Agente, Propiedad, ImgPropiedad, TipodePropiedad, AmenidadesDesarrollo, Ame
 Propiedad.hasMany(ImgPropiedad);
 ImgPropiedad.belongsTo(Propiedad);
 
-Propiedad.hasOne(TipodePropiedad);
+Propiedad.belongsTo(TipodePropiedad);
 TipodePropiedad.hasMany(Propiedad);
 
-Propiedad.belongsToMany(AmenidadesDesarrollo, { through: 'AmenidadesDesarrollo-Propiedad' });
-AmenidadesDesarrollo.belongsToMany(Propiedad, { through: 'AmenidadesDesarrollo-Propiedad' });
 
-Propiedad.belongsToMany(AmenidadesPropiedad, { through: 'AmenidadesPropiedad-Amenidad' });
-AmenidadesPropiedad.belongsToMany(Propiedad, { through: 'AmenidadesPropiedad-Amenidad' });
+Propiedad.belongsToMany(AmenidadesDesarrollo, { through: 'AmenidadesDesarrolloPropiedad' });
+AmenidadesDesarrollo.belongsToMany(Propiedad, { through: 'AmenidadesDesarrolloPropiedad' });
+
+Propiedad.belongsToMany(AmenidadesPropiedad, { through: 'AmenidadesPropiedadAmenidad' });
+AmenidadesPropiedad.belongsToMany(Propiedad, { through: 'AmenidadesPropiedadAmenidad' });
 
 TipoOperacion.hasMany(Propiedad);
 Propiedad.belongsTo(TipoOperacion);
@@ -81,6 +84,11 @@ Propiedad.belongsTo(Municipio);
 Ciudad.hasMany(Propiedad);
 Propiedad.belongsTo(Ciudad);
 
+Colonia.belongsToMany(Ciudad, { through: 'ColoniaCiudad' });
+Ciudad.belongsToMany(Colonia, { through: 'ColoniaCiudad' });
+
+Colonia.hasMany(Propiedad);
+Propiedad.belongsTo(Colonia);
 
 
 module.exports = {

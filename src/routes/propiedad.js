@@ -9,7 +9,8 @@ const uploadImgPropiedad = require("../controllers/uploadImgPropiedad");
 const uploadMultiple = require("../middleware/uploadMultiple");
 const uploadImagenesPropiedad = require("../controllers/uploadMultipleImg");
 
-const { Propiedad, ImgPropiedad } = require("../db");
+const { Propiedad, ImgPropiedad, AmenidadesDesarrollo, AmenidadesPropiedad,TipodePropiedad, 
+  TipoOperacion, Estado, Municipio, Ciudad, Colonia  } = require("../db");
 
 
 server.post("/agregarImagenPropiedad", upload.single("file"), 
@@ -27,6 +28,7 @@ server.get("/getDataandImagenPropiedades", async (req, res) => {
         },
       ]
     },);
+    
     dataPropiedad? res.send(dataPropiedad) : res.json({Mensaje:"No se encontraron datos de propiedades"});
     
   } catch (e) {
@@ -35,15 +37,54 @@ server.get("/getDataandImagenPropiedades", async (req, res) => {
 }
 );
 
-/* server.get("/detallespropiedad", async (req, res) => {
+/*    REQ QUERY
+
+server.get("/detallespropiedad", async (req, res) => {
   try {
-    const {id} = req.query
-    const dataPropiedad = await Propiedad.findByPk({
-      id,
+    const {id} = req.query 
+  In Browser   /detallespropiedad/?id=2
+*/
+
+server.get("/detallespropiedad/:id", async (req, res) => {
+  try {
+    const {id} = req.params;
+    console.log("Buscando Detalles" + id);
+    const dataPropiedad = await Propiedad.findOne({
+      where:{id:id},
       include: [
         {
           model: ImgPropiedad,
           attributes: ['img_name'],
+        },
+        {
+          model: AmenidadesDesarrollo,
+          through: {
+            attributes: []
+          }
+        },
+        {
+          model: AmenidadesPropiedad,
+          through: {
+            attributes: []
+          }
+        },
+        {
+          model: TipodePropiedad
+        },
+        {
+          model: TipoOperacion
+        },
+        {
+          model: Ciudad
+        },
+        {
+          model: Municipio
+        },
+        {
+          model: Estado
+        },
+        {
+          model: Colonia
         },
       ]
     })
@@ -51,7 +92,7 @@ server.get("/getDataandImagenPropiedades", async (req, res) => {
   } catch (e) {
     res.send(e);
   }
-}) */
+})
 // Para ver las imagenes
 server.use('/imagenes', express.static(public));
 

@@ -1,34 +1,60 @@
 const fs = require("fs");
-const {  ImgPropiedad, Propiedad  } = require("../db");
+const {  ImgPropiedad, Propiedad, TipodePropiedad, AmenidadesDesarrollo, AmenidadesPropiedad, 
+  TipoOperacion, Estado , Municipio, Ciudad, AmenidadesDesarrolloPropiedad, AmenidadesPropiedadAmenidad } = require("../db");
 
 const path = require('path');
 const carpeta = path.join(__dirname, '../../uploads')
 console.log("DIRECTORIO" + carpeta)
 
 const uploadImagenPropiedad = async (req, res) => {
+  console.log("upload Imagen Propiedad")
     try {
       // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
       const bodyObj = req.body.data;
       //console.log("Body OBJ -> " +bodyObj);
       const parsedbodyObj = JSON.parse(bodyObj);
-      const { nombrePropiedad, precio, recamaras, baños, calle, 
-        colonia, numeroCasa, numeroInterior, posicion} = parsedbodyObj   
-      console.log("Upload Multiple Img Controller Property -> " + nombrePropiedad);
+      const { nombreDesarrollo, precio, recamaras, baños, medio_baño, espaciosCochera, cocheraTechada,
+        tipodePropiedad, tipodeOperacion, m2Construccion, m2Terreno, m2Total, añodeConstruccion, 
+        amenidadesPropiedad,amenidadesDesarrollo, calle, numeroPropiedad, numeroInterior, colonia, 
+        estado, municipio,ciudad, posicion} = parsedbodyObj   
+
+      console.log("Upload Multiple Img Controller Property -> " + nombreDesarrollo);
 
       const PropiedadCreada = await Propiedad.findOrCreate({
-        where:{ nombrePropiedad },
+        where:{ nombreDesarrollo },
         defaults:{
-            precio,
-            recamaras, 
-            baños, 
-            calle,
-            colonia,
-            numeroCasa,
-            numeroInterior,
-            posicion
+          precio,
+          recamaras, 
+          baños,
+          medio_baño,
+          espaciosCochera,
+          cocheraTechada,
+          TipodePropiedadId:tipodePropiedad,
+          TipoOperacionId:tipodeOperacion,
+          m2Construccion,
+          m2Terreno,
+          m2Total,
+          añodeConstruccion,
+          calle,
+          numeroPropiedad,
+          numeroInterior,
+          ColoniumId:colonia,
+          EstadoId:estado,
+          MunicipioId: municipio,
+          CiudadId:ciudad,
+          posicion
         }
-         
-    });
+      });
+
+      for (let i = 0; i < amenidadesDesarrollo.length; i++) {        
+        await AmenidadesDesarrolloPropiedad.create({ PropiedadId:PropiedadCreada[0].id, AmenidadesDesarrolloId:amenidadesDesarrollo[i] })
+      }
+
+      for (let i = 0; i < amenidadesPropiedad.length; i++) {        
+        await AmenidadesPropiedadAmenidad.create({ PropiedadId:PropiedadCreada[0].id, AmenidadesPropiedadId:amenidadesPropiedad[i] })
+      }
+      
+      
       // buscamos si hay fotos
       const files = req.files;
 

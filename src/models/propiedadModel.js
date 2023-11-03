@@ -25,27 +25,15 @@ module.exports = s => {
             type: DataTypes.INTEGER,
             allowNull: true,
         },
-        calle:{
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        numeroCasa:{
+        espaciosCochera:{
             type: DataTypes.INTEGER,
             allowNull: true,
         },
-        numeroInterior:{
-            type: DataTypes.INTEGER,
-            allowNull: true,
+        cocheraTechada:{
+            type: DataTypes.ENUM("Si", "No"),
+            allowNull: true
         },
-        colonia:{
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        posicion:{
-            type: DataTypes.JSON,
-            allowNull: true,
-        },
-        m2Constriccion:{
+        m2Construccion:{
             type:DataTypes.FLOAT,
             allowNull:true
         },
@@ -61,14 +49,24 @@ module.exports = s => {
             type: DataTypes.INTEGER,
             allowNull: true,
         },
-        espaciosCochera:{
+        calle:{
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        numeroPropiedad:{
             type: DataTypes.INTEGER,
             allowNull: true,
         },
-        cocheraTechada:{
-            type: DataTypes.INTEGER,
+        numeroInterior:{
+            type: DataTypes.STRING,
             allowNull: true,
         },
+        posicion:{
+            type: DataTypes.JSON,
+            allowNull: true,
+        },
+        
+        
     }, {
     timestamps: false,
     });
