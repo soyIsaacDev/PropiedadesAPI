@@ -5,6 +5,4 @@ const path = require('path');
 var public = path.join(__dirname, '../../uploads');
 server.use('/', express.static(public));
 
-module.exports = {
-    ImagenRoute: server
-  }
+module.exports =  server;

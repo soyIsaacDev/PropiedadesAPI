@@ -158,7 +158,3 @@ server.get("/getTipodePropiedades", async (req, res) => {
 })
 
 module.exports =  server;
-  
-module.exports = {
-  DBConstantsRoute: server
-}
