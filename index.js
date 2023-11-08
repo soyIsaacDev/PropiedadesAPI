@@ -9,6 +9,14 @@
     const { PropiedadRoute } = require('./src/routes/propiedad');
     const { ApikeysRoute } = require('./src/routes/Apikeys');
     const { DBConstantsRoute } = require('./src/routes/dBConstants');
+    const { authClienteRoute } = require('./src/routes/authCliente');
+
+    /* imagen: require("./imgPropiedad"),
+    propiedad:require("./propiedad"),
+    autCliente:require("./authCliente"),
+    dbconstants:require("./dBConstants"),
+    apikeys:require("./Apikeys"), */
+    const { index, clientes, imagen, propiedad, authCliente, dbconstants, apikeys } = require('./src/routes');
     
     /* app.METHOD(PATH, HANDLER)
     app es una instancia de express.
@@ -36,10 +44,18 @@
     });
     
     //habilitamos todos los metodos HTTP en la ruta
-    app.use("/propiedades", PropiedadRoute);
+    //app.use("/auth", authCliente );
+    app.use("/clientes", clientes);
+    app.use("/propiedades", propiedad);
+    app.use("/imagenpropiedad", imagen);
+    app.use("/Apikeys", apikeys );
+    app.use("/dbConstants", dbconstants);
+    app.use("/authCliente", authCliente);
+
+    /* app.use("/propiedades", PropiedadRoute);
     app.use("/imagenpropiedad", ImagenRoute);
     app.use("/Apikeys", ApikeysRoute );
-    app.use("/dbConstants", DBConstantsRoute);
+    app.use("/dbConstants", DBConstantsRoute); */
 
     //Error handling middleware
     app.use(function (err, req, res, next) {

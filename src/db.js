@@ -33,6 +33,8 @@ const modelEstado = require("./models/estado");
 const modelMunicipio = require("./models/municipio");
 const modelCiudad = require("./models/ciudad");
 const modelColonia = require("./models/colonia");
+const modelCliente = require("./models/clienteModel");
+const modelSesionCliente = require("./models/sesionCliente");
 
 modelAgente(sequelize);
 modelPropiedad(sequelize);
@@ -45,10 +47,12 @@ modelEstado(sequelize);
 modelMunicipio(sequelize);
 modelCiudad(sequelize);
 modelColonia(sequelize)
+modelCliente(sequelize);
+modelSesionCliente(sequelize);
 
 
 let {Agente, Propiedad, ImgPropiedad, TipodePropiedad, AmenidadesDesarrollo, AmenidadesPropiedad, 
-  TipoOperacion, Estado , Municipio, Ciudad, Colonia} = sequelize.models;
+  TipoOperacion, Estado , Municipio, Ciudad, Colonia, Cliente, SesionCliente} = sequelize.models;
 
 // Relaciones DB
 
@@ -90,6 +94,8 @@ Ciudad.belongsToMany(Colonia, { through: 'ColoniaCiudad' });
 Colonia.hasMany(Propiedad);
 Propiedad.belongsTo(Colonia);
 
+SesionCliente.belongsTo(Cliente);
+Cliente.hasOne(SesionCliente);
 
 module.exports = {
   ...sequelize.models,

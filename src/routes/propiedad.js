@@ -97,7 +97,3 @@ server.get("/detallespropiedad/:id", async (req, res) => {
 server.use('/imagenes', express.static(public));
 
 module.exports =  server;
-
-module.exports = {
-    PropiedadRoute: server
-  }
