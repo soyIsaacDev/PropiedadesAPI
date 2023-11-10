@@ -4,12 +4,21 @@
     const express = require('express');
     const app = express();
     const cors = require('cors');
+    var passport = require('passport');
+    var Sequelize = require("sequelize");
+    var session = require('express-session');
     
     const { ImagenRoute } = require('./src/routes/imgPropiedad');
     const { PropiedadRoute } = require('./src/routes/propiedad');
     const { ApikeysRoute } = require('./src/routes/Apikeys');
     const { DBConstantsRoute } = require('./src/routes/dBConstants');
     const { authClienteRoute } = require('./src/routes/authCliente');
+
+    var SequelizeStore = require("connect-session-sequelize")(session.Store);
+    var sequelize = new Sequelize("database", "username", "password", {
+        dialect: "sqlite",
+        storage: "./session.sqlite",
+    });
 
     /* imagen: require("./imgPropiedad"),
     propiedad:require("./propiedad"),
@@ -38,11 +47,31 @@
     app.use("/assets", express.static(__dirname + "/public"));
     //El único parámetro que recibe static es el nombre del directorio donde están los archivos estáticos, en nuestro ejemplo están en /public.
     
+    var myStore = new SequelizeStore({
+        db: sequelize,
+    });
+
+    app.use(
+        session({
+            secret: "keyboard cat",
+            store: new SequelizeStore({
+            db: sequelize,
+            }),
+            resave: false, // we support the touch method so per the express-session docs this should be set to false
+            saveUninitialized: false,
+            proxy: true, // if you do SSL outside of node.
+        })
+    );
+    
+    myStore.sync();
+    
+    app.use(passport.authenticate('session'));
     
     app.get("/", (req,res) => {
         res.send("Hola, el servidor esta activo");
     });
-    
+    app.use("/", authCliente);
+
     //habilitamos todos los metodos HTTP en la ruta
     //app.use("/auth", authCliente );
     app.use("/clientes", clientes);
@@ -50,7 +79,7 @@
     app.use("/imagenpropiedad", imagen);
     app.use("/Apikeys", apikeys );
     app.use("/dbConstants", dbconstants);
-    app.use("/authCliente", authCliente);
+    //app.use("/authCliente", authCliente);
 
     /* app.use("/propiedades", PropiedadRoute);
     app.use("/imagenpropiedad", ImagenRoute);

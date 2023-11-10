@@ -2,6 +2,7 @@ var express = require('express');
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
 var server = express.Router();
+var crypto = require('crypto');
 
 const { Cliente, SesionCliente } = require("../db");
 
@@ -12,21 +13,23 @@ passport.use(new LocalStrategy(async function verify(username, password, cb) {
       where:{usuario:username}
     });
     if (!cliente) { return cb(null, false, { message: 'Incorrect username or password.' });}
+    const hashedpassclientebuff = Buffer.from(cliente.contraseñaHashed, "base64");
+    const hashedsaltclientebuff = Buffer.from(cliente.salt, "base64");
 
-    crypto.pbkdf2(password, cliente.salt, 310000, 32, 'sha256', function(err, hashedPassword) {
+    crypto.pbkdf2(password, hashedsaltclientebuff, 310000, 32, 'sha256', function(err, hashedPassword) {
       if (err) { return cb(err); }
-      if (!crypto.timingSafeEqual(cliente.hashed_password, hashedPassword)) {
+      if (!crypto.timingSafeEqual(hashedpassclientebuff, hashedPassword)) {
         return cb(null, false, { message: 'Incorrect username or password.' });
       }
       return cb(null, cliente);
     });
   } catch (e) {
-     return cb(err)
+     return cb(e)
   }
 
 }));
 
-// Autenticando al usuario con estrategia local de Passport
+/* // Autenticando al usuario con estrategia local de Passport
 passport.use(new LocalStrategy(
   async (username, password, cb) => {
     try {
@@ -57,7 +60,7 @@ passport.use(new LocalStrategy(
       return cb(error);
     }
   }
-));
+)); */
 
 passport.serializeUser(function(user, cb) {
   process.nextTick(function() {
@@ -71,7 +74,7 @@ passport.deserializeUser(function(user, cb) {
   });
 });
 
-const SesionAuth = async function(auth, id) { 
+/* const SesionAuth = async function(auth, id) { 
   try {
     if(auth=== "LoggedIn"){
       console.log("Paso por SesionAuth LoggedIn Linea 26");
@@ -98,15 +101,31 @@ const SesionAuth = async function(auth, id) {
   } catch (error) {
     return(error);
   }
-};
+}; */
+
+
+/* server.post('/login/password',
+  passport.authenticate('local', { 
+    successRedirect: 'http://localhost:3000/altaPropiedad',
+    failureRedirect: '/login' 
+  })
+); */
 
 server.post('/login/password',
-  passport.authenticate('local', { 
-    failureRedirect: '/login' 
-  }),
+  passport.authenticate('local', { failureRedirect: 'http://localhost:3000/login', failureMessage: true }),
   function(req, res) {
-  }
-);
+    console.log("SI ESTA AUTORIZADO");
+    console.log("Req en Login -> "+JSON.stringify(req.user))
+    const IdCliente= {IdCliente:req.user.id}
+    res.json(IdCliente);
+});
+
+server.get('/logout', function(req, res, next) {
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
+});
 
 /* server.get('/sesionCliente', async function(req, res) {
   try {
@@ -133,7 +152,7 @@ server.post('/login/password',
   }
 });   */
 
-server.post('/SesionCliente', async function(req, res) {
+/* server.post('/SesionCliente', async function(req, res) {
   try {
     const { username, password } = req.body;
     console.log("Linea 84 "+ username);
@@ -165,7 +184,7 @@ server.post('/SesionCliente', async function(req, res) {
     res.json(e);
   }
   
-}); 
+});  */
 
 server.get('/logout',
   async function(req, res){
@@ -176,6 +195,36 @@ server.get('/logout',
     SesionAuth("LoggedOut", user.id);
     
   });
+
+server.post('/signup', function(req, res, next) {
+  const { nombre, usuario, contraseña } = req.body
+  var salt = crypto.randomBytes(16);
+  crypto.pbkdf2(contraseña, salt, 310000, 32, 'sha256', async function(err, hashedPassword) {
+    if (err) { return next(err); }
+   
+      const cliente = await Cliente.findOrCreate({
+        where: { usuario },
+        defaults:{
+          usuario,
+          contraseñaHashed: hashedPassword,
+          salt
+        }
+      });
+
+    
+    if (err) { return next(err); }
+
+    var user = {
+      id: this.lastID,
+      username: usuario
+    };
+    req.logIn(user, function(err) {
+      if (err) { return next(err); }
+      console.log("Usuario new" + user )
+      res.redirect('/');
+    });  
+  });
+});
 
 // Middleware que verifica si esta autenticado
 function isAuthenticated(req, res, next) {

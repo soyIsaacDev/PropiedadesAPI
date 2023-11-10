@@ -6,17 +6,19 @@ module.exports = s => {
     {
         nombre:{
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         usuario:{
             type: DataTypes.STRING,
             allowNull: false,
             unique: true
         },
-        contraseña:{
-            type: DataTypes.STRING,
-            allowNull: false
+        contraseñaHashed:{
+            type: DataTypes.STRING
         },
+        salt:{
+            type: DataTypes.STRING
+        }
     }, {
     timestamps: false,
     });
