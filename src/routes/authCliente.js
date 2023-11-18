@@ -16,9 +16,9 @@ passport.use(new LocalStrategy(async function verify(username, password, cb) {
     const hashedpassclientebuff = Buffer.from(cliente.contraseñaHashed, "base64");
     const hashedsaltclientebuff = Buffer.from(cliente.salt, "base64");
 
-    crypto.pbkdf2(password, hashedsaltclientebuff, 310000, 32, 'sha256', function(err, hashedPassword) {
+    crypto.pbkdf2(password, cliente.salt, 310000, 32, 'sha256', function(err, hashedPassword) {
       if (err) { return cb(err); }
-      if (!crypto.timingSafeEqual(hashedpassclientebuff, hashedPassword)) {
+      if (!crypto.timingSafeEqual(cliente.contraseñaHashed, hashedPassword)) {
         return cb(null, false, { message: 'Incorrect username or password.' });
       }
       return cb(null, cliente);
@@ -29,177 +29,89 @@ passport.use(new LocalStrategy(async function verify(username, password, cb) {
 
 }));
 
-/* // Autenticando al usuario con estrategia local de Passport
-passport.use(new LocalStrategy(
-  async (username, password, cb) => {
-    try {
-      console.log("AQUI ES Auth");
-      const cliente= await Cliente.findOne({
-          where:{usuario:username}
-        });
-      console.log("cliente L-16"+ cliente)
-      //console.log("USUARIO DE PASSPORT LOCAL  -->>"+user.nombre)
-      if(!cliente) {
-        console.log("USUARIO INCORRECTO");
-        res.send({"Response": "Usuario No Existe o es Incorrecto"}); 
-        return cb(null, false, { message: 'Incorrect username or password.' });
+server.get("/revisarauth/:username/:password/:usuario/:contra", async (req,res)=> {
+  try {
+    const {username, password, usuario, contra} = req.params;
+    
+    var salt = crypto.randomBytes(16);
+    
+
+    var saltBuffer = Buffer.from(salt, "base64")
+    
+    const newCliente = await Cliente.findOrCreate({
+      where: { usuario },
+      defaults:{
+        usuario,
+        salt
       }
+    });
 
-      if(cliente){
-          if(cliente.contraseña != password) {
-            console.log("CONTRASEÑA INCORRECTA");
-            return cb(null, false, { message: 'Incorrect password.' });
-          }
-          //Success Usuario 
-          console.log("USUARIO DE PASSPORT LOCAL Loggeado Linea 60  -->>"+cliente.nombre + " ID "+ cliente.id)
-          SesionAuth("LoggedIn", cliente.id)
-          return cb(null, cliente);
-        }
-      
-    } catch (error) {
-      return cb(error);
-    }
+    const cliente = await Cliente.findOne({
+      where:{usuario:username}
+    });
+    //const hashedpassclientebuff = Buffer.from(cliente.contraseñaHashed, "base64");
+    const hashedsaltclientebuff = Buffer.from(cliente.salt, "base64");
+    const lasal= cliente.salt;
+
+    res.json({saltBuffer, lasal});
+    
+  } catch (error) {
+    res.send(error)
   }
-)); */
 
+})
 passport.serializeUser(function(user, cb) {
+  console.log("Usuario en Serialize " + JSON.stringify(user))
   process.nextTick(function() {
-    cb(null, { id: user.id, usuario: user.username });
+    cb(null, user);
   });
 });
 
+/* passport.serializeUser( (userObj, done) => {
+  console.log("Usuario en Serialize " + JSON.stringify(userObj))
+  done(null, userObj)
+}) */
+
+/* passport.deserializeUser((id, done) => {
+  console.log("Deserialize Id " + id);
+  Cliente.findOne(id)
+    .then(user => done(null, user))
+    .catch(err => done(err));
+}); */
+
 passport.deserializeUser(function(user, cb) {
+  console.log("33 Deserialize Id " + id);
   process.nextTick(function() {
     return cb(null, user);
   });
 });
 
-/* const SesionAuth = async function(auth, id) { 
-  try {
-    if(auth=== "LoggedIn"){
-      console.log("Paso por SesionAuth LoggedIn Linea 26");
-      const sesion = await SesionCliente.findOrCreate({
-        where:{ClienteId: id},
-        defaults:{
-          autenticated: auth
-        }
-    });
-    console.log("SesionAuth Login-->>"+ sesion)
-    return(sesion);  //VER COMO REGRESO LA SESION
-    };
-    
-    if(auth=== "LoggedOut"){
-      const sesion = await SesionCliente.findOne({
-        where:{ClienteId: id}
-      });
-      sesion.autenticated = auth;
-      await sesion.save();
-      console.log("SesionAuth Logout-->>"+ sesion)
-      return(sesion);
-    };
-    
-  } catch (error) {
-    return(error);
-  }
-}; */
-
-
-/* server.post('/login/password',
-  passport.authenticate('local', { 
-    successRedirect: 'http://localhost:3000/altaPropiedad',
-    failureRedirect: '/login' 
-  })
-); */
-
 server.post('/login/password',
   passport.authenticate('local', { failureRedirect: 'http://localhost:3000/login', failureMessage: true }),
   function(req, res) {
     console.log("SI ESTA AUTORIZADO");
-    console.log("Req en Login -> "+JSON.stringify(req.user))
+    console.log("Req en Login -> "+JSON.stringify(req.user) + " SESSION " +JSON.stringify(req.session))
     const IdCliente= {IdCliente:req.user.id}
     res.json(IdCliente);
 });
 
-server.get('/logout', function(req, res, next) {
+
+
+server.post('/logout', function(req, res, next) {
   req.logout(function(err) {
     if (err) { return next(err); }
-    res.redirect('/');
+    console.log("DESLOGGEADO")
   });
 });
 
-/* server.get('/sesionCliente', async function(req, res) {
-  try {
-    const { username, password } = req.body;
-    const user = await Cliente.findOne({
-      where:{ usuario: username }
-    });
-    console.log("Cliente sesion L-66 " + user.id + user.contraseña);
-    if(!user){
-      res.send({"Response": "El Usuario No Existe o Es Incorrecto"}); 
-      return
-    }
-    if(password != user.contraseña){
-      console.log("Contraseña Incorrecta SesionCliente L-72")
-      res.send({"Response": "Contraseña Incorrecta"}); 
-      return}
-    const sesion = await SesionCliente.findOne({
-      where:{ClienteId: user.id}
-    })
-    console.log("Get ./SesionCliente Linea 78" + sesion);
-    res.json(sesion)
-  } catch (e) {
-    res.json(e);
-  }
-});   */
-
-/* server.post('/SesionCliente', async function(req, res) {
-  try {
-    const { username, password } = req.body;
-    console.log("Linea 84 "+ username);
-    const user = await Cliente.findOne({
-      where:{ usuario: username }
-    });
-    if(!user){
-      res.send({"Response": "El Usuario No Existe o Es Incorrecto"}); 
-      return
-    }
-    console.log("Cliente Cliente sesion L-116  Usuario " + user.id  + " Contraseña " + user.contraseña)
-    if(password != user.contraseña){
-      console.log("Contraseña Incorrecta Sesion Cliente L-90")
-      res.send({"Response": "Contraseña Incorrecta"}); 
-      return}
-    console.log("Sesion Cliente L-131  "+user.id)
-    const sesion = await SesionCliente.findOne({
-      where:{ClienteId: user.id},
-      include: [
-        {
-          model: Cliente,
-          attributes: ['nombre','usuario'],
-        }
-      ]
-    });
-    console.log("Sesion Cliente L-97  " + JSON.stringify(sesion))
-    res.json(sesion)
-  } catch (e) {
-    res.json(e);
-  }
-  
-});  */
-
-server.get('/logout',
-  async function(req, res){
-    const {username} = req.body;
-    const user = await Cliente.findOne({
-      where:{ usuario: username }
-    });
-    SesionAuth("LoggedOut", user.id);
-    
-  });
 
 server.post('/signup', function(req, res, next) {
   const { nombre, usuario, contraseña } = req.body
+  req.session.username = usuario;
   var salt = crypto.randomBytes(16);
-  crypto.pbkdf2(contraseña, salt, 310000, 32, 'sha256', async function(err, hashedPassword) {
+
+  var saltBuffer = Buffer.from(salt, "base64")
+  crypto.pbkdf2(contraseña, saltBuffer, 310000, 32, 'sha256', async function(err, hashedPassword) {
     if (err) { return next(err); }
    
       const cliente = await Cliente.findOrCreate({
@@ -207,34 +119,64 @@ server.post('/signup', function(req, res, next) {
         defaults:{
           usuario,
           contraseñaHashed: hashedPassword,
-          salt
+          salt:salt
         }
       });
 
-    
-    if (err) { return next(err); }
+    console.log("Cliente Nuevo "+cliente);
+
+    /* if (err) { return next(err); }
 
     var user = {
       id: this.lastID,
       username: usuario
     };
-    req.logIn(user, function(err) {
+    req.login(user, function(err) {
       if (err) { return next(err); }
       console.log("Usuario new" + user )
       res.redirect('/');
-    });  
-  });
+    }); */  
+  },
+  function(err) {
+    if (err) { return next(err); }
+    var user = {
+      id: this.lastID,
+      username: req.body.username
+    };
+    req.login(user, function(err) {
+      if (err) { return next(err); }
+      res.redirect('/');
+    });
+  }
+  );
 });
 
 // Middleware que verifica si esta autenticado
-function isAuthenticated(req, res, next) {
+/* function isAuthenticated(req, res, next) {
+  console.log("Req en isAuthenticated -> "+JSON.stringify(req.user) + " SESSION " +JSON.stringify(req.session))
   if(req.isAuthenticated()) {
     next(); // pasa a la ruta
   } else {
     console.log("Usuario no autenticado");
     res.redirect('/login');
   }
+} */
+
+function isAuthenticated (req, res, next) {
+  console.log("77 En IS AUTH " +req.session.passport)
+  if (req.session.passport.user) {
+    console.log("79 SI ESTA Authenticado ")
+    next()}
+  else next('route')
 }
+
+server.post('/user', isAuthenticated, (req, res) => {
+  console.log('Revision de Sesion' );
+  
+
+  req.session.caracteristica = "Cancha de Tennis";
+  res.send()
+})
 
 server.get('/profile',
   isAuthenticated, // se pasa por middleware de autenticacion
