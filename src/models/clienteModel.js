@@ -14,10 +14,10 @@ module.exports = s => {
             unique: true
         },
         contraseñaHashed:{
-            type: DataTypes.STRING
+            type: DataTypes.BLOB
         },
         salt:{
-            type: DataTypes.STRING
+            type: DataTypes.BLOB
         }
     }, {
     timestamps: false,
