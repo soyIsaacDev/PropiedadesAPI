@@ -10,5 +10,6 @@ module.exports = {
     authCliente:require("./authCliente"),
     dbconstants:require("./dBConstants"),
     apikeys:require("./Apikeys"),
+    favoritos:require("./favoritos"),
     index: server,
   };

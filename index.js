@@ -28,7 +28,7 @@
     autCliente:require("./authCliente"),
     dbconstants:require("./dBConstants"),
     apikeys:require("./Apikeys"), */
-    const { index, clientes, imagen, propiedad, authCliente, dbconstants, apikeys } = require('./src/routes');
+    const { index, clientes, imagen, propiedad, authCliente, dbconstants, apikeys, favoritos } = require('./src/routes');
     
     /* app.METHOD(PATH, HANDLER)
     app es una instancia de express.
@@ -191,6 +191,7 @@
     app.use("/imagenpropiedad", imagen);
     app.use("/Apikeys", apikeys );
     app.use("/dbConstants", dbconstants);
+    app.use("/favoritos", favoritos);
     //app.use("/authCliente", authCliente);
 
     /* app.use("/propiedades", PropiedadRoute);

@@ -170,19 +170,10 @@ function isAuthenticated (req, res, next) {
   else next('route')
 }
 
-server.post('/user', isAuthenticated, (req, res) => {
-  console.log('Revision de Sesion' );
-  
-
-  req.session.caracteristica = "Cancha de Tennis";
-  res.send()
+server.post('/getUser', isAuthenticated, async (req, res) => {
+  console.log('GetUser' );
+  const cliente = await Cliente.findByPk(req.session.passport.user.id);
+  res.json(cliente)
 })
-
-server.get('/profile',
-  isAuthenticated, // se pasa por middleware de autenticacion
-  function(req, res){
-    console.log("GetUser Recibido")
-    res.json({ user: req.user });
-  });
 
 module.exports = server;

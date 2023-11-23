@@ -1,10 +1,7 @@
 const server = require("express").Router();
 //const req = require("express/lib/request");
 const { Cliente } = require("../db");
-var crypto = require('crypto');
-var passport = require('passport');
 
-server.use(passport.initialize());
 server.post("/nuevoCliente", async (req, res) => { 
   try {
     const { nombre, usuario, contraseña } = req.body;
@@ -24,37 +21,6 @@ server.post("/nuevoCliente", async (req, res) => {
     res.send(error);
   }
 });
-
-/* server.post('/signup', function(req, res, next) {
-  const { nombre, usuario, contraseña } = req.body
-  var salt = crypto.randomBytes(16);
-  crypto.pbkdf2(contraseña, salt, 310000, 32, 'sha256', async function(err, hashedPassword) {
-    if (err) { return next(err); }
-   
-      const cliente = await Cliente.findOrCreate({
-        where: { usuario },
-        defaults:{
-          nombre, 
-          usuario,
-          contraseñaHashed: hashedPassword.toString('base64'),
-          salt: salt.toString('base64')
-        }
-      });
-
-    
-    if (err) { return next(err); }
-
-    var user = {
-      id: this.lastID,
-      username: usuario
-    };
-    req.logIn(user, function(err) {
-      if (err) { return next(err); }
-      console.log("USUARIO SIGNUP " + user);
-      res.redirect('/');
-    });  
-  });
-}); */
 
 server.get("/clientes", async (req,res)=> {
   try{

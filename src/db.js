@@ -97,6 +97,9 @@ Propiedad.belongsTo(Colonia);
 SesionCliente.belongsTo(Cliente);
 Cliente.hasOne(SesionCliente);
 
+Cliente.belongsToMany(Propiedad, { through: 'Favoritos' });
+Propiedad.belongsToMany(Cliente, { through: 'Favoritos' });
+
 module.exports = {
   ...sequelize.models,
     db: sequelize,
