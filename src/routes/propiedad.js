@@ -94,7 +94,15 @@ server.get("/detallespropiedad/:id", async (req, res) => {
   }
 })
 
-server.get("/propiedadesconfavoritos/:ClienteId", async (req, res) => {
+function isAuthenticated (req, res, next) {
+  console.log("77 En IS AUTH " +req.session.passport)
+  if (req.session.passport.user) {
+    console.log("79 SI ESTA Authenticado ")
+    next()}
+  else next('route')
+}
+
+server.get("/propiedadesconfavoritos/:ClienteId", isAuthenticated, async (req, res) => {
   try {
       let {ClienteId} = req.params;
 
