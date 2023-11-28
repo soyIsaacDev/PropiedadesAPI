@@ -4,7 +4,7 @@ const { Op } = require("sequelize");
 const { Propiedad, Favoritos, ImgPropiedad, Cliente  } = require("../db");
 
 
-server.post("/agregarFavorito", async (req,res)=> {
+server.post("/agregarFavorito",  async (req,res)=> {
     try {
         const { ClienteId, PropiedadId} = req.body;
         console.log("Cliente ID " + ClienteId + " Prop Id " + PropiedadId)
