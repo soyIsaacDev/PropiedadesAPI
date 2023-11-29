@@ -5,3 +5,10 @@ steps:
  - name: 'node'
     entrypoint: 'npm'
     args: ['run', 'build']
+
+ artifacts:
+    npmPackages:
+    - repository: 'https://us-central1-npm.pkg.dev/propiedades-406420/prop-api-artifact'
+      packagePath: '.'
+options:
+  requestedVerifyOption: VERIFIED
