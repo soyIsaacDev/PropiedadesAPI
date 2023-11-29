@@ -1,4 +1,8 @@
 steps:
+- name: node
+    args:
+      - echo
+      - hello world
  - name: 'node'
     entrypoint: 'npm'
     args: ['install']
