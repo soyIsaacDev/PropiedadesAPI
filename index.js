@@ -7,13 +7,6 @@
     var passport = require('passport');
     var Sequelize = require("sequelize");
     const session = require('express-session');
-
-    require("dotenv").config();
-    const { db } = require("./src/db");
-
-    const port = process.env.PORT;
-
-    const alter = true;
     
     /* const { ImagenRoute } = require('./src/routes/imgPropiedad');
     const { PropiedadRoute } = require('./src/routes/propiedad');
@@ -106,12 +99,6 @@
         console.error(err);
         res.status(err.status || 500).send(err.message);
     });
-
-    db.sync({ alter: true  }).then(function () {
-      app.listen(port, function () {
-        console.log("Server is listening on port " + port);
-      });
-    });
     
-   // module.exports = app;
+    module.exports = app;
     
