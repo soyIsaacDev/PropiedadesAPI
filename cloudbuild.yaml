@@ -1,0 +1,21 @@
+steps:
+#Build App
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-west2-docker-docker.pkg.dev/$PROJECT_ID/
+  dadinum/Dadinumc:$COMMIT_SHA','.']
+  id: BUILD
+
+#Storage of the Image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-west2-docker-docker.pkg.dev/$PROJECT_ID/
+  dadinum/Dadinumc:$COMMIT_SHA']  
+  id: STORAGE
+
+#Deploy App
+- name: 'gcr.io/cloud-builders/dcloud'
+  args: ['run','deploy' 'us-west2-docker-docker.pkg.dev/$PROJECT_ID/
+  dadinum/Dadinumc:$COMMIT_SHA'
+  'region','us-west2',
+  'platform','managed',
+  'allow-unauthenticated']  
+  id: DEPLOY
