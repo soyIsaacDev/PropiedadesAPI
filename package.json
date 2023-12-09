@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js",
-    "start": "nodemon app.js",
+    "dev": "node index.js",
+    "start": "node app.js",
     "lint": "eslint"
   },
   "keywords": [],
