@@ -1,6 +1,6 @@
 var app = require("./index");
 require("dotenv").config();
-const { db } = require("./src/db");
+//const { db } = require("./src/db");
 
 const port = process.env.PORT;
 
@@ -16,8 +16,8 @@ User.sync({ alter: true }) - This checks what is the current state of the table 
              what are their data types, etc), and then performs the necessary changes in the table to make it match the model. */
 
 // Migrations is recomended for production
-db.sync({ alter: true  }).then(function () {
-  app.listen(port, function () {
-    console.log("Server is listening on port " + port);
-  });
+/* db.sync({ alter: true  }).then(function () {
+}); */
+app.listen(port, function () {
+  console.log("Server is listening on port " + port);
 });
