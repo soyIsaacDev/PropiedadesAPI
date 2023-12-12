@@ -1,16 +1,31 @@
 const { Sequelize } = require("sequelize");
 require("dotenv").config();
 
-const dbEngine = process.env.DB_ENGINE;
+/* const dbEngine = process.env.DB_ENGINE;
 const dbUserName = process.env.DB_USER;
 const dbPasword = process.env.DB_PASSWORD;
 const dbHost = process.env.DB_HOST;
 const dbPort = process.env.DB_PORT;
-const dbName = process.env.DB_NAME
+const dbName = process.env.DB_NAME */
 
-const connectionString = `${dbEngine}://${dbUserName}:${dbPasword}@${dbHost}:${dbPort}/${dbName}`;
-const sequelize = new Sequelize(connectionString, {
+const dbEngine = process.env.CLOUD_DB_ENGINE;
+const dbUserName = process.env.CLOUD_DB_USER;
+const dbPasword = process.env.CLOUD_DB_PASSWORD;
+const dbHost = process.env.CLOUD_DB_HOST;
+const dbName = process.env.CLOUD_DB_NAME
+
+//const connectionString = `${dbEngine}://${dbUserName}:${dbPasword}@${dbHost}:${dbPort}/${dbName}`;
+
+/* const sequelize = new Sequelize(cloudConnectionString, {
   logging: false, //Loging Deshabilitado
+}); */
+const sequelize = new Sequelize(`${dbName}`, `${dbUserName}`, `${dbPasword}`, {
+  dialect: `${dbEngine}`,
+  host: `${dbHost}`,
+  timestamps: false,
+  dialectOptions: {
+    socketPath: `${dbHost}`
+},
 });
 
 try {
