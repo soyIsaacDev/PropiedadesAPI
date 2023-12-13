@@ -23,7 +23,7 @@ const dbName = process.env.CLOUD_DB_NAME
 
 
   const dbConfig = {
-    client: 'pg',
+    client: 'postgres',
     connection: {
       host: process.env.CLOUD_DB_HOST, // e.g. '127.0.0.1'
       port: process.env.CLOUD_DB_PORT, // e.g. '5432'
