@@ -12,7 +12,8 @@ const dbEngine = process.env.CLOUD_DB_ENGINE;
 const dbUserName = process.env.CLOUD_DB_USER;
 const dbPasword = process.env.CLOUD_DB_PASSWORD;
 const dbHost = process.env.CLOUD_DB_HOST;
-const dbName = process.env.CLOUD_DB_NAME
+const dbName = process.env.CLOUD_DB_NAME;
+const port= process.env.CLOUD_DB_PORT;
 
 //const connectionString = `${dbEngine}://${dbUserName}:${dbPasword}@${dbHost}:${dbPort}/${dbName}`;
 
@@ -20,19 +21,11 @@ const dbName = process.env.CLOUD_DB_NAME
   logging: false, //Loging Deshabilitado
 }); */
 
-
-
-  const dbConfig = {
-    client: 'pg',
-    connection: {
-      host: process.env.CLOUD_DB_HOST,
-      port: process.env.CLOUD_DB_PORT,
-      user: process.env.CLOUD_DB_USER,
-      password: process.env.CLOUD_DB_PASSWORD,
-      database: process.env.CLOUD_DB_NAME,
-      dialect:'postgres'
-    }}
-const sequelize = new Sequelize(dbConfig);
+    const sequelize = new Sequelize(`${dbName}`, `${dbUserName}`, `${dbPasword}`, {
+      dialect: 'postgres',
+      host: `${dbHost}`,
+      port:`${port}`
+    });
 
 try {
   sequelize.authenticate();
