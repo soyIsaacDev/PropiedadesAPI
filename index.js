@@ -58,7 +58,7 @@
     app.use(
         session({
             secret: "secretomexa",
-            store: myStore,
+            //store: myStore,
             cookie: { maxAge: 600000 },
             resave: false, // we support the touch method so per the express-session docs this should be set to false
             saveUninitialized: false,
