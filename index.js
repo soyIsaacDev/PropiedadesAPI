@@ -73,6 +73,10 @@
     app.get("/revision", (req,res) => {
         res.send("Hola Isaac se implemento correctamente el Trigger de Cloudbuild");
     });
+
+    app.get("/prueba", (req,res) => {
+        res.send("Prueba Adicional");
+    });
    
     /* function isAuthenticated (req, res, next) {
       console.log("77 En IS AUTH " +req.session.passport)
