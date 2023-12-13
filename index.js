@@ -15,11 +15,11 @@
     const { authClienteRoute } = require('./src/routes/authCliente'); */
 
 
-    var SequelizeStore = require("connect-session-sequelize")(session.Store);
+    /* var SequelizeStore = require("connect-session-sequelize")(session.Store);
     var sequelize = new Sequelize("database", "username", "password", {
         dialect: "sqlite",
         storage: "./session.sqlite",
-    });
+    }); */
 
     /* imagen: require("./imgPropiedad"),
     propiedad:require("./propiedad"),
@@ -51,14 +51,14 @@
     app.use("/assets", express.static(__dirname + "/public"));
     //El único parámetro que recibe static es el nombre del directorio donde están los archivos estáticos, en nuestro ejemplo están en /public.
     
-    var myStore = new SequelizeStore({
+    /* var myStore = new SequelizeStore({
         db: sequelize,
-    });
+    }); */
 
     app.use(
         session({
             secret: "secretomexa",
-            store: myStore,
+            //store: myStore,
             cookie: { maxAge: 600000 },
             resave: false, // we support the touch method so per the express-session docs this should be set to false
             saveUninitialized: false,
