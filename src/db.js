@@ -25,14 +25,13 @@ const dbName = process.env.CLOUD_DB_NAME
   const dbConfig = {
     client: 'pg',
     connection: {
-      dialect:'postgres',
       host: process.env.CLOUD_DB_HOST, // e.g. '127.0.0.1'
       port: process.env.CLOUD_DB_PORT, // e.g. '5432'
       user: process.env.CLOUD_DB_USER, // e.g. 'my-user'
       password: process.env.CLOUD_DB_PASSWORD, // e.g. 'my-user-password'
       database: process.env.CLOUD_DB_NAME, // e.g. 'my-database'
     }}
-const sequelize = new Sequelize(dbConfig);
+const sequelize = new Sequelize(dbConfig, {dialect:'postgres'});
 
 try {
   sequelize.authenticate();
