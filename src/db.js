@@ -30,8 +30,9 @@ const dbName = process.env.CLOUD_DB_NAME
       user: process.env.CLOUD_DB_USER, // e.g. 'my-user'
       password: process.env.CLOUD_DB_PASSWORD, // e.g. 'my-user-password'
       database: process.env.CLOUD_DB_NAME, // e.g. 'my-database'
+      dialect:'postgres'
     }}
-const sequelize = new Sequelize(dbConfig, {dialect:'postgres'});
+const sequelize = new Sequelize(dbConfig);
 
 try {
   sequelize.authenticate();
