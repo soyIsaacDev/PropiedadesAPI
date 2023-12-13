@@ -25,11 +25,11 @@ const dbName = process.env.CLOUD_DB_NAME
   const dbConfig = {
     client: 'pg',
     connection: {
-      host: process.env.CLOUD_DB_HOST, // e.g. '127.0.0.1'
-      port: process.env.CLOUD_DB_PORT, // e.g. '5432'
-      user: process.env.CLOUD_DB_USER, // e.g. 'my-user'
-      password: process.env.CLOUD_DB_PASSWORD, // e.g. 'my-user-password'
-      database: process.env.CLOUD_DB_NAME, // e.g. 'my-database'
+      host: process.env.CLOUD_DB_HOST,
+      port: process.env.CLOUD_DB_PORT,
+      user: process.env.CLOUD_DB_USER,
+      password: process.env.CLOUD_DB_PASSWORD,
+      database: process.env.CLOUD_DB_NAME,
       dialect:'postgres'
     }}
 const sequelize = new Sequelize(dbConfig);
