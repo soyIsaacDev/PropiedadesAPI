@@ -19,14 +19,19 @@ const dbName = process.env.CLOUD_DB_NAME
 /* const sequelize = new Sequelize(cloudConnectionString, {
   logging: false, //Loging Deshabilitado
 }); */
-const sequelize = new Sequelize(`${dbName}`, `${dbUserName}`, `${dbPasword}`, {
-  dialect: `${dbEngine}`,
-  host: `${dbHost}`,
-  timestamps: false,
-  dialectOptions: {
-    socketPath: `${dbHost}`
-},
-});
+
+
+
+  const dbConfig = {
+    client: 'pg',
+    connection: {
+      host: process.env.CLOUD_DB_HOST, // e.g. '127.0.0.1'
+      port: process.env.CLOUD_DB_PORT, // e.g. '5432'
+      user: process.env.CLOUD_DB_USER, // e.g. 'my-user'
+      password: process.env.CLOUD_DB_PASSWORD, // e.g. 'my-user-password'
+      database: process.env.CLOUD_DB_NAME, // e.g. 'my-database'
+    }}
+const sequelize = new Sequelize(dbConfig);
 
 try {
   sequelize.authenticate();
