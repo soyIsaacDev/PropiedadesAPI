@@ -2,7 +2,7 @@ var app = require("./index");
 require("dotenv").config();
 //const { db } = require("./src/db");
 
-const port = process.env.PORT|| 8080;;
+const port = process.env.PORT|| 8080;
 
 const alter = true;
 
