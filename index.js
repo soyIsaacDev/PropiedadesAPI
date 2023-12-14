@@ -55,7 +55,7 @@
         db: sequelize,
     }); */
 
-    app.use(
+    /* app.use(
         session({
             secret: "secretomexa",
             //store: myStore,
@@ -64,7 +64,7 @@
             saveUninitialized: false,
             proxy: true, // if you do SSL outside of node.
         })
-    );
+    ); */
 
     app.get("/", (req,res) => {
         res.send("Hola Isaac Borbon, el servidor esta activo");
