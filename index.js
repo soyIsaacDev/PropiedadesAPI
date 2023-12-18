@@ -68,7 +68,7 @@
     ); */
 
     app.get("/", (req,res) => {
-        res.send("Hola Isaac Borbon, el servidor esta activo");
+        res.send("Hola, el servidor esta activo");
     });
    
     function isAuthenticated (req, res, next) {
