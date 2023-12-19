@@ -121,7 +121,7 @@ const uploadImages = (req, res, next) => {
       console.log("Mapping")
       console.log(file)
     }) */
-    //console.log(JSON.stringify(files));
+    console.log(JSON.stringify(files));
     const data = req.body;
     //console.log("Image Data "+ JSON.stringify(data))
     // Validate file types and sizes
