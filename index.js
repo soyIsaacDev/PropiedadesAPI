@@ -39,8 +39,8 @@
     //                                  si no se espcifican rutas se montara el middleware en toda la aplicacion
     
     var corsOptions = {
-        //origin: 'http://localhost:3000',
         origin: 'https://dadinumco-front-muqyons65q-uc.a.run.app/',
+        optionsSuccessStatus: 200,
         credentials: true };
     
     app.use(cors(corsOptions))
