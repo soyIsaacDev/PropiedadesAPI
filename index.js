@@ -40,6 +40,7 @@
     
     var corsOptions = {
         origin: 'https://dadinumco-front-muqyons65q-uc.a.run.app',
+        //importante: No dejar la ruta de origen con un "/" al final
         optionsSuccessStatus: 200,
         credentials: true };
     
