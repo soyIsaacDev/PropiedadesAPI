@@ -8,13 +8,19 @@ const upload = require("../middleware/upload");
 const uploadImgPropiedad = require("../controllers/uploadImgPropiedad");
 const uploadMultiple = require("../middleware/uploadMultiple");
 const uploadImagenesPropiedad = require("../controllers/uploadMultipleImg");
+const gcpImageUpload = require('../middleware/uploadMulipleGCP');
 
 const { Propiedad, ImgPropiedad, AmenidadesDesarrollo, AmenidadesPropiedad,TipodePropiedad, 
   TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, Favoritos  } = require("../db");
 
 
-server.post("/agregarImagenPropiedad", upload.single("file"), 
-uploadImgPropiedad.uploadImagenPropiedad );
+/* server.post("/agregarImagenPropiedad", upload.single("file"), 
+uploadImgPropiedad.uploadImagenPropiedad ) */;
+
+server.post("/agregarImagenPropiedad", 
+  gcpImageUpload.multer.single('image'),
+  gcpImageUpload.sendUploadToGCS,
+);
 
 server.post('/nuevaPropiedad', uploadMultiple, uploadImagenesPropiedad.uploadImagenPropiedad); 
 
