@@ -39,9 +39,8 @@
     //                                  si no se espcifican rutas se montara el middleware en toda la aplicacion
     
     var corsOptions = {
-        origin: 'https://dadinumco-front-muqyons65q-uc.a.run.app/',
-        optionsSuccessStatus: 200,
-        credentials: true };
+        origin: 'https://dadinumco-front-muqyons65q-uc.a.run.app',
+        optionsSuccessStatus: 200 };
     
     app.use(cors(corsOptions))
     app.use(express.json()); //  -->  habilitamos objetos json con el metodo express.json   
