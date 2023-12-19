@@ -20,6 +20,14 @@ uploadImgPropiedad.uploadImagenPropiedad ) */;
 server.post("/nuevaPropiedad", 
   gcpImageUpload.uploadImages,
   gcpImageUpload.sendUploadToGCS,
+  async (req, res) => {
+    try {
+      res.json(`Se creo la Propiedad` )
+      
+    } catch (e) {
+      res.send(e)
+    }
+  }
 );
 
 //server.post('/nuevaPropiedad', uploadMultiple, uploadImagenesPropiedad.uploadImagenPropiedad); 
