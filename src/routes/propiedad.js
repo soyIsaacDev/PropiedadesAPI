@@ -17,12 +17,12 @@ const { Propiedad, ImgPropiedad, AmenidadesDesarrollo, AmenidadesPropiedad,Tipod
 /* server.post("/agregarImagenPropiedad", upload.single("file"), 
 uploadImgPropiedad.uploadImagenPropiedad ) */;
 
-server.post("/agregarImagenPropiedad", 
+server.post("/nuevaPropiedad", 
   gcpImageUpload.multer.single('image'),
   gcpImageUpload.sendUploadToGCS,
 );
 
-server.post('/nuevaPropiedad', uploadMultiple, uploadImagenesPropiedad.uploadImagenPropiedad); 
+//server.post('/nuevaPropiedad', uploadMultiple, uploadImagenesPropiedad.uploadImagenPropiedad); 
 
 server.get("/getDataandImagenPropiedades", async (req, res) => {
   try {
