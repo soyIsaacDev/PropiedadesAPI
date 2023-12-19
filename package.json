@@ -17,6 +17,7 @@
     "prettier": "^2.7.1"
   },
   "dependencies": {
+    "@google-cloud/storage": "^7.7.0",
     "connect-session-sequelize": "^7.1.7",
     "connect-sqlite3": "^0.9.13",
     "cors": "^2.8.5",
