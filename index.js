@@ -40,7 +40,8 @@
     
     var corsOptions = {
         origin: 'https://dadinumco-front-muqyons65q-uc.a.run.app',
-        optionsSuccessStatus: 200 };
+        optionsSuccessStatus: 200,
+        credentials: true };
     
     app.use(cors(corsOptions))
     app.use(express.json()); //  -->  habilitamos objetos json con el metodo express.json   
