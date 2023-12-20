@@ -18,7 +18,7 @@ const { Propiedad, ImgPropiedad, AmenidadesDesarrollo, AmenidadesPropiedad,Tipod
 uploadImgPropiedad.uploadImagenPropiedad ) */;
 
 server.post("/nuevaPropiedad", 
-  gcpImageUpload.multer.single('imagenesfiles'),
+  gcpImageUpload.multer.uploadImages,
   gcpImageUpload.sendUploadToGCS,
   async (req, res) => {
     try {
