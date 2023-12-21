@@ -33,19 +33,21 @@ const uploadImages = (req, res, next) => {
       console.log("Mapping")
       console.log(file)
     }) */
-    //console.log(JSON.stringify(files));
+    console.log("Files in uploadImages"+JSON.stringify(files));
     const data = req.body;
-    //console.log("Image Data "+ JSON.stringify(data))
+    console.log("Image Data "+ JSON.stringify(data))
     // Validate file types and sizes
     files.forEach((file) => {
       const allowedTypes = ['image/jpeg', 'image/png'];
       const maxSize = 5 * 1024 * 1024; // 5MB
 
       if (!allowedTypes.includes(file.mimetype)) {
+        console.log(`Invalid file type`)
         errors.push(`Invalid file type: ${file.originalname}`);
       }
 
       if (file.size > maxSize) {
+        console.log("File too large")
         errors.push(`File too large: ${file.originalname}`);
       }
     });
@@ -59,7 +61,7 @@ const uploadImages = (req, res, next) => {
 
       return res.status(400).json({ errors });
     }
-
+    console.log("Files to Attach to req.files " +files)
     // Attach files to the request object
     req.files = files;
 
