@@ -29,7 +29,7 @@ const bucket = storage.bucket(GCLOUD_BUCKET);
 // req.file is processed and will have a new property:
 // * ``cloudStoragePublicUrl`` the public url to the object.
 // [START sendUploadToGCS]
-function sendUploadToGCS(req, res, next) {
+async function sendUploadToGCS(req, res, next) {
   // The existing code in the handler checks to see if there
   // is a file property on the HTTP request - if a file has
   // been uploaded, then Multer will have created this
