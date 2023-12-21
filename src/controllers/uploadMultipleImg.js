@@ -58,7 +58,8 @@ const uploadImagenPropiedad = async (req, res) => {
       // buscamos si hay fotos
       const files = req.files;
 
-      if (files == undefined) {
+      if (files === undefined) {
+        console.log("Selecciona una imagen para tu propiedad")
         return res.send(`Selecciona una imagen para tu propiedad`);
       }
       console.log("Files en creacion de Instancia " + files)
@@ -72,9 +73,10 @@ const uploadImagenPropiedad = async (req, res) => {
       })
 
       //res.json(`Se creo la Propiedad `+ PropiedadCreada[0].nombrePropiedad +  " y sus imagenes " );
+      console.log("Se Creo la Propiedad")
       res.json(`Se creo la Propiedad` );
     } catch (error) {
-      console.log(error);
+      console.log("Error en Upload Multiple Img "+error);
       return res.send(`Error al intentar crear la imagen de la propiedad: ${error}`);
     }
   };
