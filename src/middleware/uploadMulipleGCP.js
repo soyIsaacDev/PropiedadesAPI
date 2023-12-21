@@ -38,7 +38,7 @@ function sendUploadToGCS(req, res, next) {
   if (!req.file) {
     return next();
   }
-  console.log("Archivos a subir " + req.file)
+  console.log("Archivos a subir " + JSON.stringify(req.file))
   // In addition, a unique object name, oname,  has been
   // created based on the file's original name. It has a
   // prefix generated using the current date and time.
