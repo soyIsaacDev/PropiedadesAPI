@@ -18,14 +18,16 @@ const { Propiedad, ImgPropiedad, AmenidadesDesarrollo, AmenidadesPropiedad,Tipod
 uploadImgPropiedad.uploadImagenPropiedad ) */;
 
 server.post("/nuevaPropiedad", 
-  gcpImageUpload.multer.array('imagenesfiles', 25),
-  gcpImageUpload.sendUploadToGCS,
-  async (req, res) => {
-    try {
-      res.json(`Se creo la Propiedad` )
-      
-    } catch (e) {
-      res.send(e)
+  gcpImageUpload.multer.array('imagenesfiles', 25), function (req, res, next) {
+
+    gcpImageUpload.sendUploadToGCS,
+    async (req, res) => {
+      try {
+        res.json(`Se creo la Propiedad` )
+        
+      } catch (e) {
+        res.send(e)
+      }
     }
   }
 );
