@@ -60,6 +60,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
         
       });
       stream.end(file.buffer);
+      next();
     })
 
     /* const oname = Date.now() + req.file.originalname;
