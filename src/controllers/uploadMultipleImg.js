@@ -65,6 +65,7 @@ const uploadImagenPropiedad = async (req, res) => {
       console.log("Files en creacion de Instancia " + files)
       // se crea una imagen por cada archivo y se liga a la Propiedad
       files.forEach(async (file) => {
+        console.log("Image File Data " + JSON.stringify(file))
           const imagenPropiedad = await ImgPropiedad.create({
             type: file.mimetype,
             img_name: file.filename,
@@ -77,7 +78,7 @@ const uploadImagenPropiedad = async (req, res) => {
       res.json(`Se creo la Propiedad` );
     } catch (error) {
       console.log("Error en Upload Multiple Img "+error);
-      return res.send(`Error al intentar crear la imagen de la propiedad: ${error}`);
+      res.send(`Error al intentar crear la imagen de la propiedad: ${error}`);
     }
   };
 
