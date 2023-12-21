@@ -36,6 +36,7 @@ function sendUploadToGCS(req, res, next) {
   // property in the preceding middleware call.
   console.log("Send Upload To GCS")
   if (!req.file) {
+    console.log("No hay archivos a subir")
     return next();
   }
   console.log("Archivos a subir " + JSON.stringify(req.file))
