@@ -19,7 +19,6 @@ uploadImgPropiedad.uploadImagenPropiedad ) */;
 
 server.post("/nuevaPropiedad", 
   gcpImageUpload.multer.single('imagenesfiles'),
-  console.log("Uploaded, now send to GCS"),
   gcpImageUpload.sendUploadToGCS,
   async (req, res) => {
     try {

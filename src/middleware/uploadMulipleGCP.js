@@ -34,7 +34,7 @@ function sendUploadToGCS(req, res, next) {
   // is a file property on the HTTP request - if a file has
   // been uploaded, then Multer will have created this
   // property in the preceding middleware call.
-  console.log("SentUpload To GCS")
+  console.log("Send Upload To GCS")
   if (!req.file) {
     return next();
   }
@@ -59,7 +59,7 @@ function sendUploadToGCS(req, res, next) {
       contentType: req.file.mimetype
     }
   });
-  
+  console.log("stram " + stream)
   // Attach two event handlers (1) error
   // Event handler if there's an error when uploading
   stream.on('error', err => {
