@@ -29,7 +29,40 @@ const bucket = storage.bucket(GCLOUD_BUCKET);
 // req.file is processed and will have a new property:
 // * ``cloudStoragePublicUrl`` the public url to the object.
 // [START sendUploadToGCS]
-async function sendUploadToGCS(req, res, next) {
+const sendUploadToGCSAsync = async(req, res, next) => {
+  try {
+    console.log("Send Upload To GCS")
+    if (req.file == undefined) {
+      console.log("req.file Undefined")
+      return next()
+    }
+    if (!req.file) {
+      console.log("No hay archivos a subir")
+      return next();
+    }
+    const oname = Date.now() + req.file.originalname;
+    // Get a reference to the new object
+    const file = bucket.file(oname);
+    const stream = file.createWriteStream({
+      metadata: {
+        contentType: req.file.mimetype
+      }
+    });
+    console.log("stream " + JSON.stringify(stream))
+    stream.on('error', err => {
+      // If there's an error move to the next handler
+      console.log("Error en stram " +err)
+      next(err);
+      
+    });
+    stream.end(req.file.buffer);
+  } catch (e) {
+    console.log("Error " + e)
+    res.send(e)
+  }
+}
+
+function sendUploadToGCS(req, res, next) {
   // The existing code in the handler checks to see if there
   // is a file property on the HTTP request - if a file has
   // been uploaded, then Multer will have created this
@@ -155,8 +188,8 @@ const uploadImages = (req, res, next) => {
     }
 
     // Attach files to the request object
-    console.log("Files to Attach to req.files " +files)
     req.files = files;
+    console.log("Files attached to req.files " +req.files)
 
     // Proceed to the next middleware or route handler
     next();
@@ -167,5 +200,6 @@ const uploadImages = (req, res, next) => {
 module.exports = {
   sendUploadToGCS,
   multer,
-  uploadImages
+  uploadImages,
+  sendUploadToGCSAsync
 };
