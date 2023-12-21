@@ -52,7 +52,14 @@ const sendUploadToGCSAsync = async (req, res, next) => {
           contentType: file.mimetype
         }
       });
-      console.log("stream " + JSON.stringify(stream))
+      console.log("stream " + JSON.stringify(stream));
+      stream.on('error', err => {
+        // If there's an error move to the next handler
+        console.log("Error en stream " +err)
+        next(err);
+        
+      });
+      stream.end(file.buffer);
     })
 
     /* const oname = Date.now() + req.file.originalname;
@@ -62,7 +69,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
       metadata: {
         contentType: req.file.mimetype
       }
-    }); */
+    }); 
     
     stream.on('error', err => {
       // If there's an error move to the next handler
@@ -71,6 +78,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
       
     });
     stream.end(req.file.buffer);
+    */
   } catch (e) {
     console.log("Error " + e)
     res.send(e)
