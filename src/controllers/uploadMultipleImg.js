@@ -61,7 +61,7 @@ const uploadImagenPropiedad = async (req, res) => {
       if (files == undefined) {
         return res.send(`Selecciona una imagen para tu propiedad`);
       }
-      
+      console.log("Files en creacion de Instancia " + files)
       // se crea una imagen por cada archivo y se liga a la Propiedad
       files.forEach(async (file) => {
           const imagenPropiedad = await ImgPropiedad.create({

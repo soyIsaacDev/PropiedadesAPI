@@ -3,6 +3,7 @@ const express = require("express");
 
 const path = require('path');
 var public = path.join(__dirname, '../../uploads');
-server.use('/', express.static(public));
+var googleCloudStorage = "https://storage.cloud.google.com/dadinumco-media"
+server.use('/', express.static(googleCloudStorage));
 
 module.exports =  server;
