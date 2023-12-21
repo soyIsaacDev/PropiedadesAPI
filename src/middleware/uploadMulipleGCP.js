@@ -53,33 +53,38 @@ const sendUploadToGCSAsync = async (req, res, next) => {
         }
       });
       console.log("stream " + JSON.stringify(stream));
+
       stream.on('error', err => {
         // If there's an error move to the next handler
         console.log("Error en stream " +err)
         next(err);
         
       });
+
+      stream.on('finish', () => {
+        // Make the object publicly accessible
+        files.forEach(async (file) => {
+          file.makePublic().then(() => {
+          // Set a new property on the file for the
+          // public URL for the object
+          // Cloud Storage public URLs are in the form:
+          // https://storage.googleapis.com/[BUCKET]/[OBJECT]
+          // Use an ECMAScript template literal (`https://...`)to
+          // populate the URL with appropriate values for the bucket
+          // ${GCLOUD_BUCKET} and object name ${oname}
+              req.file.cloudStoragePublicUrl = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${oname}`;
+              
+              // Invoke the next middleware handler
+              next();
+              
+          }); 
+        });  
+      });
+      
       stream.end(file.buffer);
       next();
     })
 
-    /* const oname = Date.now() + req.file.originalname;
-    // Get a reference to the new object
-    const file = bucket.file(oname);
-    const stream = file.createWriteStream({
-      metadata: {
-        contentType: req.file.mimetype
-      }
-    }); 
-    
-    stream.on('error', err => {
-      // If there's an error move to the next handler
-      console.log("Error en stram " +err)
-      next(err);
-      
-    });
-    stream.end(req.file.buffer);
-    */
   } catch (e) {
     console.log("Error " + e)
     res.send(e)
