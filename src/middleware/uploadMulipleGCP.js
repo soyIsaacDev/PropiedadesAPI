@@ -59,7 +59,7 @@ function sendUploadToGCS(req, res, next) {
       contentType: req.file.mimetype
     }
   });
-  console.log("stram " + stream)
+  console.log("stream " + JSON.stringify(stream))
   // Attach two event handlers (1) error
   // Event handler if there's an error when uploading
   stream.on('error', err => {
@@ -70,7 +70,7 @@ function sendUploadToGCS(req, res, next) {
   
   // Attach two event handlers (2) finish
   // The upload completed successfully
-  stream.on('finish', () => {
+  /* stream.on('finish', () => {
     // Make the object publicly accessible
     file.makePublic().then(() => {
       // Set a new property on the file for the
@@ -87,7 +87,7 @@ function sendUploadToGCS(req, res, next) {
       
     });
     
-  });
+  }); */
   
   // End the stream to upload the file's data
   stream.end(req.file.buffer);
