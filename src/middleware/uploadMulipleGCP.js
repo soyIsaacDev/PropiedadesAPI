@@ -64,7 +64,6 @@ const sendUploadToGCSAsync = async (req, res, next) => {
       stream.on('finish', () => {
         // Make the object publicly accessible
         files.forEach(async (file) => {
-          file.makePublic().then(() => {
           // Set a new property on the file for the
           // public URL for the object
           // Cloud Storage public URLs are in the form:
@@ -72,12 +71,11 @@ const sendUploadToGCSAsync = async (req, res, next) => {
           // Use an ECMAScript template literal (`https://...`)to
           // populate the URL with appropriate values for the bucket
           // ${GCLOUD_BUCKET} and object name ${oname}
-              req.file.cloudStoragePublicUrl = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${oname}`;
+              file.cloudStoragePublicUrl = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${oname}`;
               
               // Invoke the next middleware handler
               next();
               
-          }); 
         });  
       });
       
