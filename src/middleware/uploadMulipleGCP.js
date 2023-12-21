@@ -29,26 +29,41 @@ const bucket = storage.bucket(GCLOUD_BUCKET);
 // req.file is processed and will have a new property:
 // * ``cloudStoragePublicUrl`` the public url to the object.
 // [START sendUploadToGCS]
-const sendUploadToGCSAsync = async(req, res, next) => {
+const sendUploadToGCSAsync = async (req, res, next) => {
   try {
     console.log("Send Upload To GCS")
-    if (req.file == undefined) {
+    // buscamos si hay fotos
+    const files = req.files;
+    console.log("req.file en SUTGCS " + files)
+    if (files == undefined) {
       console.log("req.file Undefined")
       return next()
     }
-    if (!req.file) {
+    if (!files) {
       console.log("No hay archivos a subir")
       return next();
     }
-    const oname = Date.now() + req.file.originalname;
+
+    files.forEach(async (file) => {
+      const oname = Date.now() + file.originalname;
+      const fileRef = bucket.file(oname);
+      const stream = fileRef.createWriteStream({
+        metadata: {
+          contentType: file.mimetype
+        }
+      });
+      console.log("stream " + JSON.stringify(stream))
+    })
+
+    /* const oname = Date.now() + req.file.originalname;
     // Get a reference to the new object
     const file = bucket.file(oname);
     const stream = file.createWriteStream({
       metadata: {
         contentType: req.file.mimetype
       }
-    });
-    console.log("stream " + JSON.stringify(stream))
+    }); */
+    
     stream.on('error', err => {
       // If there's an error move to the next handler
       console.log("Error en stram " +err)
