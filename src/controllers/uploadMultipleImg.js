@@ -68,7 +68,7 @@ const uploadImagenPropiedad = async (req, res) => {
         console.log("Image File Data " + JSON.stringify(file))
           const imagenPropiedad = await ImgPropiedad.create({
             type: file.mimetype,
-            img_name: file.filename,
+            img_name: file.cloudStoragePublicUrl,
             PropiedadId: PropiedadCreada[0].id
           });
       })
