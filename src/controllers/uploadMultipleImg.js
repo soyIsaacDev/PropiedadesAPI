@@ -5,8 +5,6 @@ const {  ImgPropiedad, Propiedad, TipodePropiedad, AmenidadesDesarrollo, Amenida
 const path = require('path');
 const carpeta = path.join(__dirname, '../../uploads')
 console.log("DIRECTORIO" + carpeta)
-const config = require('../../configCloudBucket');
-const GCLOUD_BUCKET = config.get('GCLOUD_BUCKET');
 
 const uploadImagenPropiedad = async (req, res) => {
   console.log("upload Imagen Propiedad")
@@ -68,14 +66,11 @@ const uploadImagenPropiedad = async (req, res) => {
       // se crea una imagen por cada archivo y se liga a la Propiedad
       files.forEach(async (file) => {
         console.log("Image File " + JSON.stringify(file))
-        
-        const oname = Date.now() + file.originalname;
           const imagenPropiedad = await ImgPropiedad.create({
             type: file.mimetype,
-            img_name: `https://storage.googleapis.com/${GCLOUD_BUCKET}/${oname}`,
+            img_name: file.cloudStoragePublicUrl,
             PropiedadId: PropiedadCreada[0].id
           });
-        console.log("Imagen Propiedad info " + JSON.stringify(imagenPropiedad));
       })
 
       //res.json(`Se creo la Propiedad `+ PropiedadCreada[0].nombrePropiedad +  " y sus imagenes " );
