@@ -62,17 +62,13 @@ const uploadImagenPropiedad = async (req, res) => {
         console.log("Selecciona una imagen para tu propiedad")
         return res.send(`Selecciona una imagen para tu propiedad`);
       }
-      console.log("Files en creacion de Instancia " + JSON.stringify(files))
+      console.log("Files en creacion de Instancia " + files)
       // se crea una imagen por cada archivo y se liga a la Propiedad
-
-      const GCLOUD_BUCKET = config.get('GCLOUD_BUCKET');
-
       files.forEach(async (file) => {
-        console.log("Image File Data " + JSON.stringify(file))
-        const oname = Date.now() + file.originalname;
+        console.log("Image File " + JSON.stringify(file))
           const imagenPropiedad = await ImgPropiedad.create({
             type: file.mimetype,
-            img_name: `https://storage.googleapis.com/${GCLOUD_BUCKET}/${oname}`,
+            img_name: file.filename,
             PropiedadId: PropiedadCreada[0].id
           });
       })

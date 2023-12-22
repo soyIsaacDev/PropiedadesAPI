@@ -47,7 +47,6 @@ const sendUploadToGCSAsync = async (req, res, next) => {
     files.forEach(async (file) => {
       const oname = Date.now() + file.originalname;
       const fileRef = bucket.file(oname);
-      file.cloudStoragePublicUrl = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${oname}`;
       const stream = fileRef.createWriteStream({
         metadata: {
           contentType: file.mimetype
@@ -62,7 +61,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
         
       });
 
-      /* stream.on('finish', () => {
+      stream.on('finish', () => {
         // Make the object publicly accessible
         files.forEach(async (file) => {
           // Set a new property on the file for the
@@ -78,7 +77,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
               next();
               
         });  
-      }); */
+      });
       
       stream.end(file.buffer);
       next();
