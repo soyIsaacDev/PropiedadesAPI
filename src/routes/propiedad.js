@@ -23,7 +23,7 @@ server.post("/nuevaPropiedad",
   uploadImagenesPropiedad.uploadImagenPropiedad
 );
 
-server.post('/nuevaPropiedadLocalDev', uploadMultiple, uploadImagenesPropiedad.uploadImagenPropiedad); 
+//server.post('/nuevaPropiedad', uploadMultiple, uploadImagenesPropiedad.uploadImagenPropiedad); 
 
 server.get("/getDataandImagenPropiedades", async (req, res) => {
   try {
