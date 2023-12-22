@@ -23,7 +23,7 @@ server.post("/nuevaPropiedad",
   uploadImagenesPropiedad.uploadImagenPropiedad
 );
 
-//server.post('/nuevaPropiedad', uploadMultiple, uploadImagenesPropiedad.uploadImagenPropiedad); 
+server.post('/nuevaPropiedadLocalDev', uploadMultiple, uploadImagenesPropiedad.uploadImagenPropiedad); 
 
 server.get("/getDataandImagenPropiedades", async (req, res) => {
   try {
@@ -36,7 +36,7 @@ server.get("/getDataandImagenPropiedades", async (req, res) => {
       ]
     },);
     
-    dataPropiedad? res.send(dataPropiedad) : res.json({Mensaje:"No se encontraron datos de propiedades"});
+    dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontraron datos de propiedades"});
     
   } catch (e) {
     res.send(e);
@@ -95,7 +95,7 @@ server.get("/detallespropiedad/:id", async (req, res) => {
         },
       ]
     })
-    dataPropiedad? res.send(dataPropiedad) : res.json({Mensaje:"No se encontro la propiedad"});
+    dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontro la propiedad"});
   } catch (e) {
     res.send(e);
   }
