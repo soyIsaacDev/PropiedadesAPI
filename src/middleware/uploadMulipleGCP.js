@@ -61,7 +61,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
         
       });
 
-      /* stream.on('finish', () => {
+      stream.on('finish', () => {
         // Make the object publicly accessible
         files.forEach(async (file) => {
           // Set a new property on the file for the
@@ -77,7 +77,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
               next();
               
         });  
-      }); */
+      });
       
       stream.end(file.buffer);
       next();
