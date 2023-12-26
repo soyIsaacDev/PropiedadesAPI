@@ -104,7 +104,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
     console.log("Send Upload To GCS")
     // buscamos si hay fotos
     const files = req.files;
-    console.log("req.file en SUTGCS " + files)
+    console.log("req.file en SUTGCS " + JSON.stringify(files))
     if (files == undefined) {
       console.log("req.file Undefined")
       return next()
