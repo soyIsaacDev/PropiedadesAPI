@@ -32,7 +32,7 @@ const uploadImages = (req, res, next) => {
       console.log("Mapping")
       console.log(file)
     }) */
-    for (let i = 0; i < array.length; i++) {
+    for (let i = 0; i < files.length; i++) {
       console.log("Files in uploadImages"+JSON.stringify(files[i].fieldname));
     }
     const data = req.body;
