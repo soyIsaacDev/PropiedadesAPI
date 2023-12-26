@@ -78,7 +78,7 @@ const uploadImagenPropiedad = async (req, res) => {
       res.json(`Se creo la Propiedad` );
     } catch (error) {
       console.log("Error en Upload Multiple Img "+error);
-      res.send(`Error al intentar crear la imagen de la propiedad: ${error}`);
+      res.json(`Error al intentar crear la imagen de la propiedad: ${error}`);
     }
   };
 
