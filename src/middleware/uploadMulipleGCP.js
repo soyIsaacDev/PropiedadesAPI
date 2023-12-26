@@ -3,6 +3,76 @@ const config = require('../../configCloudBucket');
 // Load the module for Cloud Storage
 const {Storage} = require('@google-cloud/storage');
 
+// Multer handles parsing multipart/form-data requests.
+// This instance is configured to store images in memory.
+// This makes it straightforward to upload to Cloud Storage.
+// [START multer]
+const Multer = require('multer');
+const multer = Multer({
+  storage: Multer.MemoryStorage,
+  limits: {
+    fileSize: 40 * 1024 * 1024 // no larger than 40mb
+  }
+});
+
+// Custom file upload middleware
+const uploadImages = (req, res, next) => {
+  console.log("Upload Imagenes")
+  // Use multer upload instance
+  multer.array('imagenesfiles', 25)(req, res, (err) => {
+    if (err) {
+      console.log(err)
+      return res.status(400).json({ error: err.message });
+    }
+
+    // Retrieve uploaded files
+    const files = req.files;
+    const errors = [];
+    /* req.files.map(file => {
+      console.log("Mapping")
+      console.log(file)
+    }) */
+    console.log("Req Files in Upload Imagenes "+JSON.stringify(req.files));
+    console.log("Files in uploadImages"+JSON.stringify(files));
+    const data = req.body;
+    console.log("Image Data "+ JSON.stringify(data))
+    // Validate file types and sizes
+    files.forEach((file) => {
+      const allowedTypes = ['image/jpeg', 'image/png'];
+      const maxSize = 5 * 1024 * 1024; // 5MB
+
+      if (!allowedTypes.includes(file.mimetype)) {
+        console.log(`Invalid file type`)
+        errors.push(`Invalid file type: ${file.originalname}`);
+      }
+
+      if (file.size > maxSize) {
+        console.log("File too large")
+        errors.push(`File too large: ${file.originalname}`);
+      }
+    });
+
+    // Handle validation errors
+    if (errors.length > 0) {
+      // Remove uploaded files
+      files.forEach((file) => {
+        fs.unlinkSync(file.path);
+      });
+
+      return res.status(400).json({ errors });
+    }
+
+    // Attach files to the request object
+    req.files = files;
+    console.log("Files attached to req.files " +req.files)
+
+    // Proceed to the next middleware or route handler
+    next();
+  });
+};
+
+// [END multer]
+
 // Create the storage client
 // The Storage(...) factory function accepts an options
 // object which is used to specify which project's Cloud
@@ -155,75 +225,7 @@ function sendUploadToGCS(req, res, next) {
   
 }
 // [END sendUploadToGCS]
-// Multer handles parsing multipart/form-data requests.
-// This instance is configured to store images in memory.
-// This makes it straightforward to upload to Cloud Storage.
-// [START multer]
-const Multer = require('multer');
-const multer = Multer({
-  storage: Multer.MemoryStorage,
-  limits: {
-    fileSize: 40 * 1024 * 1024 // no larger than 40mb
-  }
-});
 
-// Custom file upload middleware
-const uploadImages = (req, res, next) => {
-  console.log("Upload Imagenes")
-  // Use multer upload instance
-  multer.array('imagenesfiles', 25)(req, res, (err) => {
-    if (err) {
-      console.log(err)
-      return res.status(400).json({ error: err.message });
-    }
-
-    // Retrieve uploaded files
-    const files = req.files;
-    const errors = [];
-    /* req.files.map(file => {
-      console.log("Mapping")
-      console.log(file)
-    }) */
-    console.log("Req Files in Upload Imagenes "+JSON.stringify(req.files));
-    console.log("Files in uploadImages"+JSON.stringify(files));
-    const data = req.body;
-    console.log("Image Data "+ JSON.stringify(data))
-    // Validate file types and sizes
-    files.forEach((file) => {
-      const allowedTypes = ['image/jpeg', 'image/png'];
-      const maxSize = 5 * 1024 * 1024; // 5MB
-
-      if (!allowedTypes.includes(file.mimetype)) {
-        console.log(`Invalid file type`)
-        errors.push(`Invalid file type: ${file.originalname}`);
-      }
-
-      if (file.size > maxSize) {
-        console.log("File too large")
-        errors.push(`File too large: ${file.originalname}`);
-      }
-    });
-
-    // Handle validation errors
-    if (errors.length > 0) {
-      // Remove uploaded files
-      files.forEach((file) => {
-        fs.unlinkSync(file.path);
-      });
-
-      return res.status(400).json({ errors });
-    }
-
-    // Attach files to the request object
-    req.files = files;
-    console.log("Files attached to req.files " +req.files)
-
-    // Proceed to the next middleware or route handler
-    next();
-  });
-};
-
-// [END multer]
 module.exports = {
   sendUploadToGCS,
   multer,
