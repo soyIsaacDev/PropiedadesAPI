@@ -32,8 +32,9 @@ const uploadImages = (req, res, next) => {
       console.log("Mapping")
       console.log(file)
     }) */
-    console.log("Req Files in Upload Imagenes "+JSON.stringify(req.files));
-    console.log("Files in uploadImages"+JSON.stringify(files));
+    for (let i = 0; i < array.length; i++) {
+      console.log("Files in uploadImages"+JSON.stringify(files[i].fieldname));
+    }
     const data = req.body;
     console.log("Image Data "+ JSON.stringify(data))
     // Validate file types and sizes
@@ -64,7 +65,7 @@ const uploadImages = (req, res, next) => {
 
     // Attach files to the request object
     req.files = files;
-    console.log("Files attached to req.files " +req.files)
+    console.log("Files attached to req.files " +JSON.stringify(req.files))
 
     // Proceed to the next middleware or route handler
     next();
@@ -104,7 +105,9 @@ const sendUploadToGCSAsync = async (req, res, next) => {
     console.log("Send Upload To GCS")
     // buscamos si hay fotos
     const files = req.files;
-    console.log("req.file en SUTGCS " + JSON.stringify(files))
+    for (let i = 0; i < files.length; i++) {
+      console.log("req.file en SUTGCS " + JSON.stringify(files[i].fieldname))
+    }
     if (files == undefined) {
       console.log("req.file Undefined")
       return next()
