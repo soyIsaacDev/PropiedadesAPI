@@ -106,7 +106,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
     // buscamos si hay fotos
     const files = req.files;
     for (let i = 0; i < files.length; i++) {
-      console.log("req.file en SUTGCS " + JSON.stringify(files[i].fieldname))
+      console.log("req.file en SUTGCS " + JSON.stringify(files[i].originalname))
     }
     if (files == undefined) {
       console.log("req.file Undefined")
@@ -120,6 +120,8 @@ const sendUploadToGCSAsync = async (req, res, next) => {
     files.forEach(async (file) => {
       const oname = Date.now() + file.originalname;
       const fileRef = bucket.file(oname);
+      file.cloudStoragePublicUrl = `https://storage.cloud.google.com/${GCLOUD_BUCKET}/${oname}`;
+      console.log("CloudStorage File Name "+file.cloudStoragePublicUrl);
       const stream = fileRef.createWriteStream({
         metadata: {
           contentType: file.mimetype
@@ -136,7 +138,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
 
       stream.on('finish', () => {
         // Make the object publicly accessible
-        files.forEach(async (file) => {
+        /* files.forEach(async (file) => {
           // Set a new property on the file for the
           // public URL for the object
           // Cloud Storage public URLs are in the form:
@@ -144,13 +146,14 @@ const sendUploadToGCSAsync = async (req, res, next) => {
           // Use an ECMAScript template literal (`https://...`)to
           // populate the URL with appropriate values for the bucket
           // ${GCLOUD_BUCKET} and object name ${oname}
-              file.cloudStoragePublicUrl = `https://storage.cloud.google.com/${GCLOUD_BUCKET}/${oname}`;
+              //file.cloudStoragePublicUrl = `https://storage.cloud.google.com/${GCLOUD_BUCKET}/${oname}`;
               
               console.log(file.cloudStoragePublicUrl);
               // Invoke the next middleware handler
               next();
               
-        });  
+        });  */ 
+        next();
       });
       
       stream.end(file.buffer);
