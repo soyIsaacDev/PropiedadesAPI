@@ -66,6 +66,7 @@ const uploadImagenPropiedad = async (req, res) => {
       // se crea una imagen por cada archivo y se liga a la Propiedad
       files.forEach(async (file) => {
         console.log("Image File " + JSON.stringify(file))
+        console.log("CloudStoragePublicUrl Image File " + JSON.stringify(file.cloudStoragePublicUrl))
           const imagenPropiedad = await ImgPropiedad.create({
             type: file.mimetype,
             img_name: file.cloudStoragePublicUrl,
@@ -75,7 +76,7 @@ const uploadImagenPropiedad = async (req, res) => {
 
       //res.json(`Se creo la Propiedad `+ PropiedadCreada[0].nombrePropiedad +  " y sus imagenes " );
       console.log("Se Creo la Propiedad")
-      res.json(`Se creo la Propiedad` );
+      res.send(`Se creo la Propiedad` );
     } catch (error) {
       console.log("Error en Upload Multiple Img "+error);
       //res.json(`Error al intentar crear la imagen de la propiedad: ${error}`);

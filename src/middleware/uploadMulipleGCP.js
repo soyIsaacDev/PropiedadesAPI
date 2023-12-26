@@ -146,6 +146,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
           // ${GCLOUD_BUCKET} and object name ${oname}
               file.cloudStoragePublicUrl = `https://storage.cloud.google.com/${GCLOUD_BUCKET}/${oname}`;
               
+              console.log(file.cloudStoragePublicUrl);
               // Invoke the next middleware handler
               next();
               
