@@ -6,7 +6,7 @@ const path = require('path');
 const carpeta = path.join(__dirname, '../../uploads')
 console.log("DIRECTORIO" + carpeta)
 
-const uploadImagenPropiedad = async (req, res) => {
+const uploadImagenPropiedad = async (req, res, next) => {
   console.log("upload Imagen Propiedad")
     try {
       // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
@@ -75,8 +75,9 @@ const uploadImagenPropiedad = async (req, res) => {
       })
 
       //res.json(`Se creo la Propiedad `+ PropiedadCreada[0].nombrePropiedad +  " y sus imagenes " );
-      console.log("Se Creo la Propiedad")
-      res.send(`Se creo la Propiedad` );
+      console.log("Se Creo la Propiedad");
+
+      next();
     } catch (error) {
       console.log("Error en Upload Multiple Img "+error);
       //res.json(`Error al intentar crear la imagen de la propiedad: ${error}`);
