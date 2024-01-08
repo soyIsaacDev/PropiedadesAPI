@@ -5,25 +5,26 @@ const path = require('path');
 
 var public = path.join(__dirname,'../../uploads');
 const upload = require("../middleware/upload");
-const uploadImgPropiedad = require("../controllers/uploadImgPropiedad");
+const uploadImagenesPropiedad = require("../controllers/uploadImgPropiedad");
 const uploadMultiple = require("../middleware/uploadMultiple");
-const uploadImagenesPropiedad = require("../controllers/uploadMultipleImg");
+const gcpUploadImagenesPropiedad = require("../controllers/uploadMultipleImg");
 const gcpImageUpload = require('../middleware/uploadMulipleGCP');
 
 const { Propiedad, ImgPropiedad, AmenidadesDesarrollo, AmenidadesPropiedad,TipodePropiedad, 
   TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, Favoritos  } = require("../db");
 
+const DEVMODE = process.env.DEVELOPMENT;
 
-/* server.post("/agregarImagenPropiedad", upload.single("file"), 
-uploadImgPropiedad.uploadImagenPropiedad ) */;
-
-server.post("/nuevaPropiedad", 
-  gcpImageUpload.uploadImages,
-  gcpImageUpload.sendUploadToGCSAsync,
-  uploadImagenesPropiedad.uploadImagenPropiedad
-);
-
-//server.post('/nuevaPropiedad', uploadMultiple, uploadImagenesPropiedad.uploadImagenPropiedad); 
+if(DEVMODE === "local"){
+  server.post('/nuevaPropiedad', uploadMultiple, uploadImagenesPropiedad.uploadImagenPropiedad);
+}
+else{
+  server.post("/nuevaPropiedad", 
+    gcpImageUpload.uploadImages,
+    gcpImageUpload.sendUploadToGCSAsync,
+    gcpUploadImagenesPropiedad.uploadImagenPropiedad
+  ); 
+}
 
 server.get("/getDataandImagenPropiedades", async (req, res) => {
   try {

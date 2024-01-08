@@ -37,12 +37,25 @@
     // app.use([path,] callback [, callback...])    --> http://expressjs.com/es/api.html#app.use
     //   nos permite montar middlewares a la ruta especificada  
     //                                  si no se espcifican rutas se montara el middleware en toda la aplicacion
-    
-    var corsOptions = {
-        origin: 'https://dadinumco-front-muqyons65q-uc.a.run.app',
-        //importante: No dejar la ruta de origen con un "/" al final
-        optionsSuccessStatus: 200,
-        credentials: true };
+    const DEVMODE = process.env.DEVELOPMENT;
+    var corsOptions= undefined;
+
+    if(DEVMODE === "local"){
+        corsOptions = {
+            origin: 'http://localhost:3000',
+            //importante: No dejar la ruta de origen con un "/" al final
+            optionsSuccessStatus: 200,
+            credentials: true 
+        };
+    }
+    else{
+        corsOptions = {
+            origin: 'https://dadinumco-front-muqyons65q-uc.a.run.app',
+            //importante: No dejar la ruta de origen con un "/" al final
+            optionsSuccessStatus: 200,
+            credentials: true 
+        };
+    }
     
     app.use(cors(corsOptions))
     app.use(express.json()); //  -->  habilitamos objetos json con el metodo express.json   
