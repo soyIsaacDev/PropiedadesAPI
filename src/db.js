@@ -1,12 +1,14 @@
 const { Sequelize } = require("sequelize");
 require("dotenv").config();
 
-/* const dbEngine = process.env.DB_ENGINE;
-const dbUserName = process.env.DB_USER;
-const dbPasword = process.env.DB_PASSWORD;
-const dbHost = process.env.DB_HOST;
-const dbPort = process.env.DB_PORT;
-const dbName = process.env.DB_NAME */
+const DEVMODE = process.env.DEVELOPMENT;
+
+const local_dbEngine = process.env.DB_ENGINE;
+const local_dbUserName = process.env.DB_USER;
+const local_dbPasword = process.env.DB_PASSWORD;
+const local_dbHost = process.env.DB_HOST;
+const local_dbPort = process.env.DB_PORT;
+const local_dbName = process.env.DB_NAME
 
 const dbEngine = process.env.CLOUD_DB_ENGINE;
 const dbUserName = process.env.CLOUD_DB_USER;
@@ -15,17 +17,22 @@ const dbHost = process.env.CLOUD_DB_HOST;
 const dbName = process.env.CLOUD_DB_NAME;
 const port= process.env.CLOUD_DB_PORT;
 
-//const connectionString = `${dbEngine}://${dbUserName}:${dbPasword}@${dbHost}:${dbPort}/${dbName}`;
+var sequelize = 0;
 
-/* const sequelize = new Sequelize(cloudConnectionString, {
-  logging: false, //Loging Deshabilitado
-}); */
+if(DEVMODE === "local"){
+  const connectionString = `${local_dbEngine}://${local_dbUserName}:${local_dbPasword}@${local_dbHost}:${local_dbPort}/${local_dbName}`;
 
-    const sequelize = new Sequelize(`${dbName}`, `${dbUserName}`, `${dbPasword}`, {
-      dialect: 'postgres',
-      host: `${dbHost}`,
-      port:`${port}`
-    });
+  sequelize = new Sequelize(connectionString, {
+    logging: false, //Loging Deshabilitado
+  });
+}
+else{
+  sequelize = new Sequelize(`${dbName}`, `${dbUserName}`, `${dbPasword}`, {
+    dialect: 'postgres',
+    host: `${dbHost}`,
+    port:`${port}`
+  });
+}
 
 try {
   sequelize.authenticate();
