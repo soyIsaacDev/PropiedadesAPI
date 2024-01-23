@@ -107,6 +107,7 @@ server.post('/logout', function(req, res, next) {
 
 server.post('/signup', function(req, res, next) {
   const { nombre, usuario, contraseña } = req.body
+  console.log("Usuario " + usuario + "Contraseña " + contraseña);
   req.session.username = usuario;
   var salt = crypto.randomBytes(16);
 

@@ -19,7 +19,7 @@ const port= process.env.CLOUD_DB_PORT;
 
 var sequelize = 0;
 
-if(DEVMODE === "local"){
+if(DEVMODE === "local" || DEVMODE === "build"){
   const connectionString = `${local_dbEngine}://${local_dbUserName}:${local_dbPasword}@${local_dbHost}:${local_dbPort}/${local_dbName}`;
 
   sequelize = new Sequelize(connectionString, {

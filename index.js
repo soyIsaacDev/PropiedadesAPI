@@ -15,11 +15,11 @@
     const { authClienteRoute } = require('./src/routes/authCliente'); */
 
 
-    /* var SequelizeStore = require("connect-session-sequelize")(session.Store);
+    var SequelizeStore = require("connect-session-sequelize")(session.Store);
     var sequelize = new Sequelize("database", "username", "password", {
         dialect: "sqlite",
         storage: "./session.sqlite",
-    }); */
+    });
 
     /* imagen: require("./imgPropiedad"),
     propiedad:require("./propiedad"),
@@ -48,6 +48,15 @@
             credentials: true 
         };
     }
+    else if(DEVMODE === "build"){
+        corsOptions = {
+            /* origin: ['http://192.168.0.5:3000', http://192.168.100.46:3000], */
+            origin: ['http://192.168.0.5:3000', 'http://localhost:3000', 'http://192.168.100.46:3000'],
+            //importante: No dejar la ruta de origen con un "/" al final
+            optionsSuccessStatus: 200,
+            credentials: true 
+        };
+    }
     else{
         corsOptions = {
             origin: 'https://dadinumco-front-muqyons65q-uc.a.run.app',
@@ -56,7 +65,6 @@
             credentials: true 
         };
     }
-    
     app.use(cors(corsOptions))
     app.use(express.json()); //  -->  habilitamos objetos json con el metodo express.json   
     app.use(express.urlencoded({ extended: true }));
@@ -66,11 +74,11 @@
     app.use("/assets", express.static(__dirname + "/public"));
     //El único parámetro que recibe static es el nombre del directorio donde están los archivos estáticos, en nuestro ejemplo están en /public.
     
-    /* var myStore = new SequelizeStore({
+    var myStore = new SequelizeStore({
         db: sequelize,
-    }); */
+    });
 
-    /* app.use(
+    app.use(
         session({
             secret: "secretomexa",
             //store: myStore,
@@ -79,7 +87,7 @@
             saveUninitialized: false,
             proxy: true, // if you do SSL outside of node.
         })
-    ); */
+    );
 
     app.get("/", (req,res) => {
         res.send("Hola, el servidor esta activo");
