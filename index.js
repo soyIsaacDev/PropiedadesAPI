@@ -59,7 +59,7 @@
     }
     else{
         corsOptions = {
-            origin: 'https://dadinumco-front-muqyons65q-uc.a.run.app',
+            origin: ['https://m3inmuebles.com', "https://m3inmuebles.com"],
             //importante: No dejar la ruta de origen con un "/" al final
             optionsSuccessStatus: 200,
             credentials: true 
