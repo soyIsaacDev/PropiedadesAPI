@@ -26,7 +26,7 @@
     autCliente:require("./authCliente"),
     dbconstants:require("./dBConstants"),
     apikeys:require("./Apikeys"), */
-    const { index, clientes, imagen, propiedad, authCliente, dbconstants, apikeys, favoritos } = require('./src/routes');
+    const { index, clientes, imagen, propiedad, authCliente, dbconstants, apikeys, favoritos, modeloRelacionado } = require('./src/routes');
     
     /* app.METHOD(PATH, HANDLER)
     app es una instancia de express.
@@ -40,17 +40,8 @@
     const DEVMODE = process.env.DEVELOPMENT;
     var corsOptions= undefined;
 
-    if(DEVMODE === "local"){
+    if(DEVMODE === "build"){
         corsOptions = {
-            origin: 'http://localhost:3000',
-            //importante: No dejar la ruta de origen con un "/" al final
-            optionsSuccessStatus: 200,
-            credentials: true 
-        };
-    }
-    else if(DEVMODE === "build"){
-        corsOptions = {
-            /* origin: ['http://192.168.0.5:3000', http://192.168.100.46:3000], */
             origin: ['http://192.168.0.5:3000', 'http://localhost:3000', 'http://192.168.100.46:3000'],
             //importante: No dejar la ruta de origen con un "/" al final
             optionsSuccessStatus: 200,
@@ -110,6 +101,7 @@
     app.use("/Apikeys", apikeys );
     app.use("/dbConstants", dbconstants);
     app.use("/favoritos", isAuthenticated, favoritos);
+    app.use("/modeloPropiedad", modeloRelacionado);
     //app.use("/authCliente", authCliente);
 
     /* app.use("/propiedades", PropiedadRoute);
