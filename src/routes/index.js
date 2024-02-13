@@ -11,5 +11,6 @@ module.exports = {
     dbconstants:require("./dBConstants"),
     apikeys:require("./Apikeys"),
     favoritos:require("./favoritos"),
+    modeloRelacionado: require("./modeloRelacionado"),
     index: server,
   };
