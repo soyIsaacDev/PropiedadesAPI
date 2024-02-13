@@ -2,12 +2,12 @@ const {DataTypes} = require ('sequelize');
 
 module.exports = s => {
     s.define(
-        "ModeloRelacionadoPropiedad", 
+        "ModeloAsociadoPropiedad", 
     {
         nombreModelo:{
             type: DataTypes.STRING,
             allowNull: true,
-            unique: true 
+            unique: false
         },
         precio:{
             type: DataTypes.FLOAT,

@@ -1,13 +1,13 @@
 const fs = require("fs");
-const {  ImgPropiedad, Propiedad, TipodePropiedad, AmenidadesDesarrollo, AmenidadesPropiedad, 
-  TipoOperacion, Estado , Municipio, Ciudad, AmenidadesDesarrolloPropiedad, AmenidadesPropiedadAmenidad, ModeloRelacionadoPropiedad } = require("../db");
+const {  ImgModeloAsociado, Propiedad, TipodePropiedad, AmenidadesDesarrollo, AmenidadesPropiedad, 
+  TipoOperacion, Estado , Municipio, Ciudad, AmenidadesDesarrolloPropiedad, AmenidadesPropiedadAmenidad, ModeloAsociadoPropiedad } = require("../db");
 
 const path = require('path');
 const carpeta = path.join(__dirname, '../../uploads')
 console.log("DIRECTORIO" + carpeta)
 
 const uploadImagenPropiedad = async (req, res, next) => {
-  console.log("upload Imagen Propiedad")
+  console.log("upload Imagen ModeloAsociado")
     try {
       // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
       const bodyObj = req.body.data;
@@ -20,7 +20,7 @@ const uploadImagenPropiedad = async (req, res, next) => {
 
       console.log("Upload Multiple Img Controller Property -> " + nombreDesarrollo);
 
-      const ModeloRelacionadoCreado = await ModeloRelacionadoPropiedad.create({
+      const ModeloRelacionadoCreado = await ModeloAsociadoPropiedad.create({
         defaults:{
           nombreModelo,
           precio,
@@ -43,7 +43,7 @@ const uploadImagenPropiedad = async (req, res, next) => {
           MunicipioId: municipio,
           CiudadId:ciudad,
           posicion,
-          PropiedadId:nombreDesarrollo
+          PropiedadId:parseInt(nombreDesarrollo)
         }
       });
       
@@ -68,10 +68,10 @@ const uploadImagenPropiedad = async (req, res, next) => {
       files.forEach(async (file) => {
         console.log("Image File " + JSON.stringify(file))
         console.log("CloudStoragePublicUrl Image File " + JSON.stringify(file.cloudStoragePublicUrl))
-          const imagenPropiedad = await ImgPropiedad.create({
+          const imagenPropiedad = await ImgModeloAsociado.create({
             type: file.mimetype,
             img_name: file.cloudStoragePublicUrl,
-            PropiedadId: ModeloRelacionadoCreado[0].id
+            ModeloAsociadoPropiedadId: ModeloRelacionadoCreado.id
           });
       })
 

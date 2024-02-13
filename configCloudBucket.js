@@ -25,6 +25,7 @@ nconf
   .env([
     'GCLOUD_PROJECT',
     'GCLOUD_BUCKET',
+    'GCLOUD_MOD_ASOC_BUCKET',
     'NODE_ENV',
     'PORT'
   ])
@@ -36,12 +37,14 @@ nconf
     // This is the id of your project in the Google Cloud Developers Console.
     GCLOUD_PROJECT: '',
     GCLOUD_BUCKET: '',
+    GCLOUD_MOD_ASOC_BUCKET: '',
 
     PORT: 8080
   });
 
 // Check for required settings
 checkConfig('GCLOUD_PROJECT');
+checkConfig('GCLOUD_MOD_ASOC_BUCKET');
 
 function checkConfig (setting) {
   if (!nconf.get(setting)) {

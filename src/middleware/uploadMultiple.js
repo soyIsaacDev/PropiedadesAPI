@@ -32,10 +32,9 @@ const uploadImages = (req, res, next) => {
     /* req.files.map(file => {
       console.log("Mapping")
       console.log(file)
-    }) */
-    //console.log(JSON.stringify(files));
-    const data = req.body;
-    //console.log("Image Data "+ JSON.stringify(data))
+    })
+    console.log("Files " + JSON.stringify(files)); */
+
     // Validate file types and sizes
     files.forEach((file) => {
       const allowedTypes = ['image/jpeg', 'image/png'];
@@ -48,6 +47,8 @@ const uploadImages = (req, res, next) => {
       if (file.size > maxSize) {
         errors.push(`File too large: ${file.originalname}`);
       }
+
+      console.log("Dentro de Ciclo de Validacion de Imagenes")
     });
 
     // Handle validation errors
@@ -62,6 +63,7 @@ const uploadImages = (req, res, next) => {
 
     // Attach files to the request object
     req.files = files;
+    console.log("Pasando A Next")
 
     // Proceed to the next middleware or route handler
     next();

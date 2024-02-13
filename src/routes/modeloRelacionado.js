@@ -5,33 +5,33 @@ const path = require('path');
 
 var public = path.join(__dirname,'../../uploads');
 const upload = require("../middleware/upload");
-const uploadImagenesPropiedad = require("../controllers/uploadImgPropiedad");
+const uploadImagenesModeloAsociado = require("../controllers/uploadImgModelo");
 const uploadMultiple = require("../middleware/uploadMultiple");
 const gcpUploadImagenesModeloRelacionado = require("../controllers/uploadMultipleImgModeloRelacionado");
-const gcpImageUpload = require('../middleware/uploadMulipleGCP');
+const gcpImageUpload = require('../middleware/uploadMulipleGCPModAsociado');
 
 const { Propiedad, ImgPropiedad, AmenidadesDesarrollo, AmenidadesPropiedad,TipodePropiedad, 
-  TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, Favoritos, ModeloRelacionadoPropiedad  } = require("../db");
+  TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, Favoritos, ModeloAsociadoPropiedad, ImgModeloAsociado  } = require("../db");
 
 const DEVMODE = process.env.DEVELOPMENT;
 
 if(DEVMODE === "build"){
-  server.post('/nuevoModeloRelacionado', uploadMultiple, uploadImagenesPropiedad.uploadImagenPropiedad);
+  server.post('/nuevoModeloAsociadoPropiedad', uploadMultiple, uploadImagenesModeloAsociado.uploadImagenModeloAsociadoPropiedad);
 }
 else{
-  server.post("/nuevoModeloRelacionado", 
+  server.post("/nuevoModeloAsociadoPropiedad", 
     gcpImageUpload.uploadImages,
     gcpImageUpload.sendUploadToGCSAsync,
     gcpUploadImagenesModeloRelacionado.uploadImagenPropiedad
   ); 
 }
 
-server.get("/getDataandImagenModeloRelacionado", async (req, res) => {
+server.get("/getDataandImagenModeloAsociadoPropiedad", async (req, res) => {
   try {
-    const dataPropiedad = await ModeloRelacionadoPropiedad.findAll({
+    const dataPropiedad = await ModeloAsociadoPropiedad.findAll({
       include: [
         {
-          model: ImgPropiedad,
+          model: ImgModeloAsociado,
           attributes: ['img_name'],
         }
       ]
@@ -45,11 +45,11 @@ server.get("/getDataandImagenModeloRelacionado", async (req, res) => {
 }
 );
 
-server.get("/detallesModeloRelacionado/:id", async (req, res) => {
+server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
   try {
     const {id} = req.params;
     console.log("Buscando Detalles" + id);
-    const dataPropiedad = await ModeloRelacionadoPropiedad.findOne({
+    const dataPropiedad = await ModeloAsociadoPropiedad.findOne({
       where:{id:id},
       include: [
         {
