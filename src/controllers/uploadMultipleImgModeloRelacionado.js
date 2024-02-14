@@ -21,30 +21,28 @@ const uploadImagenPropiedad = async (req, res, next) => {
       console.log("Upload Multiple Img Controller Property -> " + nombreDesarrollo);
 
       const ModeloRelacionadoCreado = await ModeloAsociadoPropiedad.create({
-        defaults:{
-          nombreModelo,
-          precio,
-          recamaras, 
-          baños,
-          medio_baño,
-          espaciosCochera,
-          cocheraTechada,
-          TipodePropiedadId:tipodePropiedad,
-          TipoOperacionId:tipodeOperacion,
-          m2Construccion,
-          m2Terreno,
-          m2Total,
-          añodeConstruccion,
-          calle,
-          numeroPropiedad,
-          numeroInterior,
-          ColoniumId:colonia,
-          EstadoId:estado,
-          MunicipioId: municipio,
-          CiudadId:ciudad,
-          posicion,
-          PropiedadId:parseInt(nombreDesarrollo)
-        }
+        nombreModelo,
+        precio,
+        recamaras, 
+        baños,
+        medio_baño,
+        espaciosCochera,
+        cocheraTechada,
+        TipodePropiedadId:tipodePropiedad,
+        TipoOperacionId:tipodeOperacion,
+        m2Construccion,
+        m2Terreno,
+        m2Total,
+        añodeConstruccion,
+        calle,
+        numeroPropiedad,
+        numeroInterior,
+        ColoniumId:colonia,
+        EstadoId:estado,
+        MunicipioId: municipio,
+        CiudadId:ciudad,
+        posicion,
+        PropiedadId:parseInt(nombreDesarrollo)        
       });
       
       /* for (let i = 0; i < amenidadesDesarrollo.length; i++) {        
