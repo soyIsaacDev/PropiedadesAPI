@@ -4,9 +4,9 @@
     const express = require('express');
     const app = express();
     const cors = require('cors');
-    var passport = require('passport');
+    /* var passport = require('passport');
     var Sequelize = require("sequelize");
-    const session = require('express-session');
+    const session = require('express-session'); */
     
     /* const { ImagenRoute } = require('./src/routes/imgPropiedad');
     const { PropiedadRoute } = require('./src/routes/propiedad');
@@ -15,18 +15,18 @@
     const { authClienteRoute } = require('./src/routes/authCliente'); */
 
 
-    var SequelizeStore = require("connect-session-sequelize")(session.Store);
-    var sequelize = new Sequelize("database", "username", "password", {
+    //var SequelizeStore = require("connect-session-sequelize")(session.Store);
+    /* var sequelize = new Sequelize("database", "username", "password", {
         dialect: "sqlite",
         storage: "./session.sqlite",
-    });
+    }); */
 
     /* imagen: require("./imgPropiedad"),
     propiedad:require("./propiedad"),
     autCliente:require("./authCliente"),
     dbconstants:require("./dBConstants"),
     apikeys:require("./Apikeys"), */
-    const { index, clientes, imagen, propiedad, authCliente, dbconstants, apikeys, favoritos, modeloRelacionado } = require('./src/routes');
+    const { index, clientes, imagen, propiedad, dbconstants, apikeys, favoritos, modeloRelacionado } = require('./src/routes');
     
     /* app.METHOD(PATH, HANDLER)
     app es una instancia de express.
@@ -65,7 +65,7 @@
     app.use("/assets", express.static(__dirname + "/public"));
     //El único parámetro que recibe static es el nombre del directorio donde están los archivos estáticos, en nuestro ejemplo están en /public.
     
-    var myStore = new SequelizeStore({
+    /* var myStore = new SequelizeStore({
         db: sequelize,
     });
 
@@ -78,29 +78,29 @@
             saveUninitialized: false,
             proxy: true, // if you do SSL outside of node.
         })
-    );
+    ); */
 
     app.get("/", (req,res) => {
         res.send("Hola, el servidor esta activo");
     });
    
-    function isAuthenticated (req, res, next) {
+    /* function isAuthenticated (req, res, next) {
       console.log("77 En IS AUTH " +req.session.passport)
       if (req.session.passport.user) {
         console.log("79 SI ESTA Authenticado ")
         next()}
       else next('route')
-    }
+    } */
 
     //habilitamos todos los metodos HTTP en la ruta
 
-    app.use("/", authCliente);
+    //app.use("/", authCliente);
     app.use("/clientes", clientes);
     app.use("/propiedades", propiedad);
     app.use("/imagenpropiedad", imagen);
     app.use("/Apikeys", apikeys );
     app.use("/dbConstants", dbconstants);
-    app.use("/favoritos", isAuthenticated, favoritos);
+    app.use("/favoritos", /* isAuthenticated, */ favoritos);
     app.use("/modeloPropiedad", modeloRelacionado);
     //app.use("/authCliente", authCliente);
 
