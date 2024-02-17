@@ -94,8 +94,8 @@ TipodePropiedad.hasMany(Propiedad);
 Propiedad.belongsToMany(AmenidadesDesarrollo, { through: 'AmenidadesDesarrolloPropiedad' });
 AmenidadesDesarrollo.belongsToMany(Propiedad, { through: 'AmenidadesDesarrolloPropiedad' });
 
-Propiedad.belongsToMany(AmenidadesPropiedad, { through: 'AmenidadesPropiedadAmenidad' });
-AmenidadesPropiedad.belongsToMany(Propiedad, { through: 'AmenidadesPropiedadAmenidad' });
+ModeloAsociadoPropiedad.belongsToMany(AmenidadesPropiedad, { through: 'AmenidadesModeloAmenidad' });
+AmenidadesPropiedad.belongsToMany(ModeloAsociadoPropiedad, { through: 'AmenidadesModeloAmenidad' });
 
 TipoOperacion.hasMany(Propiedad);
 Propiedad.belongsTo(TipoOperacion);
@@ -132,6 +132,12 @@ ModeloAsociadoPropiedad.belongsTo(Propiedad);
 
 ModeloAsociadoPropiedad.hasMany(ImgModeloAsociado);
 ImgModeloAsociado.belongsTo(ModeloAsociadoPropiedad);
+
+Ciudad.hasMany(ModeloAsociadoPropiedad);
+ModeloAsociadoPropiedad.belongsTo(Ciudad);
+
+Estado.hasMany(ModeloAsociadoPropiedad);
+ModeloAsociadoPropiedad.belongsTo(Estado);
 
 module.exports = {
   ...sequelize.models,

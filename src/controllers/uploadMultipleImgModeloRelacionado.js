@@ -1,6 +1,6 @@
 const fs = require("fs");
 const {  ImgModeloAsociado, Propiedad, TipodePropiedad, AmenidadesDesarrollo, AmenidadesPropiedad, 
-  TipoOperacion, Estado , Municipio, Ciudad, AmenidadesDesarrolloPropiedad, AmenidadesPropiedadAmenidad, ModeloAsociadoPropiedad } = require("../db");
+  TipoOperacion, Estado , Municipio, Ciudad, AmenidadesPropiedadAmenidad, ModeloAsociadoPropiedad } = require("../db");
 
 const path = require('path');
 const carpeta = path.join(__dirname, '../../uploads')
@@ -15,10 +15,17 @@ const uploadImagenPropiedad = async (req, res, next) => {
       const parsedbodyObj = JSON.parse(bodyObj);
       const { nombreModelo, nombreDesarrollo, precio, recamaras, baños, medio_baño, espaciosCochera, cocheraTechada,
         tipodePropiedad, tipodeOperacion, m2Construccion, m2Terreno, m2Total, añodeConstruccion, 
-        amenidadesPropiedad,amenidadesDesarrollo, calle, numeroPropiedad, numeroInterior, colonia, 
-        estado, municipio,ciudad, posicion,} = parsedbodyObj   
+        calle, numeroPropiedad, numeroInterior, colonia, 
+        estado, municipio,ciudad, posicion, amenidadesPropiedad} = parsedbodyObj   
 
       console.log("Upload Multiple Img Controller Property -> " + nombreDesarrollo);
+
+      /* const revisarSiExisteModelo = await ModeloAsociadoPropiedad.findOrCreate({
+        where: {
+          nombreModelo,
+          nombreDesarrollo
+        }
+      }) */
 
       const ModeloRelacionadoCreado = await ModeloAsociadoPropiedad.create({
         nombreModelo,
@@ -47,11 +54,11 @@ const uploadImagenPropiedad = async (req, res, next) => {
       
       /* for (let i = 0; i < amenidadesDesarrollo.length; i++) {        
         await AmenidadesDesarrolloPropiedad.create({ PropiedadId:ModeloRelacionadoCreado[0].id, AmenidadesDesarrolloId:amenidadesDesarrollo[i] })
-      }
+      }*/
 
       for (let i = 0; i < amenidadesPropiedad.length; i++) {        
-        await AmenidadesPropiedadAmenidad.create({ PropiedadId:ModeloRelacionadoCreado[0].id, AmenidadesPropiedadId:amenidadesPropiedad[i] })
-      } */
+        await AmenidadesPropiedadAmenidad.create({ ModeloAsociadoPropiedadId:modelo.id, AmenidadesPropiedadId:amenidadesPropiedad[i] })
+      }
       
       
       // buscamos si hay fotos
@@ -74,8 +81,8 @@ const uploadImagenPropiedad = async (req, res, next) => {
       })
 
       //res.json(`Se creo la Propiedad `+ ModeloRelacionadoCreado[0].nombrePropiedad +  " y sus imagenes " );
-      console.log("Se Creo la Propiedad");
-      res.send("Se Creo la propiedad")
+      console.log("Se Creo el Modelo");
+      res.send("Se Creo el Modelo")
     } catch (error) {
       console.log("Error en Upload Multiple Img "+error);
       //res.json(`Error al intentar crear la imagen de la propiedad: ${error}`);

@@ -86,12 +86,6 @@ server.get("/detallespropiedad/:id", async (req, res) => {
           }
         },
         {
-          model: AmenidadesPropiedad,
-          through: {
-            attributes: []
-          }
-        },
-        {
           model: TipodePropiedad
         },
         {

@@ -1,6 +1,6 @@
 const fs = require("fs");
 const {  ImgPropiedad, Propiedad, TipodePropiedad, AmenidadesDesarrollo, AmenidadesPropiedad, 
-  TipoOperacion, Estado , Municipio, Ciudad, AmenidadesDesarrolloPropiedad, AmenidadesPropiedadAmenidad } = require("../db");
+  TipoOperacion, Estado , Municipio, Ciudad, AmenidadesDesarrolloPropiedad } = require("../db");
 
 const path = require('path');
 const carpeta = path.join(__dirname, '../../uploads')
@@ -15,7 +15,7 @@ const uploadImagenPropiedad = async (req, res, next) => {
       const parsedbodyObj = JSON.parse(bodyObj);
       const { nombreDesarrollo, precio, recamaras, baños, medio_baño, espaciosCochera, cocheraTechada,
         tipodePropiedad, tipodeOperacion, m2Construccion, m2Terreno, m2Total, añodeConstruccion, 
-        amenidadesPropiedad,amenidadesDesarrollo, calle, numeroPropiedad, numeroInterior, colonia, 
+        amenidadesPropiedad, amenidadesDesarrollo, calle, numeroPropiedad, numeroInterior, colonia, 
         estado, municipio,ciudad, posicion} = parsedbodyObj   
 
       console.log("Upload Multiple Img Controller Property -> " + nombreDesarrollo);
@@ -50,9 +50,9 @@ const uploadImagenPropiedad = async (req, res, next) => {
         await AmenidadesDesarrolloPropiedad.create({ PropiedadId:PropiedadCreada[0].id, AmenidadesDesarrolloId:amenidadesDesarrollo[i] })
       }
 
-      for (let i = 0; i < amenidadesPropiedad.length; i++) {        
+      /* for (let i = 0; i < amenidadesPropiedad.length; i++) {        
         await AmenidadesPropiedadAmenidad.create({ PropiedadId:PropiedadCreada[0].id, AmenidadesPropiedadId:amenidadesPropiedad[i] })
-      }
+      } */
       
       
       // buscamos si hay fotos

@@ -26,7 +26,7 @@ else{
   ); 
 }
 
-server.get("/getDataandImagenModeloAsociadoPropiedad", async (req, res) => {
+server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
   try {
     const dataPropiedad = await ModeloAsociadoPropiedad.findAll({
       include: [
@@ -45,6 +45,62 @@ server.get("/getDataandImagenModeloAsociadoPropiedad", async (req, res) => {
 }
 );
 
+server.get("/getDataandImagenModeloAsociadoPropiedad/:PropiedadId", async (req, res) => {
+  try {
+    const {PropiedadId} = req.params;
+    const dataPropiedad = await ModeloAsociadoPropiedad.findAll({
+      where: {
+        PropiedadId
+      },
+      include: [
+        {
+          model: ImgModeloAsociado,
+          attributes: ['img_name'],
+        }
+      ]
+    },);
+    
+    dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontraron datos de propiedades"});
+    
+  } catch (e) {
+    res.send(e);
+  } 
+});
+
+server.get("/getModelo/:id", async (req, res) => {
+  try {
+    const {id} = req.params;
+    const dataPropiedad = await ModeloAsociadoPropiedad.findAll({
+      where: {
+        id
+      },
+      include: [
+        {
+          model: ImgModeloAsociado,
+          attributes: ['img_name'],
+        }
+      ]
+    },);
+    
+    dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontraron datos de propiedades"});
+    
+  } catch (e) {
+    res.send(e);
+  } 
+});
+
+server.post("/hardDeleteModeloRelacionado", async (req, res) => {
+  try {
+    const { IdModeloABorrar} = req.body;
+    const modeloRelacionadoABorrar = await ModeloAsociadoPropiedad.findByPk(IdModeloABorrar);
+    await modeloRelacionadoABorrar.destroy();
+    
+    res.json("Se Borro el modelo ID " + IdModeloABorrar);
+  } catch (e) {
+    res.send(e)
+  }
+})
+
 server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
   try {
     const {id} = req.params;
@@ -53,14 +109,8 @@ server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
       where:{id:id},
       include: [
         {
-          model: ImgPropiedad,
+          model: ImgModeloAsociado,
           attributes: ['img_name'],
-        },
-        {
-          model: AmenidadesDesarrollo,
-          through: {
-            attributes: []
-          }
         },
         {
           model: AmenidadesPropiedad,
@@ -68,7 +118,11 @@ server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
             attributes: []
           }
         },
+        
         {
+          model: Propiedad
+        },
+        /* {
           model: TipodePropiedad
         },
         {
@@ -85,7 +139,7 @@ server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
         },
         {
           model: Colonia
-        },
+        }, */
       ]
     })
     dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontro la propiedad"});
