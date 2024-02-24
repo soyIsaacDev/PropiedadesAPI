@@ -52,12 +52,16 @@ server.get("/getDataandImagenModeloAsociadoPropiedad/:PropiedadId", async (req, 
       where: {
         PropiedadId
       },
+      order: [
+        ['precio', 'ASC'],
+      ],
       include: [
         {
           model: ImgModeloAsociado,
           attributes: ['img_name'],
         }
-      ]
+      ], 
+      
     },);
     
     dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontraron datos de propiedades"});
@@ -67,7 +71,7 @@ server.get("/getDataandImagenModeloAsociadoPropiedad/:PropiedadId", async (req, 
   } 
 });
 
-server.get("/getModelo/:id", async (req, res) => {
+/* server.get("/getModelo/:id", async (req, res) => {
   try {
     const {id} = req.params;
     const dataPropiedad = await ModeloAsociadoPropiedad.findAll({
@@ -87,7 +91,7 @@ server.get("/getModelo/:id", async (req, res) => {
   } catch (e) {
     res.send(e);
   } 
-});
+}); */
 
 server.post("/hardDeleteModeloRelacionado", async (req, res) => {
   try {

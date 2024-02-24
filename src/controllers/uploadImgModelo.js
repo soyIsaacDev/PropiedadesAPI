@@ -21,7 +21,7 @@ const uploadImagenModeloAsociadoPropiedad = async (req, res) => {
           CiudadId:ciudad,
           EstadoId:estado,
         },
-        default: {
+        defaults: {
           precio,
           recamaras, 
           baños,
