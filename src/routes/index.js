@@ -12,5 +12,6 @@ module.exports = {
     apikeys:require("./Apikeys"),
     favoritos:require("./favoritos"),
     modeloRelacionado: require("./modeloRelacionado"),
+    allPropiedades: require("./allPropiedades"),
     index: server,
   };
