@@ -4,19 +4,18 @@ const path = require('path');
 
 
 var public = path.join(__dirname,'../../uploads');
-const upload = require("../middleware/upload");
-const uploadImagenesPropiedad = require("../controllers/uploadImgPropiedad");
-const uploadMultiple = require("../middleware/uploadMultiple");
-const gcpUploadImagenesPropiedad = require("../controllers/uploadMultipleImg");
+const uploadMultipleImgLocal = require("../controllers/uploadImgPropiedadLocal");
+const uploadMultiple = require("../middleware/uploadMultipleLocal");
+const gcpUploadImagenesPropiedad = require("../controllers/uploadMultipleImgGCP");
 const gcpImageUpload = require('../middleware/uploadMulipleGCP');
 
-const { Propiedad, ImgPropiedad, AmenidadesDesarrollo, AmenidadesPropiedad,TipodePropiedad, 
+const { Propiedad, ImgPropiedad, AmenidadesDesarrollo,TipodePropiedad, 
   TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, Favoritos  } = require("../db");
 
 const DEVMODE = process.env.DEVELOPMENT;
 
-if(DEVMODE === "local"){
-  server.post('/nuevaPropiedad', uploadMultiple, uploadImagenesPropiedad.uploadImagenPropiedad);
+if(DEVMODE === "build" ){
+  server.post('/nuevaPropiedad', uploadMultiple, uploadMultipleImgLocal.uploadImagenPropiedad);
 }
 else{
   server.post("/nuevaPropiedad", 

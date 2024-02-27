@@ -9,7 +9,11 @@ module.exports = s => {
             allowNull: true,
             unique: true 
         },
-        precio:{
+        precioMin:{
+            type: DataTypes.FLOAT,
+            allowNull: true,
+        },
+        precioMax:{
             type: DataTypes.FLOAT,
             allowNull: true,
         },

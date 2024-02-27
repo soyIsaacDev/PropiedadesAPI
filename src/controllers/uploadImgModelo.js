@@ -1,5 +1,5 @@
 
-const {  ImgModeloAsociado, ModeloAsociadoPropiedad, AmenidadesModeloAmenidad } = require("../db");
+const {  ImgModeloAsociado, ModeloAsociadoPropiedad, AmenidadesModeloAmenidad, Propiedad } = require("../db");
 const ciudad = require("../models/ciudad");
 
 const uploadImagenModeloAsociadoPropiedad = async (req, res) => {
@@ -68,6 +68,27 @@ const uploadImagenModeloAsociadoPropiedad = async (req, res) => {
           AmenidadesPropiedadId:amenidadesPropiedad[i] 
         })
       }
+
+      const Desarrollo = await Propiedad.findByPk(parseInt(nombreDesarrollo));
+      if(Desarrollo.precioMin === null && Desarrollo.precioMax === null){
+        Desarrollo.precioMin = precio;
+        Desarrollo.precioMax = precio;
+        await Desarrollo.save();
+        console.log("Desarrollo " + Desarrollo.nombreDesarrollo);
+        console.log("Desarrollo Precio" + Desarrollo.precioMin + "Precio Max " + Desarrollo.precioMax)
+      }
+      else if(precio < Desarrollo.precioMin){
+        Desarrollo.precioMin = precio;
+        await Desarrollo.save();
+        console.log("Desarrollo Precio Min" + Desarrollo.precioMin)
+      }
+      else if(precio > Desarrollo.precioMax){
+        Desarrollo.precioMax = precio;
+        await Desarrollo.save();
+        console.log("Desarrollo Precio Max" + Desarrollo.precioMax)
+      }
+
+      
 
       console.log("Se Creo el Modelo")
       res.json(`Se Creo el Modelo` );
