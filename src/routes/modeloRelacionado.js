@@ -6,7 +6,7 @@ const path = require('path');
 var public = path.join(__dirname,'../../uploads');
 const upload = require("../middleware/upload");
 const uploadImagenesModeloAsociado = require("../controllers/uploadImgModelo");
-const uploadMultiple = require("../middleware/uploadMultiple");
+const uploadMultiple = require("../middleware/uploadMultipleLocal");
 const gcpUploadImagenesModeloRelacionado = require("../controllers/uploadMultipleImgModeloRelacionado");
 const gcpImageUpload = require('../middleware/uploadMulipleGCPModAsociado');
 
