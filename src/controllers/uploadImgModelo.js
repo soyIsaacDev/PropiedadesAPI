@@ -9,12 +9,12 @@ const uploadImagenModeloAsociadoPropiedad = async (req, res) => {
       const { nombreModelo, nombreDesarrollo, ciudad, precio, recamaras,
         baños, medio_baño, espaciosCochera, cocheraTechada, tipodePropiedad,
         tipodeOperacion, m2Construccion, m2Terreno, m2Total, amenidadesPropiedad, 
-        numeroCasa, numeroInterior, municipio, estado, posicion,
+        estado,
       } = parsedbodyObj
 
       console.log("Nombre del Modelo " + nombreModelo)
       
-      const modelo = await ModeloAsociadoPropiedad.findOrCreate({
+      const ModeloRelacionadoCreado = await ModeloAsociadoPropiedad.findOrCreate({
         where: {
           nombreModelo,
           PropiedadId:parseInt(nombreDesarrollo),
@@ -33,12 +33,8 @@ const uploadImagenModeloAsociadoPropiedad = async (req, res) => {
           m2Construccion,
           m2Terreno,
           m2Total,
-          amenidadesPropiedad,
-          numeroCasa,
-          numeroInterior,
-          posicion,          
-        }
-         
+          amenidadesPropiedad,        
+        }  
       })
 
       const files = req.files;
@@ -57,19 +53,28 @@ const uploadImagenModeloAsociadoPropiedad = async (req, res) => {
           const imagenModeloAsociado = await ImgModeloAsociado.create({
             type: file.mimetype,
             img_name: file.filename,
-            ModeloAsociadoPropiedadId: modelo[0].id
+            ModeloAsociadoPropiedadId: ModeloRelacionadoCreado[0].id
           });
           console.log("Imagen propiedad "+imagenModeloAsociado);
       })
       
       for (let i = 0; i < amenidadesPropiedad.length; i++) {        
         await AmenidadesModeloAmenidad.create({ 
-          ModeloAsociadoPropiedadId:modelo[0].id, 
+          ModeloAsociadoPropiedadId:ModeloRelacionadoCreado[0].id, 
           AmenidadesPropiedadId:amenidadesPropiedad[i] 
         })
       }
 
       const Desarrollo = await Propiedad.findByPk(parseInt(nombreDesarrollo));
+
+      if(Desarrollo.TipodePropiedadId === null){
+        Desarrollo.TipodePropiedadId = tipodePropiedad;
+        await Desarrollo.save();
+      }
+      if(Desarrollo.TipoOperacionId === null){
+        Desarrollo.TipoOperacionId = tipodeOperacion;
+        await Desarrollo.save();
+      }
       if(Desarrollo.precioMin === null && Desarrollo.precioMax === null){
         Desarrollo.precioMin = precio;
         Desarrollo.precioMax = precio;
@@ -87,8 +92,6 @@ const uploadImagenModeloAsociadoPropiedad = async (req, res) => {
         await Desarrollo.save();
         console.log("Desarrollo Precio Max" + Desarrollo.precioMax)
       }
-
-      
 
       console.log("Se Creo el Modelo")
       res.json(`Se Creo el Modelo` );

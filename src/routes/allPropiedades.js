@@ -62,4 +62,34 @@ server.get("/getTodasLasPropiedades", async (req, res) => {
   }
 );
 
+server.get("/getTodasLasPropiedadesconIncludes", async (req, res) => {
+  try {
+    const dataDesarrollo = await Propiedad.findAll({
+      order: [
+          ['id', 'ASC'],
+      ],
+      include: [
+        {
+          model: ImgPropiedad,
+          attributes: ['img_name'],
+        },
+        {
+          model: ModeloAsociadoPropiedad,
+          include: 
+            {
+              model: ImgModeloAsociado,
+              attributes: ['img_name'],
+            }
+          
+        }
+      ]
+    },);      
+    
+    dataDesarrollo? res.json(dataDesarrollo) : res.json({Mensaje:"No se encontraron datos de propiedades"});
+  } catch (e) {
+    res.send(e);
+  } 
+}
+);
+
 module.exports =  server;

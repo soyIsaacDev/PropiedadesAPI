@@ -12,7 +12,7 @@ const uploadImagenPropiedad = async (req, res, next) => {
       const bodyObj = req.body.data;
       //console.log("Body OBJ -> " +bodyObj);
       const parsedbodyObj = JSON.parse(bodyObj);
-      const { nombreDesarrollo, tipodePropiedad, tipodeOperacion, añodeConstruccion, amenidadesDesarrollo, 
+      const { nombreDesarrollo, añodeConstruccion, amenidadesDesarrollo, 
         calle, numeroPropiedad, numeroInterior, colonia, estado, municipio,ciudad, posicion} = parsedbodyObj   
 
       console.log("Upload Multiple Img Controller Property -> " + nombreDesarrollo);
@@ -25,16 +25,11 @@ const uploadImagenPropiedad = async (req, res, next) => {
           CiudadId:ciudad,
         },
         defaults:{
-          TipodePropiedadId:tipodePropiedad,
-          TipoOperacionId:tipodeOperacion,
           añodeConstruccion,
           calle,
           numeroPropiedad,
           numeroInterior,
           ColoniumId:colonia,
-          EstadoId:estado,
-          MunicipioId: municipio,
-          CiudadId:ciudad,
           posicion
         }
       });
