@@ -1,6 +1,5 @@
 const fs = require("fs");
-const {  ImgModeloAsociado, Propiedad, TipodePropiedad, AmenidadesDesarrollo, AmenidadesPropiedad, 
-  TipoOperacion, Estado , Municipio, Ciudad, AmenidadesPropiedadAmenidad, ModeloAsociadoPropiedad } = require("../db");
+const {  ImgModeloAsociado, AmenidadesPropiedadAmenidad, ModeloAsociadoPropiedad } = require("../db");
 
 const path = require('path');
 const carpeta = path.join(__dirname, '../../uploads')
@@ -13,51 +12,42 @@ const uploadImagenPropiedad = async (req, res, next) => {
       const bodyObj = req.body.data;
       //console.log("Body OBJ -> " +bodyObj);
       const parsedbodyObj = JSON.parse(bodyObj);
-      const { nombreModelo, nombreDesarrollo, precio, recamaras, baños, medio_baño, espaciosCochera, cocheraTechada,
-        tipodePropiedad, tipodeOperacion, m2Construccion, m2Terreno, m2Total, añodeConstruccion, 
-        calle, numeroPropiedad, numeroInterior, colonia, 
-        estado, municipio,ciudad, posicion, amenidadesPropiedad} = parsedbodyObj   
+      const { nombreModelo, nombreDesarrollo, ciudad, precio, recamaras,
+        baños, medio_baño, espaciosCochera, cocheraTechada, tipodePropiedad,
+        tipodeOperacion, m2Construccion, m2Terreno, m2Total, amenidadesPropiedad, 
+        estado,
+      } = parsedbodyObj
 
-      console.log("Upload Multiple Img Controller Property -> " + nombreDesarrollo);
+      console.log("Upload Multiple Img Controller Property -> " + nombreModelo);
 
-      /* const revisarSiExisteModelo = await ModeloAsociadoPropiedad.findOrCreate({
+      const ModeloRelacionadoCreado = await ModeloAsociadoPropiedad.findOrCreate({
         where: {
           nombreModelo,
-          nombreDesarrollo
-        }
-      }) */
-
-      const ModeloRelacionadoCreado = await ModeloAsociadoPropiedad.create({
-        nombreModelo,
-        precio,
-        recamaras, 
-        baños,
-        medio_baño,
-        espaciosCochera,
-        cocheraTechada,
-        TipodePropiedadId:tipodePropiedad,
-        TipoOperacionId:tipodeOperacion,
-        m2Construccion,
-        m2Terreno,
-        m2Total,
-        añodeConstruccion,
-        calle,
-        numeroPropiedad,
-        numeroInterior,
-        ColoniumId:colonia,
-        EstadoId:estado,
-        MunicipioId: municipio,
-        CiudadId:ciudad,
-        posicion,
-        PropiedadId:parseInt(nombreDesarrollo)        
+          PropiedadId:parseInt(nombreDesarrollo),
+          CiudadId:ciudad,
+          EstadoId:estado,
+        },
+        defaults: {
+          precio,
+          recamaras, 
+          baños,
+          medio_baño,
+          espaciosCochera,
+          cocheraTechada,
+          TipodePropiedadId:tipodePropiedad,
+          TipoOperacionId:tipodeOperacion,
+          m2Construccion,
+          m2Terreno,
+          m2Total,
+          amenidadesPropiedad,        
+        }  
       });
       
-      /* for (let i = 0; i < amenidadesDesarrollo.length; i++) {        
-        await AmenidadesDesarrolloPropiedad.create({ PropiedadId:ModeloRelacionadoCreado[0].id, AmenidadesDesarrolloId:amenidadesDesarrollo[i] })
-      }*/
 
       for (let i = 0; i < amenidadesPropiedad.length; i++) {        
-        await AmenidadesPropiedadAmenidad.create({ ModeloAsociadoPropiedadId:modelo.id, AmenidadesPropiedadId:amenidadesPropiedad[i] })
+        await AmenidadesPropiedadAmenidad.create({ 
+          ModeloAsociadoPropiedadId:ModeloRelacionadoCreado[0].id, 
+          AmenidadesPropiedadId:amenidadesPropiedad[i] })
       }
       
       
@@ -76,7 +66,7 @@ const uploadImagenPropiedad = async (req, res, next) => {
           const imagenPropiedad = await ImgModeloAsociado.create({
             type: file.mimetype,
             img_name: file.cloudStoragePublicUrl,
-            ModeloAsociadoPropiedadId: ModeloRelacionadoCreado.id
+            ModeloAsociadoPropiedadId: ModeloRelacionadoCreado[0].id
           });
       })
 

@@ -122,28 +122,37 @@ server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
             attributes: []
           }
         },
-        
         {
-          model: Propiedad
-        },
-        /* {
-          model: TipodePropiedad
-        },
-        {
-          model: TipoOperacion
-        },
-        {
-          model: Ciudad
-        },
-        {
-          model: Municipio
-        },
-        {
-          model: Estado
-        },
-        {
-          model: Colonia
-        }, */
+          model: Propiedad,
+          attributes: ['id','calle', 'numeroPropiedad'],
+          include: [{
+              model: ImgPropiedad,
+              attributes: ['img_name'],
+            }, 
+            {
+              model: AmenidadesDesarrollo,
+              attributes: ['nombreAmenidad']
+            },
+            {
+              model: TipodePropiedad
+            },
+            {
+              model: TipoOperacion
+            },
+            {
+              model: Ciudad
+            },
+            {
+              model: Municipio
+            },
+            {
+              model: Estado
+            },
+            {
+              model: Colonia
+            },
+          ]
+        }
       ]
     })
     dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontro la propiedad"});
