@@ -80,16 +80,16 @@ server.get("/bulk", async (req,res)=> {
         
         const Desarrollo = await Propiedad.bulkCreate([
             {
-                nombreDesarrollo,
+                nombreDesarrollo:"Alta Monaco",
                 EstadoId:1,
                 MunicipioId: 1,
                 CiudadId:1,
-                ColoniumId:colonia,
-                añodeConstruccion,
-                calle,
-                numeroPropiedad,
+                ColoniumId:1,
+                añodeConstruccion:2024,
+                calle:"Olivares",
+                numeroPropiedad:120,
                 numeroInterior,
-                posicion
+                posicion:{lat: 29.084588110911056, lng: -110.9905877674592}
             },
             {
                 nombreDesarrollo,
