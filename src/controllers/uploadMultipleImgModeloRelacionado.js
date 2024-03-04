@@ -34,12 +34,9 @@ const uploadImagenPropiedad = async (req, res, next) => {
           medio_baño,
           espaciosCochera,
           cocheraTechada,
-          TipodePropiedadId:tipodePropiedad,
-          TipoOperacionId:tipodeOperacion,
           m2Construccion,
           m2Terreno,
-          m2Total,
-          amenidadesPropiedad,        
+          m2Total,     
         }  
       });
       
@@ -56,23 +53,54 @@ const uploadImagenPropiedad = async (req, res, next) => {
 
       if (files === undefined) {
         console.log("Selecciona una imagen para tu propiedad")
-        //return res.send(`Selecciona una imagen para tu propiedad`);
+        return res.send(`Selecciona una imagen para tu propiedad`);
       }
       console.log("Files en creacion de Instancia " + JSON.stringify(files))
       // se crea una imagen por cada archivo y se liga a la Propiedad
       files.forEach(async (file) => {
         console.log("Image File " + JSON.stringify(file))
         console.log("CloudStoragePublicUrl Image File " + JSON.stringify(file.cloudStoragePublicUrl))
-          const imagenPropiedad = await ImgModeloAsociado.create({
+          const imagenModeloAsociado = await ImgModeloAsociado.create({
             type: file.mimetype,
             img_name: file.cloudStoragePublicUrl,
             ModeloAsociadoPropiedadId: ModeloRelacionadoCreado[0].id
           });
+          console.log("Imagen propiedad "+imagenModeloAsociado);
       })
+
+      // Agregar tipo de propiedad y operacion al Desarrollo
+      // Modificar Precio Min y Max en Desarrollo
+      const Desarrollo = await Propiedad.findByPk(parseInt(nombreDesarrollo));
+
+      if(Desarrollo.TipodePropiedadId === null){
+        Desarrollo.TipodePropiedadId = tipodePropiedad;
+        await Desarrollo.save();
+      }
+      if(Desarrollo.TipoOperacionId === null){
+        Desarrollo.TipoOperacionId = tipodeOperacion;
+        await Desarrollo.save();
+      }
+      if(Desarrollo.precioMin === null && Desarrollo.precioMax === null){
+        Desarrollo.precioMin = precio;
+        Desarrollo.precioMax = precio;
+        await Desarrollo.save();
+        console.log("Desarrollo " + Desarrollo.nombreDesarrollo);
+        console.log("Desarrollo Precio" + Desarrollo.precioMin + "Precio Max " + Desarrollo.precioMax)
+      }
+      else if(precio < Desarrollo.precioMin){
+        Desarrollo.precioMin = precio;
+        await Desarrollo.save();
+        console.log("Desarrollo Precio Min" + Desarrollo.precioMin)
+      }
+      else if(precio > Desarrollo.precioMax){
+        Desarrollo.precioMax = precio;
+        await Desarrollo.save();
+        console.log("Desarrollo Precio Max" + Desarrollo.precioMax)
+      }
 
       //res.json(`Se creo la Propiedad `+ ModeloRelacionadoCreado[0].nombrePropiedad +  " y sus imagenes " );
       console.log("Se Creo el Modelo");
-      res.send("Se Creo el Modelo")
+      res.json("Se Creo el Modelo")
     } catch (error) {
       console.log("Error en Upload Multiple Img "+error);
       //res.json(`Error al intentar crear la imagen de la propiedad: ${error}`);
