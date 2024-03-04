@@ -28,12 +28,9 @@ const uploadImagenModeloAsociadoPropiedad = async (req, res) => {
           medio_baño,
           espaciosCochera,
           cocheraTechada,
-          TipodePropiedadId:tipodePropiedad,
-          TipoOperacionId:tipodeOperacion,
           m2Construccion,
           m2Terreno,
-          m2Total,
-          amenidadesPropiedad,        
+          m2Total,    
         }  
       })
 
