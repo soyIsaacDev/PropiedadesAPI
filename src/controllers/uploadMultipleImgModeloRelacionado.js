@@ -1,5 +1,5 @@
 const fs = require("fs");
-const {  ImgModeloAsociado, AmenidadesPropiedadAmenidad, ModeloAsociadoPropiedad } = require("../db");
+const {  ImgModeloAsociado, AmenidadesModeloAmenidad, ModeloAsociadoPropiedad } = require("../db");
 
 const path = require('path');
 const carpeta = path.join(__dirname, '../../uploads')
@@ -42,7 +42,7 @@ const uploadImagenPropiedad = async (req, res, next) => {
       
 
       for (let i = 0; i < amenidadesPropiedad.length; i++) {        
-        await AmenidadesPropiedadAmenidad.create({ 
+        await AmenidadesModeloAmenidad.create({ 
           ModeloAsociadoPropiedadId:ModeloRelacionadoCreado[0].id, 
           AmenidadesPropiedadId:amenidadesPropiedad[i] })
       }
