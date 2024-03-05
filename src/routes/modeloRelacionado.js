@@ -124,7 +124,7 @@ server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
         },
         {
           model: Propiedad,
-          attributes: ['id','calle', 'numeroPropiedad'],
+          attributes: ['id','precioMin', 'precioMax', 'calle', 'numeroPropiedad'],
           include: [{
               model: ImgPropiedad,
               attributes: ['img_name'],
