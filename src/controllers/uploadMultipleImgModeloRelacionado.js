@@ -1,5 +1,5 @@
 const fs = require("fs");
-const {  ImgModeloAsociado, AmenidadesModeloAmenidad, ModeloAsociadoPropiedad } = require("../db");
+const {  ImgModeloAsociado, AmenidadesModeloAmenidad, ModeloAsociadoPropiedad, Propiedad } = require("../db");
 
 const path = require('path');
 const carpeta = path.join(__dirname, '../../uploads')
