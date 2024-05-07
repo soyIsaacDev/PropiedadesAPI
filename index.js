@@ -26,7 +26,10 @@
     autCliente:require("./authCliente"),
     dbconstants:require("./dBConstants"),
     apikeys:require("./Apikeys"), */
-    const { index, clientes, imagen, propiedad, dbconstants, apikeys, favoritos, modeloRelacionado, allPropiedades } = require('./src/routes');
+    const { index, clientes, imagen, propiedad, dbconstants, apikeys, favoritos, 
+      modeloRelacionado, allPropiedades, bulk, tipoUsuario } = require('./src/routes');
+
+    const { TipodeUsuario } = require("./src/db");
     
     /* app.METHOD(PATH, HANDLER)
     app es una instancia de express.
@@ -42,7 +45,7 @@
 
     if(DEVMODE === "build"){
         corsOptions = {
-            origin: ['http://192.168.0.5:3000', 'http://localhost:3000', 'http://192.168.100.46:3000', 'http://192.168.0.14:3000'],
+            origin: [ 'http://localhost:3000', 'http://192.168.100.2:3000', 'http://192.168.1.8:3000'],
             //importante: No dejar la ruta de origen con un "/" al final
             optionsSuccessStatus: 200,
             credentials: true 
@@ -84,25 +87,85 @@
         res.send("Hola, el servidor esta activo");
     });
    
-    /* function isAuthenticated (req, res, next) {
+    
+
+    //habilitamos todos los metodos HTTP en la ruta
+
+    // Firebase Server side code.
+const admin = require('firebase-admin');
+//const Firebase_Service_Account = process.env.FIREBASE_SERVICE_ACCOUNT;
+const FirebaseConfig = require('./pruebas-91a5d-firebase-adminsdk-pgcw7-03b1af47fc.js')
+
+// The Firebase Admin SDK is used here to verify the ID token.
+admin.initializeApp({
+  credential: admin.credential.cert(FirebaseConfig)
+});
+
+function getIdToken(req) {
+  // Parse the injected ID token from the request header.
+  //console.log("Req Headers " + JSON.stringify(req.headers))
+  const authorizationHeader = req.headers.authorization || '';
+  const components = authorizationHeader.split(' ');
+  return components.length > 1 ? components[1] : '';
+}
+ 
+/* function isAuthenticated (req, res, next) {
       console.log("77 En IS AUTH " +req.session.passport)
       if (req.session.passport.user) {
         console.log("79 SI ESTA Authenticado ")
         next()}
       else next('route')
     } */
+function checkIfSignedIn(req, res, next) {
+  console.log("Check if Signed In");
+  //console.log("REQ"+req)
+  const idToken = getIdToken(req);
+  //console.log("ID TOKEN " + idToken)
+  // Verify the ID token using the Firebase Admin SDK.
+  // User already logged in. Redirect to profile page.
+  admin.auth().verifyIdToken(idToken).then((decodedClaims) => {
+    // User is authenticated, user claims can be retrieved from
+    // decodedClaims.
+    // In this sample code, authenticated users are always redirected to
+    // the profile page.
+    console.log("USUARIO AUTENTICADO")
+    next();
+  }).catch((error) => {
+    console.log("Error " + error)
+    //next();
+  });
+}
 
-    //habilitamos todos los metodos HTTP en la ruta
+async function checkTipoAutorizacion(req, res, next) {
+  console.log("Checando tipo de autorizacion");
+  //console.log("REQ"+req)
+  try{
+    const userPrincipal = await TipodeUsuario.findOne({ 
+      where: { 
+        userId:"H1yDiPzVUHRpl2bMLNIujWl0xwN2", 
+        tipo:"DueñoIsaacBM"
+      } 
+    })
+    console.log("Usuario Principal "+JSON.stringify(userPrincipal))
+    if(userPrincipal.tipo==="DueñoIsaacBM") next();
+  }
+  catch(e){
+    res.json(e);
+  }
+}
 
     //app.use("/", authCliente);
+    
     app.use("/clientes", clientes);
     app.use("/propiedades", propiedad);
     app.use("/imagenpropiedad", imagen);
     app.use("/Apikeys", apikeys );
     app.use("/dbConstants", dbconstants);
     app.use("/favoritos", /* isAuthenticated, */ favoritos);
-    app.use("/modeloAsociadoPropiedad", modeloRelacionado);
-    app.use("/allProp", allPropiedades);
+    app.use("/modeloAsociadoPropiedad", checkIfSignedIn, checkTipoAutorizacion, modeloRelacionado);
+    app.use("/allProp", checkIfSignedIn, allPropiedades);
+    app.use("/bulk", bulk);
+    app.use("/tipodeUsuario", tipoUsuario);
     //app.use("/authCliente", authCliente);
 
     /* app.use("/propiedades", PropiedadRoute);

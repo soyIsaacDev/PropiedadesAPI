@@ -54,10 +54,11 @@ const modelEstado = require("./models/estado");
 const modelMunicipio = require("./models/municipio");
 const modelCiudad = require("./models/ciudad");
 const modelColonia = require("./models/colonia");
-const modelCliente = require("./models/clienteModel");
+const modelCliente = require("./models/clienteModel.js");
 const modelSesionCliente = require("./models/sesionCliente");
 const modelModeloAsociadoPropiedad = require("./models/modeloAsociadoPropiedad");
 const modelImgModeloAsociado = require("./models/imgModeloAsociado");
+const modeloTipodeUsuario = require("./models/tipodeUsuario");
 
 modelAgente(sequelize);
 modelPropiedad(sequelize);
@@ -74,11 +75,11 @@ modelCliente(sequelize);
 modelSesionCliente(sequelize);
 modelModeloAsociadoPropiedad(sequelize);
 modelImgModeloAsociado(sequelize);
-
+modeloTipodeUsuario(sequelize);
 
 let {Agente, Propiedad, ImgPropiedad, TipodePropiedad, AmenidadesDesarrollo, AmenidadesPropiedad, 
   TipoOperacion, Estado , Municipio, Ciudad, Colonia, Cliente, SesionCliente, ModeloAsociadoPropiedad,
-  ImgModeloAsociado,
+  ImgModeloAsociado, TipodeUsuario
 } = sequelize.models;
 
 // Relaciones DB
@@ -138,6 +139,9 @@ ModeloAsociadoPropiedad.belongsTo(Ciudad);
 
 Estado.hasMany(ModeloAsociadoPropiedad);
 ModeloAsociadoPropiedad.belongsTo(Estado);
+
+TipodeUsuario.hasMany(Cliente);
+Cliente.belongsTo(TipodeUsuario)
 
 module.exports = {
   ...sequelize.models,

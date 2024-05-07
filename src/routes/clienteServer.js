@@ -1,21 +1,38 @@
 const server = require("express").Router();
 //const req = require("express/lib/request");
-const { Cliente } = require("../db");
+const { Cliente, TipodeUsuario } = require("../db");
 
 server.post("/nuevoCliente", async (req, res) => { 
   try {
-    const { nombre, usuario, contraseña } = req.body;
+    const { userId, nombre, email, telefono, sexo, dia_de_nacimiento, mes_de_nacimiento,
+      año_de_nacimiento, planeacion_compra} = req.body;
     
     const cliente = await Cliente.findOrCreate({
         where: {
-          usuario
+          userId
         },
         defaults: {
           nombre,
-          contraseña
+          email,
+          telefono,
+          sexo,
+          dia_de_nacimiento,
+          mes_de_nacimiento,
+          año_de_nacimiento, 
+          planeacion_compra
         }      
     });
-    console.log(cliente)
+
+    const userTipo = await TipodeUsuario.findOrCreate({
+      where: {
+        userId
+      },
+      defaults: {
+        tipo:"Cliente"
+      }      
+    });
+    
+    console.log(cliente + "User Tipo " + userTipo);
     res.json(cliente);
   } catch (error) {
     res.send(error);
@@ -34,13 +51,14 @@ server.get("/clientes", async (req,res)=> {
   }
 });
 
-server.get("/cliente/:id", async (req, res) => {
+server.get("/buscarCliente/:userId", async (req, res) => {
   try {
-    let {id} = req.params;
-    const client= await Clientefinal.findOne({
-      where:{id}
+    let {userId} = req.params;
+    const cliente= await Cliente.findOne({
+      where:{userId}
     });
-    res.json(client);
+
+    cliente? res.json(cliente) : res.json({mensaje:"El Cliente No Existe"});
   } catch (error) {
     res.send(error);
   }
