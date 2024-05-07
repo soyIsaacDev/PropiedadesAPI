@@ -1,6 +1,7 @@
 const server = require("express").Router();
 
-const { Estado , Municipio, Ciudad, Colonia, ColoniaCiudad, AmenidadesDesarrollo, AmenidadesPropiedad, TipoOperacion, TipodePropiedad } = require("../db");
+const { Estado , Municipio, Ciudad, Colonia, ColoniaCiudad, AmenidadesDesarrollo, 
+  AmenidadesPropiedad, TipoOperacion, TipodePropiedad, AmenidadesModeloAmenidad } = require("../db");
 
 server.post("/agregarEntidadGeografica", async (req, res) => { 
   try {

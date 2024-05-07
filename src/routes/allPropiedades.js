@@ -59,8 +59,7 @@ server.get("/getTodasLasPropiedades", async (req, res) => {
     } catch (e) {
       res.send(e);
     } 
-  }
-);
+});
 
 server.get("/getTodasLasPropiedadesconIncludes", async (req, res) => {
   try {

@@ -163,6 +163,19 @@ server.get("/propiedadesconfavoritos/:ClienteId", isAuthenticated, async (req, r
   }
 })
 
+
+server.post("/hardDeleteDesarrollo", async (req, res) => {
+  try {
+    const { IdDesarrolloABorrar} = req.body;
+    const DesarrolloABorrar = await Propiedad.findByPk(IdDesarrolloABorrar);
+    await DesarrolloABorrar.destroy();
+    
+    res.json("Se borrro el desarrollo ID " + IdDesarrolloABorrar);
+  } catch (e) {
+    res.send(e)
+  }
+})
+
 // Para ver las imagenes
 server.use('/imagenes', express.static(public));
 

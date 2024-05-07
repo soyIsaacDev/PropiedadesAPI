@@ -13,5 +13,7 @@ module.exports = {
     favoritos:require("./favoritos"),
     modeloRelacionado: require("./modeloRelacionado"),
     allPropiedades: require("./allPropiedades"),
+    bulk:require("./bulk"),
+    tipoUsuario:require("./tipodeUsuario"),
     index: server,
   };
