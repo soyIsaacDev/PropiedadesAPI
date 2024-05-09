@@ -1307,7 +1307,7 @@ server.get("/bulk", async (req,res)=> {
                     ModeloAsociadoPropiedadId:17
                 },
             ]);
-            res.json(imagenModeloAsociado);  
+            res.json(imagenPropiedad);  
         }
         else{
 
@@ -1632,11 +1632,6 @@ server.get("/bulk", async (req,res)=> {
                 {
                     type: "image/jpeg",
                     img_name: "LagoA2.jpg",
-                    ModeloAsociadoPropiedadId:1
-                },
-                {
-                    type: "image/jpeg",
-                    img_name: ".jpg",
                     ModeloAsociadoPropiedadId:1
                 },
                 {
