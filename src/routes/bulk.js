@@ -3,9 +3,13 @@ const { Propiedad, Estado, Municipio, Ciudad, Colonia, AmenidadesPropiedad, Amen
     TipoOperacion, TipodePropiedad, ImgPropiedad, ModeloAsociadoPropiedad, ImgModeloAsociado, 
     ColoniaCiudad, AmenidadesDesarrolloPropiedad, AmenidadesModeloAmenidad } = require("../db");
 
-const DEVMODE = process.env.DEVELOPMENT;
+
 
 server.get("/bulk", async (req,res)=> {
+    const DEVMODE = process.env.DEVELOPMENT;
+
+    console.log(DEVMODE);
+    
     try {
         // CONSIDERAR UN MODELO DE ARQUITECTURA
         // CONSIDERAR PISOS DE LA PROPIEDAD
