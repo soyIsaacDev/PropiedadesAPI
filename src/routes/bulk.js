@@ -3,6 +3,7 @@ const { Propiedad, Estado, Municipio, Ciudad, Colonia, AmenidadesPropiedad, Amen
     TipoOperacion, TipodePropiedad, ImgPropiedad, ModeloAsociadoPropiedad, ImgModeloAsociado, 
     ColoniaCiudad, AmenidadesDesarrolloPropiedad, AmenidadesModeloAmenidad } = require("../db");
 
+const DEVMODE = process.env.DEVELOPMENT;
 
 server.get("/bulk", async (req,res)=> {
     try {
@@ -509,804 +510,1608 @@ server.get("/bulk", async (req,res)=> {
             }            
         }
 
-        const imagenPropiedad = await ImgPropiedad.bulkCreate([
-            //Lagos
-            {
-                type: "image/jpeg",
-                img_name: "Lagos1.jpg",
-                PropiedadId:1
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Lagos2.jpg",
-                PropiedadId:1
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Lagos3.jpg",
-                PropiedadId:1
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Lagos4.jpg",
-                PropiedadId:1
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Lagos5.jpg",
-                PropiedadId:1
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Lagos6.jpg",
-                PropiedadId:1
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Lagos7.jpg",
-                PropiedadId:1
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Lagos8.jpg",
-                PropiedadId:1
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Lagos9.jpg",
-                PropiedadId:1
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Lagos10.jpg",
-                PropiedadId:1
-            },
-            //Elementos
-            {
-                type: "image/jpeg",
-                img_name: "Elementos1.jpg",
-                PropiedadId:2
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Elementos2.jpg",
-                PropiedadId:2
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Elementos3.jpg",
-                PropiedadId:2
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Elementos4.jpg",
-                PropiedadId:2
-            },
-            //Oceano
-            {
-                type: "image/jpeg",
-                img_name: "Oceano1.jpg",
-                PropiedadId:3
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Oceano2.jpg",
-                PropiedadId:3
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Oceano3.jpg",
-                PropiedadId:3
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Oceano4.jpg",
-                PropiedadId:3
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Oceano5.jpg",
-                PropiedadId:3
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Oceano6.jpg",
-                PropiedadId:3
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Oceano7.jpg",
-                PropiedadId:3
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Oceano8.jpg",
-                PropiedadId:3
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Oceano9.jpg",
-                PropiedadId:3
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Oceano10.jpg",
-                PropiedadId:3
-            },
-            //Sierra
-            {
-                type: "image/jpeg",
-                img_name: "Sierra1.jpg",
-                PropiedadId:4
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Sierra2.jpg",
-                PropiedadId:4
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Sierra3.jpg",
-                PropiedadId:4
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Sierra4.jpg",
-                PropiedadId:4
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Sierra5.jpg",
-                PropiedadId:4
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Sierra6.jpg",
-                PropiedadId:4
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Sierra7.jpg",
-                PropiedadId:4
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Sierra8.jpg",
-                PropiedadId:4
-            },
-            {
-                type: "image/jpeg",
-                img_name: "Sierra9.jpg",
-                PropiedadId:4
-            },
-            
-            //Entre Rios
-            {
-                type: "image/jpeg",
-                img_name: "EntreRios1.jpg",
-                PropiedadId:5
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRios2.jpg",
-                PropiedadId:5
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRios3.jpg",
-                PropiedadId:5
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRios4.jpg",
-                PropiedadId:5
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRios5.jpg",
-                PropiedadId:5
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRios6.jpg",
-                PropiedadId:5
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRios7.jpg",
-                PropiedadId:5
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRios8.jpg",
-                PropiedadId:5
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRios9.jpg",
-                PropiedadId:5
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRios10.jpg",
-                PropiedadId:5
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRios11.jpg",
-                PropiedadId:5
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRios12.jpg",
-                PropiedadId:5
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRios13.jpg",
-                PropiedadId:5
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRios14.jpg",
-                PropiedadId:5
-            },
-            //India
-            {
-                type: "image/jpeg",
-                img_name: "ElTaj0.jpg",
-                PropiedadId:6
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTaj1.jpg",
-                PropiedadId:6
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTaj2.jpg",
-                PropiedadId:6
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTaj3.jpg",
-                PropiedadId:6
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTaj4.jpg",
-                PropiedadId:6
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTaj5.jpg",
-                PropiedadId:6
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTaj6.jpg",
-                PropiedadId:6
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTaj7.jpg",
-                PropiedadId:6
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTaj8.jpg",
-                PropiedadId:6
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTaj9.jpg",
-                PropiedadId:6
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTaj10.jpg",
-                PropiedadId:6
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTaj11.jpg",
-                PropiedadId:6
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTaj12.jpg",
-                PropiedadId:6
-            },
-            
-        ]);
+        if(DEVMODE === "Production"){
+            const imagenPropiedad = await ImgPropiedad.bulkCreate([
+                //Lagos
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Lagos1.jpg",
+                    PropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Lagos2.jpg",
+                    PropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Lagos3.jpg",
+                    PropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Lagos4.jpg",
+                    PropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Lagos5.jpg",
+                    PropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Lagos6.jpg",
+                    PropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Lagos7.jpg",
+                    PropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Lagos8.jpg",
+                    PropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Lagos9.jpg",
+                    PropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Lagos10.jpg",
+                    PropiedadId:1
+                },
+                //Elementos
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Elementos1.jpg",
+                    PropiedadId:2
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Elementos2.jpg",
+                    PropiedadId:2
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Elementos3.jpg",
+                    PropiedadId:2
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Elementos4.jpg",
+                    PropiedadId:2
+                },
+                //Oceano
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Oceano1.jpg",
+                    PropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Oceano2.jpg",
+                    PropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Oceano3.jpg",
+                    PropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Oceano4.jpg",
+                    PropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Oceano5.jpg",
+                    PropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Oceano6.jpg",
+                    PropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Oceano7.jpg",
+                    PropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Oceano8.jpg",
+                    PropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Oceano9.jpg",
+                    PropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Oceano10.jpg",
+                    PropiedadId:3
+                },
+                //Sierra
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Sierra1.jpg",
+                    PropiedadId:4
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Sierra2.jpg",
+                    PropiedadId:4
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Sierra3.jpg",
+                    PropiedadId:4
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Sierra4.jpg",
+                    PropiedadId:4
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Sierra5.jpg",
+                    PropiedadId:4
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Sierra6.jpg",
+                    PropiedadId:4
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Sierra7.jpg",
+                    PropiedadId:4
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Sierra8.jpg",
+                    PropiedadId:4
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/Sierra9.jpg",
+                    PropiedadId:4
+                },
+                
+                //Entre Rios
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRios1.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRios2.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRios3.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRios4.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRios5.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRios6.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRios7.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRios8.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRios9.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRios10.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRios11.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRios12.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRios13.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRios14.jpg",
+                    PropiedadId:5
+                },
+                //India
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTaj0.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTaj1.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTaj2.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTaj3.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTaj4.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTaj5.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTaj6.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTaj7.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTaj8.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTaj9.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTaj10.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTaj11.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTaj12.jpg",
+                    PropiedadId:6
+                },
+                
+            ]);
+    
+            const imagenModeloAsociado = await ImgModeloAsociado.bulkCreate([
+                //Lago
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/LagoA1.jpg",
+                    ModeloAsociadoPropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/LagoA2.jpg",
+                    ModeloAsociadoPropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/.jpg",
+                    ModeloAsociadoPropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/LagoA3.jpg",
+                    ModeloAsociadoPropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/LagoB1.jpg",
+                    ModeloAsociadoPropiedadId:2
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/LagoB2.jpg",
+                    ModeloAsociadoPropiedadId:2
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/LagoB3.jpg",
+                    ModeloAsociadoPropiedadId:2
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/LagoB4.jpg",
+                    ModeloAsociadoPropiedadId:2
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/LagoC1.jpg",
+                    ModeloAsociadoPropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/LagoC2.jpg",
+                    ModeloAsociadoPropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/LagoC3.jpg",
+                    ModeloAsociadoPropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/LagoD.jpg",
+                    ModeloAsociadoPropiedadId:4
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/LagoD2.jpg",
+                    ModeloAsociadoPropiedadId:4
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/LagoD3.jpg",
+                    ModeloAsociadoPropiedadId:4
+                },
+                //Elementos
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElementoA1.jpg",
+                    ModeloAsociadoPropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElementoA2.jpg",
+                    ModeloAsociadoPropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElementoA3.jpg",
+                    ModeloAsociadoPropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElementoA4.jpg",
+                    ModeloAsociadoPropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElementoB1.jpg",
+                    ModeloAsociadoPropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElementoB2.jpg",
+                    ModeloAsociadoPropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElementoB3.jpg",
+                    ModeloAsociadoPropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElementoB4.jpg",
+                    ModeloAsociadoPropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElementoC1.jpg",
+                    ModeloAsociadoPropiedadId:7
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElementoC2.jpg",
+                    ModeloAsociadoPropiedadId:7
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElementoC3.jpg",
+                    ModeloAsociadoPropiedadId:7
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElementoC4.jpg",
+                    ModeloAsociadoPropiedadId:7
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElementoC5.jpg",
+                    ModeloAsociadoPropiedadId:7
+                },
+                //Oceano
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/OceanoA1.jpg",
+                    ModeloAsociadoPropiedadId:8
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/OceanoA2.jpg",
+                    ModeloAsociadoPropiedadId:8
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/OceanoA3.jpg",
+                    ModeloAsociadoPropiedadId:8
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/OceanoA4.jpg",
+                    ModeloAsociadoPropiedadId:8
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/OceanoB1.jpg",
+                    ModeloAsociadoPropiedadId:9
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/OceanoB2.jpg",
+                    ModeloAsociadoPropiedadId:9
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/OceanoB3.jpg",
+                    ModeloAsociadoPropiedadId:9
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/OceanoB4.jpg",
+                    ModeloAsociadoPropiedadId:9
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/OceanoB5.jpg",
+                    ModeloAsociadoPropiedadId:9
+                },
+                 //Sierra
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/SierraA1.jpg",
+                    ModeloAsociadoPropiedadId:10
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/SierraA2.jpg",
+                    ModeloAsociadoPropiedadId:10
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/SierraA3.jpg",
+                    ModeloAsociadoPropiedadId:10
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/SierraA4.jpg",
+                    ModeloAsociadoPropiedadId:10
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/SierraA5.jpg",
+                    ModeloAsociadoPropiedadId:10
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/SierraA6.jpg",
+                    ModeloAsociadoPropiedadId:10
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/SierraA7.jpg",
+                    ModeloAsociadoPropiedadId:10
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/SierraA8.jpg",
+                    ModeloAsociadoPropiedadId:10
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/SierraA9.jpg",
+                    ModeloAsociadoPropiedadId:10
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/SierraB1.jpg",
+                    ModeloAsociadoPropiedadId:11
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/SierraB2.jpg",
+                    ModeloAsociadoPropiedadId:11
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/SierraB3.jpg",
+                    ModeloAsociadoPropiedadId:11
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/SierraB4.jpg",
+                    ModeloAsociadoPropiedadId:11
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/SierraB5.jpg",
+                    ModeloAsociadoPropiedadId:11
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/SierraB6.jpg",
+                    ModeloAsociadoPropiedadId:11
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/SierraB7.jpg",
+                    ModeloAsociadoPropiedadId:11
+                },
+                
+                //Entre Rios
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRiosA1.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRiosA2.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRiosA3.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRiosA4.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRiosA5.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRiosA6.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRiosA7.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRiosA8.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRiosB1.jpg",
+                    ModeloAsociadoPropiedadId:13
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRiosB2.jpg",
+                    ModeloAsociadoPropiedadId:13
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRiosB3.jpg",
+                    ModeloAsociadoPropiedadId:13
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRiosB4.jpg",
+                    ModeloAsociadoPropiedadId:13
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRiosB5.jpg",
+                    ModeloAsociadoPropiedadId:13
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRiosB6.jpg",
+                    ModeloAsociadoPropiedadId:13
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRiosC1.jpg",
+                    ModeloAsociadoPropiedadId:14
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRiosC2.jpg",
+                    ModeloAsociadoPropiedadId:14
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/EntreRiosC3.jpg",
+                    ModeloAsociadoPropiedadId:14
+                },
+                
+                //India
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajA1.jpg",
+                    ModeloAsociadoPropiedadId:15
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajA2.jpg",
+                    ModeloAsociadoPropiedadId:15
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajA3.jpg",
+                    ModeloAsociadoPropiedadId:15
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajA4.jpg",
+                    ModeloAsociadoPropiedadId:15
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajA5.jpg",
+                    ModeloAsociadoPropiedadId:15
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajA6.jpg",
+                    ModeloAsociadoPropiedadId:15
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajA7.jpg",
+                    ModeloAsociadoPropiedadId:15
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajA8.jpg",
+                    ModeloAsociadoPropiedadId:15
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajA9.jpg",
+                    ModeloAsociadoPropiedadId:15
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajB1.jpg",
+                    ModeloAsociadoPropiedadId:16
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajB2.jpg",
+                    ModeloAsociadoPropiedadId:16
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajB3.jpg",
+                    ModeloAsociadoPropiedadId:16
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajB4.jpg",
+                    ModeloAsociadoPropiedadId:16
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajB5.jpg",
+                    ModeloAsociadoPropiedadId:16
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajB6.jpg",
+                    ModeloAsociadoPropiedadId:16
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajB7.jpg",
+                    ModeloAsociadoPropiedadId:16
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajB8.jpg",
+                    ModeloAsociadoPropiedadId:16
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajB9.jpg",
+                    ModeloAsociadoPropiedadId:16
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajC1.jpg",
+                    ModeloAsociadoPropiedadId:17
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajC2.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajC3.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajC4.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajC5.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajC6.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajC7.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "https://storage.googleapis.com/dadinumco-media/ElTajC8.jpg",
+                    ModeloAsociadoPropiedadId:17
+                },
+            ]);
+            res.json(imagenModeloAsociado);  
+        }
+        else{
 
-        const imagenModeloAsociado = await ImgModeloAsociado.bulkCreate([
-            //Lago
-            {
-                type: "image/jpeg",
-                img_name: "LagoA1.jpg",
-                ModeloAsociadoPropiedadId:1
-            },
-            {
-                type: "image/jpeg",
-                img_name: "LagoA2.jpg",
-                ModeloAsociadoPropiedadId:1
-            },
-            {
-                type: "image/jpeg",
-                img_name: ".jpg",
-                ModeloAsociadoPropiedadId:1
-            },
-            {
-                type: "image/jpeg",
-                img_name: "LagoA3.jpg",
-                ModeloAsociadoPropiedadId:1
-            },
-            {
-                type: "image/jpeg",
-                img_name: "LagoB1.jpg",
-                ModeloAsociadoPropiedadId:2
-            },
-            {
-                type: "image/jpeg",
-                img_name: "LagoB2.jpg",
-                ModeloAsociadoPropiedadId:2
-            },
-            {
-                type: "image/jpeg",
-                img_name: "LagoB3.jpg",
-                ModeloAsociadoPropiedadId:2
-            },
-            {
-                type: "image/jpeg",
-                img_name: "LagoB4.jpg",
-                ModeloAsociadoPropiedadId:2
-            },
-            {
-                type: "image/jpeg",
-                img_name: "LagoC1.jpg",
-                ModeloAsociadoPropiedadId:3
-            },
-            {
-                type: "image/jpeg",
-                img_name: "LagoC2.jpg",
-                ModeloAsociadoPropiedadId:3
-            },
-            {
-                type: "image/jpeg",
-                img_name: "LagoC3.jpg",
-                ModeloAsociadoPropiedadId:3
-            },
-            {
-                type: "image/jpeg",
-                img_name: "LagoD.jpg",
-                ModeloAsociadoPropiedadId:4
-            },
-            {
-                type: "image/jpeg",
-                img_name: "LagoD2.jpg",
-                ModeloAsociadoPropiedadId:4
-            },
-            {
-                type: "image/jpeg",
-                img_name: "LagoD3.jpg",
-                ModeloAsociadoPropiedadId:4
-            },
-            //Elementos
-            {
-                type: "image/jpeg",
-                img_name: "ElementoA1.jpg",
-                ModeloAsociadoPropiedadId:5
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElementoA2.jpg",
-                ModeloAsociadoPropiedadId:5
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElementoA3.jpg",
-                ModeloAsociadoPropiedadId:5
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElementoA4.jpg",
-                ModeloAsociadoPropiedadId:5
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElementoB1.jpg",
-                ModeloAsociadoPropiedadId:6
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElementoB2.jpg",
-                ModeloAsociadoPropiedadId:6
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElementoB3.jpg",
-                ModeloAsociadoPropiedadId:6
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElementoB4.jpg",
-                ModeloAsociadoPropiedadId:6
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElementoC1.jpg",
-                ModeloAsociadoPropiedadId:7
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElementoC2.jpg",
-                ModeloAsociadoPropiedadId:7
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElementoC3.jpg",
-                ModeloAsociadoPropiedadId:7
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElementoC4.jpg",
-                ModeloAsociadoPropiedadId:7
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElementoC5.jpg",
-                ModeloAsociadoPropiedadId:7
-            },
-            //Oceano
-            {
-                type: "image/jpeg",
-                img_name: "OceanoA1.jpg",
-                ModeloAsociadoPropiedadId:8
-            },
-            {
-                type: "image/jpeg",
-                img_name: "OceanoA2.jpg",
-                ModeloAsociadoPropiedadId:8
-            },
-            {
-                type: "image/jpeg",
-                img_name: "OceanoA3.jpg",
-                ModeloAsociadoPropiedadId:8
-            },
-            {
-                type: "image/jpeg",
-                img_name: "OceanoA4.jpg",
-                ModeloAsociadoPropiedadId:8
-            },
-            {
-                type: "image/jpeg",
-                img_name: "OceanoB1.jpg",
-                ModeloAsociadoPropiedadId:9
-            },
-            {
-                type: "image/jpeg",
-                img_name: "OceanoB2.jpg",
-                ModeloAsociadoPropiedadId:9
-            },
-            {
-                type: "image/jpeg",
-                img_name: "OceanoB3.jpg",
-                ModeloAsociadoPropiedadId:9
-            },
-            {
-                type: "image/jpeg",
-                img_name: "OceanoB4.jpg",
-                ModeloAsociadoPropiedadId:9
-            },
-            {
-                type: "image/jpeg",
-                img_name: "OceanoB5.jpg",
-                ModeloAsociadoPropiedadId:9
-            },
-             //Sierra
-            {
-                type: "image/jpeg",
-                img_name: "SierraA1.jpg",
-                ModeloAsociadoPropiedadId:10
-            },
-            {
-                type: "image/jpeg",
-                img_name: "SierraA2.jpg",
-                ModeloAsociadoPropiedadId:10
-            },
-            {
-                type: "image/jpeg",
-                img_name: "SierraA3.jpg",
-                ModeloAsociadoPropiedadId:10
-            },
-            {
-                type: "image/jpeg",
-                img_name: "SierraA4.jpg",
-                ModeloAsociadoPropiedadId:10
-            },
-            {
-                type: "image/jpeg",
-                img_name: "SierraA5.jpg",
-                ModeloAsociadoPropiedadId:10
-            },
-            {
-                type: "image/jpeg",
-                img_name: "SierraA6.jpg",
-                ModeloAsociadoPropiedadId:10
-            },
-            {
-                type: "image/jpeg",
-                img_name: "SierraA7.jpg",
-                ModeloAsociadoPropiedadId:10
-            },
-            {
-                type: "image/jpeg",
-                img_name: "SierraA8.jpg",
-                ModeloAsociadoPropiedadId:10
-            },
-            {
-                type: "image/jpeg",
-                img_name: "SierraA9.jpg",
-                ModeloAsociadoPropiedadId:10
-            },
-            {
-                type: "image/jpeg",
-                img_name: "SierraB1.jpg",
-                ModeloAsociadoPropiedadId:11
-            },
-            {
-                type: "image/jpeg",
-                img_name: "SierraB2.jpg",
-                ModeloAsociadoPropiedadId:11
-            },
-            {
-                type: "image/jpeg",
-                img_name: "SierraB3.jpg",
-                ModeloAsociadoPropiedadId:11
-            },
-            {
-                type: "image/jpeg",
-                img_name: "SierraB4.jpg",
-                ModeloAsociadoPropiedadId:11
-            },
-            {
-                type: "image/jpeg",
-                img_name: "SierraB5.jpg",
-                ModeloAsociadoPropiedadId:11
-            },
-            {
-                type: "image/jpeg",
-                img_name: "SierraB6.jpg",
-                ModeloAsociadoPropiedadId:11
-            },
-            {
-                type: "image/jpeg",
-                img_name: "SierraB7.jpg",
-                ModeloAsociadoPropiedadId:11
-            },
-            
-            //Entre Rios
-            {
-                type: "image/jpeg",
-                img_name: "EntreRiosA1.jpg",
-                ModeloAsociadoPropiedadId:12
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRiosA2.jpg",
-                ModeloAsociadoPropiedadId:12
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRiosA3.jpg",
-                ModeloAsociadoPropiedadId:12
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRiosA4.jpg",
-                ModeloAsociadoPropiedadId:12
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRiosA5.jpg",
-                ModeloAsociadoPropiedadId:12
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRiosA6.jpg",
-                ModeloAsociadoPropiedadId:12
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRiosA7.jpg",
-                ModeloAsociadoPropiedadId:12
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRiosA8.jpg",
-                ModeloAsociadoPropiedadId:12
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRiosB1.jpg",
-                ModeloAsociadoPropiedadId:13
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRiosB2.jpg",
-                ModeloAsociadoPropiedadId:13
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRiosB3.jpg",
-                ModeloAsociadoPropiedadId:13
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRiosB4.jpg",
-                ModeloAsociadoPropiedadId:13
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRiosB5.jpg",
-                ModeloAsociadoPropiedadId:13
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRiosB6.jpg",
-                ModeloAsociadoPropiedadId:13
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRiosC1.jpg",
-                ModeloAsociadoPropiedadId:14
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRiosC2.jpg",
-                ModeloAsociadoPropiedadId:14
-            },
-            {
-                type: "image/jpeg",
-                img_name: "EntreRiosC3.jpg",
-                ModeloAsociadoPropiedadId:14
-            },
-            
-            //India
-            {
-                type: "image/jpeg",
-                img_name: "ElTajA1.jpg",
-                ModeloAsociadoPropiedadId:15
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajA2.jpg",
-                ModeloAsociadoPropiedadId:15
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajA3.jpg",
-                ModeloAsociadoPropiedadId:15
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajA4.jpg",
-                ModeloAsociadoPropiedadId:15
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajA5.jpg",
-                ModeloAsociadoPropiedadId:15
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajA6.jpg",
-                ModeloAsociadoPropiedadId:15
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajA7.jpg",
-                ModeloAsociadoPropiedadId:15
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajA8.jpg",
-                ModeloAsociadoPropiedadId:15
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajA9.jpg",
-                ModeloAsociadoPropiedadId:15
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajB1.jpg",
-                ModeloAsociadoPropiedadId:16
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajB2.jpg",
-                ModeloAsociadoPropiedadId:16
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajB3.jpg",
-                ModeloAsociadoPropiedadId:16
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajB4.jpg",
-                ModeloAsociadoPropiedadId:16
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajB5.jpg",
-                ModeloAsociadoPropiedadId:16
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajB6.jpg",
-                ModeloAsociadoPropiedadId:16
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajB7.jpg",
-                ModeloAsociadoPropiedadId:16
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajB8.jpg",
-                ModeloAsociadoPropiedadId:16
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajB9.jpg",
-                ModeloAsociadoPropiedadId:16
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajC1.jpg",
-                ModeloAsociadoPropiedadId:17
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajC2.jpg",
-                ModeloAsociadoPropiedadId:12
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajC3.jpg",
-                ModeloAsociadoPropiedadId:12
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajC4.jpg",
-                ModeloAsociadoPropiedadId:12
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajC5.jpg",
-                ModeloAsociadoPropiedadId:12
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajC6.jpg",
-                ModeloAsociadoPropiedadId:12
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajC7.jpg",
-                ModeloAsociadoPropiedadId:12
-            },
-            {
-                type: "image/jpeg",
-                img_name: "ElTajC8.jpg",
-                ModeloAsociadoPropiedadId:17
-            },
-        ]);
+            const imagenPropiedad = await ImgPropiedad.bulkCreate([
+                //Lagos
+                {
+                    type: "image/jpeg",
+                    img_name: "Lagos1.jpg",
+                    PropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Lagos2.jpg",
+                    PropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Lagos3.jpg",
+                    PropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Lagos4.jpg",
+                    PropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Lagos5.jpg",
+                    PropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Lagos6.jpg",
+                    PropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Lagos7.jpg",
+                    PropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Lagos8.jpg",
+                    PropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Lagos9.jpg",
+                    PropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Lagos10.jpg",
+                    PropiedadId:1
+                },
+                //Elementos
+                {
+                    type: "image/jpeg",
+                    img_name: "Elementos1.jpg",
+                    PropiedadId:2
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Elementos2.jpg",
+                    PropiedadId:2
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Elementos3.jpg",
+                    PropiedadId:2
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Elementos4.jpg",
+                    PropiedadId:2
+                },
+                //Oceano
+                {
+                    type: "image/jpeg",
+                    img_name: "Oceano1.jpg",
+                    PropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Oceano2.jpg",
+                    PropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Oceano3.jpg",
+                    PropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Oceano4.jpg",
+                    PropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Oceano5.jpg",
+                    PropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Oceano6.jpg",
+                    PropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Oceano7.jpg",
+                    PropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Oceano8.jpg",
+                    PropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Oceano9.jpg",
+                    PropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Oceano10.jpg",
+                    PropiedadId:3
+                },
+                //Sierra
+                {
+                    type: "image/jpeg",
+                    img_name: "Sierra1.jpg",
+                    PropiedadId:4
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Sierra2.jpg",
+                    PropiedadId:4
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Sierra3.jpg",
+                    PropiedadId:4
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Sierra4.jpg",
+                    PropiedadId:4
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Sierra5.jpg",
+                    PropiedadId:4
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Sierra6.jpg",
+                    PropiedadId:4
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Sierra7.jpg",
+                    PropiedadId:4
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Sierra8.jpg",
+                    PropiedadId:4
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "Sierra9.jpg",
+                    PropiedadId:4
+                },
+                
+                //Entre Rios
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRios1.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRios2.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRios3.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRios4.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRios5.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRios6.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRios7.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRios8.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRios9.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRios10.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRios11.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRios12.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRios13.jpg",
+                    PropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRios14.jpg",
+                    PropiedadId:5
+                },
+                //India
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTaj0.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTaj1.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTaj2.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTaj3.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTaj4.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTaj5.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTaj6.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTaj7.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTaj8.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTaj9.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTaj10.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTaj11.jpg",
+                    PropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTaj12.jpg",
+                    PropiedadId:6
+                },
+                
+            ]);
+    
+            const imagenModeloAsociado = await ImgModeloAsociado.bulkCreate([
+                //Lago
+                {
+                    type: "image/jpeg",
+                    img_name: "LagoA1.jpg",
+                    ModeloAsociadoPropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "LagoA2.jpg",
+                    ModeloAsociadoPropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: ".jpg",
+                    ModeloAsociadoPropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "LagoA3.jpg",
+                    ModeloAsociadoPropiedadId:1
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "LagoB1.jpg",
+                    ModeloAsociadoPropiedadId:2
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "LagoB2.jpg",
+                    ModeloAsociadoPropiedadId:2
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "LagoB3.jpg",
+                    ModeloAsociadoPropiedadId:2
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "LagoB4.jpg",
+                    ModeloAsociadoPropiedadId:2
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "LagoC1.jpg",
+                    ModeloAsociadoPropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "LagoC2.jpg",
+                    ModeloAsociadoPropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "LagoC3.jpg",
+                    ModeloAsociadoPropiedadId:3
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "LagoD.jpg",
+                    ModeloAsociadoPropiedadId:4
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "LagoD2.jpg",
+                    ModeloAsociadoPropiedadId:4
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "LagoD3.jpg",
+                    ModeloAsociadoPropiedadId:4
+                },
+                //Elementos
+                {
+                    type: "image/jpeg",
+                    img_name: "ElementoA1.jpg",
+                    ModeloAsociadoPropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElementoA2.jpg",
+                    ModeloAsociadoPropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElementoA3.jpg",
+                    ModeloAsociadoPropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElementoA4.jpg",
+                    ModeloAsociadoPropiedadId:5
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElementoB1.jpg",
+                    ModeloAsociadoPropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElementoB2.jpg",
+                    ModeloAsociadoPropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElementoB3.jpg",
+                    ModeloAsociadoPropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElementoB4.jpg",
+                    ModeloAsociadoPropiedadId:6
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElementoC1.jpg",
+                    ModeloAsociadoPropiedadId:7
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElementoC2.jpg",
+                    ModeloAsociadoPropiedadId:7
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElementoC3.jpg",
+                    ModeloAsociadoPropiedadId:7
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElementoC4.jpg",
+                    ModeloAsociadoPropiedadId:7
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElementoC5.jpg",
+                    ModeloAsociadoPropiedadId:7
+                },
+                //Oceano
+                {
+                    type: "image/jpeg",
+                    img_name: "OceanoA1.jpg",
+                    ModeloAsociadoPropiedadId:8
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "OceanoA2.jpg",
+                    ModeloAsociadoPropiedadId:8
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "OceanoA3.jpg",
+                    ModeloAsociadoPropiedadId:8
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "OceanoA4.jpg",
+                    ModeloAsociadoPropiedadId:8
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "OceanoB1.jpg",
+                    ModeloAsociadoPropiedadId:9
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "OceanoB2.jpg",
+                    ModeloAsociadoPropiedadId:9
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "OceanoB3.jpg",
+                    ModeloAsociadoPropiedadId:9
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "OceanoB4.jpg",
+                    ModeloAsociadoPropiedadId:9
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "OceanoB5.jpg",
+                    ModeloAsociadoPropiedadId:9
+                },
+                 //Sierra
+                {
+                    type: "image/jpeg",
+                    img_name: "SierraA1.jpg",
+                    ModeloAsociadoPropiedadId:10
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "SierraA2.jpg",
+                    ModeloAsociadoPropiedadId:10
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "SierraA3.jpg",
+                    ModeloAsociadoPropiedadId:10
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "SierraA4.jpg",
+                    ModeloAsociadoPropiedadId:10
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "SierraA5.jpg",
+                    ModeloAsociadoPropiedadId:10
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "SierraA6.jpg",
+                    ModeloAsociadoPropiedadId:10
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "SierraA7.jpg",
+                    ModeloAsociadoPropiedadId:10
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "SierraA8.jpg",
+                    ModeloAsociadoPropiedadId:10
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "SierraA9.jpg",
+                    ModeloAsociadoPropiedadId:10
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "SierraB1.jpg",
+                    ModeloAsociadoPropiedadId:11
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "SierraB2.jpg",
+                    ModeloAsociadoPropiedadId:11
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "SierraB3.jpg",
+                    ModeloAsociadoPropiedadId:11
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "SierraB4.jpg",
+                    ModeloAsociadoPropiedadId:11
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "SierraB5.jpg",
+                    ModeloAsociadoPropiedadId:11
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "SierraB6.jpg",
+                    ModeloAsociadoPropiedadId:11
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "SierraB7.jpg",
+                    ModeloAsociadoPropiedadId:11
+                },
+                
+                //Entre Rios
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRiosA1.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRiosA2.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRiosA3.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRiosA4.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRiosA5.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRiosA6.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRiosA7.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRiosA8.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRiosB1.jpg",
+                    ModeloAsociadoPropiedadId:13
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRiosB2.jpg",
+                    ModeloAsociadoPropiedadId:13
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRiosB3.jpg",
+                    ModeloAsociadoPropiedadId:13
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRiosB4.jpg",
+                    ModeloAsociadoPropiedadId:13
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRiosB5.jpg",
+                    ModeloAsociadoPropiedadId:13
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRiosB6.jpg",
+                    ModeloAsociadoPropiedadId:13
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRiosC1.jpg",
+                    ModeloAsociadoPropiedadId:14
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRiosC2.jpg",
+                    ModeloAsociadoPropiedadId:14
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "EntreRiosC3.jpg",
+                    ModeloAsociadoPropiedadId:14
+                },
+                
+                //India
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajA1.jpg",
+                    ModeloAsociadoPropiedadId:15
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajA2.jpg",
+                    ModeloAsociadoPropiedadId:15
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajA3.jpg",
+                    ModeloAsociadoPropiedadId:15
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajA4.jpg",
+                    ModeloAsociadoPropiedadId:15
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajA5.jpg",
+                    ModeloAsociadoPropiedadId:15
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajA6.jpg",
+                    ModeloAsociadoPropiedadId:15
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajA7.jpg",
+                    ModeloAsociadoPropiedadId:15
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajA8.jpg",
+                    ModeloAsociadoPropiedadId:15
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajA9.jpg",
+                    ModeloAsociadoPropiedadId:15
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajB1.jpg",
+                    ModeloAsociadoPropiedadId:16
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajB2.jpg",
+                    ModeloAsociadoPropiedadId:16
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajB3.jpg",
+                    ModeloAsociadoPropiedadId:16
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajB4.jpg",
+                    ModeloAsociadoPropiedadId:16
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajB5.jpg",
+                    ModeloAsociadoPropiedadId:16
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajB6.jpg",
+                    ModeloAsociadoPropiedadId:16
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajB7.jpg",
+                    ModeloAsociadoPropiedadId:16
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajB8.jpg",
+                    ModeloAsociadoPropiedadId:16
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajB9.jpg",
+                    ModeloAsociadoPropiedadId:16
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajC1.jpg",
+                    ModeloAsociadoPropiedadId:17
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajC2.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajC3.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajC4.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajC5.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajC6.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajC7.jpg",
+                    ModeloAsociadoPropiedadId:12
+                },
+                {
+                    type: "image/jpeg",
+                    img_name: "ElTajC8.jpg",
+                    ModeloAsociadoPropiedadId:17
+                },
+            ]);
 
-        res.json(imagenModeloAsociado)      
+            res.json(imagenModeloAsociado)  
+        }
+
+            
 
     } catch (e) {
         res.send(e);
