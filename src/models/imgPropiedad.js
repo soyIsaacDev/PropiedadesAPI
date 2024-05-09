@@ -9,7 +9,10 @@ module.exports = s => {
       },
       img_name: {
         type: DataTypes.STRING,
-      }
+      },
+      thumbnail_img: {
+        type: DataTypes.STRING,
+      },
     });
   
   };

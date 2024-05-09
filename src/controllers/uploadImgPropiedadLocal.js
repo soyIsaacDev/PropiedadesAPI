@@ -48,11 +48,17 @@ const uploadImagenPropiedad = async (req, res, next) => {
       console.log("Files en creacion de Instancia " + JSON.stringify(files))
       // se crea una imagen por cada archivo y se liga a la Propiedad
       files.forEach(async (file) => {
-        console.log("Image File " + JSON.stringify(file))
-        console.log("CloudStoragePublicUrl Image File " + JSON.stringify(file.cloudStoragePublicUrl))
+        console.log("Image File " + JSON.stringify(file));
+          /* const imagenPropiedad = await ImgPropiedad.create({
+            type: file.mimetype,
+            img_name: file.filename,
+            PropiedadId: PropiedadCreada[0].id
+          }); */
+          const nombre_imagen = file.filename.slice(0, file.filename.length - 4);
           const imagenPropiedad = await ImgPropiedad.create({
             type: file.mimetype,
             img_name: file.filename,
+            thumbnail_img:"Thumbnail_WebP"+nombre_imagen+".webp",
             PropiedadId: PropiedadCreada[0].id
           });
       })
