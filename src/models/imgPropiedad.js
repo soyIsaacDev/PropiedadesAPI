@@ -13,6 +13,13 @@ module.exports = s => {
       thumbnail_img: {
         type: DataTypes.STRING,
       },
+      details_big_img: {
+        type: DataTypes.STRING,
+      },
+      details_small_img: {
+        type: DataTypes.STRING,
+      },
+
     });
   
   };
