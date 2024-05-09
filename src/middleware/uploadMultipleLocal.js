@@ -38,9 +38,7 @@ const uploadImages = (req, res, next) => {
 
     // Validando el tamaño y tipo de imagenes permitidas
     files.forEach(async (file) => {
-      const tamañoImg = await getTamañoImagen(file.path);
-      console.log("Tamaño imagen = " + tamañoImg.ancho + "Alto "+  tamañoImg.alto  )
-      
+
       const allowedTypes = ['image/jpeg', 'image/png'];
       const maxSize = 5 * 1024 * 1024; // 5MB
 
@@ -80,17 +78,13 @@ const uploadImages = (req, res, next) => {
     // Cambiando tamaños de imagen
 
     files.forEach((file) => {
-      //resizeMismoFormato(file.filename,1280,720,"Original");
       //resizeImage(img_name, width, height, output_name)
-      resizeImage(file.filename, 298, 240, "Thumbnail_WebP" );
-      resizeImage(file.filename, 704, 504, "Details_Big_Img" );
-      
-      // Cambiar tamaño de imagen si es mayor a la pantalla
-      cambiarTamañoImgOriginal(file.filename)
+      resizeImage(file.filename, 298, 240, "Thumbnail_WebP_" );
+      resizeImage(file.filename, 704, 504, "Details_Big_Img_" );
     })
 
-    if(files[1]) resizeImage(files[1].filename, 428, 242, "Details_Small_Img");
-    if(files[2]) resizeImage(files[2].filename, 428, 242, "Details_Small_Img");
+    if(files[1]) resizeImage(files[1].filename, 428, 242, "Details_Small_Img_");
+    if(files[2]) resizeImage(files[2].filename, 428, 242, "Details_Small_Img_");
 
     // Attach files to the request object  
     req.files = files;
@@ -116,47 +110,5 @@ async function resizeImage(img_name, width, height, output_name) {
     console.log(error);
   }
 }
-
-async function resizeMismoFormato(img_name, width, height, output_name) {
-  try {
-    const resp = await sharp(carpeta+"/"+img_name)
-      .resize({
-        width,
-        height
-      })
-      .toFile(carpeta+"/"+output_name+img_name);
-
-      //console.log("Respuesta "+JSON.stringify(resp))
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function cambiarTamañoImgOriginal(img_name) {
-  try {
-    const img_metadata = await sharp(carpeta+"/"+img_name).metadata();
-    // 1280,720
-    if(img_metadata.width>1280 && img_metadata.height>720) resizeMismoFormato(img_name, 1280,720, "Original");
-    else if(img_metadata.width>1280) resizeMismoFormato(img_name, 1280,img_metadata.height, "Original"); 
-    else if(img_metadata.height>720) resizeMismoFormato(img_name, img_metadata.width, 720, "Original");
-  } catch (error) {
-    console.log(`An error occurred during processing: ${error}`);
-  }
-}
-
-async function getTamañoImagen(filePath) {
-  try {
-    const img_metadata = await sharp(filePath).metadata();
-    const tamaño = {
-      ancho: img_metadata.width,
-      alto: img_metadata.height
-    }
-    console.log("Tamaño en GetTamaño " + tamaño.ancho + " Alto " + tamaño.alto)
-    return (tamaño)
-  } catch (error) {
-    console.log(`An error occurred during processing: ${error}`);
-  }
-}
-
 
 module.exports = uploadImages;

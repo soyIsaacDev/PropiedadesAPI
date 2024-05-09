@@ -31,7 +31,7 @@ server.get("/getDataandImagenPropiedades", async (req, res) => {
       include: [
         {
           model: ImgPropiedad,
-          attributes: ['img_name'],
+          attributes: ['img_name','thumbnail_img','details_big_img','details_small_img',],
         }
       ]
     },);

@@ -122,6 +122,11 @@ const sendUploadToGCSAsync = async (req, res, next) => {
       const fileRef = bucket.file(oname);
       file.cloudStoragePublicUrl = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${oname}`;
       console.log("CloudStorage File Name "+file.cloudStoragePublicUrl);
+
+      const publicUrlPath = `https://storage.googleapis.com/${GCLOUD_BUCKET}/`;
+
+      resizeImage(oname, 298, 240, "Thumbnail_WebP_", publicUrlPath );
+
       const stream = fileRef.createWriteStream({
         metadata: {
           contentType: file.mimetype
@@ -232,6 +237,22 @@ function sendUploadToGCS(req, res, next) {
   
 }
 // [END sendUploadToGCS]
+
+async function resizeImage(img_name, width, height, output_name, public__storage_path) {
+  const img_nombre = img_name.slice(0, img_name.length - 4);
+  try {
+    await sharp(public__storage_path)
+      .resize({
+        width,
+        height
+      })
+      .toFormat('webp')
+      .webp({ quality: 50 })
+      .toFile(public__storage_path+output_name+img_nombre+'.webp');
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 module.exports = {
   sendUploadToGCS,
