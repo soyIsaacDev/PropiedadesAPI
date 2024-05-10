@@ -22,8 +22,8 @@ else{
   server.post("/nuevaPropiedad", 
     gcpImageUpload.uploadImages,
     gcpImageUpload.sendUploadToGCSAsync,
+    gcpResize.resizeImage,
     gcpUploadImagenesPropiedad.uploadImagenPropiedad,
-    gcpResize.resizeImage
   ); 
 }
 
