@@ -162,7 +162,8 @@ const sendUploadToGCSAsync = async (req, res, next) => {
     })
 
     files.forEach(async (file) => {
-      resizeImage(298, 240, "Thumbnail_WebP_", next );
+      const oname = Date.now() + file.originalname;
+      resizeImage(oname, 298, 240, "Thumbnail_WebP_", next );
 
       
       //next();
@@ -241,40 +242,43 @@ function sendUploadToGCS(req, res, next) {
 }
 // [END sendUploadToGCS]
 
-async function resizeImage(width, height, output_name, next) {
+async function resizeImage(img_name, width, height, output_name, next) {
+  const storage = new Storage();
+  const bucket = storage.bucket(GCLOUD_BUCKET); 
+
+  // Define the destination file path and file name 
+  
+  
+
+  const sourceFile = bucket.file(img_name); 
   const img_nombre = img_name.slice(0, img_name.length - 4);
   const public_storage_path = `https://storage.googleapis.com/${GCLOUD_BUCKET}/`;
+
+  //const destFilePath = img_name.replace('uploads/', 'resized/'); 
+  const destFile = bucket.file(`https://storage.googleapis.com/${GCLOUD_BUCKET}/`); 
+
+  // Resize the image using Sharp 
+  const buffer = await sourceFile.download(); 
+  const resizedBuffer = await sharp(buffer[0]) 
+    .resize(500, 500) 
+    .toBuffer(); 
+  
+  // Upload the resized image to the bucket 
+  await destFile.save(resizedBuffer); 
+  
   try {
-    await sharp(public_storage_path)
+    const resizedBuffer = await sharp(buffer[0])
       .resize({
         width,
         height
       })
       .toFormat('webp')
       .webp({ quality: 50 })
-      .toFile(public_storage_path+output_name+img_nombre+'.webp');
-      const oname = Date.now() + req.file.originalname;
-      const fileRef = bucket.file(oname);
-      //file.cloudStoragePublicUrl = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${oname}`;
+      .toBuffer();
 
-      const stream = fileRef.createWriteStream({
-        metadata: {
-          contentType: file.mimetype
-        }
-      });
-      console.log("stream " + JSON.stringify(stream));
-
-      stream.on('error', err => {
-        console.log("Error en stream " +err)
-        next(err);
-        
-      });
-
-      stream.on('finish', () => {        
-        next();
-      });
-      
-      stream.end(file.buffer);
+      // Upload the resized image to the bucket 
+    await destFile.save(resizedBuffer);  
+    console.log(`File ${img_name} was successfully resized and  saved to ${destFile}.`); 
   } catch (error) {
     console.log(error);
   }
