@@ -8,6 +8,7 @@ const uploadMultipleImgLocal = require("../controllers/uploadImgPropiedadLocal")
 const uploadMultiple = require("../middleware/uploadMultipleLocal");
 const gcpUploadImagenesPropiedad = require("../controllers/uploadMultipleImgGCP");
 const gcpImageUpload = require('../middleware/uploadMulipleGCP');
+const gcpResize = require("../middleware/gcpResize")
 
 const { Propiedad, ImgPropiedad, AmenidadesDesarrollo,TipodePropiedad, 
   TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, Favoritos  } = require("../db");
@@ -21,7 +22,8 @@ else{
   server.post("/nuevaPropiedad", 
     gcpImageUpload.uploadImages,
     gcpImageUpload.sendUploadToGCSAsync,
-    gcpUploadImagenesPropiedad.uploadImagenPropiedad
+    gcpUploadImagenesPropiedad.uploadImagenPropiedad,
+    gcpResize.resizeImage
   ); 
 }
 

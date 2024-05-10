@@ -122,7 +122,6 @@ const sendUploadToGCSAsync = async (req, res, next) => {
       const fileRef = bucket.file(oname);
       file.cloudStoragePublicUrl = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${oname}`;
       console.log("CloudStorage File Name "+file.cloudStoragePublicUrl);
-
       const stream = fileRef.createWriteStream({
         metadata: {
           contentType: file.mimetype
@@ -159,14 +158,6 @@ const sendUploadToGCSAsync = async (req, res, next) => {
       
       stream.end(file.buffer);
       next();
-    })
-
-    files.forEach(async (file) => {
-      const oname = Date.now() + file.originalname;
-      resizeImage(oname, 298, 240, "Thumbnail_WebP_", next );
-
-      
-      //next();
     })
 
   } catch (e) {
@@ -241,48 +232,6 @@ function sendUploadToGCS(req, res, next) {
   
 }
 // [END sendUploadToGCS]
-
-async function resizeImage(img_name, width, height, output_name, next) {
-  const storage = new Storage();
-  const bucket = storage.bucket(GCLOUD_BUCKET); 
-
-  // Define the destination file path and file name 
-  
-  
-
-  const sourceFile = bucket.file(img_name); 
-  const img_nombre = img_name.slice(0, img_name.length - 4);
-  const public_storage_path = `https://storage.googleapis.com/${GCLOUD_BUCKET}/`;
-
-  //const destFilePath = img_name.replace('uploads/', 'resized/'); 
-  const destFile = bucket.file(`https://storage.googleapis.com/${GCLOUD_BUCKET}/`); 
-
-  // Resize the image using Sharp 
-  const buffer = await sourceFile.download(); 
-  const resizedBuffer = await sharp(buffer[0]) 
-    .resize(500, 500) 
-    .toBuffer(); 
-  
-  // Upload the resized image to the bucket 
-  await destFile.save(resizedBuffer); 
-  
-  try {
-    const resizedBuffer = await sharp(buffer[0])
-      .resize({
-        width,
-        height
-      })
-      .toFormat('webp')
-      .webp({ quality: 50 })
-      .toBuffer();
-
-      // Upload the resized image to the bucket 
-    await destFile.save(resizedBuffer);  
-    console.log(`File ${img_name} was successfully resized and  saved to ${destFile}.`); 
-  } catch (error) {
-    console.log(error);
-  }
-}
 
 module.exports = {
   sendUploadToGCS,
