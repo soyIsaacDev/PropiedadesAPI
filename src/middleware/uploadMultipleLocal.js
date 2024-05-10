@@ -49,11 +49,6 @@ const uploadImages = (req, res, next) => {
       if (file.size > maxSize) {
         errors.push(`File too large: ${file.originalname}`);
       }
-      if(tamañoImg.ancho>1280){
-        console.log("Imagen muy grande")
-        errors.push(`Imagen muy grande: ${file.originalname}`);
-      }
-
       console.log("Dentro de Ciclo de Validacion de Imagenes");
 
     });
