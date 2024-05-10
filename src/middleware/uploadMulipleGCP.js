@@ -157,7 +157,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
       });
       
       stream.end(file.buffer);
-      console.log("File Buffer = " + file.buffer)
+      console.log("File en Stream End  = " + JSON.stringify(file))
       req.files = file
       next();
     })
