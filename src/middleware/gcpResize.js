@@ -3,6 +3,7 @@ const sharp = require('sharp');
 
 const resizeImage = async (req, res, next) => {
     const file = req.file;
+    console.log("Files en Resize " + JSON.stringify(file))
     const buffer = file.buffer
 
     try {
