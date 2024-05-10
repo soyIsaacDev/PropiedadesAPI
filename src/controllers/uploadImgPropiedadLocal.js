@@ -6,7 +6,7 @@ const carpeta = path.join(__dirname, '../../uploads')
 console.log("DIRECTORIO" + carpeta)
 
 const uploadImagenPropiedad = async (req, res, next) => {
-  console.log("upload Imagen Propiedad")
+  console.log("upload Imagen Propiedad" )
     try {
       // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
       const bodyObj = req.body.data;
