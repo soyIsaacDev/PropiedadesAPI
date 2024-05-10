@@ -23,6 +23,7 @@ else{
     gcpImageUpload.uploadImages,
     gcpImageUpload.sendUploadToGCSAsync,
     gcpUploadImagenesPropiedad.uploadImagenPropiedad,
+    gcpResize.resizeImage
   ); 
 }
 

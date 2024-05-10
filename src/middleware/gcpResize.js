@@ -3,7 +3,7 @@ const sharp = require('sharp');
 
 const resizeImage = async (req, res, next) => {
     const file = req.file;
-    const buffer = Buffer.from(file, "base64");
+    const buffer = file.buffer
 
     try {
         await sharp(buffer)
