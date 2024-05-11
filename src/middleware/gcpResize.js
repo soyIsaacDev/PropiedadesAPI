@@ -1,5 +1,6 @@
 
 const sharp = require('sharp'); 
+const config = require('../../configCloudBucket');
 
 const GCLOUD_BUCKET = config.get('GCLOUD_BUCKET');
 
