@@ -4,7 +4,7 @@ const sharp = require('sharp');
 const resizeImage = async (req, res, next) => {
     const file = req.files;
     console.log("Files en Resize " + JSON.stringify(file))
-    /* const buffer = file.buffer
+    const buffer = file.buffer
 
     try {
         await sharp(buffer)
@@ -41,7 +41,7 @@ const resizeImage = async (req, res, next) => {
       
   } catch (error) {
     console.log(error);
-  } */
+  }
 
   
 
