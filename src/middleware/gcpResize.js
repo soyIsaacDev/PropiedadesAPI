@@ -1,6 +1,11 @@
 
 const sharp = require('sharp'); 
 
+const GCLOUD_BUCKET = config.get('GCLOUD_BUCKET');
+
+// Get a reference to the Cloud Storage bucket
+const bucket = storage.bucket(GCLOUD_BUCKET);
+
 const resizeImage = async (req, res, next) => {
     const file = req.files;
     console.log("Files en Resize " + JSON.stringify(file))
