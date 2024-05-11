@@ -1,6 +1,11 @@
 
 const sharp = require('sharp'); 
 const config = require('../../configCloudBucket');
+const {Storage} = require('@google-cloud/storage');
+
+const storage = new Storage({
+    projectId: config.get('GCLOUD_PROJECT')
+  });
 
 const GCLOUD_BUCKET = config.get('GCLOUD_BUCKET');
 
