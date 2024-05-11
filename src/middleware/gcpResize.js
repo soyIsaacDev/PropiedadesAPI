@@ -34,7 +34,7 @@ const resizeImage = async (req, res, next) => {
 
         const uploadStream = fileUpload.createWriteStream();
 
-        uploadStream.on("error", async (err) => {
+       /*  uploadStream.on("error", async (err) => {
             console.log("Error uploading image", err);
 
             throw new functions.https.HttpsError("unknown", "Error uploading image");
@@ -48,10 +48,10 @@ const resizeImage = async (req, res, next) => {
 
         uploadStream.end(bufferSharp);
 
-        next()
+        next() */
       
   } catch (error) {
-    console.log(error);
+    console.log("Error en GCP Resize "+error);
   }
 
   
