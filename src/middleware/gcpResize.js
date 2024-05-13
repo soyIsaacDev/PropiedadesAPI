@@ -36,7 +36,7 @@ const resizeImage = async (req, res, next) => {
             .toBuffer()
     }
       
-    const uploadThumbnail = await uploadFile(thumbnail);
+    
 
     const uploadFile = async (file) => new Promise((resolve, reject) => {
         const fileName = file.originalname;
@@ -67,6 +67,8 @@ const resizeImage = async (req, res, next) => {
 
         next()
     })
+
+    const uploadThumbnail = await uploadFile(thumbnail);
     
 
     try {
