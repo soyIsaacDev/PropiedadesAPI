@@ -63,7 +63,7 @@ const resizeImage = async (req, res, next) => {
             console.log("Upload success");
         });
 
-        uploadStream.end(buffer);
+        uploadStream.end(file.buffer);
 
         next()
     })
