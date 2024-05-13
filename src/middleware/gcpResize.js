@@ -18,7 +18,32 @@ const resizeImage = async (req, res, next) => {
     const img_nombre = oname.slice(0, oname.length - 4);
     const fileName = `Thumbnail_WebP_${img_nombre}.webp`;
 
-    const thumbnail = {
+    
+    const img_a_resize =  async (archivo, nuevoNombre) => {
+        const oname = Date.now() + archivo.originalname;
+        const img_nombre = oname.slice(0, oname.length - 4);
+        const fileName = `${nuevoNombre+img_nombre}.webp`;
+        
+        const img_a_cambiar = {
+            fieldname: archivo.fieldname,
+            originalname: fileName,
+            encoding: archivo.encoding,
+            mimetype: archivo.mimetype,
+            buffer: await sharp(archivo.buffer)
+                .resize({
+                    width:298,
+                    height:240
+                })
+                .toFormat('webp')
+                .webp({ quality: 50 })
+                .toBuffer()
+        }
+        return img_a_cambiar;
+    }
+
+    const thumbnail = img_a_resize(file,Thumbnail_WebP_)
+
+    /* const thumbnail = {
         fieldname: file.fieldname,
         originalname: fileName,
         encoding: file.encoding,
@@ -31,10 +56,10 @@ const resizeImage = async (req, res, next) => {
             .toFormat('webp')
             .webp({ quality: 50 })
             .toBuffer()
-    }
-      
-    
+    } */
 
+   
+      
     const uploadFile = async (file) => new Promise((resolve, reject) => {
         const fileName = file.originalname;
         const fileUpload = bucket.file(fileName);
