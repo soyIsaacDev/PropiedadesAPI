@@ -27,7 +27,8 @@ const resizeImage = async (req, res, next) => {
         .webp({ quality: 10 })
         .toBuffer()
         
-        const img_nombre = file.filename.slice(0, file.filename.length - 4);
+        const img_name= file.fileName
+        const img_nombre = img_name.slice(0, file.filename.length - 4);
         console.log("Thumbnail para UploadStream " + img_nombre)
         const fileName = `Thumbnail_WebP_${img_nombre}.webp`;
         const fileUpload = bucket.file(fileName);
