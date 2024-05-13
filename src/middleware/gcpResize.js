@@ -19,7 +19,7 @@ const resizeImage = async (req, res, next) => {
     const fileName = `Thumbnail_WebP_${img_nombre}.webp`;
 
     
-    const img_a_resize =  async (archivo, nuevoNombre) => {
+    async function imgCambioTamaño (archivo, nuevoNombre){
         const oname = Date.now() + archivo.originalname;
         const img_nombre = oname.slice(0, oname.length - 4);
         const fileName = `${nuevoNombre+img_nombre}.webp`;
@@ -41,7 +41,7 @@ const resizeImage = async (req, res, next) => {
         return img_a_cambiar;
     }
 
-    const thumbnail = img_a_resize(file,Thumbnail_WebP_)
+    const thumbnail = imgCambioTamaño(file,"Thumbnail_WebP_")
 
     /* const thumbnail = {
         fieldname: file.fieldname,
