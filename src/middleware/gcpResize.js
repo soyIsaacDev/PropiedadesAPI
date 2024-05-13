@@ -1,4 +1,4 @@
-
+// https://stackoverflow.com/questions/68923598/resizing-images-with-sharp-before-uploading-to-google-cloud-storage
 const sharp = require('sharp'); 
 const config = require('../../configCloudBucket');
 const {Storage} = require('@google-cloud/storage');
@@ -14,7 +14,7 @@ const bucket = storage.bucket(GCLOUD_BUCKET);
 
 const resizeImage = async (req, res, next) => {
     const file = req.files;
-    console.log("Files en Resize " + JSON.stringify(file))
+    console.log("Files en Resize " + JSON.stringify(file));
     const buffer = file.buffer
 
     try {
@@ -24,12 +24,12 @@ const resizeImage = async (req, res, next) => {
             height:240
         })
         .toFormat('webp')
-        .webp({ quality: 50 })
+        .webp({ quality: 10 })
         .toBuffer()
         
         const nombre = "Thumbnail";
-
-        const fileName = `${nombre}.webp`;
+        const img_nombre = file.filename.slice(0, img_name.length - 4);
+        const fileName = `Thumbnail_WebP_${img_nombre}.webp`;
         const fileUpload = bucket.file(fileName);
 
         const uploadStream = fileUpload.createWriteStream();
