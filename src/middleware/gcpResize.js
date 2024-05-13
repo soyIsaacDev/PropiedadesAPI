@@ -15,35 +15,50 @@ const bucket = storage.bucket(GCLOUD_BUCKET);
 const resizeImage = async (req, res, next) => {
     const file = req.files;
     console.log("Files en Resize " + JSON.stringify(file));
-    const buffer = file.buffer
+    const oname = Date.now() + file.originalname;
+    console.log("Original Name en Resize " + file.originalname)
+    const img_nombre = oname.slice(0, oname.length - 4);
+    console.log("Thumbnail para UploadStream " + img_nombre)
+    const fileName = `Thumbnail_WebP_${img_nombre}.webp`;
 
-    try {
-        await sharp(buffer)
-        .resize({
-            width:298,
-            height:240
-        })
-        .toFormat('webp')
-        .webp({ quality: 10 })
-        .toBuffer()
-        
-        const oname = Date.now() + file.originalname;
-        console.log("Original Name en Resize " + file.originalname)
-        const img_nombre = oname.slice(0, oname.length - 4);
-        console.log("Thumbnail para UploadStream " + img_nombre)
-        const fileName = `Thumbnail_WebP_${img_nombre}.webp`;
+    const thumbnail = {
+        fieldname: file.fieldname,
+        originalname: fileName,
+        encoding: file.encoding,
+        mimetype: file.mimetype,
+        buffer: await sharp(file.buffer)
+            .resize({
+                width:298,
+                height:240
+            })
+            .toFormat('webp')
+            .webp({ quality: 50 })
+            .toBuffer()
+    }
+      
+    const uploadThumbnail = await uploadFile(thumbnail);
+
+    const uploadFile = async (file) => new Promise((resolve, reject) => {
+        const fileName = file.originalname;
         const fileUpload = bucket.file(fileName);
 
-        const uploadStream = fileUpload.createWriteStream();
+        const uploadStream = fileUpload.createWriteStream({
+            resumable: false,
+            metadata: {
+            contentType: file.mimetype
+            }
+        });
 
         uploadStream.on("error", async (err) => {
             console.log("Error uploading image", err);
 
-            throw new functions.https.HttpsError("unknown", "Error uploading image");
+            reject(err);
         });
 
         uploadStream.on("finish", async () => {
-            await fileUpload.setMetadata({ contentType: "image/webp" });
+            resolve({ 
+                name: fileName
+              });
 
             console.log("Upload success");
         });
@@ -51,6 +66,14 @@ const resizeImage = async (req, res, next) => {
         uploadStream.end(buffer);
 
         next()
+    })
+    
+
+    try {
+        
+        
+        
+        
       
   } catch (error) {
     console.log("Error en GCP Resize "+error);
