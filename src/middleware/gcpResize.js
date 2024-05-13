@@ -14,11 +14,8 @@ const bucket = storage.bucket(GCLOUD_BUCKET);
 
 const resizeImage = async (req, res, next) => {
     const file = req.files;
-    console.log("Files en Resize " + JSON.stringify(file));
     const oname = Date.now() + file.originalname;
-    console.log("Original Name en Resize " + file.originalname)
     const img_nombre = oname.slice(0, oname.length - 4);
-    console.log("Thumbnail para UploadStream " + img_nombre)
     const fileName = `Thumbnail_WebP_${img_nombre}.webp`;
 
     const thumbnail = {
@@ -45,7 +42,7 @@ const resizeImage = async (req, res, next) => {
         const uploadStream = fileUpload.createWriteStream({
             resumable: false,
             metadata: {
-            contentType: file.mimetype
+                contentType: file.mimetype
             }
         });
 
@@ -58,8 +55,11 @@ const resizeImage = async (req, res, next) => {
         uploadStream.on("finish", async () => {
             resolve({ 
                 name: fileName
-              });
-
+            });
+            await fileUpload.setMetadata({ 
+                contentType: "webp",
+                mimetype: "webp"
+         });
             console.log("Upload success");
         });
 
