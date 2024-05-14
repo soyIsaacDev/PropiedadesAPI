@@ -59,8 +59,8 @@ const uploadImagenPropiedad = async (req, res, next) => {
             type: file.mimetype,
             img_name: file.filename,
             thumbnail_img:"Thumbnail_WebP_"+nombre_imagen+".webp",
-            details_big_img:"Details_Big_Img_"+nombre_imagen+".webp",
-            details_small_img:"Details_Small_Img_"+nombre_imagen+".webp",
+            detalles_imgGde:"Detalles_Img_Gde_"+nombre_imagen+".webp",
+            detalles_imgChica:"Detalles_Img_Chica_"+nombre_imagen+".webp",
             PropiedadId: PropiedadCreada[0].id
           });
       })
