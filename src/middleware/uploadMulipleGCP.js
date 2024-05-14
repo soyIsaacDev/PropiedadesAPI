@@ -219,14 +219,13 @@ const uploadFile = async (file) => new Promise((resolve, reject) => {
       await fileUpload.setMetadata({ 
           contentType: "webp",
           mimetype: "webp"
-  });
+      });
       console.log("Upload success");
-});
+  });
 
-uploadStream.end(file.buffer);
-req.files = file;
-next()
+  uploadStream.end(file.buffer);
 })
+
 function sendUploadToGCS(req, res, next) {
   // The existing code in the handler checks to see if there
   // is a file property on the HTTP request - if a file has
