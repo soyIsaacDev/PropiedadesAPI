@@ -13,6 +13,7 @@ const GCLOUD_BUCKET = config.get('GCLOUD_BUCKET');
 const bucket = storage.bucket(GCLOUD_BUCKET);
 
 const resizeImage = async (req, res, next) => {
+    console.log("En Resize Image")
     
 
     
