@@ -93,12 +93,15 @@ const resizeImage = async (req, res, next) => {
 
     const files = req.files;
 
+    console.log("Files en Resize "+ JSON.stringify(files))
+
     files.forEach(async file => {
         const oname = Date.now() + file.originalname;
         const img_nombre = oname.slice(0, oname.length - 4);
         const fileName = `Thumbnail_WebP_${img_nombre}.webp`;
         
-        const thumbnail = await imgCambioTamaño(file, 298, 240,"Thumbnail_WebP_")
+        const thumbnail = await imgCambioTamaño(file, 298, 240,"Thumbnail_WebP_");
+        console.log("Thumbnail Resize " + JSON.stringify(thumbnail))
         const uploadThumbnail = await uploadFile(thumbnail);
     
         const Big_Img = await imgCambioTamaño(file,"Details_Big_Img_");
