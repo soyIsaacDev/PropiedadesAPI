@@ -129,6 +129,10 @@ const sendUploadToGCSAsync = async (req, res, next) => {
       });
       console.log("stream " + JSON.stringify(stream));
 
+      const thumbnail = await imgCambioTamaño(file, 298, 240,"Thumbnail_WebP_");
+        console.log("Thumbnail Resize " + JSON.stringify(thumbnail))
+        const uploadThumbnail = await uploadFile(thumbnail);
+
       stream.on('error', err => {
         // If there's an error move to the next handler
         console.log("Error en stream " +err)
@@ -168,6 +172,59 @@ const sendUploadToGCSAsync = async (req, res, next) => {
   }
 }
 
+async function imgCambioTamaño (archivo, width, height, nuevoNombre){
+  const img_nombre = oname.slice(0, oname.length - 4);
+  const fileName = `${nuevoNombre+img_nombre}.webp`;
+  
+  const img_a_cambiar = {
+      fieldname: archivo.fieldname,
+      originalname: fileName,
+      encoding: archivo.encoding,
+      mimetype: archivo.mimetype,
+      buffer: await sharp(archivo.buffer)
+          .resize({
+              width,
+              height
+          })
+          .toFormat('webp')
+          .webp({ quality: 50 })
+          .toBuffer()
+  }
+  return img_a_cambiar;
+}
+
+const uploadFile = async (file) => new Promise((resolve, reject) => {
+  const fileName = file.originalname;
+  const fileUpload = bucket.file(fileName);
+
+  const uploadStream = fileUpload.createWriteStream({
+      resumable: false,
+      metadata: {
+          contentType: file.mimetype
+      }
+  });
+
+  uploadStream.on("error", async (err) => {
+      console.log("Error uploading image", err);
+
+      reject(err);
+  });
+
+  uploadStream.on("finish", async () => {
+      resolve({ 
+          name: fileName
+      });
+      await fileUpload.setMetadata({ 
+          contentType: "webp",
+          mimetype: "webp"
+  });
+      console.log("Upload success");
+});
+
+uploadStream.end(file.buffer);
+req.files = file;
+next()
+})
 function sendUploadToGCS(req, res, next) {
   // The existing code in the handler checks to see if there
   // is a file property on the HTTP request - if a file has

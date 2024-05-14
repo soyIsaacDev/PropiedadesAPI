@@ -22,7 +22,7 @@ else{
   server.post("/nuevaPropiedad", 
     gcpImageUpload.uploadImages,
     gcpImageUpload.sendUploadToGCSAsync,
-    gcpResize.resizeImage,
+    //gcpResize.resizeImage,
     gcpUploadImagenesPropiedad.uploadImagenPropiedad,
   ); 
 }
