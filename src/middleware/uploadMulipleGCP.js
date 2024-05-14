@@ -166,27 +166,27 @@ const sendUploadToGCSAsync = async (req, res, next) => {
 
     // Resizing Imagenes
     if(files[1]) {
-      const imgDetallesChica = await imgCambioTamaño(files[1], 704, 504, "Detalles_Img_Chica");
+      const imgDetallesChica = await imgCambioTamaño(files[1], 428, 242, "Detalles_Img_Chica");
       console.log("Detalles_Img_Chica " + JSON.stringify(imgDetallesChica))
-      files[1].resizeName = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgDetallesChica.originalname}`;
+      files[1].resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgDetallesChica.originalname}`;
       const uploadPrimerImgDetChica = await uploadFile(imgDetallesChica);
     }
 
     if(files[2]) {
-      const imgDetallesChica2 = await imgCambioTamaño(files[2], 704, 504, "Detalles_Img_Chica_2");
-      console.log("Detalles_Img_Chica_2 " + JSON.stringify(imgDetallesChica2))
-      files[1].resizeName = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgDetallesChica2.originalname}`;
+      const imgDetallesChica2 = await imgCambioTamaño(files[2], 428, 242, "Detalles_Img_Chica");
+      console.log("Detalles_Img_Chica2 " + JSON.stringify(imgDetallesChica2))
+      files[1].resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgDetallesChica2.originalname}`;
       const uploadPrimerImgDetChica = await uploadFile(imgDetallesChica2);
     }
 
     files.forEach(async (file) => {
       const thumbnail = await imgCambioTamaño(file, 298, 240,"Thumbnail_WebP_");
       console.log("Thumbnail Resize " + JSON.stringify(thumbnail))
-      file.resizeName = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${thumbnail.originalname}`;
+      file.resizeNameThumbnail = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${thumbnail.originalname}`;
       const uploadThumbnail = await uploadFile(thumbnail);
 
       const imgGde = await imgCambioTamaño(file, 704, 504, "Detalles_Img_Gde");
-      file.resizeName = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgGde.originalname}`;
+      file.resizeNameGde = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgGde.originalname}`;
       console.log("Detalles_Img_Gde " + JSON.stringify(imgGde))
       const uploadBig = await uploadFile(imgGde);
     })

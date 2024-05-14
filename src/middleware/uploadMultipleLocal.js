@@ -75,11 +75,11 @@ const uploadImages = (req, res, next) => {
     files.forEach((file) => {
       //resizeImage(img_name, width, height, output_name)
       resizeImage(file.filename, 298, 240, "Thumbnail_WebP_" );
-      resizeImage(file.filename, 704, 504, "Details_Big_Img_" );
+      resizeImage(file.filename, 704, 504, "Detalles_Img_Gde" );
     })
 
-    if(files[1]) resizeImage(files[1].filename, 428, 242, "Details_Small_Img_");
-    if(files[2]) resizeImage(files[2].filename, 428, 242, "Details_Small_Img_");
+    if(files[1]) resizeImage(files[1].filename, 428, 242, "Detalles_Img_Chica_");
+    if(files[2]) resizeImage(files[2].filename, 428, 242, "Detalles_Img_Chica_");
 
     // Attach files to the request object  
     req.files = files;
