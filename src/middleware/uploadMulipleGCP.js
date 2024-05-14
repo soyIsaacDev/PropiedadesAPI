@@ -175,7 +175,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
     if(files[2]) {
       const imgDetallesChica2 = await imgCambioTamaño(files[2], 428, 242, "Detalles_Img_Chica");
       console.log("Detalles_Img_Chica2 " + JSON.stringify(imgDetallesChica2))
-      files[1].resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgDetallesChica2.originalname}`;
+      files[2].resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgDetallesChica2.originalname}`;
       const uploadPrimerImgDetChica = await uploadFile(imgDetallesChica2);
     }
 
