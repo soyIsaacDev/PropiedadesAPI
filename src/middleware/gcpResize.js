@@ -105,7 +105,7 @@ const resizeImage = async (req, res, next) => {
         console.log("Thumbnail Resize " + JSON.stringify(thumbnail))
         const uploadThumbnail = await uploadFile(thumbnail);
     
-        const Big_Img = await imgCambioTamaño(file,"Details_Big_Img_");
+        const Big_Img = await imgCambioTamaño(file, 298, 240,"Details_Big_Img_");
         const uploadBig_Img = await uploadFile(Big_Img);
         
     });
