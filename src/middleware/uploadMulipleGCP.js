@@ -130,15 +130,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
       });
       console.log("stream " + JSON.stringify(stream));
 
-      // Resizing Imagenes
-
-      const thumbnail = await imgCambioTamaño(file, 298, 240,"Thumbnail_WebP_");
-      console.log("Thumbnail Resize " + JSON.stringify(thumbnail))
-      const uploadThumbnail = await uploadFile(thumbnail);
-
-      const imgGde = await imgCambioTamaño(file, 704, 504, "Detalles_Img_Gde");
-      console.log("Detalles_Img_Gde " + JSON.stringify(imgGde))
-      const uploadBig = await uploadFile(imgGde);
+      
 
       stream.on('error', err => {
         // If there's an error move to the next handler
@@ -167,14 +159,12 @@ const sendUploadToGCSAsync = async (req, res, next) => {
         next();
       });
       
-      
-
       stream.end(file.buffer);
       console.log("File en Stream End  = " + JSON.stringify(files))
-      req.files = files
-      next();
+
     });
 
+    // Resizing Imagenes
     if(files[1]) {
       const imgDetallesChica = await imgCambioTamaño(files[1], 704, 504, "Detalles_Img_Chica");
       console.log("Detalles_Img_Chica " + JSON.stringify(imgDetallesChica))
@@ -186,6 +176,21 @@ const sendUploadToGCSAsync = async (req, res, next) => {
       console.log("Detalles_Img_Chica_2 " + JSON.stringify(imgDetallesChica2))
       const uploadPrimerImgDetChica = await uploadFile(imgDetallesChica2);
     }
+
+    files.forEach(async (file) => {
+      const thumbnail = await imgCambioTamaño(file, 298, 240,"Thumbnail_WebP_");
+      console.log("Thumbnail Resize " + JSON.stringify(thumbnail))
+      const uploadThumbnail = await uploadFile(thumbnail);
+
+      const imgGde = await imgCambioTamaño(file, 704, 504, "Detalles_Img_Gde");
+      console.log("Detalles_Img_Gde " + JSON.stringify(imgGde))
+      const uploadBig = await uploadFile(imgGde);
+    })
+
+    req.files = files
+    console.log("File despues de Resize  = " + JSON.stringify(files))
+    next();
+    
   } catch (e) {
     console.log("Error " + e)
     res.send(e)
