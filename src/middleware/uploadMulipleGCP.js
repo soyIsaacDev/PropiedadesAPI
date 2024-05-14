@@ -173,6 +173,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
 }
 
 async function imgCambioTamaño (archivo, width, height, nuevoNombre){
+  const oname = Date.now() + archivo.originalname;
   const img_nombre = oname.slice(0, oname.length - 4);
   const fileName = `${nuevoNombre+img_nombre}.webp`;
   
