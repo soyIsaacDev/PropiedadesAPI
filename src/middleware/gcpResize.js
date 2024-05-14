@@ -41,7 +41,7 @@ const resizeImage = async (req, res, next) => {
         return img_a_cambiar;
     }
 
-    const thumbnail = imgCambioTamaño(file,"Thumbnail_WebP_")
+    const thumbnail = await imgCambioTamaño(file,"Thumbnail_WebP_")
 
     /* const thumbnail = {
         fieldname: file.fieldname,
