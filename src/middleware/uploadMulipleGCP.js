@@ -1,5 +1,6 @@
 'use strict';
 const config = require('../../configCloudBucket');
+const sharp = require('sharp')
 // Load the module for Cloud Storage
 const {Storage} = require('@google-cloud/storage');
 
