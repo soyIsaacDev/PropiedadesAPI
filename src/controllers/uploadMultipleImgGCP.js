@@ -7,8 +7,7 @@ console.log("DIRECTORIO" + carpeta)
 
 const uploadImagenPropiedad = async (req, res, next) => {
   console.log("upload Imagen Propiedad")
-  console.log("Ultimo paso em upload imagenes")
-
+  
     try {
       // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
       const bodyObj = req.body.data;
@@ -52,6 +51,8 @@ const uploadImagenPropiedad = async (req, res, next) => {
       files.forEach(async (file) => {
         console.log("Image File " + JSON.stringify(file))
         console.log("CloudStoragePublicUrl Image File " + JSON.stringify(file.cloudStoragePublicUrl))
+        console.log("Resize Image File " + JSON.stringify(file.resizeName))
+        
           const imagenPropiedad = await ImgPropiedad.create({
             type: file.mimetype,
             img_name: file.cloudStoragePublicUrl,

@@ -202,6 +202,7 @@ async function imgCambioTamaño (archivo, width, height, nuevoNombre){
   const img_nombre = oname.slice(0, oname.length - 4);
   const fileName = `${nuevoNombre+img_nombre}.webp`;
   
+  
   const img_a_cambiar = {
       fieldname: archivo.fieldname,
       originalname: fileName,
@@ -222,6 +223,7 @@ async function imgCambioTamaño (archivo, width, height, nuevoNombre){
 const uploadFile = async (file) => new Promise((resolve, reject) => {
   const fileName = file.originalname;
   const fileUpload = bucket.file(fileName);
+  file.resizeName = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${fileName}`;
 
   const uploadStream = fileUpload.createWriteStream({
       resumable: false,
