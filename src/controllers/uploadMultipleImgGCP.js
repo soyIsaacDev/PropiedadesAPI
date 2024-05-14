@@ -7,6 +7,8 @@ console.log("DIRECTORIO" + carpeta)
 
 const uploadImagenPropiedad = async (req, res, next) => {
   console.log("upload Imagen Propiedad")
+  console.log("Ultimo paso em upload imagenes")
+
     try {
       // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
       const bodyObj = req.body.data;
