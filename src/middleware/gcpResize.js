@@ -13,13 +13,10 @@ const GCLOUD_BUCKET = config.get('GCLOUD_BUCKET');
 const bucket = storage.bucket(GCLOUD_BUCKET);
 
 const resizeImage = async (req, res, next) => {
-    const file = req.files;
-    const oname = Date.now() + file.originalname;
-    const img_nombre = oname.slice(0, oname.length - 4);
-    const fileName = `Thumbnail_WebP_${img_nombre}.webp`;
+    
 
     
-    async function imgCambioTamaño (archivo, nuevoNombre){
+    async function imgCambioTamaño (archivo, width, height, nuevoNombre){
         const oname = Date.now() + archivo.originalname;
         const img_nombre = oname.slice(0, oname.length - 4);
         const fileName = `${nuevoNombre+img_nombre}.webp`;
@@ -31,8 +28,8 @@ const resizeImage = async (req, res, next) => {
             mimetype: archivo.mimetype,
             buffer: await sharp(archivo.buffer)
                 .resize({
-                    width:298,
-                    height:240
+                    width,
+                    height
                 })
                 .toFormat('webp')
                 .webp({ quality: 50 })
@@ -41,7 +38,7 @@ const resizeImage = async (req, res, next) => {
         return img_a_cambiar;
     }
 
-    const thumbnail = await imgCambioTamaño(file,"Thumbnail_WebP_")
+    
 
     /* const thumbnail = {
         fieldname: file.fieldname,
@@ -89,11 +86,25 @@ const resizeImage = async (req, res, next) => {
         });
 
         uploadStream.end(file.buffer);
-
+        req.files = file;
         next()
     })
 
-    const uploadThumbnail = await uploadFile(thumbnail);
+
+    const files = req.files;
+
+    files.forEach(async file => {
+        const oname = Date.now() + file.originalname;
+        const img_nombre = oname.slice(0, oname.length - 4);
+        const fileName = `Thumbnail_WebP_${img_nombre}.webp`;
+        
+        const thumbnail = await imgCambioTamaño(file, 298, 240,"Thumbnail_WebP_")
+        const uploadThumbnail = await uploadFile(thumbnail);
+    
+        const Big_Img = await imgCambioTamaño(file,"Details_Big_Img_");
+        const uploadBig_Img = await uploadFile(Big_Img);
+        
+    });
     
 
     try {
