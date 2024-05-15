@@ -118,7 +118,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
       return next();
     }
 
-    
+   
 
       
       // Resizing Imagenes
@@ -151,7 +151,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
       req.files = files
       console.log("File despues de Resize  = " + JSON.stringify(files))
       next();
-    })
+   
 
   } catch (e) {
     console.log("Error " + e)
