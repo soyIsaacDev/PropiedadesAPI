@@ -49,7 +49,6 @@ const uploadImagenPropiedad = async (req, res, next) => {
       console.log("Files en creacion de Instancia " + JSON.stringify(files))
       // se crea una imagen por cada archivo y se liga a la Propiedad
       files.forEach(async (file) => {
-        const nombre_imagen = file.originalname.slice(0, file.originalname.length - 4);
         console.log("Image File " + JSON.stringify(file))
         console.log("CloudStoragePublicUrl Image File " + JSON.stringify(file.cloudStoragePublicUrl))
         console.log("Resize Image File " + JSON.stringify(file.resizeName))
