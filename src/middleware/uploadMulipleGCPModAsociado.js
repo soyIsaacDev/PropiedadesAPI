@@ -1,5 +1,6 @@
 'use strict';
 const config = require('../../configCloudBucket');
+const sharp = require('sharp');
 // Load the module for Cloud Storage
 const {Storage} = require('@google-cloud/storage');
 
@@ -153,10 +154,38 @@ const sendUploadToGCSAsync = async (req, res, next) => {
               next();
               
         });  */ 
-        next();
+        //next();
       });
       
-      stream.end(file.buffer);
+      // Resizing Imagenes
+      if(files[1]) {
+        const imgDetallesChica = await imgCambioTamaño(files[1], 428, 242, "Detalles_Img_Chica");
+        console.log("Detalles_Img_Chica " + JSON.stringify(imgDetallesChica))
+        files[1].resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgDetallesChica.originalname}`;
+        const uploadPrimerImgDetChica = await uploadFile(imgDetallesChica);
+      }
+
+      if(files[2]) {
+        const imgDetallesChica2 = await imgCambioTamaño(files[2], 428, 242, "Detalles_Img_Chica");
+        console.log("Detalles_Img_Chica2 " + JSON.stringify(imgDetallesChica2))
+        files[2].resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgDetallesChica2.originalname}`;
+        const uploadPrimerImgDetChica = await uploadFile(imgDetallesChica2);
+      }
+
+      files.forEach(async (file) => {
+        const thumbnail = await imgCambioTamaño(file, 298, 240,"Thumbnail_WebP_");
+        console.log("Thumbnail Resize " + JSON.stringify(thumbnail))
+        file.resizeNameThumbnail = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${thumbnail.originalname}`;
+        const uploadThumbnail = await uploadFile(thumbnail);
+
+        const imgGde = await imgCambioTamaño(file, 704, 504, "Detalles_Img_Gde");
+        file.resizeNameGde = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgGde.originalname}`;
+        console.log("Detalles_Img_Gde " + JSON.stringify(imgGde))
+        const uploadBig = await uploadFile(imgGde);
+      })
+
+      req.files = files
+      console.log("File despues de Resize  = " + JSON.stringify(files))
       next();
     })
 
@@ -165,6 +194,68 @@ const sendUploadToGCSAsync = async (req, res, next) => {
     res.send(e)
   }
 }
+
+async function imgCambioTamaño (archivo, width, height, nuevoNombre){
+  const oname = Date.now() + archivo.originalname;
+  const esJpeg = archivo.originalname.includes("jpeg")
+  var img_nombre = undefined;
+  if(esJpeg){
+    img_nombre = oname.slice(0, oname.length - 5);
+  }
+  else{
+
+    img_nombre = oname.slice(0, oname.length - 4);
+  }
+  const img_nombre = oname.slice(0, oname.length - 4);
+  const fileName = `${nuevoNombre+img_nombre}.webp`;
+  
+  const img_a_cambiar = {
+      fieldname: archivo.fieldname,
+      originalname: fileName,
+      encoding: archivo.encoding,
+      mimetype: archivo.mimetype,
+      buffer: await sharp(archivo.buffer)
+          .resize({
+              width,
+              height
+          })
+          .toFormat('webp')
+          .webp({ quality: 50 })
+          .toBuffer()
+  }
+  return img_a_cambiar;
+}
+
+const uploadFile = async (file) => new Promise((resolve, reject) => {
+  const fileName = file.originalname;
+  const fileUpload = bucket.file(fileName);
+
+  const uploadStream = fileUpload.createWriteStream({
+      resumable: false,
+      metadata: {
+          contentType: file.mimetype
+      }
+  });
+
+  uploadStream.on("error", async (err) => {
+      console.log("Error uploading image", err);
+
+      reject(err);
+  });
+
+  uploadStream.on("finish", async () => {
+      resolve({ 
+          name: fileName
+      });
+      await fileUpload.setMetadata({ 
+          contentType: "webp",
+          mimetype: "webp"
+      });
+      console.log("Upload success");
+  });
+
+  uploadStream.end(file.buffer);
+})
 
 function sendUploadToGCS(req, res, next) {
   // The existing code in the handler checks to see if there

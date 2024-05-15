@@ -1,6 +1,6 @@
 'use strict';
 const config = require('../../configCloudBucket');
-const sharp = require('sharp')
+const sharp = require('sharp');
 // Load the module for Cloud Storage
 const {Storage} = require('@google-cloud/storage');
 
@@ -203,7 +203,15 @@ const sendUploadToGCSAsync = async (req, res, next) => {
 
 async function imgCambioTamaño (archivo, width, height, nuevoNombre){
   const oname = Date.now() + archivo.originalname;
-  const img_nombre = oname.slice(0, oname.length - 4);
+  const esJpeg = archivo.originalname.includes("jpeg")
+  var img_nombre = undefined;
+  if(esJpeg){
+    img_nombre = oname.slice(0, oname.length - 5);
+  }
+  else{
+
+    img_nombre = oname.slice(0, oname.length - 4);
+  }
   const fileName = `${nuevoNombre+img_nombre}.webp`;
   
   const img_a_cambiar = {

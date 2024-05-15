@@ -63,6 +63,9 @@ const uploadImagenPropiedad = async (req, res, next) => {
           const imagenModeloAsociado = await ImgModeloAsociado.create({
             type: file.mimetype,
             img_name: file.cloudStoragePublicUrl,
+            thumbnail_img:file.resizeNameThumbnail,
+            detalles_imgGde:file.resizeNameGde,
+            detalles_imgChica:file.resizeNameChico,
             ModeloAsociadoPropiedadId: ModeloRelacionadoCreado[0].id
           });
           console.log("Imagen propiedad "+imagenModeloAsociado);
