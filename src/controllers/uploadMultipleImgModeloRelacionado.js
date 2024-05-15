@@ -62,7 +62,7 @@ const uploadImagenPropiedad = async (req, res, next) => {
         console.log("CloudStoragePublicUrl Image File " + JSON.stringify(file.cloudStoragePublicUrl))
           const imagenModeloAsociado = await ImgModeloAsociado.create({
             type: file.mimetype,
-            img_name: file.cloudStoragePublicUrl,
+            //img_name: file.cloudStoragePublicUrl,
             thumbnail_img:file.resizeNameThumbnail,
             detalles_imgGde:file.resizeNameGde,
             detalles_imgChica:file.resizeNameChico,
