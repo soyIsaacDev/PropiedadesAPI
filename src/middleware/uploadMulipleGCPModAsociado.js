@@ -156,6 +156,9 @@ const sendUploadToGCSAsync = async (req, res, next) => {
         });  */ 
         //next();
       });
+
+      stream.end(file.buffer);
+      console.log("File en Stream End  = " + JSON.stringify(files))
       
       // Resizing Imagenes
       if(files[1]) {
