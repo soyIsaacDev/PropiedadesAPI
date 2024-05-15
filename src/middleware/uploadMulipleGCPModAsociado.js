@@ -206,7 +206,6 @@ async function imgCambioTamaño (archivo, width, height, nuevoNombre){
 
     img_nombre = oname.slice(0, oname.length - 4);
   }
-  const img_nombre = oname.slice(0, oname.length - 4);
   const fileName = `${nuevoNombre+img_nombre}.webp`;
   
   const img_a_cambiar = {
