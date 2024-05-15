@@ -118,47 +118,8 @@ const sendUploadToGCSAsync = async (req, res, next) => {
       return next();
     }
 
-    files.forEach(async (file) => {
-      const oname = Date.now() + file.originalname;
-      const fileRef = bucket.file(oname);
-      file.cloudStoragePublicUrl = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${oname}`;
-      console.log("CloudStorage File Name "+file.cloudStoragePublicUrl);
-      const stream = fileRef.createWriteStream({
-        metadata: {
-          contentType: file.mimetype
-        }
-      });
-      console.log("stream " + JSON.stringify(stream));
+    
 
-      stream.on('error', err => {
-        // If there's an error move to the next handler
-        console.log("Error en stream " +err)
-        next(err);
-        
-      });
-
-      stream.on('finish', () => {
-        // Make the object publicly accessible
-        /* files.forEach(async (file) => {
-          // Set a new property on the file for the
-          // public URL for the object
-          // Cloud Storage public URLs are in the form:
-          // https://storage.googleapis.com/[BUCKET]/[OBJECT]
-          // Use an ECMAScript template literal (`https://...`)to
-          // populate the URL with appropriate values for the bucket
-          // ${GCLOUD_BUCKET} and object name ${oname}
-              //file.cloudStoragePublicUrl = `https://storage.cloud.google.com/${GCLOUD_BUCKET}/${oname}`;
-              
-              console.log(file.cloudStoragePublicUrl);
-              // Invoke the next middleware handler
-              next();
-              
-        });  */ 
-        //next();
-      });
-
-      stream.end(file.buffer);
-      console.log("File en Stream End  = " + JSON.stringify(files))
       
       // Resizing Imagenes
       if(files[1]) {
