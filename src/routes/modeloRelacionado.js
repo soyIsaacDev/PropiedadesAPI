@@ -32,7 +32,7 @@ server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
       include: [
         {
           model: ImgModeloAsociado,
-          attributes: ['img_name'],
+          attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
         }
       ]
     },);
