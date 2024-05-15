@@ -59,7 +59,7 @@ const uploadImagenPropiedad = async (req, res, next) => {
       // se crea una imagen por cada archivo y se liga a la Propiedad
       files.forEach(async (file) => {
         console.log("Image File " + JSON.stringify(file))
-        console.log("CloudStoragePublicUrl Image File " + JSON.stringify(file.cloudStoragePublicUrl))
+        //console.log("CloudStoragePublicUrl Image File " + JSON.stringify(file.cloudStoragePublicUrl))
           const imagenModeloAsociado = await ImgModeloAsociado.create({
             type: file.mimetype,
             //img_name: file.cloudStoragePublicUrl,

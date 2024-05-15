@@ -118,52 +118,6 @@ const sendUploadToGCSAsync = async (req, res, next) => {
       return next();
     }
 
-    files.forEach(async (file) => {
-      const oname = Date.now() + file.originalname;
-      const fileRef = bucket.file(oname);
-      file.cloudStoragePublicUrl = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${oname}`;
-      console.log("CloudStorage File Name "+file.cloudStoragePublicUrl);
-      const stream = fileRef.createWriteStream({
-        metadata: {
-          contentType: file.mimetype
-        }
-      });
-      console.log("stream " + JSON.stringify(stream));
-
-      
-
-      stream.on('error', err => {
-        // If there's an error move to the next handler
-        console.log("Error en stream " +err)
-        next(err);
-        
-      });
-
-      stream.on('finish', () => {
-        // Make the object publicly accessible
-        /* files.forEach(async (file) => {
-          // Set a new property on the file for the
-          // public URL for the object
-          // Cloud Storage public URLs are in the form:
-          // https://storage.googleapis.com/[BUCKET]/[OBJECT]
-          // Use an ECMAScript template literal (`https://...`)to
-          // populate the URL with appropriate values for the bucket
-          // ${GCLOUD_BUCKET} and object name ${oname}
-              //file.cloudStoragePublicUrl = `https://storage.cloud.google.com/${GCLOUD_BUCKET}/${oname}`;
-              
-              console.log(file.cloudStoragePublicUrl);
-              // Invoke the next middleware handler
-              next();
-              
-        });  */ 
-        
-      });
-      
-      stream.end(file.buffer);
-      console.log("File en Stream End  = " + JSON.stringify(files))
-
-    });
-
     // Resizing Imagenes
     if(files[1]) {
       const imgDetallesChica = await imgCambioTamaño(files[1], 428, 242, "Detalles_Img_Chica");
@@ -262,75 +216,8 @@ const uploadFile = async (file) => new Promise((resolve, reject) => {
   uploadStream.end(file.buffer);
 })
 
-function sendUploadToGCS(req, res, next) {
-  // The existing code in the handler checks to see if there
-  // is a file property on the HTTP request - if a file has
-  // been uploaded, then Multer will have created this
-  // property in the preceding middleware call.
-  console.log("Send Upload To GCS")
-  if (!req.file) {
-    console.log("No hay archivos a subir")
-    return next();
-  }
-  console.log("Archivos a subir " + JSON.stringify(req.file))
-  // In addition, a unique object name, oname,  has been
-  // created based on the file's original name. It has a
-  // prefix generated using the current date and time.
-  // This should ensure that a new file upload won't
-  // overwrite an existing object in the bucket
-  const oname = Date.now() + req.file.originalname;
-  // Get a reference to the new object
-  const file = bucket.file(oname);
-  
-  // Create a stream to write the file into
-  // Cloud Storage
-  // The uploaded file's MIME type can be retrieved using
-  // req.file.mimetype.
-  // Cloud Storage metadata can be used for many purposes,
-  // including establishing the type of an object.
-  const stream = file.createWriteStream({
-    metadata: {
-      contentType: req.file.mimetype
-    }
-  });
-  console.log("stream " + JSON.stringify(stream))
-  // Attach two event handlers (1) error
-  // Event handler if there's an error when uploading
-  stream.on('error', err => {
-    // If there's an error move to the next handler
-    next(err);
-    
-  });
-  
-  // Attach two event handlers (2) finish
-  // The upload completed successfully
-  /* stream.on('finish', () => {
-    // Make the object publicly accessible
-    file.makePublic().then(() => {
-      // Set a new property on the file for the
-      // public URL for the object
-  // Cloud Storage public URLs are in the form:
-  // https://storage.googleapis.com/[BUCKET]/[OBJECT]
-  // Use an ECMAScript template literal (`https://...`)to
-  // populate the URL with appropriate values for the bucket
-  // ${GCLOUD_BUCKET} and object name ${oname}
-      req.file.cloudStoragePublicUrl = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${oname}`;
-      
-      // Invoke the next middleware handler
-      next();
-      
-    });
-    
-  }); */
-  
-  // End the stream to upload the file's data
-  stream.end(req.file.buffer);
-  
-}
-// [END sendUploadToGCS]
 
 module.exports = {
-  sendUploadToGCS,
   multer,
   uploadImages,
   sendUploadToGCSAsync
