@@ -10,7 +10,7 @@ server.get("/getTodasLasPropiedades", async (req, res) => {
         include: [
           {
             model: ImgPropiedad,
-            attributes: ['img_name'],
+            attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
           }
         ]
       },);      
@@ -22,7 +22,7 @@ server.get("/getTodasLasPropiedades", async (req, res) => {
         include: [
           {
             model: ImgModeloAsociado,
-            attributes: ['img_name'],
+            attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
           }
         ]
       },);
@@ -70,14 +70,14 @@ server.get("/getTodasLasPropiedadesconIncludes", async (req, res) => {
       include: [
         {
           model: ImgPropiedad,
-          attributes: ['img_name'],
+          attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
         },
         {
           model: ModeloAsociadoPropiedad,
           include: 
             {
               model: ImgModeloAsociado,
-              attributes: ['img_name'],
+              attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
             }
           
         }
