@@ -77,7 +77,7 @@ server.get("/detallespropiedad/:id", async (req, res) => {
       include: [
         {
           model: ImgPropiedad,
-          attributes: ['img_name'],
+          attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
         },
         {
           model: AmenidadesDesarrollo,
@@ -127,7 +127,7 @@ server.get("/propiedadesconfavoritos/:ClienteId", isAuthenticated, async (req, r
           include: [
             {
               model: ImgPropiedad,
-              attributes: ['img_name'],
+              attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
             }
           ]
         },);
