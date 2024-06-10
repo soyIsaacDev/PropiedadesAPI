@@ -1,5 +1,5 @@
 const server = require("express").Router();
-const { Propiedad, ImgPropiedad, ModeloAsociadoPropiedad, ImgModeloAsociado } = require("../db");
+const { Propiedad, ImgPropiedad, ModeloAsociadoPropiedad, ImgModeloAsociado, AmenidadesDesarrollo, TipodePropiedad, TipoOperacion, Ciudad, Municipio, Estado, Colonia, EstiloArquitectura   } = require("../db");
 
 server.get("/getTodasLasPropiedades", async (req, res) => {
     try {
@@ -63,6 +63,7 @@ server.get("/getTodasLasPropiedades", async (req, res) => {
 
 server.get("/getTodasLasPropiedadesconIncludes", async (req, res) => {
   try {
+    console.log("AllProp Get Todas Las Propiedades con Includes")
     const dataDesarrollo = await Propiedad.findAll({
       order: [
           ['id', 'ASC'],
@@ -72,6 +73,34 @@ server.get("/getTodasLasPropiedadesconIncludes", async (req, res) => {
           model: ImgPropiedad,
           attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
         },
+        
+        {
+          model: AmenidadesDesarrollo,
+          through: {
+            attributes: []
+          }
+        },
+        {
+          model: TipodePropiedad
+        },
+        {
+          model: EstiloArquitectura
+        },
+        {
+          model: TipoOperacion
+        },
+        {
+          model: Ciudad
+        },
+        {
+          model: Municipio
+        },
+        {
+          model: Estado
+        },
+        {
+          model: Colonia
+        },
         {
           model: ModeloAsociadoPropiedad,
           include: 
@@ -80,7 +109,7 @@ server.get("/getTodasLasPropiedadesconIncludes", async (req, res) => {
               attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
             }
           
-        }
+        },
       ]
     },);      
     

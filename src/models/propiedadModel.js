@@ -34,7 +34,7 @@ module.exports = s => {
             allowNull: true,
         },
         cocheraTechada:{
-            type: DataTypes.ENUM("Si", "No"),
+            type: DataTypes.BOOLEAN,
             allowNull: true
         },
         m2Construccion:{

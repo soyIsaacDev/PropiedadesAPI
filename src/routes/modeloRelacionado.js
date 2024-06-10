@@ -11,7 +11,8 @@ const gcpUploadImagenesModeloRelacionado = require("../controllers/uploadMultipl
 const gcpImageUpload = require('../middleware/uploadMulipleGCPModAsociado');
 
 const { Propiedad, ImgPropiedad, AmenidadesDesarrollo, AmenidadesPropiedad,TipodePropiedad, 
-  TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, Favoritos, ModeloAsociadoPropiedad, ImgModeloAsociado  } = require("../db");
+  TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, Favoritos, ModeloAsociadoPropiedad, 
+  ImgModeloAsociado, EstiloArquitectura  } = require("../db");
 
 const DEVMODE = process.env.DEVELOPMENT;
 
@@ -33,7 +34,13 @@ server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
         {
           model: ImgModeloAsociado,
           attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
-        }
+        }, 
+        {
+          model: AmenidadesPropiedad,
+          through: {
+            attributes: []
+          }
+        },
       ]
     },);
     
@@ -59,7 +66,7 @@ server.get("/getDataandImagenModeloAsociadoPropiedad/:PropiedadId", async (req, 
         {
           model: ImgModeloAsociado,
           attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
-        }
+        },
       ], 
       
     },);
@@ -124,10 +131,13 @@ server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
         },
         {
           model: Propiedad,
-          attributes: ['id','precioMin', 'precioMax', 'calle', 'numeroPropiedad'],
+          attributes: ['id','precioMin', 'precioMax', 'calle', 'numeroPropiedad','posicion'],
           include: [{
               model: ImgPropiedad,
               attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+              order: [
+                ['createdAt', 'ASC'],
+              ],
             }, 
             {
               model: AmenidadesDesarrollo,
@@ -135,6 +145,9 @@ server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
             },
             {
               model: TipodePropiedad
+            },
+            {
+              model: EstiloArquitectura
             },
             {
               model: TipoOperacion
