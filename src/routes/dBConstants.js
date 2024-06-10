@@ -1,7 +1,7 @@
 const server = require("express").Router();
 
 const { Estado , Municipio, Ciudad, Colonia, ColoniaCiudad, AmenidadesDesarrollo, 
-  AmenidadesPropiedad, TipoOperacion, TipodePropiedad, AmenidadesModeloAmenidad } = require("../db");
+  AmenidadesPropiedad, TipoOperacion, TipodePropiedad, AmenidadesModeloAmenidad, EstiloArquitectura } = require("../db");
 
 server.post("/agregarEntidadGeografica", async (req, res) => { 
   try {
@@ -114,7 +114,11 @@ server.get("/agregarAmenidadDesarrollo", async (req, res) => {
 
 server.get("/getAmenidadesDesarrollo", async (req, res) => { 
   try {
-    const AmenidadesDesarrolloFind = await AmenidadesDesarrollo.findAll();
+    const AmenidadesDesarrolloFind = await AmenidadesDesarrollo.findAll({
+      order: [
+        ['nombreAmenidad', 'ASC'],
+      ]
+    });
     res.json(AmenidadesDesarrolloFind);
   } catch (e) {
     res.send(e);
@@ -123,7 +127,11 @@ server.get("/getAmenidadesDesarrollo", async (req, res) => {
 
 server.get("/getAmenidadesPropiedad", async (req, res) => { 
   try {
-    const AmenidadesPropiedadFind = await AmenidadesPropiedad.findAll();
+    const AmenidadesPropiedadFind = await AmenidadesPropiedad.findAll({
+      order: [
+        ['nombreAmenidad', 'ASC'],
+      ]
+    });
     res.json(AmenidadesPropiedadFind);
   } catch (e) {
     res.send(e);
@@ -151,11 +159,37 @@ server.get("/addTipodePropiedad/:TipoPropiedad", async (req, res) => {
 })
 server.get("/getTipodePropiedades", async (req, res) => { 
   try {
-    const TipodePropiedades = await TipodePropiedad.findAll();
+    const TipodePropiedades = await TipodePropiedad.findAll({
+      order: [
+        ['tipoPropiedad"', 'ASC'],
+      ]
+    });
     res.json(TipodePropiedades);
   } catch (e) {
     res.send(e);
   }
 })
+
+server.post("/agregarEstiloArquitectura", async (req, res) => { 
+  try {
+      const {nombreEstilo } = req.body;
+      
+      const EstiloCreado = await EstiloArquitectura.findOrCreate({
+        where:{ nombreEstilo }
+      });
+    res.json(EstiloCreado);
+  } catch (error) {
+    res.send(error);
+  }
+});
+
+server.get("/getEstiloArquitectura", async (req, res) => { 
+  try {      
+    const EstiloArq = await EstiloArquitectura.findAll();
+    res.json(EstiloArq);
+  } catch (error) {
+    res.send(error);
+  }
+});
 
 module.exports =  server;

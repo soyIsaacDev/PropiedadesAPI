@@ -30,8 +30,12 @@ module.exports = s => {
             allowNull: true,
         },
         cocheraTechada:{
-            type: DataTypes.ENUM("Si", "No"),
+            type: DataTypes.BOOLEAN,
             allowNull: true
+        },
+        niveles:{
+            type: DataTypes.INTEGER,
+            allowNull: true,
         },
         m2Construccion:{
             type:DataTypes.FLOAT,

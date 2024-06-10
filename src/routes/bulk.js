@@ -1,7 +1,7 @@
 const server = require("express").Router();
 const { Propiedad, Estado, Municipio, Ciudad, Colonia, AmenidadesPropiedad, AmenidadesDesarrollo,
     TipoOperacion, TipodePropiedad, ImgPropiedad, ModeloAsociadoPropiedad, ImgModeloAsociado, 
-    ColoniaCiudad, AmenidadesDesarrolloPropiedad, AmenidadesModeloAmenidad } = require("../db");
+    ColoniaCiudad, AmenidadesDesarrolloPropiedad, AmenidadesModeloAmenidad, EstiloArquitectura } = require("../db");
 
 
 
@@ -80,13 +80,26 @@ server.get("/bulk", async (req,res)=> {
             { nombreAmenidad:"Cancha de Basquetbol" },
         ])
         
-        const TipodeOpCreada = await TipoOperacion.create({tipodeOperacion:"Venta"});
+        const TipodeOpCreada = await TipoOperacion.bulkCreate(
+            [
+                {tipodeOperacion:"Venta"},
+                {tipodeOperacion:"Renta"},
+            ]
+        );
         
         const TipodePropCreada = await TipodePropiedad.bulkCreate(
             [
-                {tipoPropiedad:"Departamento"},
                 {tipoPropiedad:"Casa"},
-                {tipoPropiedad:"Loft"}
+                {tipoPropiedad:"Departamento"},
+                {tipoPropiedad:"Terreno"}
+            ]
+        );
+
+        const EstiloArq = await EstiloArquitectura.bulkCreate(
+            [
+                {nombreEstilo:"Minimalista"},
+                {nombreEstilo:"Moderno"},
+                {nombreEstilo:"Barroco"},
             ]
         );
 
@@ -106,8 +119,9 @@ server.get("/bulk", async (req,res)=> {
                 MunicipioId: 1,
                 CiudadId:1,
                 ColoniumId:1,
-                TipodePropiedadId:1,
+                TipodePropiedadId:2,
                 TipoOperacionId:1, 
+                EstiloArquitecturaId:1,
             },
             {
                 nombreDesarrollo:"Elementos",
@@ -124,6 +138,7 @@ server.get("/bulk", async (req,res)=> {
                 ColoniumId:1,
                 TipodePropiedadId:1,
                 TipoOperacionId:1,
+                EstiloArquitecturaId:2,
             },
             {
                 nombreDesarrollo:"Oceano",
@@ -138,8 +153,9 @@ server.get("/bulk", async (req,res)=> {
                 MunicipioId: 1,
                 CiudadId:1,
                 ColoniumId:1,
-                TipodePropiedadId:1,
+                TipodePropiedadId:2,
                 TipoOperacionId:1,
+                EstiloArquitecturaId:2,
             },
             {
                 nombreDesarrollo:"Sierra",
@@ -154,8 +170,9 @@ server.get("/bulk", async (req,res)=> {
                 MunicipioId: 1,
                 CiudadId:1,
                 ColoniumId:1,
-                TipodePropiedadId:1,
+                TipodePropiedadId:2,
                 TipoOperacionId:1,
+                EstiloArquitecturaId:3,
             },
             {
                 nombreDesarrollo:"Entre Rios",
@@ -172,6 +189,7 @@ server.get("/bulk", async (req,res)=> {
                 ColoniumId:1,
                 TipodePropiedadId:1,
                 TipoOperacionId:1,
+                EstiloArquitecturaId:1,
             },
             {
                 nombreDesarrollo:"India",
@@ -188,6 +206,7 @@ server.get("/bulk", async (req,res)=> {
                 ColoniumId:1,
                 TipodePropiedadId:1,
                 TipoOperacionId:1,
+                EstiloArquitecturaId:2,
             },
         
         ]);
@@ -233,10 +252,12 @@ server.get("/bulk", async (req,res)=> {
                 baños:2,
                 medio_baño:1,
                 espaciosCochera:2,
-                cocheraTechada:"No",
+                cocheraTechada:false,
                 m2Construccion:160,
                 m2Terreno:240,
                 m2Total:400,
+                posicion:Desarrollo[0].posicion,
+                niveles:1,
             },
             {
                 nombreModelo:"Lago de Cuemacuaro",
@@ -248,10 +269,12 @@ server.get("/bulk", async (req,res)=> {
                 baños:2,
                 medio_baño:1,
                 espaciosCochera:2,
-                cocheraTechada:"No",
+                cocheraTechada:false,
                 m2Construccion:120,
                 m2Terreno:100,
                 m2Total:220,
+                posicion:Desarrollo[0].posicion,
+                niveles:1,
             },
             {
                 nombreModelo:"Lago de Montebello",
@@ -263,10 +286,12 @@ server.get("/bulk", async (req,res)=> {
                 baños:2,
                 medio_baño:0,
                 espaciosCochera:2,
-                cocheraTechada:"No",
+                cocheraTechada:false,
                 m2Construccion:120,
                 m2Terreno:100,
                 m2Total:220,
+                posicion:Desarrollo[0].posicion,
+                niveles:1,
             },
             {
                 nombreModelo:"Lago de Tequesquitengo",
@@ -278,10 +303,12 @@ server.get("/bulk", async (req,res)=> {
                 baños:1,
                 medio_baño:0,
                 espaciosCochera:2,
-                cocheraTechada:"Si",
+                cocheraTechada:true,
                 m2Construccion:120,
                 m2Terreno:100,
                 m2Total:220,
+                posicion:Desarrollo[0].posicion,
+                niveles:1,
             },
             {
                 nombreModelo:"Fuego",
@@ -293,10 +320,12 @@ server.get("/bulk", async (req,res)=> {
                 baños:2,
                 medio_baño:1,
                 espaciosCochera:2,
-                cocheraTechada:"No",
+                cocheraTechada:false,
                 m2Construccion:160,
                 m2Terreno:240,
                 m2Total:400,
+                posicion:Desarrollo[1].posicion,
+                niveles:2,
             },
             {
                 nombreModelo:"Agua",
@@ -308,10 +337,12 @@ server.get("/bulk", async (req,res)=> {
                 baños:3,
                 medio_baño:1,
                 espaciosCochera:3,
-                cocheraTechada:"Si",
+                cocheraTechada:true,
                 m2Construccion:160,
                 m2Terreno:240,
                 m2Total:400,
+                posicion:Desarrollo[1].posicion,
+                niveles:2,
             },
             {
                 nombreModelo:"Aire",
@@ -323,10 +354,12 @@ server.get("/bulk", async (req,res)=> {
                 baños:3,
                 medio_baño:1,
                 espaciosCochera:3,
-                cocheraTechada:"Si",
+                cocheraTechada:true,
                 m2Construccion:160,
                 m2Terreno:240,
                 m2Total:400,
+                posicion:Desarrollo[1].posicion,
+                niveles:1,
             },
             {
                 nombreModelo:"Pacifico",
@@ -338,10 +371,12 @@ server.get("/bulk", async (req,res)=> {
                 baños:3,
                 medio_baño:1,
                 espaciosCochera:3,
-                cocheraTechada:"No",
+                cocheraTechada:false,
                 m2Construccion:160,
                 m2Terreno:240,
                 m2Total:400,
+                posicion:Desarrollo[2].posicion,
+                niveles:2,
             },
             {
                 nombreModelo:"Atlantico",
@@ -353,10 +388,12 @@ server.get("/bulk", async (req,res)=> {
                 baños:4,
                 medio_baño:1,
                 espaciosCochera:3,
-                cocheraTechada:"Si",
+                cocheraTechada:true,
                 m2Construccion:160,
                 m2Terreno:240,
                 m2Total:400,
+                posicion:Desarrollo[2].posicion,
+                niveles:1,
             },
             {
                 nombreModelo:"Sierra Madre",
@@ -368,10 +405,12 @@ server.get("/bulk", async (req,res)=> {
                 baños:3,
                 medio_baño:0,
                 espaciosCochera:4,
-                cocheraTechada:"Si",
+                cocheraTechada:true,
                 m2Construccion:160,
                 m2Terreno:200,
                 m2Total:360,
+                posicion:Desarrollo[3].posicion,
+                niveles:1,
             },
             {
                 nombreModelo:"Pico de Orizaba",
@@ -383,10 +422,12 @@ server.get("/bulk", async (req,res)=> {
                 baños:3,
                 medio_baño:1,
                 espaciosCochera:4,
-                cocheraTechada:"Si",
+                cocheraTechada:true,
                 m2Construccion:190,
                 m2Terreno:240,
                 m2Total:430,
+                posicion:Desarrollo[3].posicion,
+                niveles:1,
             },
             {
                 nombreModelo:"Nilo",
@@ -398,10 +439,12 @@ server.get("/bulk", async (req,res)=> {
                 baños:2,
                 medio_baño:0,
                 espaciosCochera:2,
-                cocheraTechada:"No",
+                cocheraTechada:false,
                 m2Construccion:160,
                 m2Terreno:240,
                 m2Total:400,
+                posicion:Desarrollo[4].posicion,
+                niveles:3,
             },
             {
                 nombreModelo:"Amazonas",
@@ -413,10 +456,12 @@ server.get("/bulk", async (req,res)=> {
                 baños:2,
                 medio_baño:1,
                 espaciosCochera:2,
-                cocheraTechada:"Si",
+                cocheraTechada:true,
                 m2Construccion:160,
                 m2Terreno:240,
                 m2Total:400,
+                posicion:Desarrollo[4].posicion,
+                niveles:2,
             },
             {
                 nombreModelo:"Tiber",
@@ -428,10 +473,12 @@ server.get("/bulk", async (req,res)=> {
                 baños:3,
                 medio_baño:1,
                 espaciosCochera:3,
-                cocheraTechada:"Si",
+                cocheraTechada:true,
                 m2Construccion:160,
                 m2Terreno:240,
                 m2Total:400,
+                posicion:Desarrollo[4].posicion,
+                niveles:3,
             },
             {
                 nombreModelo:"El Taj",
@@ -443,10 +490,12 @@ server.get("/bulk", async (req,res)=> {
                 baños:2,
                 medio_baño:1,
                 espaciosCochera:3,
-                cocheraTechada:"Si",
+                cocheraTechada:true,
                 m2Construccion:300,
                 m2Terreno:240,
                 m2Total:540,
+                posicion:Desarrollo[5].posicion,
+                niveles:2,
             },
             {
                 nombreModelo:"Loto",
@@ -458,10 +507,12 @@ server.get("/bulk", async (req,res)=> {
                 baños:2,
                 medio_baño:1,
                 espaciosCochera:3,
-                cocheraTechada:"No",
+                cocheraTechada:false,
                 m2Construccion:360,
                 m2Terreno:240,
                 m2Total:600,
+                posicion:Desarrollo[5].posicion,
+                niveles:1,
             },
             {
                 nombreModelo:"Akshardham",
@@ -473,11 +524,12 @@ server.get("/bulk", async (req,res)=> {
                 baños:3,
                 medio_baño:1,
                 espaciosCochera:3,
-                cocheraTechada:"Si",
+                cocheraTechada:true,
                 m2Construccion:400,
                 m2Terreno:300,
                 m2Total:700,
-                
+                posicion:Desarrollo[5].posicion,
+                niveles:2,            
             },
             
         ]);
@@ -612,9 +664,9 @@ server.get("/bulk", async (req,res)=> {
                 //Oceano
                 {
                     type: "image/jpeg",
-                    thumbnail_img: "https://storage.googleapis.com/dadinumco-media/Oceano1.jpg",
-                    detalles_imgGde: "https://storage.googleapis.com/dadinumco-media/Oceano1.jpg",
-                    detalles_imgChica: "https://storage.googleapis.com/dadinumco-media/Oceano1.jpg",
+                    thumbnail_img: "https://storage.googleapis.com/dadinumco-media/Oceano1.JPG",
+                    detalles_imgGde: "https://storage.googleapis.com/dadinumco-media/Oceano1.JPG",
+                    detalles_imgChica: "https://storage.googleapis.com/dadinumco-media/Oceano1.JPG",
                     PropiedadId:3
                 },
                 {

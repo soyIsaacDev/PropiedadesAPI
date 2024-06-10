@@ -45,7 +45,7 @@
 
     if(DEVMODE === "build"){
         corsOptions = {
-            origin: [ 'http://localhost:3000', 'http://192.168.100.2:3000', 'http://192.168.1.8:3000'],
+            origin: [ 'http://localhost:3000', 'http://192.168.1.20:3000', 'http://192.168.1.8:3000'],
             //importante: No dejar la ruta de origen con un "/" al final
             optionsSuccessStatus: 200,
             credentials: true 
@@ -163,7 +163,7 @@ async function checkTipoAutorizacion(req, res, next) {
     app.use("/dbConstants", dbconstants);
     app.use("/favoritos", /* isAuthenticated, */ favoritos);
     app.use("/modeloAsociadoPropiedad", modeloRelacionado);
-    app.use("/allProp", checkIfSignedIn, allPropiedades);
+    app.use("/allProp", /* checkIfSignedIn, */ allPropiedades);
     app.use("/bulk", bulk);
     app.use("/tipodeUsuario", tipoUsuario);
     //app.use("/authCliente", authCliente);
