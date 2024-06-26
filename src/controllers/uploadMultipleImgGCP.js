@@ -14,7 +14,7 @@ const uploadImagenPropiedad = async (req, res, next) => {
       //console.log("Body OBJ -> " +bodyObj);
       const parsedbodyObj = JSON.parse(bodyObj);
       const { nombreDesarrollo, añodeConstruccion, amenidadesDesarrollo, calle, numeroPropiedad, numeroInterior, 
-        colonia, estado, municipio,ciudad, posicion} = parsedbodyObj   
+        colonia, estado, municipio,ciudad, posicion, ordenImagen} = parsedbodyObj   
 
       console.log("Upload Multiple Img Controller Property -> " + nombreDesarrollo);
 
@@ -51,8 +51,10 @@ const uploadImagenPropiedad = async (req, res, next) => {
       files.forEach(async (file) => {
         console.log("Image File " + JSON.stringify(file))
         console.log("Resize Image File " + JSON.stringify(file.resizeName))
-        
+        const ordenData = ordenImagen.filter((imagen)=>imagen.imageName === file.originalname);
+
           const imagenPropiedad = await ImgPropiedad.create({
+            orden:ordenData[0].orden,
             type: file.mimetype,
             thumbnail_img:file.resizeNameThumbnail,
             detalles_imgGde:file.resizeNameGde,

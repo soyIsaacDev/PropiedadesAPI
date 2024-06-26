@@ -4,6 +4,9 @@ module.exports = s => {
     s.define(
       "ImgModeloAsociado", 
       {
+        orden:{
+          type:DataTypes.INTEGER
+        },
         type: {
           type: DataTypes.STRING,
         },

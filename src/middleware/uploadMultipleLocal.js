@@ -34,10 +34,11 @@ const uploadImages = (req, res, next) => {
       console.log("Mapping")
       console.log(file)
     })
-    console.log("Files " + JSON.stringify(files)); */
+     */
 
     // Validando el tamaño y tipo de imagenes permitidas
     files.forEach(async (file) => {
+      console.log("Files " + JSON.stringify(file));
 
       const allowedTypes = ['image/jpeg', 'image/png'];
       const maxSize = 5 * 1024 * 1024; // 5MB
@@ -75,7 +76,7 @@ const uploadImages = (req, res, next) => {
     files.forEach((file) => {
       //resizeImage(img_name, width, height, output_name)
       resizeImage(file.filename, 298, 240, "Thumbnail_WebP_" );
-      resizeImage(file.filename, 704, 504, "Detalles_Img_Gde" );
+      resizeImage(file.filename, 704, 504, "Detalles_Img_Gde_" );
     })
 
     if(files[1]) resizeImage(files[1].filename, 428, 242, "Detalles_Img_Chica_");

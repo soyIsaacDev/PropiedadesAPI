@@ -27,7 +27,7 @@
     dbconstants:require("./dBConstants"),
     apikeys:require("./Apikeys"), */
     const { index, clientes, imagen, propiedad, dbconstants, apikeys, favoritos, 
-      modeloRelacionado, allPropiedades, bulk, tipoUsuario } = require('./src/routes');
+      modeloRelacionado, allPropiedades, bulk, tipoUsuario, cargaProp } = require('./src/routes');
 
     const { TipodeUsuario } = require("./src/db");
     
@@ -45,7 +45,7 @@
 
     if(DEVMODE === "build"){
         corsOptions = {
-            origin: [ 'http://localhost:3000', 'http://192.168.1.20:3000', 'http://192.168.1.8:3000'],
+            origin: [ 'http://localhost:3000', 'http://192.168.1.15:3000', 'http://192.168.100.2:3000'],
             //importante: No dejar la ruta de origen con un "/" al final
             optionsSuccessStatus: 200,
             credentials: true 
@@ -120,7 +120,7 @@ function checkIfSignedIn(req, res, next) {
   console.log("Check if Signed In");
   //console.log("REQ"+req)
   const idToken = getIdToken(req);
-  //console.log("ID TOKEN " + idToken)
+  console.log("ID TOKEN " + idToken)
   // Verify the ID token using the Firebase Admin SDK.
   // User already logged in. Redirect to profile page.
   admin.auth().verifyIdToken(idToken).then((decodedClaims) => {
@@ -142,7 +142,7 @@ async function checkTipoAutorizacion(req, res, next) {
   try{
     const userPrincipal = await TipodeUsuario.findOne({ 
       where: { 
-        userId:"H1yDiPzVUHRpl2bMLNIujWl0xwN2", 
+        userId:"n7v1k7heCzbhiiZ1hUtJpmea8Hv1", 
         tipo:"DueñoIsaacBM"
       } 
     })
@@ -166,6 +166,8 @@ async function checkTipoAutorizacion(req, res, next) {
     app.use("/allProp", /* checkIfSignedIn, */ allPropiedades);
     app.use("/bulk", bulk);
     app.use("/tipodeUsuario", tipoUsuario);
+    //app.use("/cargaProp", checkIfSignedIn, checkTipoAutorizacion, cargaProp);
+    app.use("/cargaProp", cargaProp);
     //app.use("/authCliente", authCliente);
 
     /* app.use("/propiedades", PropiedadRoute);

@@ -5,7 +5,7 @@ server.get("/usuarioPrincipal", async (req,res)=> {
   try{
     const userPrincipal = await TipodeUsuario.findOne({ 
       where: { 
-        userId:"H1yDiPzVUHRpl2bMLNIujWl0xwN2" 
+        userId:"n7v1k7heCzbhiiZ1hUtJpmea8Hv1" 
       } 
     })
     userPrincipal.tipo="DueñoIsaacBM";

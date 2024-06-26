@@ -15,7 +15,7 @@ const uploadImagenPropiedad = async (req, res, next) => {
       const { nombreModelo, nombreDesarrollo, ciudad, precio, recamaras,
         baños, medio_baño, espaciosCochera, cocheraTechada, tipodePropiedad,
         tipodeOperacion, m2Construccion, m2Terreno, m2Total, amenidadesPropiedad, 
-        estado,
+        estado, posicion, ordenImagen
       } = parsedbodyObj
 
       console.log("Upload Multiple Img Controller Property -> " + nombreModelo);
@@ -28,6 +28,7 @@ const uploadImagenPropiedad = async (req, res, next) => {
           EstadoId:estado,
         },
         defaults: {
+          posicion,
           precio,
           recamaras, 
           baños,
@@ -60,7 +61,10 @@ const uploadImagenPropiedad = async (req, res, next) => {
       files.forEach(async (file) => {
         console.log("Image File " + JSON.stringify(file))
         //console.log("CloudStoragePublicUrl Image File " + JSON.stringify(file.cloudStoragePublicUrl))
-          const imagenModeloAsociado = await ImgModeloAsociado.create({
+        const ordenData = ordenImagen.filter((imagen)=>imagen.imageName === file.originalname);
+
+        const imagenModeloAsociado = await ImgModeloAsociado.create({
+            orden:ordenData[0].orden,
             type: file.mimetype,
             //img_name: file.cloudStoragePublicUrl,
             thumbnail_img:file.resizeNameThumbnail,

@@ -15,5 +15,6 @@ module.exports = {
     allPropiedades: require("./allPropiedades"),
     bulk:require("./bulk"),
     tipoUsuario:require("./tipodeUsuario"),
+    cargaProp:require("./cargaProp"),
     index: server,
   };

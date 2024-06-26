@@ -29,10 +29,17 @@ else{
 server.get("/getDataandImagenPropiedades", async (req, res) => {
   try {
     const dataPropiedad = await Propiedad.findAll({
+      order: [
+        ['precioMin','ASC']
+      ],
       include: [
         {
           model: ImgPropiedad,
-          attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+          attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+          separate:true,
+          order: [
+            ['orden','ASC']
+          ],
         },       
         {
           model: AmenidadesDesarrollo,
@@ -54,7 +61,7 @@ server.get("/getDataandImagenPropiedades", async (req, res) => {
 server.get("/getPropiedadNombre", async (req, res) => {
   try {
     const dataPropiedad = await Propiedad.findAll({
-      attributes: ['id', 'nombreDesarrollo'],
+      attributes: ['id', 'nombreDesarrollo', 'posicion'],
       
     },);
     
@@ -80,10 +87,13 @@ server.get("/detallespropiedad/:id", async (req, res) => {
     console.log("Buscando Detalles" + id);
     const dataPropiedad = await Propiedad.findOne({
       where:{id:id},
+      order: [
+        [ImgPropiedad,'orden','ASC']
+      ],
       include: [
         {
           model: ImgPropiedad,
-          attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+          attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
         },
         {
           model: AmenidadesDesarrollo,
