@@ -30,10 +30,17 @@ else{
 server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
   try {
     const dataPropiedad = await ModeloAsociadoPropiedad.findAll({
+      order: [
+        ['precio"','ASC']
+      ],
       include: [
         {
           model: ImgModeloAsociado,
-          attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+          attributes: ['orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+          separate:true,
+          order: [
+            ['orden','ASC']
+          ],
         }, 
         {
           model: AmenidadesPropiedad,
@@ -65,7 +72,11 @@ server.get("/getDataandImagenModeloAsociadoPropiedad/:PropiedadId", async (req, 
       include: [
         {
           model: ImgModeloAsociado,
-          attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+          attributes: ['orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+          separate:true,
+          order: [
+            ['orden','ASC']
+          ],
         },
       ], 
       
@@ -118,10 +129,13 @@ server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
     console.log("Buscando Detalles" + id);
     const dataPropiedad = await ModeloAsociadoPropiedad.findOne({
       where:{id:id},
+      order: [
+        [ImgModeloAsociado, 'orden','ASC']
+      ],
       include: [
         {
           model: ImgModeloAsociado,
-          attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+          attributes: ['orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
         },
         {
           model: AmenidadesPropiedad,
@@ -134,9 +148,10 @@ server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
           attributes: ['id','precioMin', 'precioMax', 'calle', 'numeroPropiedad','posicion'],
           include: [{
               model: ImgPropiedad,
-              attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+              attributes: ['orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+              separate:true,
               order: [
-                ['createdAt', 'ASC'],
+                [ 'orden','ASC']
               ],
             }, 
             {
@@ -164,7 +179,7 @@ server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
             {
               model: Colonia
             },
-          ]
+          ],
         }
       ]
     })
