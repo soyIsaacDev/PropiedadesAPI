@@ -99,19 +99,20 @@ const editarImagenPropiedad = async (req, res, next) => {
 
       const crearDatosdeImagenProp = async (file, PropId)=>{
         const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
-        console.log("Filename to Slice  "+file.filename);
-        const nombre_imagen = file.filename.slice(0, file.filename.length - 4);
+
+        console.log("Image File " + JSON.stringify(file))
+        console.log("Resize Image File " + JSON.stringify(file.originalname))
 
         const imagenPropiedad = await ImgPropiedad.create({
           orden:ordenData[0].orden,
           type: file.mimetype,
-          img_name: file.filename,
-          thumbnail_img:"Thumbnail_WebP_"+nombre_imagen+".webp",
-          detalles_imgGde:"Detalles_Img_Gde_"+nombre_imagen+".webp",
+          img_name: file.originalname,
+          thumbnail_img:file.resizeNameThumbnail,
+          detalles_imgGde:file.resizeNameGde,
           PropiedadId: PropId
         });
         if(ordenData[0].orden === 1 || ordenData[0].orden === 2 || ordenData[0].orden === 3){
-          imagenPropiedad.detalles_imgChica="Detalles_Img_Chica_"+nombre_imagen+".webp";
+          imagenPropiedad.detalles_imgChica=file.resizeNameChico;
           imagenPropiedad.save();
         }
       }
