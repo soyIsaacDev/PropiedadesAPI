@@ -4,6 +4,7 @@ const uploadMultipleImgLocal = require("../controllers/uploadImgPropiedadLocal")
 const editarPropiedad = require("../controllers/editarImgPropiedadLocal");
 const uploadMultiple = require("../middleware/uploadMultipleLocal");
 const gcpUploadImagenesPropiedad = require("../controllers/uploadMultipleImgGCP");
+const gcpeditarPropiedad = require("../controllers/editarMultipleImgGCP");
 const gcpImageUpload = require('../middleware/uploadMulipleGCP');
 
 const uploadImagenesModeloAsociado = require("../controllers/uploadImgModelo");
@@ -24,6 +25,11 @@ else{
     gcpImageUpload.sendUploadToGCSAsync,
     gcpUploadImagenesPropiedad.uploadImagenPropiedad,
   ); 
+  server.post('/editarPropiedad', 
+    gcpImageUpload.uploadImages,
+    gcpImageUpload.sendUploadToGCSAsync,
+    gcpeditarPropiedad.editarImagenPropiedad
+  )
 }
 
 server.post("/hardDeleteDesarrollo", async (req, res) => {
