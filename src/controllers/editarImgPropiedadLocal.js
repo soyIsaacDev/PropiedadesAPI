@@ -94,6 +94,7 @@ const editarPropiedad = async (req, res, next) => {
 
       const crearDatosdeImagenProp = async (file, PropId)=>{
         const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
+        console.log("Filename "+file.filename)
         const nombre_imagen = file.filename.slice(0, file.filename.length - 4);
 
         const imagenPropiedad = await ImgPropiedad.create({
