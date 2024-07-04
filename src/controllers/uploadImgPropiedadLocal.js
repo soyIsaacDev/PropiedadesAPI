@@ -68,10 +68,31 @@ const uploadImagenPropiedad = async (req, res, next) => {
             img_name: file.filename,
             thumbnail_img:"Thumbnail_WebP_"+nombre_imagen+".webp",
             detalles_imgGde:"Detalles_Img_Gde_"+nombre_imagen+".webp",
-            detalles_imgChica:"Detalles_Img_Chica_"+nombre_imagen+".webp",
             PropiedadId: PropiedadCreada[0].id
           });
       })
+
+      //Agregando Detalles Imagen Chica a los primeros files
+      if(files[1]){
+        const imagenPropiedad = await ImgPropiedad.findOne(
+          { where: 
+            { img_name:files[1].img_name,
+              PropiedadId: PropiedadCreada[0].id
+             } 
+          }) 
+        const nombre_imagen = files[1].filename.slice(0, files[1].filename.length - 4);
+        imagenPropiedad.detalles_imgChica= "Detalles_Img_Chica_"+nombre_imagen+".webp";
+      }
+      if(files[2]){
+        const imagenPropiedad = await ImgPropiedad.findOne(
+          { where: 
+            { img_name:files[2].img_name,
+              PropiedadId: PropiedadCreada[0].id
+             } 
+          }) 
+        const nombre_imagen = files[2].filename.slice(0, files[2].filename.length - 4);
+        imagenPropiedad.detalles_imgChica= "Detalles_Img_Chica_"+nombre_imagen+".webp";
+      }
 
       //res.json(`Se creo la Propiedad `+ PropiedadCreada[0].nombrePropiedad +  " y sus imagenes " );
       console.log("Se Creo la Propiedad");
