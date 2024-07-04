@@ -1,6 +1,9 @@
 'use strict';
 const config = require('../../configCloudBucket');
 const sharp = require('sharp');
+// https://www.cloudskillsboost.google/focuses/19196?parent=catalog
+// https://www.npmjs.com/package/@google-cloud/storage
+
 // Load the module for Cloud Storage
 const {Storage} = require('@google-cloud/storage');
 
