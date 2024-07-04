@@ -50,7 +50,7 @@ const uploadImagenPropiedad = async (req, res, next) => {
       // se crea una imagen por cada archivo y se liga a la Propiedad
       files.forEach(async (file) => {
         console.log("Image File " + JSON.stringify(file))
-        console.log("Resize Image File " + JSON.stringify(file.resizeName))
+        console.log("Resize Image File " + JSON.stringify(file.originalname))
         const ordenData = ordenImagen.filter((imagen)=>imagen.imageName === file.originalname);
 
           const imagenPropiedad = await ImgPropiedad.create({

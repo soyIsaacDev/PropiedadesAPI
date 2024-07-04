@@ -121,31 +121,35 @@ const sendUploadToGCSAsync = async (req, res, next) => {
       return next();
     }
 
-    // Resizing Imagenes
-    if(files[1]) {
-      const imgDetallesChica = await imgCambioTamaño(files[1], 428, 242, "Detalles_Img_Chica");
-      console.log("Detalles_Img_Chica " + JSON.stringify(imgDetallesChica))
-      files[1].resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgDetallesChica.originalname}`;
-      const uploadPrimerImgDetChica = await uploadFile(imgDetallesChica);
-    }
+    /* const filename =  Date.now() + '-' + file.originalname;
+    } */
 
-    if(files[2]) {
-      const imgDetallesChica2 = await imgCambioTamaño(files[2], 428, 242, "Detalles_Img_Chica");
-      console.log("Detalles_Img_Chica2 " + JSON.stringify(imgDetallesChica2))
-      files[2].resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgDetallesChica2.originalname}`;
-      const uploadPrimerImgDetChica = await uploadFile(imgDetallesChica2);
-    }
+
+    const bodyObj = req.body.data;
+    const parsedbodyObj = JSON.parse(bodyObj);
+    const { ordenImagen } = parsedbodyObj;
 
     files.forEach(async (file) => {
       const thumbnail = await imgCambioTamaño(file, 298, 240,"Thumbnail_WebP_");
-      console.log("Thumbnail Resize " + JSON.stringify(thumbnail))
       file.resizeNameThumbnail = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${thumbnail.originalname}`;
       const uploadThumbnail = await uploadFile(thumbnail);
 
       const imgGde = await imgCambioTamaño(file, 704, 504, "Detalles_Img_Gde");
       file.resizeNameGde = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgGde.originalname}`;
-      console.log("Detalles_Img_Gde " + JSON.stringify(imgGde))
       const uploadBig = await uploadFile(imgGde);
+      
+
+      const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
+
+      // Si estan ordenadas al principio se cambia el tamaño a Chico
+      if( ordenData.length>0 && ordenData[0].orden === 1 || 
+          ordenData.length>0 && ordenData[0].orden === 2 || 
+          ordenData.length>0 && ordenData[0].orden === 3)
+          {
+            const imagenChica = await imgCambioTamaño(file, 428, 242, "Detalles_Img_Chica_");
+            file.resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imagenChica.originalname}`;
+            const uploadImgDetChica = await uploadFile(imagenChica);
+          }
     })
 
     req.files = files
