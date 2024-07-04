@@ -48,10 +48,6 @@ const editarPropiedad = async (req, res, next) => {
       // buscamos si hay fotos
       const files = req.files;
 
-      // Si hay imagenes nuevas cargadas
-      if(files.length>0) {
-
-        console.log("Files en creacion de Instancia " + JSON.stringify(files))
         for (let i = 0; i < ordenImagen.length; i++) {
           if(ordenImagen[i].editar===1){ // 1 = editar
             const imagenPropiedad = await ImgPropiedad.findByPk(ordenImagen[i].id);
@@ -61,41 +57,72 @@ const editarPropiedad = async (req, res, next) => {
           }
           else if (ordenImagen[i].editar===2){ // 2 = borrar
             const imagenPropiedad = await ImgPropiedad.findByPk(ordenImagen[i].id);
-            await imagenPropiedad.destroy();
-            fs.unlink(carpeta+"/"+ordenImagen[i].img_name, (err) => {
+            
+            fs.unlink(carpeta+"/"+imagenPropiedad.img_name, (err) => {
                 if (err) {
-                    throw err;
+                    console.log(err);
                 }
                 console.log("Delete File successfully " + ordenImagen[i].img_name);
-              });
+            });
+            fs.unlink(carpeta+"/"+imagenPropiedad.thumbnail_img, (err) => {
+                if (err) {
+                    console.log(err);
+                }
+                console.log("Delete File successfully " +imagenPropiedad.thumbnail_img);
+            });
+            fs.unlink(carpeta+"/"+imagenPropiedad.detalles_imgGde, (err) => {
+                if (err) {
+                    console.log(err);
+                }
+                console.log("Delete File successfully " +imagenPropiedad.detalles_imgGde);
+            }); 
+            if(imagenPropiedad.detalles_imgChica !== null){
+              fs.unlink(carpeta+"/"+imagenPropiedad.detalles_imgChica, (err) => {
+                  if (err) {
+                      console.log(err);
+                  }
+                  console.log("Delete File successfully " +imagenPropiedad.detalles_imgChica);
+              }); 
+            }
+           
+            // Borrar datos de la imagen de la propiedad
+            await imagenPropiedad.destroy();
           }
         }
-        // se crea una imagen por cada archivo y se liga a la Propiedad
+
+      //  ---- Si hay imagenes nuevas cargadas
+
+      const crearDatosdeImagenProp = async (file, PropId)=>{
+        const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
+        const nombre_imagen = file.filename.slice(0, file.filename.length - 4);
+
+        const imagenPropiedad = await ImgPropiedad.create({
+          orden:ordenData[0].orden,
+          type: file.mimetype,
+          img_name: file.filename,
+          thumbnail_img:"Thumbnail_WebP_"+nombre_imagen+".webp",
+          detalles_imgGde:"Detalles_Img_Gde_"+nombre_imagen+".webp",
+          PropiedadId: PropId
+        });
+        if(ordenData[0].orden === 1 || ordenData[0].orden === 2 || ordenData[0].orden === 3){
+          imagenPropiedad.detalles_imgChica="Detalles_Img_Chica_"+nombre_imagen+".webp";
+          imagenPropiedad.save();
+        }
+      }
+
+      // Si hay imagenes nuevas cargadas
+      if(files.length>0) {
+
+        // se crea una imagen por cada archivo  y se liga a la Propiedad
         files.forEach(async (file) => {
-          //console.log("Image File " + JSON.stringify(file));
-          ordenImagen.forEach((imagen) =>{
-            
-            console.log("Orden Data Image Name "+imagen.img_name + " Image File " + file.originalname)
-          })
-          const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
-          
-          //console.log("Orden Data "+JSON.stringify(ordenImagen))
-            const nombre_imagen = file.filename.slice(0, file.filename.length - 4);
-            const imagenPropiedad = await ImgPropiedad.create({
-              orden:ordenData[0].orden,
-              type: file.mimetype,
-              img_name: file.filename,
-              thumbnail_img:"Thumbnail_WebP_"+nombre_imagen+".webp",
-              detalles_imgGde:"Detalles_Img_Gde_"+nombre_imagen+".webp",
-              detalles_imgChica:"Detalles_Img_Chica_"+nombre_imagen+".webp",
-              PropiedadId: PropiedadBuscada.id
-            });
+
+          crearDatosdeImagenProp(file, PropiedadBuscada.id );
         })
+        
       }
       else console.log("No hay imagenes nuevas a cargar");
       
-      //res.json(`Se creo la Propiedad `+ PropiedadBuscada[0].nombrePropiedad +  " y sus imagenes " );
-      console.log("Se Edito la Propiedad");
+      console.log(`Se Edito la Propiedad `+ PropiedadBuscada.nombreDesarrollo +  " y sus imagenes ");
       const propCreadaJSON = {
         Confirmacion:`Se edito la Propiedad `+ PropiedadBuscada.nombreDesarrollo
       }

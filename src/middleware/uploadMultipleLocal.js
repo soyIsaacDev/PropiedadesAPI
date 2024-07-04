@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 });
 
 // Create multer upload instance
-const upload = multer({ storage: storage });
+const upload = multer({ storage: storage, limits:{fieldSize: 25 * 1024 * 1024} });
 
 // Custom file upload middleware
 const uploadImages = (req, res, next) => {
@@ -71,16 +71,33 @@ const uploadImages = (req, res, next) => {
       return res.status(400).json({ errors });
     }
 
+    const bodyObj = req.body.data;
+    const parsedbodyObj = JSON.parse(bodyObj);
+    const { ordenImagen } = parsedbodyObj;
+    console.log(ordenImagen)
     // Cambiando tamaños de imagen
 
+    
     files.forEach((file) => {
+      const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
+      console.log(ordenData)
       //resizeImage(img_name, width, height, output_name)
       resizeImage(file.filename, 298, 240, "Thumbnail_WebP_" );
       resizeImage(file.filename, 704, 504, "Detalles_Img_Gde_" );
+      if( ordenData.length>0 && ordenData[0].orden === 1 || 
+        ordenData.length>0 && ordenData[0].orden === 2 || 
+        ordenData.length>0 && ordenData[0].orden === 3)
+        {
+          resizeImage(file.filename, 428, 242, "Detalles_Img_Chica_");
+        }
     })
 
+    
+    
+    
+    /* if(files[0]) resizeImage(files[0].filename, 428, 242, "Detalles_Img_Chica_");
     if(files[1]) resizeImage(files[1].filename, 428, 242, "Detalles_Img_Chica_");
-    if(files[2]) resizeImage(files[2].filename, 428, 242, "Detalles_Img_Chica_");
+    if(files[2]) resizeImage(files[2].filename, 428, 242, "Detalles_Img_Chica_"); */
 
     // Attach files to the request object  
     req.files = files;
