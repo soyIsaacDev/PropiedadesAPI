@@ -130,6 +130,8 @@ const sendUploadToGCSAsync = async (req, res, next) => {
     const { ordenImagen } = parsedbodyObj;
 
     files.forEach(async (file) => {
+
+      
       const thumbnail = await imgCambioTamaño(file, 298, 240,"Thumbnail_WebP_");
       file.resizeNameThumbnail = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${thumbnail.originalname}`;
       const uploadThumbnail = await uploadFile(thumbnail);
@@ -138,6 +140,8 @@ const sendUploadToGCSAsync = async (req, res, next) => {
       file.resizeNameGde = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgGde.originalname}`;
       const uploadBig = await uploadFile(imgGde);
       
+      // Agregro el nombre con sello unico de fecha tomandolo de thumbnail
+      file.filename = thumbnail.originalname;
 
       const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
 
