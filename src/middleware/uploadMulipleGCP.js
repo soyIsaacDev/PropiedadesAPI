@@ -134,7 +134,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
       file.resizeNameThumbnail = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${thumbnail.originalname}`;
       const uploadThumbnail = await uploadFile(thumbnail);
 
-      const imgGde = await imgCambioTamaño(file, 704, 504, "Detalles_Img_Gde");
+      const imgGde = await imgCambioTamaño(file, 704, 504, "Detalles_Img_Gde_");
       file.resizeNameGde = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgGde.originalname}`;
       const uploadBig = await uploadFile(imgGde);
       
@@ -163,7 +163,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
 }
 
 async function imgCambioTamaño (archivo, width, height, nuevoNombre){
-  const oname = Date.now() + archivo.originalname;
+  const oname = Date.now()+"_" + archivo.originalname;
   const esJpeg = archivo.originalname.includes("jpeg")
   var img_nombre = undefined;
   if(esJpeg){

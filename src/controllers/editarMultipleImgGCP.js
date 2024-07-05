@@ -76,21 +76,22 @@ const editarImagenPropiedad = async (req, res, next) => {
 
           const imagenPropiedad = await ImgPropiedad.findByPk(ordenImagen[i].id);
           
-          async function deleteFile() {
-            console.log("Archivo a Borrar "+ imagenPropiedad.thumbnail_img)
-            await storage.bucket(GCLOUD_BUCKET_NAME).file(imagenPropiedad.thumbnail_img).delete();
+          async function deleteFile(fileName) {
+            await storageBucket.file(fileName).delete();
           
-            console.log(`gs://${GCLOUD_BUCKET_NAME}/${imagenPropiedad.thumbnail_img} deleted`);
+            console.log(`gs://${GCLOUD_BUCKET_NAME}/${fileName} deleted`);
           }
 
-          deleteFile().catch(console.error);
-
-          /* deleteFile(imagenPropiedad.img_name).catch(console.error);
-          deleteFile(imagenPropiedad.thumbnail_img).catch(console.error);
-          deleteFile(imagenPropiedad.detalles_imgGde).catch(console.error);
+          console.log("Nombre Imagen A Borrar " + imagenPropiedad.originalname);
+          deleteFile(imagenPropiedad.originalname).catch(console.error);
+          const ThumbnailNombre = "Thumbnail_WebP_"+ imagenPropiedad.originalname;
+          const ImgGdeNombre = "Detalles_Img_Gde_" + imagenPropiedad.originalname;
+          const ImgChicaNombre = "Detalles_Img_Chica_" + imagenPropiedad.originalname;
+          deleteFile(ThumbnailNombre).catch(console.error);
+          deleteFile(ImgGdeNombre).catch(console.error);
           if(imagenPropiedad.detalles_imgChica !== null){
-            deleteFile(imagenPropiedad.detalles_imgChica).catch(console.error);
-          } */
+            deleteFile(ImgChicaNombre).catch(console.error);
+          }
           
           // Borrar datos de la imagen de la propiedad
           await imagenPropiedad.destroy();
