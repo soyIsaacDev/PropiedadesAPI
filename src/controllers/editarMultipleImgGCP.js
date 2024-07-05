@@ -76,18 +76,21 @@ const editarImagenPropiedad = async (req, res, next) => {
 
           const imagenPropiedad = await ImgPropiedad.findByPk(ordenImagen[i].id);
           
-          async function deleteFile(fileName) {
-            await storageBucket.file(fileName).delete();
+          async function deleteFile() {
+            console.log("Archivo a Borrar "+ imagenPropiedad.thumbnail_img)
+            await storage.bucket(GCLOUD_BUCKET_NAME).file(imagenPropiedad.thumbnail_img).delete();
           
-            console.log(`gs://${GCLOUD_BUCKET_NAME}/${fileName} deleted`);
+            console.log(`gs://${GCLOUD_BUCKET_NAME}/${imagenPropiedad.thumbnail_img} deleted`);
           }
 
-          deleteFile(imagenPropiedad.img_name).catch(console.error);
+          deleteFile().catch(console.error);
+
+          /* deleteFile(imagenPropiedad.img_name).catch(console.error);
           deleteFile(imagenPropiedad.thumbnail_img).catch(console.error);
           deleteFile(imagenPropiedad.detalles_imgGde).catch(console.error);
           if(imagenPropiedad.detalles_imgChica !== null){
             deleteFile(imagenPropiedad.detalles_imgChica).catch(console.error);
-          }
+          } */
           
           // Borrar datos de la imagen de la propiedad
           await imagenPropiedad.destroy();
