@@ -56,6 +56,7 @@ const uploadImagenPropiedad = async (req, res, next) => {
           const imagenPropiedad = await ImgPropiedad.create({
             orden:ordenData[0].orden,
             type: file.mimetype,
+            img_name:file.originalname,
             thumbnail_img:file.resizeNameThumbnail,
             detalles_imgGde:file.resizeNameGde,
             detalles_imgChica:file.resizeNameChico,
