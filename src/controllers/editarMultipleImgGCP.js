@@ -82,11 +82,11 @@ const editarImagenPropiedad = async (req, res, next) => {
             console.log(`gs://${GCLOUD_BUCKET_NAME}/${fileName} deleted`);
           }
 
-          console.log("Nombre Imagen A Borrar " + imagenPropiedad.originalname);
-          deleteFile(imagenPropiedad.originalname).catch(console.error);
-          const ThumbnailNombre = "Thumbnail_WebP_"+ imagenPropiedad.originalname;
-          const ImgGdeNombre = "Detalles_Img_Gde_" + imagenPropiedad.originalname;
-          const ImgChicaNombre = "Detalles_Img_Chica_" + imagenPropiedad.originalname;
+          console.log("Nombre Imagen A Borrar " + imagenPropiedad.img_name);
+          deleteFile(imagenPropiedad.img_name).catch(console.error);
+          const ThumbnailNombre = "Thumbnail_WebP_"+ imagenPropiedad.img_name;
+          const ImgGdeNombre = "Detalles_Img_Gde_" + imagenPropiedad.img_name;
+          const ImgChicaNombre = "Detalles_Img_Chica_" + imagenPropiedad.img_name;
           deleteFile(ThumbnailNombre).catch(console.error);
           deleteFile(ImgGdeNombre).catch(console.error);
           if(imagenPropiedad.detalles_imgChica !== null){
