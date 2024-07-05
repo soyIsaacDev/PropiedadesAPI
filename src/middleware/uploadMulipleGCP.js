@@ -131,17 +131,21 @@ const sendUploadToGCSAsync = async (req, res, next) => {
 
     files.forEach(async (file) => {
 
+      // Agregando Nombre Unico segun la fecha
+      const uniqueDateName = Date.now()+"_" + file.originalname;
+
+      // Agregro el nombre con sello unico de fecha tomandolo de thumbnail
+      file.uniqueDateName = uniqueDateName
       
-      const thumbnail = await imgCambioTamaño(file, 298, 240,"Thumbnail_WebP_");
+      const thumbnail = await imgCambioTamaño(file, 298, 240, uniqueDateName, "Thumbnail_WebP_");
       file.resizeNameThumbnail = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${thumbnail.originalname}`;
       const uploadThumbnail = await uploadFile(thumbnail);
 
-      const imgGde = await imgCambioTamaño(file, 704, 504, "Detalles_Img_Gde_");
+      const imgGde = await imgCambioTamaño(file, 704, 504, uniqueDateName, "Detalles_Img_Gde_");
       file.resizeNameGde = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgGde.originalname}`;
       const uploadBig = await uploadFile(imgGde);
       
-      // Agregro el nombre con sello unico de fecha tomandolo de thumbnail
-      file.filename = thumbnail.originalname;
+      
 
       const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
 
@@ -150,7 +154,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
           ordenData.length>0 && ordenData[0].orden === 2 || 
           ordenData.length>0 && ordenData[0].orden === 3)
           {
-            const imagenChica = await imgCambioTamaño(file, 428, 242, "Detalles_Img_Chica_");
+            const imagenChica = await imgCambioTamaño(file, 428, 242, uniqueDateName, "Detalles_Img_Chica_");
             file.resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imagenChica.originalname}`;
             const uploadImgDetChica = await uploadFile(imagenChica);
           }
@@ -166,16 +170,16 @@ const sendUploadToGCSAsync = async (req, res, next) => {
   }
 }
 
-async function imgCambioTamaño (archivo, width, height, nuevoNombre){
-  const oname = Date.now()+"_" + archivo.originalname;
+
+async function imgCambioTamaño (archivo, width, height, uniqueDateName, nuevoNombre){
   const esJpeg = archivo.originalname.includes("jpeg")
   var img_nombre = undefined;
   if(esJpeg){
-    img_nombre = oname.slice(0, oname.length - 5);
+    img_nombre = uniqueDateName.slice(0, uniqueDateName.length - 5);
   }
   else{
 
-    img_nombre = oname.slice(0, oname.length - 4);
+    img_nombre = uniqueDateName.slice(0, uniqueDateName.length - 4);
   }
   const fileName = `${nuevoNombre+img_nombre}.webp`;
   
