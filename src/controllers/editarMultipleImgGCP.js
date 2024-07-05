@@ -82,11 +82,12 @@ const editarImagenPropiedad = async (req, res, next) => {
             console.log(`gs://${GCLOUD_BUCKET_NAME}/${fileName} deleted`);
           }
 
-          console.log("Nombre Imagen A Borrar " + imagenPropiedad.img_name);
-          deleteFile(imagenPropiedad.img_name).catch(console.error);
-          const ThumbnailNombre = "Thumbnail_WebP_"+ imagenPropiedad.img_name;
-          const ImgGdeNombre = "Detalles_Img_Gde_" + imagenPropiedad.img_name;
-          const ImgChicaNombre = "Detalles_Img_Chica_" + imagenPropiedad.img_name;
+          console.log("Nombre Imagen A Borrar " + imagenPropiedad.uniqueDateName);
+          const ThumbnailNombre = "Thumbnail_WebP_"+ imagenPropiedad.uniqueDateName;
+          const ImgGdeNombre = "Detalles_Img_Gde_" + imagenPropiedad.uniqueDateName;
+          const ImgChicaNombre = "Detalles_Img_Chica_" + imagenPropiedad.uniqueDateName;
+
+          deleteFile(imagenPropiedad.uniqueDateName).catch(console.error);
           deleteFile(ThumbnailNombre).catch(console.error);
           deleteFile(ImgGdeNombre).catch(console.error);
           if(imagenPropiedad.detalles_imgChica !== null){
@@ -110,7 +111,7 @@ const editarImagenPropiedad = async (req, res, next) => {
         const imagenPropiedad = await ImgPropiedad.create({
           orden:ordenData[0].orden,
           type: file.mimetype,
-          img_name: file.filename,
+          uniqueDateName: file.uniqueDateName,
           thumbnail_img:file.resizeNameThumbnail,
           detalles_imgGde:file.resizeNameGde,
           PropiedadId: PropId
