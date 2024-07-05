@@ -111,7 +111,7 @@ const editarImagenPropiedad = async (req, res, next) => {
         const imagenPropiedad = await ImgPropiedad.create({
           orden:ordenData[0].orden,
           type: file.mimetype,
-          uniqueDateName: file.uniqueDateName,
+          img_name: file.uniqueDateName,
           thumbnail_img:file.resizeNameThumbnail,
           detalles_imgGde:file.resizeNameGde,
           PropiedadId: PropId
