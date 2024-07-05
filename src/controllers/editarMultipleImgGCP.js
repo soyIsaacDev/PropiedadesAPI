@@ -77,7 +77,7 @@ const editarImagenPropiedad = async (req, res, next) => {
           const imagenPropiedad = await ImgPropiedad.findByPk(ordenImagen[i].id);
           
           async function deleteFile(fileName) {
-            await storageBucket.file(imagenPropiedad.img_name).delete(deleteOptions);
+            await storageBucket.file(imagenPropiedad.img_name).delete();
           
             console.log(`gs://${GCLOUD_BUCKET_NAME}/${fileName} deleted`);
           }
