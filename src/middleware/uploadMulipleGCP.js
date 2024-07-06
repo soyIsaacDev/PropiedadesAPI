@@ -162,6 +162,5 @@ const uploadFile = async (file) => new Promise((resolve, reject) => {
 
 
 module.exports = {
-  uploadImages,
   sendUploadToGCSAsync
 };
