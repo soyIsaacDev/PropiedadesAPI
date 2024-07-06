@@ -21,7 +21,6 @@ if(DEVMODE === "build" ){
 }
 else{
   server.post("/nuevaPropiedad", 
-    gcpImageUpload.uploadImages,
     gcpImageUpload.sendUploadToGCSAsync,
     gcpUploadImagenesPropiedad.uploadImagenPropiedad,
   ); 
