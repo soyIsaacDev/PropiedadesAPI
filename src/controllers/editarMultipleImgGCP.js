@@ -83,9 +83,9 @@ const editarImagenPropiedad = async (req, res, next) => {
           }
 
           console.log("Nombre Imagen A Borrar " + imagenPropiedad.img_name);
-          const ThumbnailNombre = "Thumbnail_WebP_"+ imagenPropiedad.img_name;
-          const ImgGdeNombre = "Detalles_Img_Gde_" + imagenPropiedad.img_name;
-          const ImgChicaNombre = "Detalles_Img_Chica_" + imagenPropiedad.img_name;
+          const ThumbnailNombre = "Thumbnail_WebP_"+ imagenPropiedad.img_name + ".webp";
+          const ImgGdeNombre = "Detalles_Img_Gde_" + imagenPropiedad.img_name + ".webp";
+          const ImgChicaNombre = "Detalles_Img_Chica_" + imagenPropiedad.img_name + ".webp";
 
           deleteFile(imagenPropiedad.img_name).catch(console.error);
           deleteFile(ThumbnailNombre).catch(console.error);
