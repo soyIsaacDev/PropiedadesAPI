@@ -132,10 +132,19 @@ const sendUploadToGCSAsync = async (req, res, next) => {
     files.forEach(async (file) => {
 
       // Agregando Nombre Unico segun la fecha
-      const uniqueDateName = Date.now()+"_" + file.originalname;
+      const nombreUnicoFecha = Date.now()+"_" + file.originalname;
+      const esJpeg = archivo.originalname.includes("jpeg")
+      var uniqueDateName = undefined;
+      if(esJpeg){
+        uniqueDateName = nombreUnicoFecha.slice(0, nombreUnicoFecha.length - 5);
+      }
+      else{
+
+        uniqueDateName = nombreUnicoFecha.slice(0, nombreUnicoFecha.length - 4);
+      }
 
       // Agregro el nombre con sello unico de fecha tomandolo de thumbnail
-      file.uniqueDateName = uniqueDateName
+      file.uniqueDateName = uniqueDateName;
       
       const thumbnail = await imgCambioTamaño(file, 298, 240, uniqueDateName, "Thumbnail_WebP_");
       file.resizeNameThumbnail = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${thumbnail.originalname}`;
@@ -172,16 +181,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
 
 
 async function imgCambioTamaño (archivo, width, height, uniqueDateName, nuevoNombre){
-  const esJpeg = archivo.originalname.includes("jpeg")
-  var img_nombre = undefined;
-  if(esJpeg){
-    img_nombre = uniqueDateName.slice(0, uniqueDateName.length - 5);
-  }
-  else{
-
-    img_nombre = uniqueDateName.slice(0, uniqueDateName.length - 4);
-  }
-  const fileName = `${nuevoNombre+img_nombre}.webp`;
+  const fileName = `${nuevoNombre+uniqueDateName}.webp`;
   
   const img_a_cambiar = {
       fieldname: archivo.fieldname,
