@@ -133,7 +133,7 @@ const sendUploadToGCSAsync = async (req, res, next) => {
 
       // Agregando Nombre Unico segun la fecha
       const nombreUnicoFecha = Date.now()+"_" + file.originalname;
-      const esJpeg = archivo.originalname.includes("jpeg")
+      const esJpeg = file.originalname.includes("jpeg")
       var uniqueDateName = undefined;
       if(esJpeg){
         uniqueDateName = nombreUnicoFecha.slice(0, nombreUnicoFecha.length - 5);
