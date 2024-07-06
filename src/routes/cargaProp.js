@@ -24,8 +24,7 @@ else{
     gcpImageUpload.sendUploadToGCSAsync,
     gcpUploadImagenesPropiedad.uploadImagenPropiedad,
   ); 
-  server.post('/editarPropiedad', 
-    gcpImageUpload.uploadImages,
+  server.post('/editarPropiedad',
     gcpImageUpload.sendUploadToGCSAsync,
     gcpeditarPropiedad.editarImagenPropiedad
   )
