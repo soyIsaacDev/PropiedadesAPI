@@ -21,10 +21,12 @@ if(DEVMODE === "build" ){
 }
 else{
   server.post("/nuevaPropiedad", 
+    gcpImageUpload.uploadImages,
     gcpImageUpload.sendUploadToGCSAsync,
     gcpUploadImagenesPropiedad.uploadImagenPropiedad,
   ); 
-  server.post('/editarPropiedad',
+  server.post('/editarPropiedad', 
+    gcpImageUpload.uploadImages,
     gcpImageUpload.sendUploadToGCSAsync,
     gcpeditarPropiedad.editarImagenPropiedad
   )
