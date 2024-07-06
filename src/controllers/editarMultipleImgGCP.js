@@ -87,7 +87,7 @@ const editarImagenPropiedad = async (req, res, next) => {
           const ImgGdeNombre = "Detalles_Img_Gde_" + imagenPropiedad.img_name + ".webp";
           const ImgChicaNombre = "Detalles_Img_Chica_" + imagenPropiedad.img_name + ".webp";
 
-          deleteFile(imagenPropiedad.img_name).catch(console.error);
+          //deleteFile(imagenPropiedad.img_name).catch(console.error);
           deleteFile(ThumbnailNombre).catch(console.error);
           deleteFile(ImgGdeNombre).catch(console.error);
           if(imagenPropiedad.detalles_imgChica !== null){
