@@ -58,32 +58,22 @@ const editarDataModelo = async (req, res, next) => {
           }
           else if (ordenImagen[i].editar===2){ // 2 = borrar
             const imagenModelo = await ImgModeloAsociado.findByPk(ordenImagen[i].id);
+
+            function deleteFile(fileName){
+              fs.unlink(carpeta+"/"+fileName, (err) => {
+                if (err) {
+                    console.log(err);
+                }
+                console.log("Delete File successfully " + fileName);
+              });
+            }
             
-            fs.unlink(carpeta+"/"+imagenModelo.img_name, (err) => {
-                if (err) {
-                    console.log(err);
-                }
-                console.log("Delete File successfully " + ordenImagen[i].img_name);
-            });
-            fs.unlink(carpeta+"/"+imagenModelo.thumbnail_img, (err) => {
-                if (err) {
-                    console.log(err);
-                }
-                console.log("Delete File successfully " +imagenModelo.thumbnail_img);
-            });
-            fs.unlink(carpeta+"/"+imagenModelo.detalles_imgGde, (err) => {
-                if (err) {
-                    console.log(err);
-                }
-                console.log("Delete File successfully " +imagenModelo.detalles_imgGde);
-            }); 
+            deleteFile(imagenModelo.img_name);
+            deleteFile(imagenModelo.thumbnail_img);
+            deleteFile(imagenModelo.detalles_imgGde)
+
             if(imagenModelo.detalles_imgChica !== null){
-              fs.unlink(carpeta+"/"+imagenModelo.detalles_imgChica, (err) => {
-                  if (err) {
-                      console.log(err);
-                  }
-                  console.log("Delete File successfully " +imagenModelo.detalles_imgChica);
-              }); 
+              deleteFile(imagenModelo.detalles_imgChica);
             }
            
             // Borrar datos de la imagen de la propiedad
@@ -91,33 +81,29 @@ const editarDataModelo = async (req, res, next) => {
           }
         }
 
-      //  ---- Si hay imagenes nuevas cargadas
+      //  ---- Si se cargaron imagenes nuevas
 
       const crearDatosdeImagenModelo = async (file, ModeloId)=>{
         const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
-        console.log("Filename "+file.filename)
-        const nombre_imagen = file.filename.slice(0, file.filename.length - 4);
 
         const imagenModelo = await ImgModeloAsociado.create({
           orden:ordenData[0].orden,
           type: file.mimetype,
-          img_name: file.filename,
-          thumbnail_img:"Thumbnail_WebP_"+nombre_imagen+".webp",
-          detalles_imgGde:"Detalles_Img_Gde_"+nombre_imagen+".webp",
+          img_name: file.uniqueDateName,
+          thumbnail_img:file.resizeNameThumbnail,
+          detalles_imgGde:file.resizeNameGde,
           ModeloAsociadoPropiedadId: ModeloId
         });
         if(ordenData[0].orden === 1 || ordenData[0].orden === 2 || ordenData[0].orden === 3){
-          imagenModelo.detalles_imgChica="Detalles_Img_Chica_"+nombre_imagen+".webp";
+          imagenModelo.detalles_imgChica = file.resizeNameChico;
           imagenModelo.save();
         }
       }
 
       // Si hay imagenes nuevas cargadas
       if(files.length>0) {
-
         // se crea una imagen por cada archivo  y se liga a la Propiedad
         files.forEach(async (file) => {
-
           crearDatosdeImagenModelo(file, ModeloBuscado.id );
         })
         

@@ -32,6 +32,7 @@ if(DEVMODE === "build" ){
   server.post('/nuevaPropiedad',  uploadImagenesLocal, uploadDataImagenDesarrollo);
   server.post('/editarPropiedad', uploadImagenesLocal, editarDataDesarrollo);
   // Modelo
+                // Ver si se puede simplificar borrado UploadDataImagenModelo y gcpUploadDataImagenDesarrollo para hacer uno solo
   server.post('/nuevoModeloAsociadoPropiedad',  uploadImagenesLocal, uploadDataImagenModelo);
   server.post('/editarModeloAsociadoPropiedad', uploadImagenesLocal, editarDataModelo);
 }
