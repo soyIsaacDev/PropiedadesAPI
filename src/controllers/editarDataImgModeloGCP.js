@@ -21,7 +21,7 @@ const path = require('path');
 //const carpeta = path.join(__dirname, '../../uploads')
 //console.log("DIRECTORIO" + carpeta)
 
-const editarImagenPropiedad = async (req, res, next) => {
+const gcpEditarImagenModelo = async (req, res, next) => {
   console.log("upload Imagen Propiedad to GCP")
   
     try {
@@ -145,5 +145,5 @@ const editarImagenPropiedad = async (req, res, next) => {
   };
 
   module.exports = {
-    editarImagenPropiedad
+    gcpEditarImagenModelo
   };

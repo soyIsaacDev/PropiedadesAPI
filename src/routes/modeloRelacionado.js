@@ -4,28 +4,10 @@ const path = require('path');
 
 
 var public = path.join(__dirname,'../../uploads');
-const upload = require("../middleware/upload");
-const uploadImagenesModeloAsociado = require("../controllers/uploadImgModelo");
-const uploadMultiple = require("../middleware/uploadMultipleLocal");
-const gcpUploadImagenesModeloRelacionado = require("../controllers/uploadMultipleImgModeloRelacionado");
-const gcpImageUpload = require('../middleware/uploadMulipleGCPModAsociado');
 
 const { Propiedad, ImgPropiedad, AmenidadesDesarrollo, AmenidadesPropiedad,TipodePropiedad, 
   TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, Favoritos, ModeloAsociadoPropiedad, 
   ImgModeloAsociado, EstiloArquitectura  } = require("../db");
-
-const DEVMODE = process.env.DEVELOPMENT;
-
-if(DEVMODE === "build"){
-  server.post('/nuevoModeloAsociadoPropiedad', uploadMultiple, uploadImagenesModeloAsociado.uploadImagenModeloAsociadoPropiedad);
-}
-else{
-  server.post("/nuevoModeloAsociadoPropiedad", 
-    gcpImageUpload.uploadImages,
-    gcpImageUpload.sendUploadToGCSAsync,
-    gcpUploadImagenesModeloRelacionado.uploadImagenPropiedad
-  ); 
-}
 
 server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
   try {
@@ -36,7 +18,7 @@ server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
       include: [
         {
           model: ImgModeloAsociado,
-          attributes: ['orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+          attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
           separate:true,
           order: [
             ['orden','ASC']
@@ -110,18 +92,6 @@ server.get("/getDataandImagenModeloAsociadoPropiedad/:PropiedadId", async (req, 
     res.send(e);
   } 
 }); */
-
-server.post("/hardDeleteModeloRelacionado", async (req, res) => {
-  try {
-    const { IdModeloABorrar} = req.body;
-    const modeloRelacionadoABorrar = await ModeloAsociadoPropiedad.findByPk(IdModeloABorrar);
-    await modeloRelacionadoABorrar.destroy();
-    
-    res.json("Se Borro el modelo ID " + IdModeloABorrar);
-  } catch (e) {
-    res.send(e)
-  }
-})
 
 server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
   try {

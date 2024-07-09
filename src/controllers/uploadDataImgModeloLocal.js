@@ -2,7 +2,7 @@
 const {  ImgModeloAsociado, ModeloAsociadoPropiedad, AmenidadesModeloAmenidad, Propiedad } = require("../db");
 const ciudad = require("../models/ciudad");
 
-const uploadImagenModeloAsociadoPropiedad = async (req, res) => {
+const uploadDataImagenModelo = async (req, res) => {
     try {
       const bodyObj = req.body.data;
       const parsedbodyObj = JSON.parse(bodyObj)
@@ -108,5 +108,5 @@ const uploadImagenModeloAsociadoPropiedad = async (req, res) => {
   };
 
   module.exports = {
-    uploadImagenModeloAsociadoPropiedad
+    uploadDataImagenModelo
   };

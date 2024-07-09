@@ -21,7 +21,7 @@ const multer = Multer({
 });
 
 // Custom file upload middleware
-const uploadImages = (req, res, next) => {
+const uploadImagenesGCP = (req, res, next) => {
   console.log("Upload Imagenes")
   // Use multer upload instance
   multer.array('imagenesfiles', 25)(req, res, (err) => {
@@ -235,6 +235,6 @@ const uploadFile = async (file) => new Promise((resolve, reject) => {
 
 module.exports = {
   multer,
-  uploadImages,
+  uploadImagenesGCP,
   sendUploadToGCSAsync
 };
