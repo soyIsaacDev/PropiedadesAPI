@@ -4,14 +4,14 @@
 const {Storage} = require('@google-cloud/storage');
 
 const fs = require("fs");
-const {  ImgPropiedad, Propiedad, AmenidadesDesarrolloPropiedad } = require("../db");
+const {  ImgModeloAsociado, ModeloAsociadoPropiedad, AmenidadesModeloAmenidad, Propiedad } = require("../db");
 
 // Creates a client
 const storage = new Storage();
 
 const config = require('../../configCloudBucket');
 // variable so you can use it in code
-const GCLOUD_BUCKET_NAME = config.get('GCLOUD_BUCKET');
+const GCLOUD_BUCKET_NAME = config.get('GCLOUD_MOD_ASOC_BUCKET');
 
 // Get a reference to the Cloud Storage bucket
 const storageBucket = storage.bucket(GCLOUD_BUCKET_NAME);
@@ -22,42 +22,42 @@ const path = require('path');
 //console.log("DIRECTORIO" + carpeta)
 
 const gcpEditarImagenModelo = async (req, res, next) => {
-  console.log("upload Imagen Propiedad to GCP")
+  console.log("upload Imagen Modelo to GCP")
   
     try {
       // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
       const bodyObj = req.body.data;
       //console.log("Body OBJ -> " +bodyObj);
       const parsedbodyObj = JSON.parse(bodyObj);
-      const {id, nombreDesarrollo, añodeConstruccion, amenidadesDesarrollo, 
-        calle, numeroPropiedad, numeroInterior, colonia, estado, municipio, ciudad, posicion,
-        TipodePropiedadId, TipoOperacionId, EstiloArquitecturaId, ordenImagen} = parsedbodyObj   
+      const {modeloId, desarrolloId, nombreModelo, precio, ciudad, estado, posicion, recamaras,
+        baños, medio_baño, espaciosCochera, cocheraTechada, m2Construccion, m2Terreno, m2Total, 
+        amenidadesPropiedad, ordenImagen } = parsedbodyObj   
 
-      console.log("GCP Upload Multiple Img Controller Property -> " + nombreDesarrollo);
+      console.log("Editar Modelo GCP -> " + nombremodelo);
 
-      const PropiedadBuscada = await Propiedad.findByPk(id);
+      const ModeloBuscado = await ModeloAsociadoPropiedad.findByPk(modeloId);
+      ModeloBuscado.PropiedadId = parseInt(desarrolloId);
+      ModeloBuscado.nombreModelo = nombreModelo;
+      ModeloBuscado.precio = precio;
+      ModeloBuscado.CiudadId = ciudad;
+      ModeloBuscado.EstadoId = estado;
+      ModeloBuscado.posicion = posicion;
+      ModeloBuscado.recamaras = recamaras;
+      ModeloBuscado.baños = baños;
+      ModeloBuscado.medio_baño = medio_baño
+      ModeloBuscado.espaciosCochera = espaciosCochera;
+      ModeloBuscado.cocheraTechada = cocheraTechada;
+      ModeloBuscado.m2Construccion = m2Construccion;
+      ModeloBuscado.m2Terreno  = m2Terreno;
+      ModeloBuscado.m2Total = m2Total;
 
-      PropiedadBuscada.nombreDesarrollo = nombreDesarrollo;
-      PropiedadBuscada.EstadoId = estado;
-      PropiedadBuscada.MunicipioId = municipio;
-      PropiedadBuscada.CiudadId = ciudad;
-      PropiedadBuscada.TipodePropiedadId = TipodePropiedadId;
-      PropiedadBuscada.TipoOperacionId = TipoOperacionId;
-      PropiedadBuscada.EstiloArquitecturaId = EstiloArquitecturaId;
-      PropiedadBuscada.añodeConstruccion = añodeConstruccion;
-      PropiedadBuscada.calle = calle;
-      PropiedadBuscada.numeroPropiedad = numeroPropiedad;
-      PropiedadBuscada.numeroInterior = numeroInterior;
-      PropiedadBuscada.ColoniumId = colonia;
-      PropiedadBuscada.posicion = posicion;
+      ModeloBuscado.save();
 
-      PropiedadBuscada.save();
-
-      for (let i = 0; i < amenidadesDesarrollo.length; i++) {        
-        await AmenidadesDesarrolloPropiedad.findOrCreate({ 
+      for (let i = 0; i < amenidadesPropiedad.length; i++) {        
+        await  AmenidadesModeloAmenidad.findOrCreate({ 
           where:{
-            PropiedadId:id, 
-            AmenidadesDesarrolloId:amenidadesDesarrollo[i] 
+            ModeloAsociadoPropiedadId:modeloId, 
+            AmenidadesPropiedadId:amenidadesPropiedad[i] 
           }
         })
       }      
@@ -67,14 +67,14 @@ const gcpEditarImagenModelo = async (req, res, next) => {
 
       for (let i = 0; i < ordenImagen.length; i++) {
         if(ordenImagen[i].editar===1){ // 1 = editar
-          const imagenPropiedad = await ImgPropiedad.findByPk(ordenImagen[i].id);
-          console.log("Orden Id "+ordenImagen[i].id +  " Editar "+ ordenImagen[i].editar+  " Orden Editado " +JSON.stringify(imagenPropiedad))
-          imagenPropiedad.orden= ordenImagen[i].orden
-          await imagenPropiedad.save();
+          const imagenModelo = await ImgModeloAsociado.findByPk(ordenImagen[i].id);
+          console.log("Orden Id "+ordenImagen[i].id +  " Editar "+ ordenImagen[i].editar+  " Orden Editado " +JSON.stringify(imagenModelo))
+          imagenModelo.orden= ordenImagen[i].orden
+          await imagenModelo.save();
         }
         else if (ordenImagen[i].editar===2){ // 2 = borrar
 
-          const imagenPropiedad = await ImgPropiedad.findByPk(ordenImagen[i].id);
+          const imagenModelo = await ImgModeloAsociado.findByPk(ordenImagen[i].id);
           
           async function deleteFile(fileName) {
             await storageBucket.file(fileName).delete();
@@ -82,33 +82,33 @@ const gcpEditarImagenModelo = async (req, res, next) => {
             console.log(`gs://${GCLOUD_BUCKET_NAME}/${fileName} deleted`);
           }
 
-          console.log("Nombre Imagen A Borrar " + imagenPropiedad.img_name);
-          const ThumbnailNombre = "Thumbnail_WebP_"+ imagenPropiedad.img_name + ".webp";
-          const ImgGdeNombre = "Detalles_Img_Gde_" + imagenPropiedad.img_name + ".webp";
-          const ImgChicaNombre = "Detalles_Img_Chica_" + imagenPropiedad.img_name + ".webp";
+          console.log("Nombre Imagen A Borrar " + imagenModelo.img_name);
+          const ThumbnailNombre = "Thumbnail_WebP_"+ imagenModelo.img_name + ".webp";
+          const ImgGdeNombre = "Detalles_Img_Gde_" + imagenModelo.img_name + ".webp";
+          const ImgChicaNombre = "Detalles_Img_Chica_" + imagenModelo.img_name + ".webp";
 
-          //deleteFile(imagenPropiedad.img_name).catch(console.error);
+          //deleteFile(imagenModelo.img_name).catch(console.error);
           deleteFile(ThumbnailNombre).catch(console.error);
           deleteFile(ImgGdeNombre).catch(console.error);
-          if(imagenPropiedad.detalles_imgChica !== null){
+          if(imagenModelo.detalles_imgChica !== null){
             deleteFile(ImgChicaNombre).catch(console.error);
           }
           
           // Borrar datos de la imagen de la propiedad
-          await imagenPropiedad.destroy();
+          await imagenModelo.destroy();
         }
       }
 
 
       //  ---- Si se cargaron imagenes nuevas
 
-      const crearDatosdeImagenProp = async (file, PropId)=>{
+      const crearDatosdeImagenModelo = async (file, PropId)=>{
         const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
 
         console.log("Image File " + JSON.stringify(file))
         console.log("Resize Image File " + JSON.stringify(file.originalname))
 
-        const imagenPropiedad = await ImgPropiedad.create({
+        const imagenModelo = await ImgModeloAsociado.create({
           orden:ordenData[0].orden,
           type: file.mimetype,
           img_name: file.uniqueDateName,
@@ -117,8 +117,8 @@ const gcpEditarImagenModelo = async (req, res, next) => {
           PropiedadId: PropId
         });
         if(ordenData[0].orden === 1 || ordenData[0].orden === 2 || ordenData[0].orden === 3){
-          imagenPropiedad.detalles_imgChica=file.resizeNameChico;
-          imagenPropiedad.save();
+          imagenModelo.detalles_imgChica=file.resizeNameChico;
+          imagenModelo.save();
         }
       }
 
@@ -126,14 +126,14 @@ const gcpEditarImagenModelo = async (req, res, next) => {
       if(files.length>0) {
         // se crea una imagen por cada archivo  y se liga a la Propiedad
         files.forEach(async (file) => {
-          crearDatosdeImagenProp(file, PropiedadBuscada.id );
+          crearDatosdeImagenModelo(file, ModeloBuscado.id );
         })
       }
       else console.log("No hay imagenes nuevas a cargar");
       
-      console.log(`Se Edito la Propiedad `+ PropiedadBuscada.nombreDesarrollo +  " y sus imagenes ");
+      console.log(`Se Edito la Propiedad `+ ModeloBuscado.nombre +  " y sus imagenes ");
       const propCreadaJSON = {
-        Confirmacion:`Se edito la Propiedad `+ PropiedadBuscada.nombreDesarrollo
+        Confirmacion:`Se edito la Propiedad `+ ModeloBuscado.nombreDesarrollo
       }
       res.json(propCreadaJSON? propCreadaJSON :{mensaje:"No Se pudo crear la propieda"} );
 
