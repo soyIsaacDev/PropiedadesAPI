@@ -17,7 +17,7 @@ const multer = Multer({
 });
 
 // Custom file upload middleware
-const uploadImages = (req, res, next) => {
+const uploadModeloImages = (req, res, next) => {
   console.log("Upload Imagenes")
   // Use multer upload instance
   multer.array('imagenesfiles', 25)(req, res, (err) => {
@@ -34,7 +34,7 @@ const uploadImages = (req, res, next) => {
       console.log(file)
     }) */
     for (let i = 0; i < files.length; i++) {
-      console.log("Files in uploadImages "+JSON.stringify(files[i].originalname));
+      console.log("Files in Modelo "+JSON.stringify(files[i].originalname));
     }
     const data = req.body;
     console.log("Image Data "+ JSON.stringify(data))
@@ -101,7 +101,7 @@ const bucket = storage.bucket(GCLOUD_BUCKET);
 // req.file is processed and will have a new property:
 // * ``cloudStoragePublicUrl`` the public url to the object.
 // [START sendUploadToGCS]
-const sendUploadToGCSAsync = async (req, res, next) => {
+const sendModeloUploadToGCSAsync = async (req, res, next) => {
   try {
     console.log("Send Upload To GCS")
     // buscamos si hay fotos
@@ -266,6 +266,6 @@ const uploadFile = async (file) => new Promise((resolve, reject) => {
 
 module.exports = {
   multer,
-  uploadImages,
-  sendUploadToGCSAsync
+  uploadModeloImages,
+  sendModeloUploadToGCSAsync
 };

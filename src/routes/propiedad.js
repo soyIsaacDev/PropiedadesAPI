@@ -4,27 +4,9 @@ const path = require('path');
 
 
 var public = path.join(__dirname,'../../uploads');
-const uploadMultipleImgLocal = require("../controllers/uploadImgPropiedadLocal");
-const uploadMultiple = require("../middleware/uploadMultipleLocal");
-const gcpUploadImagenesPropiedad = require("../controllers/uploadMultipleImgGCP");
-const gcpImageUpload = require('../middleware/uploadMulipleGCP');
-const gcpResize = require("../middleware/gcpResize")
 
 const { Propiedad, ImgPropiedad, AmenidadesDesarrollo,TipodePropiedad, 
   TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, Favoritos  } = require("../db");
-
-const DEVMODE = process.env.DEVELOPMENT;
-
-if(DEVMODE === "build" ){
-  server.post('/nuevaPropiedad', uploadMultiple, uploadMultipleImgLocal.uploadImagenPropiedad);
-}
-else{
-  server.post("/nuevaPropiedad", 
-    gcpImageUpload.uploadImages,
-    gcpImageUpload.sendUploadToGCSAsync,
-    gcpUploadImagenesPropiedad.uploadImagenPropiedad,
-  ); 
-}
 
 server.get("/getDataandImagenPropiedades", async (req, res) => {
   try {
@@ -177,19 +159,6 @@ server.get("/propiedadesconfavoritos/:ClienteId", isAuthenticated, async (req, r
       res.json(AllPropandFav);
   } catch (e) {
       res.send(e)
-  }
-})
-
-
-server.post("/hardDeleteDesarrollo", async (req, res) => {
-  try {
-    const { IdDesarrolloABorrar} = req.body;
-    const DesarrolloABorrar = await Propiedad.findByPk(IdDesarrolloABorrar);
-    await DesarrolloABorrar.destroy();
-    
-    res.json("Se borrro el desarrollo ID " + IdDesarrolloABorrar);
-  } catch (e) {
-    res.send(e)
   }
 })
 

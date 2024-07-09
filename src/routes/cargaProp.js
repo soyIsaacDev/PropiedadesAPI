@@ -1,35 +1,54 @@
 const server = require("express").Router();
 
-const uploadMultipleImgLocal = require("../controllers/uploadImgPropiedadLocal");
-const editarPropiedad = require("../controllers/editarImgPropiedadLocal");
-const uploadMultiple = require("../middleware/uploadMultipleLocal");
-const gcpUploadImagenesPropiedad = require("../controllers/uploadMultipleImgGCP");
-const gcpeditarPropiedad = require("../controllers/editarMultipleImgGCP");
-const gcpImageUpload = require('../middleware/uploadMulipleGCP');
+// Upload Local
 
-const uploadImagenesModeloAsociado = require("../controllers/uploadImgModelo");
-const gcpUploadImagenesModeloRelacionado = require("../controllers/uploadMultipleImgModeloRelacionado");
-const gcpImageUploadModAsociado = require('../middleware/uploadMulipleGCPModAsociado');
+const uploadImagenesLocal = require("../middleware/uploadImagenesLocal"); // Upload Solo Imagenes
+// Desarrollo
+const { uploadDataImagenDesarrollo } = require("../controllers/uploadDataImgDesarrolloLocal");
+const { editarDataDesarrollo } = require("../controllers/editarDataImgDesarrolloLocal");
+  // Modelo
+const { uploadDataImagenModelo} = require("../controllers/uploadDataImgModeloLocal");
+const { editarDataModelo } = require("../controllers/editarDataImgModeloLocal");
+
+
+// Upload Google Cloud 
+
+  // Upload Imagenes separado entre Desarrollo y Modelo ya que el buket donde se guardan las imagenes es diferente 
+const {uploadImagenesGCP, sendUploadToGCSAsync } = require('../middleware/uploadImagenesGCPDesarrollo'); // Upload Solo Imagenes
+const {uploadModeloImages, sendModeloUploadToGCSAsync} = require('../middleware/uploadImagenesGCPModelo');// Upload Solo Imagenes
+  
+  // Desarrollo
+const {gcpUploadDataImagenDesarrollo} = require("../controllers/uploadDataImgDesarrolloGCP");
+const {gcpEditarImagenDesarrollo} = require("../controllers/editarDataImgDesarrolloGCP");
+  // Modelo
+const {gcpUploadImagenModeloRelacionado} = require("../controllers/uploadDataImgModeloGCP");
+const { gcpEditarImagenModelo } = require("../controllers/editarDataImgModeloGCP"); 
 
 const { Propiedad  } = require("../db");
 
 const DEVMODE = process.env.DEVELOPMENT;
 
 if(DEVMODE === "build" ){
-  server.post('/nuevaPropiedad', uploadMultiple, uploadMultipleImgLocal.uploadImagenPropiedad);
-  server.post('/editarPropiedad', uploadMultiple, editarPropiedad.editarPropiedad);
+  server.post('/nuevaPropiedad',  uploadImagenesLocal, uploadDataImagenDesarrollo);
+  server.post('/editarPropiedad', uploadImagenesLocal, editarDataDesarrollo);
+  // Modelo
+  server.post('/nuevoModeloAsociadoPropiedad',  uploadImagenesLocal, uploadDataImagenModelo);
+  server.post('/editarModeloAsociadoPropiedad', uploadImagenesLocal, editarDataModelo);
 }
 else{
-  server.post("/nuevaPropiedad", 
-    gcpImageUpload.uploadImages,
-    gcpImageUpload.sendUploadToGCSAsync,
-    gcpUploadImagenesPropiedad.uploadImagenPropiedad,
+  server.post("/nuevaPropiedad", uploadImagenesGCP, sendUploadToGCSAsync,
+    gcpUploadDataImagenDesarrollo,
   ); 
-  server.post('/editarPropiedad', 
-    gcpImageUpload.uploadImages,
-    gcpImageUpload.sendUploadToGCSAsync,
-    gcpeditarPropiedad.editarImagenPropiedad
+  server.post('/editarPropiedad', uploadImagenesGCP, sendUploadToGCSAsync,
+    gcpEditarImagenDesarrollo
   )
+  // Modelo
+  server.post("/nuevoModeloAsociadoPropiedad", uploadModeloImages, sendModeloUploadToGCSAsync,
+    gcpUploadImagenModeloRelacionado
+  ); 
+  server.post('/editarModeloAsociadoPropiedad', uploadModeloImages, sendModeloUploadToGCSAsync,
+    gcpEditarImagenModelo
+  );
 }
 
 server.post("/hardDeleteDesarrollo", async (req, res) => {
@@ -43,17 +62,6 @@ server.post("/hardDeleteDesarrollo", async (req, res) => {
       res.send(e)
     }
 })
-
-if(DEVMODE === "build"){
-    server.post('/nuevoModeloAsociadoPropiedad', uploadMultiple, uploadImagenesModeloAsociado.uploadImagenModeloAsociadoPropiedad);
-}
-else{
-    server.post("/nuevoModeloAsociadoPropiedad", 
-      gcpImageUploadModAsociado.uploadImages,
-      gcpImageUploadModAsociado.sendUploadToGCSAsync,
-      gcpUploadImagenesModeloRelacionado.uploadImagenPropiedad
-    ); 
-}
 
 server.post("/hardDeleteModeloRelacionado", async (req, res) => {
   try {
