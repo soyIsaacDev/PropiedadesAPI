@@ -102,7 +102,7 @@ const gcpEditarImagenModelo = async (req, res, next) => {
 
       //  ---- Si se cargaron imagenes nuevas
 
-      const crearDatosdeImagenModelo = async (file, PropId)=>{
+      const crearDatosdeImagenModelo = async (file, ModeloId)=>{
         const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
 
         console.log("Image File " + JSON.stringify(file))
@@ -114,7 +114,7 @@ const gcpEditarImagenModelo = async (req, res, next) => {
           img_name: file.uniqueDateName,
           thumbnail_img:file.resizeNameThumbnail,
           detalles_imgGde:file.resizeNameGde,
-          PropiedadId: PropId
+          ModeloAsociadoPropiedadId: ModeloId
         });
         if(ordenData[0].orden === 1 || ordenData[0].orden === 2 || ordenData[0].orden === 3){
           imagenModelo.detalles_imgChica=file.resizeNameChico;
@@ -131,9 +131,9 @@ const gcpEditarImagenModelo = async (req, res, next) => {
       }
       else console.log("No hay imagenes nuevas a cargar");
       
-      console.log(`Se Edito la Propiedad `+ ModeloBuscado.nombre +  " y sus imagenes ");
+      console.log(`Se Edito la Propiedad `+ ModeloBuscado.nombreModelo +  " y sus imagenes ");
       const propCreadaJSON = {
-        Confirmacion:`Se edito la Propiedad `+ ModeloBuscado.nombreDesarrollo
+        Confirmacion:`Se edito la Propiedad `+ ModeloBuscado.nombreModelo
       }
       res.json(propCreadaJSON? propCreadaJSON :{mensaje:"No Se pudo crear la propieda"} );
 
