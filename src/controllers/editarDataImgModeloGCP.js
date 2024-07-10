@@ -33,7 +33,7 @@ const gcpEditarImagenModelo = async (req, res, next) => {
         baños, medio_baño, espaciosCochera, cocheraTechada, m2Construccion, m2Terreno, m2Total, 
         amenidadesPropiedad, ordenImagen } = parsedbodyObj   
 
-      console.log("Editar Modelo GCP -> " + nombremodelo);
+      console.log("Editar Modelo GCP -> " + nombreModelo);
 
       const ModeloBuscado = await ModeloAsociadoPropiedad.findByPk(modeloId);
       ModeloBuscado.PropiedadId = parseInt(desarrolloId);
