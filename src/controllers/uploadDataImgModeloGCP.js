@@ -12,7 +12,7 @@ const gcpUploadImagenModeloRelacionado = async (req, res, next) => {
       const bodyObj = req.body.data;
       //console.log("Body OBJ -> " +bodyObj);
       const parsedbodyObj = JSON.parse(bodyObj);
-      const { nombreModelo, nombreDesarrollo, ciudad, precio, recamaras,
+      const { nombreModelo, nombreDesarrollo, ciudad, precio, niveles, recamaras,
         baños, medio_baño, espaciosCochera, cocheraTechada, tipodePropiedad,
         tipodeOperacion, m2Construccion, m2Terreno, m2Total, amenidadesPropiedad, 
         estado, posicion, ordenImagen
@@ -30,6 +30,7 @@ const gcpUploadImagenModeloRelacionado = async (req, res, next) => {
         defaults: {
           posicion,
           precio,
+          niveles,
           recamaras, 
           baños,
           medio_baño,

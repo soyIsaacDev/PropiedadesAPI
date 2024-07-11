@@ -9,6 +9,24 @@ const { Propiedad, ImgPropiedad, AmenidadesDesarrollo, AmenidadesPropiedad,Tipod
   TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, Favoritos, ModeloAsociadoPropiedad, 
   ImgModeloAsociado, EstiloArquitectura  } = require("../db");
 
+server.get("/modeloIgual/:desarrolloId",async (req, res) => {
+  try {
+    const {desarrolloId} = req.params;
+    const ModelosdelDesarrollo = await ModeloAsociadoPropiedad.findAll({ 
+      where: { 
+        PropiedadId:desarrolloId
+      } 
+    });
+    ModelosdelDesarrollo.map((modelo)=>{
+        if(modelo.nombreModelo.includes("Agua")){
+          res.json("Modelo Repetido")
+        }
+    })
+  } catch (error) {
+    res.json(error)
+  }
+})
+
 server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
   try {
     const dataPropiedad = await ModeloAsociadoPropiedad.findAll({

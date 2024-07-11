@@ -5,7 +5,10 @@ const {Storage} = require('@google-cloud/storage');
 
 const fs = require("fs");
 const {  ImgModeloAsociado, ModeloAsociadoPropiedad, AmenidadesModeloAmenidad, Propiedad } = require("../db");
-
+/* 
+    Buscar Modelo con FindOrCreate
+    Agregar datos como # de Niveles
+*/
 // Creates a client
 const storage = new Storage();
 
@@ -29,19 +32,22 @@ const gcpEditarImagenModelo = async (req, res, next) => {
       const bodyObj = req.body.data;
       //console.log("Body OBJ -> " +bodyObj);
       const parsedbodyObj = JSON.parse(bodyObj);
-      const {modeloId, desarrolloId, nombreModelo, precio, ciudad, estado, posicion, recamaras,
+      const {modeloId, desarrolloId, nombreModelo, precio, ciudad, estado, posicion, niveles, recamaras,
         baños, medio_baño, espaciosCochera, cocheraTechada, m2Construccion, m2Terreno, m2Total, 
         amenidadesPropiedad, ordenImagen } = parsedbodyObj   
 
       console.log("Editar Modelo GCP -> " + nombreModelo);
 
       const ModeloBuscado = await ModeloAsociadoPropiedad.findByPk(modeloId);
+      // buscar con findorCreate por modeloId y nombreModelo para evitar que se 
+      // repita el nombre del Modelo
       ModeloBuscado.PropiedadId = parseInt(desarrolloId);
       ModeloBuscado.nombreModelo = nombreModelo;
       ModeloBuscado.precio = precio;
       ModeloBuscado.CiudadId = ciudad;
       ModeloBuscado.EstadoId = estado;
       ModeloBuscado.posicion = posicion;
+      ModeloBuscado.niveles= niveles;
       ModeloBuscado.recamaras = recamaras;
       ModeloBuscado.baños = baños;
       ModeloBuscado.medio_baño = medio_baño

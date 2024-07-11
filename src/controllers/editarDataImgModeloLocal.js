@@ -13,19 +13,34 @@ const editarDataModelo = async (req, res, next) => {
       const bodyObj = req.body.data;
       const parsedbodyObj = JSON.parse(bodyObj);
       const { modeloId, desarrolloId, nombreModelo, precio, ciudad, estado, posicion, recamaras,
-        baños, medio_baño, espaciosCochera, cocheraTechada, m2Construccion, m2Terreno, m2Total, 
-        amenidadesPropiedad, ordenImagen         } = parsedbodyObj   
+        niveles, baños, medio_baño, espaciosCochera, cocheraTechada, m2Construccion, m2Terreno, 
+        m2Total, amenidadesPropiedad, ordenImagen         } = parsedbodyObj   
 
       //console.log("Upload Multiple Img Controller Modelo -> " + nombreModelo);
       console.log("Desarrollo Id "+desarrolloId)
 
+      const ModelosdelDesarrollo = await ModeloAsociadoPropiedad.findAll({ 
+        where: { 
+          PropiedadId:desarrolloId
+        } 
+      });
+
       const ModeloBuscado = await ModeloAsociadoPropiedad.findByPk(modeloId);
       ModeloBuscado.PropiedadId = parseInt(desarrolloId);
-      ModeloBuscado.nombreModelo = nombreModelo;
+      // Verificando que no se repitan los nombres para el mismo desarrollo
+      ModelosdelDesarrollo.map((modelo)=>{
+        if(modelo.nombreModelo.includes(nombreModelo)){
+          throw "Modelo Repetido";
+        }
+        else{
+          ModeloBuscado.nombreModelo = nombreModelo;
+        }
+    })
       ModeloBuscado.precio = precio;
       ModeloBuscado.CiudadId = ciudad;
       ModeloBuscado.EstadoId = estado;
       ModeloBuscado.posicion = posicion;
+      ModeloBuscado.niveles= niveles;
       ModeloBuscado.recamaras = recamaras;
       ModeloBuscado.baños = baños;
       ModeloBuscado.medio_baño = medio_baño
@@ -117,7 +132,7 @@ const editarDataModelo = async (req, res, next) => {
       res.json(modeloCreadoJSON? modeloCreadoJSON :{mensaje:"No Se pudo crear el modelo"} );
     } catch (error) {
       console.log("Error al editar la imagen "+error);
-      //res.json(`Error al intentar crear la imagen de la propiedad: ${error}`);
+      res.json(`Error al intentar crear la imagen de la propiedad: ${error}`);
     }
   };
 

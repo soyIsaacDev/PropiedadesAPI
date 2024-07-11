@@ -6,7 +6,7 @@ const uploadDataImagenModelo = async (req, res) => {
     try {
       const bodyObj = req.body.data;
       const parsedbodyObj = JSON.parse(bodyObj)
-      const { nombreModelo, nombreDesarrollo, ciudad, precio, recamaras,
+      const { nombreModelo, nombreDesarrollo, ciudad, precio, recamaras, niveles,
         baños, medio_baño, espaciosCochera, cocheraTechada, tipodePropiedad,
         tipodeOperacion, m2Construccion, m2Terreno, m2Total, amenidadesPropiedad, 
         estado, posicion, ordenImagen
@@ -24,6 +24,7 @@ const uploadDataImagenModelo = async (req, res) => {
         defaults: {
           posicion,
           precio,
+          niveles,
           recamaras, 
           baños,
           medio_baño,

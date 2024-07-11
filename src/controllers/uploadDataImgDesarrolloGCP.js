@@ -14,7 +14,7 @@ const gcpUploadDataImagenDesarrollo = async (req, res, next) => {
       //console.log("Body OBJ -> " +bodyObj);
       const parsedbodyObj = JSON.parse(bodyObj);
       const { nombreDesarrollo, añodeConstruccion, amenidadesDesarrollo, calle, numeroPropiedad, numeroInterior, 
-        colonia, estado, municipio,ciudad, posicion, ordenImagen} = parsedbodyObj   
+        colonia, estado, municipio,ciudad, posicion, TipodePropiedadId, TipoOperacionId, EstiloArquitecturaId, ordenImagen} = parsedbodyObj   
 
       console.log("Upload Multiple Img Controller Property -> " + nombreDesarrollo);
 
@@ -31,6 +31,9 @@ const gcpUploadDataImagenDesarrollo = async (req, res, next) => {
           numeroPropiedad,
           numeroInterior,
           ColoniumId:colonia,
+          TipodePropiedadId,
+          TipoOperacionId,
+          EstiloArquitecturaId,
           posicion
         }
       });
