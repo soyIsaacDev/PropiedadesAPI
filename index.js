@@ -45,7 +45,7 @@
 
     if(DEVMODE === "build"){
         corsOptions = {
-            origin: [ 'http://localhost:3000', 'http://192.168.1.15:3000', 'http://192.168.100.2:3000'],
+            origin: [ 'http://localhost:3000', 'http://192.168.1.10:3000', 'http://192.168.100.2:3000'],
             //importante: No dejar la ruta de origen con un "/" al final
             optionsSuccessStatus: 200,
             credentials: true 
@@ -53,7 +53,7 @@
     }
     else{
         corsOptions = {
-            origin: ['https://m3inmuebles.com', "https://m3inmuebles.com"],
+            origin: ['https://inmozz.com', 'https://www.inmozz.com', "https://m3inmuebles.com"],
             //importante: No dejar la ruta de origen con un "/" al final
             optionsSuccessStatus: 200,
             credentials: true 

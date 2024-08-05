@@ -123,13 +123,18 @@ const editarDataDesarrollo = async (req, res, next) => {
       }
       else console.log("No hay imagenes nuevas a cargar");
       
-      console.log(`Se Edito la Propiedad `+ PropiedadBuscada.nombreDesarrollo +  " y sus imagenes ");
+      console.log(`Se Edito el Desarrollo `+ PropiedadBuscada.nombreDesarrollo +  " y sus imagenes ");
       const propCreadaJSON = {
-        Confirmacion:`Se edito la Propiedad `+ PropiedadBuscada.nombreDesarrollo
+        codigo: 1, Confirmacion:`Se edito el Desarrollo`+ PropiedadBuscada.nombreDesarrollo
       }
       res.json(propCreadaJSON? propCreadaJSON :{mensaje:"No Se pudo crear la propieda"} );
     } catch (error) {
-      console.log("Error al editar la imagen "+error);
+      console.log("Error al editar el Desarrollo "+error);
+      res.json({
+        codigo:0,
+        Mensaje:`Error al intentar crear la imagen del Desarrollo`,
+        Error:error
+      });
       //res.json(`Error al intentar crear la imagen de la propiedad: ${error}`);
     }
   };

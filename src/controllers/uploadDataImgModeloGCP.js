@@ -106,12 +106,16 @@ const gcpUploadImagenModeloRelacionado = async (req, res, next) => {
         console.log("Desarrollo Precio Max" + Desarrollo.precioMax)
       }
 
-      //res.json(`Se creo la Propiedad `+ ModeloRelacionadoCreado[0].nombrePropiedad +  " y sus imagenes " );
-      console.log("Se Creo el Modelo");
-      res.json("Se Creo el Modelo")
+      console.log(`Se Creo el Modelo `+ ModeloRelacionadoCreado[0].nombreModelo +  " y sus imagenes ");
+      const modeloCreadoJSON = { codigo:1, Mensaje:`Se creo el modelo `+ ModeloRelacionadoCreado[0].nombreModelo} ;
+      res.json(modeloCreadoJSON? modeloCreadoJSON :{mensaje:"No Se pudo crear el modelo"} );
     } catch (error) {
-      console.log("Error en Upload Multiple Img "+error);
-      //res.json(`Error al intentar crear la imagen de la propiedad: ${error}`);
+      console.log("Error al intentar crear la imagen del Modelo " + error);
+      res.json({
+        codigo:0, 
+        Mensaje:`Error al intentar crear la imagen del Modelo`,
+        Error:error
+      });
     }
   };
 

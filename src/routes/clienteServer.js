@@ -62,6 +62,38 @@ server.get("/buscarCliente/:userId", async (req, res) => {
   } catch (error) {
     res.send(error);
   }
+});
+
+server.post("/mostrarTour", async (req, res) => {
+  try {
+    let {userId, mostrarTour} = req.body;
+    const cliente= await Cliente.findOne({
+      where:{userId}
+    });
+    cliente.mostrar_Tour = mostrarTour;
+    cliente.save();
+
+    res.json(cliente);
+  } catch (e) {
+    res.json(e);
+  }
 })
 
+server.get("/tipoDeUsuario/:userId", async (req, res) => {
+  try {
+    let {userId} = req.params;
+    const cliente= await Cliente.findOne({
+      where:{userId},
+      include: [
+        {
+          model: TipodeUsuario
+        }
+      ]
+    });
+
+    cliente? res.json(cliente) : res.json({mensaje:"El Cliente No Existe"});
+  } catch (error) {
+    res.send(error);
+  }
+});
 module.exports = server;

@@ -1,5 +1,5 @@
 const server = require("express").Router();
-const { TipodeUsuario } = require("../db");
+const { TipodeUsuario, Cliente } = require("../db");
 
 server.get("/usuarioPrincipal", async (req,res)=> {
   try{
@@ -10,6 +10,13 @@ server.get("/usuarioPrincipal", async (req,res)=> {
     })
     userPrincipal.tipo="DueñoIsaacBM";
     await userPrincipal.save();
+    const cliente = await Cliente.findOne({
+      where: { 
+        userId:"n7v1k7heCzbhiiZ1hUtJpmea8Hv1" 
+      } 
+    })
+   cliente.TipodeUsuarioId = userPrincipal.id;
+    await cliente.save();
     res.json(userPrincipal);
   }
   catch(e){

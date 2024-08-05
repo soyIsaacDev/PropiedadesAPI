@@ -130,6 +130,9 @@ Cliente.hasOne(SesionCliente);
 Cliente.belongsToMany(Propiedad, { through: 'Favoritos' });
 Propiedad.belongsToMany(Cliente, { through: 'Favoritos' });
 
+Cliente.belongsToMany(ModeloAsociadoPropiedad, { through: 'ModelosFavoritos' });
+ModeloAsociadoPropiedad.belongsToMany(Cliente, { through: 'ModelosFavoritos' });
+
 Propiedad.hasMany(ModeloAsociadoPropiedad);
 ModeloAsociadoPropiedad.belongsTo(Propiedad);
 

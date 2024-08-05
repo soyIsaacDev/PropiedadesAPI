@@ -1,20 +1,29 @@
 const server = require("express").Router();
 const { Op } = require("sequelize");
 
-const { Propiedad, Favoritos, ImgPropiedad, Cliente  } = require("../db");
+const { Propiedad, Favoritos, ImgPropiedad, Cliente, ModelosFavoritos, ModeloAsociadoPropiedad, ImgModeloAsociado  } = require("../db");
 
-
+// TipodeProp:  1 = Desarrollo : 2 = ModeloAsociado
 server.post("/agregarFavorito",  async (req,res)=> {
     try {
-        const { ClienteId, PropiedadId} = req.body;
-        console.log("Cliente ID " + ClienteId + " Prop Id " + PropiedadId)
+        const { userId, PropiedadId, TipodeProp} = req.body;
+        const cliente = await Cliente.findOne({
+            where: {
+                userId
+              }
+        });
+        console.log("Cliente ID " + userId + " Prop Id " + PropiedadId)
 
-        const favorito = await Favoritos.create({
-            ClienteId,
+        const desarrolloFavorito = await Favoritos.create({
+            ClienteId:cliente.id,
             PropiedadId
-        })
-        console.log("Favorito ->  "+ JSON.stringify(favorito))
-        res.json(favorito)
+        });
+        const modeloFavorito = await ModelosFavoritos.create({
+            ClienteId:cliente.id,
+            ModeloAsociadoPropiedadId:PropiedadId
+        });
+        
+        res.json(TipodeProp===1? desarrolloFavorito:modeloFavorito)
 
     } catch (e) {
         res.send(e);
@@ -23,14 +32,30 @@ server.post("/agregarFavorito",  async (req,res)=> {
 
 server.post("/eliminarFavorito", async(req, res) => {
     try {
-        const { ClienteId, PropiedadId } = req.body;
-        const eliminardeFavoritos = await Favoritos.findOne({
+        const { userId, PropiedadId, TipodeProp } = req.body;
+        const cliente = await Cliente.findOne({
             where: {
-                [Op.and]:[{"PropiedadId":PropiedadId}, {"ClienteId":ClienteId}]
+                userId
+              }
+        });
+        const eliminarDesarrolloFavorito = await Favoritos.findOne({
+            where: {
+                [Op.and]:[{"PropiedadId":PropiedadId}, {"ClienteId":cliente.id}]
             }
         })
-        await eliminardeFavoritos.destroy();
-        res.json(eliminardeFavoritos);
+        const eliminarModeloFavorito = await ModelosFavoritos.findOne({
+            where: {
+                [Op.and]:[{"ModeloAsociadoPropiedadId":PropiedadId}, {"ClienteId":cliente.id}]
+            }
+        })
+        if(TipodeProp===1){
+            await eliminarDesarrolloFavorito.destroy();
+        }
+        else{
+            await eliminarModeloFavorito.destroy();
+        }
+
+        res.json(TipodeProp===1? eliminarDesarrolloFavorito : eliminarModeloFavorito);
     } catch (e) {
         res.send(e);
     }
@@ -52,13 +77,13 @@ server.get("/esfavorita/:PropiedadId/:ClienteId", async (req, res) => {
     }
 })
 
-server.get("/favoritos/:ClienteId", async (req, res) => {
+server.get("/favoritos/:userId", async (req, res) => {
     try {
-        let {ClienteId} = req.params;
+        let {userId} = req.params;
 
         const propiedadesFavoritas = await Cliente.findOne({
             where: {
-                id:ClienteId
+                userId
               }, 
               include: [
                 {
@@ -94,6 +119,123 @@ server.get("/favoritos/:ClienteId", async (req, res) => {
     }
 })
 
+server.get("/desarrolloFav/:userId", async (req, res) => {
+    try {
+        let {userId} = req.params;
+
+        const cliente = await Cliente.findOne({
+            where: {
+                userId
+              }
+        });
+        const propiedadFavorita = await Favoritos.findAll({
+            where: {
+                ClienteId:cliente.id
+            },
+        });
+        res.send(propiedadFavorita)
+    } catch (e) {
+        res.send(e)
+    }
+})
+
+server.get("/modelosFav/:userId", async (req, res) => {
+    try {
+        let {userId} = req.params;
+
+        const cliente = await Cliente.findOne({
+            where: {
+                userId
+              }
+        });
+        const modelosFavoritos = await ModelosFavoritos.findAll({
+            where: {
+                ClienteId:cliente.id
+            },
+        });
+        res.send(modelosFavoritos)
+    } catch (e) {
+        res.send(e)
+    }
+})
+
+server.get("/propiedadesconfavoritos/:userId",  async (req, res) => {
+    try {
+        let {userId} = req.params;
+  
+        const cliente = await Cliente.findOne({
+          where: {
+              userId
+            }
+        });
+  
+        const AllPropiedades = await Propiedad.findAll({
+            include: [
+              {
+                model: ImgPropiedad,
+                attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+              }
+            ]
+        },);
+        
+        const AllModelos = await ModeloAsociadoPropiedad.findAll({
+          order: [
+            ['precio"','ASC']
+          ],
+          include: [
+            {
+              model: ImgModeloAsociado,
+              attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+              separate:true,
+              order: [
+                ['orden','ASC']
+              ],
+            }, 
+          ]
+        },);
+  
+        const desarrollosFavoritos = await Favoritos.findAll({
+            where: {
+                ClienteId:cliente.id
+              }
+        });
+
+        const modeloFavorito = await ModelosFavoritos.findAll({
+            where: {
+                ClienteId:cliente.id
+            },
+        });
+        
+        const AllPropandFav = [];
+        const AllPropCopy = JSON.parse(JSON.stringify(AllPropiedades));
+        const AllModelosCopy = JSON.parse(JSON.stringify(AllModelos));
+        //PropiedadId
+
+        for (let i = 0; i < AllPropCopy.length; i++) {
+            for (let x = 0; x < desarrollosFavoritos.length; x++) {
+                if(desarrollosFavoritos[x].PropiedadId === AllPropCopy[i].id){
+                  AllPropCopy[i].favorita=1;
+                  AllPropandFav.push(AllPropCopy[i]);
+                }
+            }
+            for (let z = 0; z < AllModelosCopy.length; z++) {
+                if(AllModelosCopy[z].PropiedadId === AllPropCopy[i].id ){
+                    for (let y = 0; y < modeloFavorito.length; y++) {
+                        if(modeloFavorito[y].ModeloAsociadoPropiedadId === AllModelosCopy[z].id){
+
+                            AllModelosCopy[z].favorita = 1;
+                            AllPropandFav.push(AllModelosCopy[z]);
+                        }
+                    }
+                }
+            }
+        }
+            
+        res.json(AllPropandFav);
+    } catch (e) {
+        res.send(e)
+    }
+  });
 
 
 

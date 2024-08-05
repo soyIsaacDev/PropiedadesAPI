@@ -137,16 +137,16 @@ const gcpEditarImagenModelo = async (req, res, next) => {
       }
       else console.log("No hay imagenes nuevas a cargar");
       
-      console.log(`Se Edito la Propiedad `+ ModeloBuscado.nombreModelo +  " y sus imagenes ");
-      const propCreadaJSON = {
-        Confirmacion:`Se edito la Propiedad `+ ModeloBuscado.nombreModelo
-      }
-      res.json(propCreadaJSON? propCreadaJSON :{mensaje:"No Se pudo crear la propieda"} );
-
-      
-
+      console.log(`Se Edito el Modelo `+ ModeloBuscado.nombreModelo +  " y sus imagenes ");
+      const modeloCreadoJSON = { codigo:1, Mensaje:`Se edito el modelo `+ ModeloBuscado.nombreModelo} ;
+      res.json(modeloCreadoJSON? modeloCreadoJSON :{mensaje:"No Se pudo crear la propieda"} );
     } catch (error) {
       console.log("Error al editar la propiedad en GCP "+ error);
+      res.json({
+        codigo:0, 
+        Mensaje:`Error al intentar crear la imagen del Modelo`,
+        Error:error
+      });
     }
   };
 
