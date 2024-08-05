@@ -5,8 +5,9 @@ const path = require('path');
 
 var public = path.join(__dirname,'../../uploads');
 
-const { Propiedad, ImgPropiedad, AmenidadesDesarrollo,TipodePropiedad, 
-  TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, Favoritos  } = require("../db");
+const { Propiedad, ImgPropiedad, AmenidadesDesarrollo,TipodePropiedad,TipoOperacion, Estado, Municipio, Ciudad, 
+  Colonia, Cliente, Favoritos, AmenidadesDesarrolloPropiedad, ModeloAsociadoPropiedad, ImgModeloAsociado  } = require("../db");
+
 
 server.get("/getDataandImagenPropiedades", async (req, res) => {
   try {
@@ -107,7 +108,7 @@ server.get("/detallespropiedad/:id", async (req, res) => {
   } catch (e) {
     res.send(e);
   }
-})
+});
 
 function isAuthenticated (req, res, next) {
   console.log("77 En IS AUTH " +req.session.passport)
@@ -117,9 +118,15 @@ function isAuthenticated (req, res, next) {
   else next('route')
 }
 
-server.get("/propiedadesconfavoritos/:ClienteId", isAuthenticated, async (req, res) => {
+server.get("/propiedadesconfavoritos/:userId",  async (req, res) => {
   try {
-      let {ClienteId} = req.params;
+      let {userId} = req.params;
+
+      const cliente = await Cliente.findOne({
+        where: {
+            userId
+          }
+      });
 
       const AllPropiedades = await Propiedad.findAll({
           include: [
@@ -128,39 +135,85 @@ server.get("/propiedadesconfavoritos/:ClienteId", isAuthenticated, async (req, r
               attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
             }
           ]
-        },);
+      },);
+      
+      const AllModelos = await ModeloAsociadoPropiedad.findAll({
+        order: [
+          ['precio"','ASC']
+        ],
+        include: [
+          {
+            model: ImgModeloAsociado,
+            attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+            separate:true,
+            order: [
+              ['orden','ASC']
+            ],
+          }, 
+        ]
+      },);
 
       const Fav = await Favoritos.findAll({
           where: {
-              ClienteId
+              ClienteId:cliente.id
             }
       });
       
       const AllPropandFav = [];
-      for (let i = 0; i < AllPropiedades.length; i++) {
-          const PropandFav = {
-              id: AllPropiedades[i].id,
-              nombreDesarrollo:AllPropiedades[i].nombreDesarrollo,
-              precio: AllPropiedades[i].precio,
-              recamaras: AllPropiedades[i].recamaras,
-              baños: AllPropiedades[i].baños,
-              favorita: 0,
-              posicion:AllPropiedades[i].posicion,
-              ImgPropiedads: AllPropiedades[i].ImgPropiedads,
-              
-          }
+      const AllPropCopy = JSON.parse(JSON.stringify(AllPropiedades));
+      for (let i = 0; i < AllPropCopy.length; i++) {
+          
           for (let x = 0; x < Fav.length; x++) {
-              if(Fav[x].PropiedadId === AllPropiedades[i].id){
-                  PropandFav.favorita= 1
+              if(Fav[x].PropiedadId === AllPropCopy[i].id){
+                AllPropCopy[i].favorita=1;
+                 /* const PropandFav = {
+                  id: AllPropiedades[i].id,
+                  nombreDesarrollo:AllPropiedades[i].nombreDesarrollo,
+                  precio: AllPropiedades[i].precio,
+                  recamaras: AllPropiedades[i].recamaras,
+                  baños: AllPropiedades[i].baños,
+                  favorita: 1,
+                  posicion:AllPropiedades[i].posicion,
+                  ImgPropiedads: AllPropiedades[i].ImgPropiedads,
+                  
+                }  */
+                AllPropandFav.push(AllPropCopy[i]);
               }
           }
-          AllPropandFav.push(PropandFav);
       }
-      res.json(AllPropandFav);
+      res.json(AllPropCopy);
   } catch (e) {
       res.send(e)
   }
+});
+
+server.get("/getAmenidadesDesarrolloSeleccionado/:id", async (req, res) => {
+  try {
+    const {id} = req.params;
+    console.log("Buscando Amenidades" + id);
+    const amenidades = await AmenidadesDesarrolloPropiedad.findAll({
+      where:{PropiedadId:id},
+      attributes: ["PropiedadId", "AmenidadesDesarrolloId"],
+    });
+    /* const dataPropiedad = await Propiedad.findOne({
+      where:{id:id},
+      attributes: ["id", "nombreDesarrollo"],
+      include: [
+        {
+          model: AmenidadesDesarrollo,
+          through: {
+            attributes: []
+          }
+        },
+        
+      ]
+    }) */
+    amenidades? res.json(amenidades) : res.json({Mensaje:"No se encontro la propiedad"});
+  } catch (e) {
+    res.send(e);
+  }
 })
+
 
 // Para ver las imagenes
 server.use('/imagenes', express.static(public));

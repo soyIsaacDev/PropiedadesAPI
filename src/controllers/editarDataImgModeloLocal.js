@@ -29,7 +29,7 @@ const editarDataModelo = async (req, res, next) => {
       ModeloBuscado.PropiedadId = parseInt(desarrolloId);
       // Verificando que no se repitan los nombres para el mismo desarrollo
       ModelosdelDesarrollo.map((modelo)=>{
-        if(modelo.nombreModelo.includes(nombreModelo)){
+        if(modelo.nombreModelo.includes(nombreModelo) && modelo.id !== modeloId){
           throw "Modelo Repetido";
         }
         else{
@@ -125,14 +125,17 @@ const editarDataModelo = async (req, res, next) => {
       }
       else console.log("No hay imagenes nuevas a cargar");
       
-      console.log(`Se Edito la Propiedad `+ ModeloBuscado.nombreModelo +  " y sus imagenes ");
-      const modeloCreadoJSON = {
-        Confirmacion:`Se edito la Propiedad `+ ModeloBuscado.nombreModelo
-      }
+      console.log(`Se Edito el Modelo `+ ModeloBuscado.nombreModelo +  " y sus imagenes ");
+      const modeloCreadoJSON = { codigo:1, Mensaje:`Se edito el modelo `+ ModeloBuscado.nombreModelo} ;
       res.json(modeloCreadoJSON? modeloCreadoJSON :{mensaje:"No Se pudo crear el modelo"} );
     } catch (error) {
-      console.log("Error al editar la imagen "+error);
-      res.json(`Error al intentar crear la imagen de la propiedad: ${error}`);
+      console.log("Error al editar la imagen del modelo "+error);
+      res.json({
+        codigo:0, 
+        Mensaje:`Error al intentar crear la imagen del Modelo`,
+        Error:error
+      });
+      //res.json(`Error al intentar crear la imagen de la propiedad: ${error}`);
     }
   };
 

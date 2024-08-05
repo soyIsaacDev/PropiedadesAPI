@@ -4,7 +4,7 @@ const { db } = require("./src/db");
 
 const port = process.env.PORT || 8080;
 
-const alter = true;
+const alter = false;
 
 //sequelize model synchronization
 // model.sync(options)
@@ -16,7 +16,7 @@ User.sync({ alter: true }) - This checks what is the current state of the table 
              what are their data types, etc), and then performs the necessary changes in the table to make it match the model. */
 
 // Migrations is recomended for production
-db.sync({ force: true }).then(function () {
+db.sync({ force: alter }).then(function () {
   app.listen(port, function () {
     console.log("Server is listening on port " + port);
   });

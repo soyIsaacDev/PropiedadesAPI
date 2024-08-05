@@ -40,6 +40,10 @@ module.exports = s => {
             type: DataTypes.STRING,
             allowNull: true
         },
+        mostrar_Tour:{
+            type:DataTypes.BOOLEAN,
+            allowNull:true
+        }
     }, {
     timestamps: false,
     });
