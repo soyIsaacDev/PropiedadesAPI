@@ -17,6 +17,7 @@ const gcpUploadDataImagenDesarrollo = async (req, res, next) => {
         colonia, estado, municipio,ciudad, posicion, TipodePropiedadId, TipoOperacionId, EstiloArquitecturaId, ordenImagen} = parsedbodyObj   
 
       console.log("Upload Multiple Img Controller Property -> " + nombreDesarrollo);
+      console.log("Orden Imagen "+ordenImagen)
 
       const PropiedadCreada = await Propiedad.findOrCreate({
         where:{ 
@@ -55,7 +56,8 @@ const gcpUploadDataImagenDesarrollo = async (req, res, next) => {
         console.log("Image File " + JSON.stringify(file))
         console.log("Resize Image File " + JSON.stringify(file.originalname))
         const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
-
+        console.log("Orden Data "+JSON.stringify(ordenData))
+        
           const imagenPropiedad = await ImgPropiedad.create({
             orden:ordenData[0].orden,
             type: file.mimetype,
