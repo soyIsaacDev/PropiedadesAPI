@@ -58,8 +58,9 @@ const gcpUploadDataImagenDesarrollo = async (req, res, next) => {
       // se crea una imagen por cada archivo y se liga a la Propiedad
       files.forEach(async (file) => {
         console.log("Image File " + JSON.stringify(file));
-
+        
         console.log("File OriginalName  " + file.originalname)
+        console.log("File uniqueDateName  " + file.uniqueDateName)
         console.log("File resizeNameThumbnail  " + file.resizeNameThumbnail)
         console.log("File resizeNameGde  " + file.resizeNameGde)
         console.log("File resizeNameChico  " + file.resizeNameChico)

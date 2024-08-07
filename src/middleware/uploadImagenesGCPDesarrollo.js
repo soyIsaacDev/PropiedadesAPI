@@ -150,13 +150,14 @@ const sendUploadToGCSAsync = async (req, res, next) => {
 
       // Agregro al file los nombres segun tamaño
       file.uniqueDateName = uniqueDateName;
+      file.resizeNameGde = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameGde}`;
       
       const thumbnail = await imgCambioTamaño(file, 298, 240, resizeNameThumbnail);
       file.resizeNameThumbnail = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameThumbnail}`;
       const uploadThumbnail = await uploadFile(thumbnail);
 
       const imgGde = await imgCambioTamaño(file, 704, 504, resizeNameGde);
-      file.resizeNameGde = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameGde}`;
+      
       const uploadBig = await uploadFile(imgGde);
       
       
