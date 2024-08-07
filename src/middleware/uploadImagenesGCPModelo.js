@@ -118,53 +118,53 @@ const sendModeloUploadToGCSAsync = async (req, res, next) => {
       console.log("No hay archivos a subir")
       return next();
     }
+  
+    const bodyObj = req.body.data;
+    const parsedbodyObj = JSON.parse(bodyObj);
+    const { ordenImagen } = parsedbodyObj;
 
-   var resizeNameThumbnail = null;
-   var resizeNameGde = null;
-   var resizeNameChico = null;
-   
-   files.forEach(async (file) => {
-     // Agregando Nombre Unico segun la fecha
-     const nombreUnicoFecha = Date.now()+"_" + file.originalname;
-     const esJpeg = file.originalname.includes("jpeg")
-     var uniqueDateName = undefined;
-     if(esJpeg){
-       uniqueDateName = nombreUnicoFecha.slice(0, nombreUnicoFecha.length - 5);
-     }
-     else{
+    files.forEach(async (file) => {
+      // Agregando Nombre Unico segun la fecha
+      const nombreUnicoFecha = Date.now()+"_" + file.originalname;
+      const esJpeg = file.originalname.includes("jpeg")
+      var uniqueDateName = undefined;
+      if(esJpeg){
+        uniqueDateName = nombreUnicoFecha.slice(0, nombreUnicoFecha.length - 5);
+      }
+      else{
 
-       uniqueDateName = nombreUnicoFecha.slice(0, nombreUnicoFecha.length - 4);
-     }
-
-     const resizeNameThumbnail = `Thumbnail_WebP_${uniqueDateName}.webp`;
-     const resizeNameGde = `Detalles_Img_Gde_${uniqueDateName}.webp`;
-     const resizeNameChico = `Detalles_Img_Chica_${uniqueDateName}.webp`;
-
-     // Agregro al file los nombres segun tamaño
-     file.uniqueDateName = uniqueDateName;
-     file.resizeNameGde = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameGde}`;
-     file.resizeNameThumbnail = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameThumbnail}`;
-     file.resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameChico}`;
-     
-     // Deben agregarse los nombres al file antes del cambio de tamaño, pq de lo contrario no lo agrega
-     const thumbnail = await imgCambioTamaño(file, 298, 240, resizeNameThumbnail);
-     const uploadThumbnail = await uploadFile(thumbnail);
-
-     const imgGde = await imgCambioTamaño(file, 704, 504, resizeNameGde);      
-     const uploadBig = await uploadFile(imgGde);
-     
-     const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
-
-     // Si estan ordenadas al principio se cambia el tamaño a Chico
-     if( ordenData.length>0 && ordenData[0].orden === 1 || 
-         ordenData.length>0 && ordenData[0].orden === 2 || 
-         ordenData.length>0 && ordenData[0].orden === 3)
-      {
-           const imagenChica = await imgCambioTamaño(file, 428, 242, resizeNameChico);
-           const uploadImgDetChica = await uploadFile(imagenChica);
+        uniqueDateName = nombreUnicoFecha.slice(0, nombreUnicoFecha.length - 4);
       }
 
-   })
+      const resizeNameThumbnail = `Thumbnail_WebP_${uniqueDateName}.webp`;
+      const resizeNameGde = `Detalles_Img_Gde_${uniqueDateName}.webp`;
+      const resizeNameChico = `Detalles_Img_Chica_${uniqueDateName}.webp`;
+
+      // Agregro al file los nombres segun tamaño
+      file.uniqueDateName = uniqueDateName;
+      file.resizeNameGde = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameGde}`;
+      file.resizeNameThumbnail = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameThumbnail}`;
+      file.resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameChico}`;
+      
+      // Deben agregarse los nombres al file antes del cambio de tamaño, pq de lo contrario no lo agrega
+      const thumbnail = await imgCambioTamaño(file, 298, 240, resizeNameThumbnail);
+      const uploadThumbnail = await uploadFile(thumbnail);
+
+      const imgGde = await imgCambioTamaño(file, 704, 504, resizeNameGde);      
+      const uploadBig = await uploadFile(imgGde);
+      
+      const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
+
+      // Si estan ordenadas al principio se cambia el tamaño a Chico
+      if( ordenData.length>0 && ordenData[0].orden === 1 || 
+          ordenData.length>0 && ordenData[0].orden === 2 || 
+          ordenData.length>0 && ordenData[0].orden === 3)
+        {
+            const imagenChica = await imgCambioTamaño(file, 428, 242, resizeNameChico);
+            const uploadImgDetChica = await uploadFile(imagenChica);
+        }
+
+    })
 
     req.files = files;
     next();
