@@ -144,9 +144,9 @@ const sendUploadToGCSAsync = async (req, res, next) => {
         uniqueDateName = nombreUnicoFecha.slice(0, nombreUnicoFecha.length - 4);
       }
 
-      const resizeNameThumbnail = `${"Thumbnail_WebP_"+uniqueDateName}.webp`;
-      const resizeNameGde = `${"Detalles_Img_Gde_"+uniqueDateName}.webp`;
-      const resizeNameChico = `${"Detalles_Img_Chica_"+uniqueDateName}.webp`;
+      const resizeNameThumbnail = `Thumbnail_WebP_+${uniqueDateName}.webp`;
+      const resizeNameGde = `Detalles_Img_Gde_+${uniqueDateName}.webp`;
+      const resizeNameChico = `Detalles_Img_Chica_+${uniqueDateName}.webp`;
 
       // Agregro al file los nombres segun tamaño
       file.uniqueDateName = uniqueDateName;
@@ -175,7 +175,10 @@ const sendUploadToGCSAsync = async (req, res, next) => {
     })
 
     req.files = files
-    console.log("File despues de Resize  = " + JSON.stringify(files))
+    for (let i = 0; i < files.length; i++) {
+      const archivo = files[i];
+      console.log("File despues de Resize  = " + JSON.stringify(archivo))
+    }
     next();
     
   } catch (e) {
