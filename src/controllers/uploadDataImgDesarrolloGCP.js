@@ -3,21 +3,15 @@ const {  ImgPropiedad, Propiedad, AmenidadesDesarrolloPropiedad } = require("../
 
 const path = require('path');
 const carpeta = path.join(__dirname, '../../uploads')
-console.log("DIRECTORIO" + carpeta)
 
 const gcpUploadDataImagenDesarrollo = async (req, res, next) => {
-  console.log("upload Imagen Propiedad")
   
     try {
       // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
       const bodyObj = req.body.data;
-      //console.log("Body OBJ -> " +bodyObj);
       const parsedbodyObj = JSON.parse(bodyObj);
       const { nombreDesarrollo, añodeConstruccion, amenidadesDesarrollo, calle, numeroPropiedad, numeroInterior, 
         colonia, estado, municipio,ciudad, posicion, TipodePropiedadId, TipoOperacionId, EstiloArquitecturaId, ordenImagen} = parsedbodyObj   
-
-      console.log("Upload Multiple Img Controller Property -> " + nombreDesarrollo);
-      console.log("Orden Imagen "+JSON.stringify(ordenImagen))
 
       const PropiedadCreada = await Propiedad.findOrCreate({
         where:{ 
@@ -47,25 +41,15 @@ const gcpUploadDataImagenDesarrollo = async (req, res, next) => {
       const files = req.files;
 
       if (files === undefined) {
-        console.log("Selecciona una imagen para tu propiedad")
+        console.log(`Selecciona una imagen para tu propiedad`)
         //return res.send(`Selecciona una imagen para tu propiedad`);
       }
-      //console.log("Files en creacion de Instancia " + JSON.stringify(files))
       for (let i = 0; i < files.length; i++) {
         const archivo = files[i];
-        console.log("Archivo en Upload GCP " + JSON.stringify(archivo))
       }
       // se crea una imagen por cada archivo y se liga a la Propiedad
       files.forEach(async (file) => {
-        console.log("Image File " + JSON.stringify(file));
-        
-        console.log("File OriginalName  " + file.originalname)
-        console.log("File uniqueDateName  " + file.uniqueDateName)
-        console.log("File resizeNameThumbnail  " + file.resizeNameThumbnail)
-        console.log("File resizeNameGde  " + file.resizeNameGde)
-        console.log("File resizeNameChico  " + file.resizeNameChico)
         const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
-        console.log("Orden Data "+JSON.stringify(ordenData))
 
           const imagenPropiedad = await ImgPropiedad.create({
             orden:ordenData[0].orden,
@@ -79,11 +63,8 @@ const gcpUploadDataImagenDesarrollo = async (req, res, next) => {
             imagenPropiedad.detalles_imgChica=file.resizeNameChico;
             imagenPropiedad.save();
           }
-          console.log("Se Creo la Propiedad" + JSON.stringify(imagenPropiedad));
       })
 
-      //res.json(`Se creo la Propiedad `+ PropiedadCreada[0].nombrePropiedad +  " y sus imagenes " );
-      console.log("Se Creo El Desarrollo");
       const propCreadaJSON = {
         codigo:1, 
         Confirmacion:`Se creo el Desarrollo `+ PropiedadCreada[0].nombreDesarrollo

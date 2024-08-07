@@ -3,14 +3,11 @@ const {  ImgModeloAsociado, AmenidadesModeloAmenidad, ModeloAsociadoPropiedad, P
 
 const path = require('path');
 const carpeta = path.join(__dirname, '../../uploads')
-console.log("DIRECTORIO" + carpeta)
 
 const gcpUploadImagenModeloRelacionado = async (req, res, next) => {
-  console.log("upload Imagen ModeloAsociado")
     try {
       // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
       const bodyObj = req.body.data;
-      //console.log("Body OBJ -> " +bodyObj);
       const parsedbodyObj = JSON.parse(bodyObj);
       const { nombreModelo, nombreDesarrollo, ciudad, precio, niveles, recamaras,
         baños, medio_baño, espaciosCochera, cocheraTechada, tipodePropiedad,
@@ -18,7 +15,6 @@ const gcpUploadImagenModeloRelacionado = async (req, res, next) => {
         estado, posicion, ordenImagen
       } = parsedbodyObj
 
-      console.log("Upload Multiple Img Controller Property -> " + nombreModelo);
 
       const ModeloRelacionadoCreado = await ModeloAsociadoPropiedad.findOrCreate({
         where: {
@@ -57,11 +53,8 @@ const gcpUploadImagenModeloRelacionado = async (req, res, next) => {
         console.log("Selecciona una imagen para tu propiedad")
         return res.send(`Selecciona una imagen para tu propiedad`);
       }
-      console.log("Files en creacion de Instancia " + JSON.stringify(files))
       // se crea una imagen por cada archivo y se liga a la Propiedad
       files.forEach(async (file) => {
-        console.log("Image File " + JSON.stringify(file))
-        //console.log("CloudStoragePublicUrl Image File " + JSON.stringify(file.cloudStoragePublicUrl))
         const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
 
         const imagenModeloAsociado = await ImgModeloAsociado.create({
@@ -73,7 +66,6 @@ const gcpUploadImagenModeloRelacionado = async (req, res, next) => {
             detalles_imgChica:file.resizeNameChico,
             ModeloAsociadoPropiedadId: ModeloRelacionadoCreado[0].id
           });
-          console.log("Imagen propiedad "+imagenModeloAsociado);
       })
 
       // Agregar tipo de propiedad y operacion al Desarrollo
@@ -92,21 +84,16 @@ const gcpUploadImagenModeloRelacionado = async (req, res, next) => {
         Desarrollo.precioMin = precio;
         Desarrollo.precioMax = precio;
         await Desarrollo.save();
-        console.log("Desarrollo " + Desarrollo.nombreDesarrollo);
-        console.log("Desarrollo Precio" + Desarrollo.precioMin + "Precio Max " + Desarrollo.precioMax)
       }
       else if(precio < Desarrollo.precioMin){
         Desarrollo.precioMin = precio;
         await Desarrollo.save();
-        console.log("Desarrollo Precio Min" + Desarrollo.precioMin)
       }
       else if(precio > Desarrollo.precioMax){
         Desarrollo.precioMax = precio;
         await Desarrollo.save();
-        console.log("Desarrollo Precio Max" + Desarrollo.precioMax)
       }
 
-      console.log(`Se Creo el Modelo `+ ModeloRelacionadoCreado[0].nombreModelo +  " y sus imagenes ");
       const modeloCreadoJSON = { codigo:1, Mensaje:`Se creo el modelo `+ ModeloRelacionadoCreado[0].nombreModelo} ;
       res.json(modeloCreadoJSON? modeloCreadoJSON :{mensaje:"No Se pudo crear el modelo"} );
     } catch (error) {

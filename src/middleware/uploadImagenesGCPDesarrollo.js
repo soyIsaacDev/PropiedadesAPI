@@ -22,7 +22,6 @@ const multer = Multer({
 
 // Custom file upload middleware
 const uploadImagenesGCP = (req, res, next) => {
-  console.log("Upload Imagenes")
   // Use multer upload instance
   multer.array('imagenesfiles', 25)(req, res, (err) => {
     if (err) {
@@ -33,15 +32,7 @@ const uploadImagenesGCP = (req, res, next) => {
     // Retrieve uploaded files
     const files = req.files;
     const errors = [];
-    /* req.files.map(file => {
-      console.log("Mapping")
-      console.log(file)
-    }) */
-    for (let i = 0; i < files.length; i++) {
-      console.log("Files in uploadImages "+JSON.stringify(files[i].originalname));
-    }
     const data = req.body;
-    console.log("Image Data "+ JSON.stringify(data))
     // Validate file types and sizes
     files.forEach((file) => {
       const allowedTypes = ['image/jpeg', 'image/png'];
@@ -70,8 +61,6 @@ const uploadImagenesGCP = (req, res, next) => {
 
     // Attach files to the request object
     req.files = files;
-    console.log("Files attached to req.files " +JSON.stringify(req.files))
-
     // Proceed to the next middleware or route handler
     next();
   });
@@ -107,18 +96,12 @@ const bucket = storage.bucket(GCLOUD_BUCKET);
 // [START sendUploadToGCS]
 const sendUploadToGCSAsync = async (req, res, next) => {
   try {
-    console.log("Send Upload To GCS")
     // buscamos si hay fotos
     const files = req.files;
-    for (let i = 0; i < files.length; i++) {
-      console.log("req.file en SUTGCS " + JSON.stringify(files[i].originalname))
-    }
     if (files == undefined) {
-      console.log("req.file Undefined")
       return next()
     }
     if (!files) {
-      console.log("No hay archivos a subir")
       return next();
     }
 
@@ -176,7 +159,6 @@ const sendUploadToGCSAsync = async (req, res, next) => {
     req.files = files
     for (let i = 0; i < files.length; i++) {
       const archivo = files[i];
-      console.log("File despues de Resize  = " + JSON.stringify(archivo))
     }
     next();
     
@@ -231,7 +213,6 @@ const uploadFile = async (file) => new Promise((resolve, reject) => {
           contentType: "webp",
           mimetype: "webp"
       });
-      console.log("Upload success");
   });
 
   uploadStream.end(file.buffer);
