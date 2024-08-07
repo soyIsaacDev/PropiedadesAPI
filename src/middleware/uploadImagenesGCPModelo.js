@@ -12,7 +12,8 @@ const Multer = require('multer');
 const multer = Multer({
   storage: Multer.MemoryStorage,
   limits: {
-    fileSize: 40 * 1024 * 1024 // no larger than 40mb
+    fileSize: 10 * 1024 * 1024, // no larger than 10mb
+    fieldSize: 25 * 1024 * 1024 
   }
 });
 
@@ -118,110 +119,54 @@ const sendModeloUploadToGCSAsync = async (req, res, next) => {
       return next();
     }
 
-    /*files.forEach(async (file) => {
-      const oname = Date.now() + file.originalname;
-      const fileRef = bucket.file(oname);
-      file.cloudStoragePublicUrl = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${oname}`;
-      console.log("CloudStorage File Name "+file.cloudStoragePublicUrl);
-      const stream = fileRef.createWriteStream({
-        metadata: {
-          contentType: file.mimetype
-        }
-      });
-      console.log("stream " + JSON.stringify(stream));
-
-      stream.on('error', err => {
-        // If there's an error move to the next handler
-        console.log("Error en stream " +err)
-        next(err);
-        
-      });
-
-      stream.on('finish', () => {
-        // Make the object publicly accessible
-         files.forEach(async (file) => {
-          // Set a new property on the file for the
-          // public URL for the object
-          // Cloud Storage public URLs are in the form:
-          // https://storage.googleapis.com/[BUCKET]/[OBJECT]
-          // Use an ECMAScript template literal (`https://...`)to
-          // populate the URL with appropriate values for the bucket
-          // ${GCLOUD_BUCKET} and object name ${oname}
-              //file.cloudStoragePublicUrl = `https://storage.cloud.google.com/${GCLOUD_BUCKET}/${oname}`;
-              
-              console.log(file.cloudStoragePublicUrl);
-              // Invoke the next middleware handler
-              next();
-              
-        });  
-        //next();
-      });
-      
-      stream.end(file.buffer);
-      console.log("File en Stream End  = " + JSON.stringify(files)) 
-
-      
-      
-    })*/
    var resizeNameThumbnail = null;
    var resizeNameGde = null;
    var resizeNameChico = null;
    
    files.forEach(async (file) => {
-     const oname = Date.now() + file.originalname;
+     // Agregando Nombre Unico segun la fecha
+     const nombreUnicoFecha = Date.now()+"_" + file.originalname;
      const esJpeg = file.originalname.includes("jpeg")
      var uniqueDateName = undefined;
      if(esJpeg){
-       uniqueDateName = oname.slice(0, oname.length - 5);
+       uniqueDateName = nombreUnicoFecha.slice(0, nombreUnicoFecha.length - 5);
      }
      else{
-       uniqueDateName = oname.slice(0, oname.length - 4);
+
+       uniqueDateName = nombreUnicoFecha.slice(0, nombreUnicoFecha.length - 4);
      }
-     
-     resizeNameThumbnail = `Thumbnail_WebP_${uniqueDateName}.webp`;
-     resizeNameGde = `Detalles_Img_Gde_${uniqueDateName}.webp`;
-     resizeNameChico = `Detalles_Img_Chica_${uniqueDateName}.webp`;
+
+     const resizeNameThumbnail = `Thumbnail_WebP_${uniqueDateName}.webp`;
+     const resizeNameGde = `Detalles_Img_Gde_${uniqueDateName}.webp`;
+     const resizeNameChico = `Detalles_Img_Chica_${uniqueDateName}.webp`;
 
      // Agregro al file los nombres segun tamaño
      file.uniqueDateName = uniqueDateName;
      file.resizeNameGde = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameGde}`;
      file.resizeNameThumbnail = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameThumbnail}`;
+     file.resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameChico}`;
      
+     // Deben agregarse los nombres al file antes del cambio de tamaño, pq de lo contrario no lo agrega
+     const thumbnail = await imgCambioTamaño(file, 298, 240, resizeNameThumbnail);
+     const uploadThumbnail = await uploadFile(thumbnail);
+
+     const imgGde = await imgCambioTamaño(file, 704, 504, resizeNameGde);      
+     const uploadBig = await uploadFile(imgGde);
+     
+     const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
+
+     // Si estan ordenadas al principio se cambia el tamaño a Chico
+     if( ordenData.length>0 && ordenData[0].orden === 1 || 
+         ordenData.length>0 && ordenData[0].orden === 2 || 
+         ordenData.length>0 && ordenData[0].orden === 3)
+      {
+           const imagenChica = await imgCambioTamaño(file, 428, 242, resizeNameChico);
+           const uploadImgDetChica = await uploadFile(imagenChica);
+      }
+
    })
 
-   if(files[1]) {
-     files[1].resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameChico}`;
-   }
-   if(files[2]) {
-    files[2].resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameChico}`;
-  }
-   
-
-    // Resizing Imagenes
-    if(files[1]) {
-      const imgDetallesChica = await imgCambioTamaño(files[1], 428, 242, resizeNameChico);
-      console.log("Detalles_Img_Chica " + JSON.stringify(imgDetallesChica))
-      const uploadPrimerImgDetChica = await uploadFile(imgDetallesChica);
-    }
-
-    if(files[2]) {
-      const imgDetallesChica2 = await imgCambioTamaño(files[2], 428, 242, resizeNameChico);
-      console.log("Detalles_Img_Chica2 " + JSON.stringify(imgDetallesChica2))
-      const uploadPrimerImgDetChica = await uploadFile(imgDetallesChica2);
-    }
-
-    files.forEach(async (file) => {
-      const thumbnail = await imgCambioTamaño(file, 298, 240, resizeNameThumbnail);
-      console.log("Thumbnail Resize " + JSON.stringify(thumbnail))
-      const uploadThumbnail = await uploadFile(thumbnail);
-
-      const imgGde = await imgCambioTamaño(file, 704, 504, resizeNameGde);
-      console.log("Detalles_Img_Gde " + JSON.stringify(imgGde))
-      const uploadBig = await uploadFile(imgGde);
-    })
-
-    req.files = files
-    console.log("File despues de Resize  = " + JSON.stringify(req.files))
+    req.files = files;
     next();
 
   } catch (e) {
