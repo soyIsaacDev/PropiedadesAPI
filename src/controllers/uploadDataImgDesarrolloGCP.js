@@ -50,12 +50,19 @@ const gcpUploadDataImagenDesarrollo = async (req, res, next) => {
         console.log("Selecciona una imagen para tu propiedad")
         //return res.send(`Selecciona una imagen para tu propiedad`);
       }
-      console.log("Files en creacion de Instancia " + JSON.stringify(files))
+      //console.log("Files en creacion de Instancia " + JSON.stringify(files))
+      for (let i = 0; i < files.length; i++) {
+        const archivo = files[i];
+        console.log("Archivo en Upload GCP " + JSON.stringify(archivo))
+      }
       // se crea una imagen por cada archivo y se liga a la Propiedad
       files.forEach(async (file) => {
         console.log("Image File " + JSON.stringify(file));
 
         console.log("File OriginalName  " + file.originalname)
+        console.log("File resizeNameThumbnail  " + file.resizeNameThumbnail)
+        console.log("File resizeNameGde  " + file.resizeNameGde)
+        console.log("File resizeNameChico  " + file.resizeNameChico)
         const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
         console.log("Orden Data "+JSON.stringify(ordenData))
 
