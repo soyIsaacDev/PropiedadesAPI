@@ -144,15 +144,19 @@ const sendUploadToGCSAsync = async (req, res, next) => {
         uniqueDateName = nombreUnicoFecha.slice(0, nombreUnicoFecha.length - 4);
       }
 
-      // Agregro el nombre con sello unico de fecha tomandolo de thumbnail
+      const resizeNameThumbnail = `${"Thumbnail_WebP_"+uniqueDateName}.webp`;
+      const resizeNameGde = `${"Detalles_Img_Gde_"+uniqueDateName}.webp`;
+      const resizeNameChico = `${"Detalles_Img_Chica_"+uniqueDateName}.webp`;
+
+      // Agregro al file los nombres segun tamaño
       file.uniqueDateName = uniqueDateName;
       
-      const thumbnail = await imgCambioTamaño(file, 298, 240, uniqueDateName, "Thumbnail_WebP_");
-      file.resizeNameThumbnail = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${thumbnail.originalname}`;
+      const thumbnail = await imgCambioTamaño(file, 298, 240, resizeNameThumbnail);
+      file.resizeNameThumbnail = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameThumbnail}`;
       const uploadThumbnail = await uploadFile(thumbnail);
 
-      const imgGde = await imgCambioTamaño(file, 704, 504, uniqueDateName, "Detalles_Img_Gde_");
-      file.resizeNameGde = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgGde.originalname}`;
+      const imgGde = await imgCambioTamaño(file, 704, 504, resizeNameGde);
+      file.resizeNameGde = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameGde}`;
       const uploadBig = await uploadFile(imgGde);
       
       
@@ -164,8 +168,8 @@ const sendUploadToGCSAsync = async (req, res, next) => {
           ordenData.length>0 && ordenData[0].orden === 2 || 
           ordenData.length>0 && ordenData[0].orden === 3)
           {
-            const imagenChica = await imgCambioTamaño(file, 428, 242, uniqueDateName, "Detalles_Img_Chica_");
-            file.resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imagenChica.originalname}`;
+            const imagenChica = await imgCambioTamaño(file, 428, 242, resizeNameChico);
+            file.resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameChico}`;
             const uploadImgDetChica = await uploadFile(imagenChica);
           }
     })
@@ -181,12 +185,11 @@ const sendUploadToGCSAsync = async (req, res, next) => {
 }
 
 
-async function imgCambioTamaño (archivo, width, height, uniqueDateName, nuevoNombre){
-  const fileName = `${nuevoNombre+uniqueDateName}.webp`;
+async function imgCambioTamaño (archivo, width, height, nuevoNombre){
   
   const img_a_cambiar = {
       fieldname: archivo.fieldname,
-      originalname: fileName,
+      originalname: nuevoNombre,
       encoding: archivo.encoding,
       mimetype: archivo.mimetype,
       buffer: await sharp(archivo.buffer)
