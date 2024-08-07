@@ -163,30 +163,59 @@ const sendModeloUploadToGCSAsync = async (req, res, next) => {
       
       
     })*/
+   var resizeNameThumbnail = null;
+   var resizeNameGde = null;
+   var resizeNameChico = null;
+   
+   files.forEach(async (file) => {
+     const oname = Date.now() + file.originalname;
+     const esJpeg = file.originalname.includes("jpeg")
+     var uniqueDateName = undefined;
+     if(esJpeg){
+       uniqueDateName = oname.slice(0, oname.length - 5);
+     }
+     else{
+       uniqueDateName = oname.slice(0, oname.length - 4);
+     }
+     
+     resizeNameThumbnail = `Thumbnail_WebP_${uniqueDateName}.webp`;
+     resizeNameGde = `Detalles_Img_Gde_${uniqueDateName}.webp`;
+     resizeNameChico = `Detalles_Img_Chica_${uniqueDateName}.webp`;
+
+     // Agregro al file los nombres segun tamaño
+     file.uniqueDateName = uniqueDateName;
+     file.resizeNameGde = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameGde}`;
+     file.resizeNameThumbnail = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameThumbnail}`;
+     
+   })
+
+   if(files[1]) {
+     files[1].resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameChico}`;
+   }
+   if(files[2]) {
+    files[2].resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameChico}`;
+  }
+   
 
     // Resizing Imagenes
     if(files[1]) {
-      const imgDetallesChica = await imgCambioTamaño(files[1], 428, 242, "Detalles_Img_Chica");
+      const imgDetallesChica = await imgCambioTamaño(files[1], 428, 242, resizeNameChico);
       console.log("Detalles_Img_Chica " + JSON.stringify(imgDetallesChica))
-      files[1].resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgDetallesChica.originalname}`;
       const uploadPrimerImgDetChica = await uploadFile(imgDetallesChica);
     }
 
     if(files[2]) {
-      const imgDetallesChica2 = await imgCambioTamaño(files[2], 428, 242, "Detalles_Img_Chica");
+      const imgDetallesChica2 = await imgCambioTamaño(files[2], 428, 242, resizeNameChico);
       console.log("Detalles_Img_Chica2 " + JSON.stringify(imgDetallesChica2))
-      files[2].resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgDetallesChica2.originalname}`;
       const uploadPrimerImgDetChica = await uploadFile(imgDetallesChica2);
     }
 
     files.forEach(async (file) => {
-      const thumbnail = await imgCambioTamaño(file, 298, 240,"Thumbnail_WebP_");
+      const thumbnail = await imgCambioTamaño(file, 298, 240, resizeNameThumbnail);
       console.log("Thumbnail Resize " + JSON.stringify(thumbnail))
-      file.resizeNameThumbnail = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${thumbnail.originalname}`;
       const uploadThumbnail = await uploadFile(thumbnail);
 
-      const imgGde = await imgCambioTamaño(file, 704, 504, "Detalles_Img_Gde");
-      file.resizeNameGde = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${imgGde.originalname}`;
+      const imgGde = await imgCambioTamaño(file, 704, 504, resizeNameGde);
       console.log("Detalles_Img_Gde " + JSON.stringify(imgGde))
       const uploadBig = await uploadFile(imgGde);
     })
@@ -202,21 +231,10 @@ const sendModeloUploadToGCSAsync = async (req, res, next) => {
 }
 
 async function imgCambioTamaño (archivo, width, height, nuevoNombre){
-  const oname = Date.now() + archivo.originalname;
-  const esJpeg = archivo.originalname.includes("jpeg")
-  var img_nombre = undefined;
-  if(esJpeg){
-    img_nombre = oname.slice(0, oname.length - 5);
-  }
-  else{
-
-    img_nombre = oname.slice(0, oname.length - 4);
-  }
-  const fileName = `${nuevoNombre+img_nombre}.webp`;
-  
+    
   const img_a_cambiar = {
       fieldname: archivo.fieldname,
-      originalname: fileName,
+      originalname: nuevoNombre,
       encoding: archivo.encoding,
       mimetype: archivo.mimetype,
       buffer: await sharp(archivo.buffer)
