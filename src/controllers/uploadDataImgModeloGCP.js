@@ -62,7 +62,7 @@ const gcpUploadImagenModeloRelacionado = async (req, res, next) => {
       files.forEach(async (file) => {
         console.log("Image File " + JSON.stringify(file))
         //console.log("CloudStoragePublicUrl Image File " + JSON.stringify(file.cloudStoragePublicUrl))
-        const ordenData = ordenImagen.filter((imagen)=>imagen.imageName === file.originalname);
+        const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
 
         const imagenModeloAsociado = await ImgModeloAsociado.create({
             orden:ordenData[0].orden,

@@ -49,7 +49,7 @@ const uploadDataImagenModelo = async (req, res) => {
         console.log("Image File " + JSON.stringify(file))
         console.log("Modelo Asociado " + ModeloRelacionadoCreado[0].id);
     
-        const ordenData = ordenImagen.filter((imagen)=>imagen.imageName === file.originalname);
+        const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
         console.log("Orden Data "+JSON.stringify(ordenData))
         const nombre_imagen = file.filename.slice(0, file.filename.length - 4);
           const imagenModeloAsociado = await ImgModeloAsociado.create({

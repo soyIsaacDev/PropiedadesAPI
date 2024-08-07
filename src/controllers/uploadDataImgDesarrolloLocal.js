@@ -59,7 +59,7 @@ const uploadDataImagenDesarrollo = async (req, res, next) => {
             PropiedadId: PropiedadCreada[0].id
           }); */
           
-        const ordenData = ordenImagen.filter((imagen)=>imagen.imageName === file.originalname);
+        const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
         console.log("Orden Data "+JSON.stringify(ordenData))
           const nombre_imagen = file.filename.slice(0, file.filename.length - 4);
           const imagenPropiedad = await ImgPropiedad.create({
@@ -70,29 +70,34 @@ const uploadDataImagenDesarrollo = async (req, res, next) => {
             detalles_imgGde:"Detalles_Img_Gde_"+nombre_imagen+".webp",
             PropiedadId: PropiedadCreada[0].id
           });
+          if(ordenData[0].orden === 1 || ordenData[0].orden === 2 || ordenData[0].orden === 3){
+            imagenPropiedad.detalles_imgChica="Detalles_Img_Chica_"+nombre_imagen+".webp";
+            imagenPropiedad.save();
+          }
       })
 
       //Agregando Detalles Imagen Chica a los primeros files
-      if(files[1]){
+      /* if(files[1]){
         const imagenPropiedad = await ImgPropiedad.findOne(
           { where: 
-            { img_name:files[1].img_name,
+            { img_name:files[1].filename,
               PropiedadId: PropiedadCreada[0].id
              } 
           }) 
         const nombre_imagen = files[1].filename.slice(0, files[1].filename.length - 4);
-        imagenPropiedad.detalles_imgChica= "Detalles_Img_Chica_"+nombre_imagen+".webp";
+        console.log("Img Prop Det Img Chica"+imagenPropiedad)
+        //imagenPropiedad.detalles_imgChica= "Detalles_Img_Chica_"+nombre_imagen+".webp";
       }
       if(files[2]){
         const imagenPropiedad = await ImgPropiedad.findOne(
           { where: 
-            { img_name:files[2].img_name,
+            { img_name:files[2].filename,
               PropiedadId: PropiedadCreada[0].id
              } 
           }) 
         const nombre_imagen = files[2].filename.slice(0, files[2].filename.length - 4);
-        imagenPropiedad.detalles_imgChica= "Detalles_Img_Chica_"+nombre_imagen+".webp";
-      }
+        //imagenPropiedad.detalles_imgChica= "Detalles_Img_Chica_"+nombre_imagen+".webp";
+      } */
 
       //res.json(`Se creo la Propiedad `+ PropiedadCreada[0].nombrePropiedad +  " y sus imagenes " );
       console.log("Se Creo El Desarrollo ");
