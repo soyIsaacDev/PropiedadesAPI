@@ -151,17 +151,16 @@ const sendUploadToGCSAsync = async (req, res, next) => {
       // Agregro al file los nombres segun tamaño
       file.uniqueDateName = uniqueDateName;
       file.resizeNameGde = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameGde}`;
-      
-      const thumbnail = await imgCambioTamaño(file, 298, 240, resizeNameThumbnail);
       file.resizeNameThumbnail = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameThumbnail}`;
+      file.resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameChico}`;
+
+      // Deben agregarse los nombres al file antes del cambio de tamaño, pq de lo contrario no lo agrega
+      const thumbnail = await imgCambioTamaño(file, 298, 240, resizeNameThumbnail);
       const uploadThumbnail = await uploadFile(thumbnail);
 
-      const imgGde = await imgCambioTamaño(file, 704, 504, resizeNameGde);
-      
+      const imgGde = await imgCambioTamaño(file, 704, 504, resizeNameGde);      
       const uploadBig = await uploadFile(imgGde);
       
-      
-
       const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
 
       // Si estan ordenadas al principio se cambia el tamaño a Chico
@@ -170,7 +169,6 @@ const sendUploadToGCSAsync = async (req, res, next) => {
           ordenData.length>0 && ordenData[0].orden === 3)
           {
             const imagenChica = await imgCambioTamaño(file, 428, 242, resizeNameChico);
-            file.resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameChico}`;
             const uploadImgDetChica = await uploadFile(imagenChica);
           }
     })
