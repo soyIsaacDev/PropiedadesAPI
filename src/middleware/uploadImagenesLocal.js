@@ -5,12 +5,13 @@ const carpeta = path.join(__dirname, '../../uploads')
 const sharp = require('sharp');
 
 // Configure multer storage and file name
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, carpeta);
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
+    cb(null, Date.now() + '_' + file.originalname);
   }
 });
 
@@ -81,7 +82,7 @@ const uploadImages = (req, res, next) => {
     files.forEach((file) => {
 
       // Agregando Nombre Unico segun la fecha
-      const nombreUnicoFecha = Date.now()+"_" + file.originalname;
+      const nombreUnicoFecha = file.filename;
       const esJpeg = file.originalname.includes("jpeg")
       var uniqueDateName = undefined;
       if(esJpeg){
@@ -101,15 +102,16 @@ const uploadImages = (req, res, next) => {
       const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
       console.log(ordenData)
       //resizeImage(img_name, width, height, output_name)
-      resizeImage(uniqueDateName, 298, 240, "Thumbnail_WebP_" );
-      resizeImage(uniqueDateName, 704, 504, "Detalles_Img_Gde_" );
+      resizeImage(file.filename, uniqueDateName, 298, 240, "Thumbnail_WebP_" );
+      resizeImage(file.filename, uniqueDateName, 704, 504, "Detalles_Img_Gde_" );
 
       // Si estan ordenadas al principio se cambia el tamaño a Chico
       if( ordenData.length>0 && ordenData[0].orden === 1 || 
           ordenData.length>0 && ordenData[0].orden === 2 || 
           ordenData.length>0 && ordenData[0].orden === 3)
           {
-            resizeImage(uniqueDateName, 428, 242, "Detalles_Img_Chica_");
+            console.log("RESIZE A CHICO")
+            resizeImage(file.filename, uniqueDateName, 428, 242, "Detalles_Img_Chica_");
 
             file.resizeNameChico = `Detalles_Img_Chica_${uniqueDateName}.webp`;
           }
@@ -124,17 +126,16 @@ const uploadImages = (req, res, next) => {
   });
 };
 
-async function resizeImage(img_name, width, height, output_name) {
-  const img_nombre = img_name.slice(0, img_name.length - 4);
+async function resizeImage(filename, img_name, width, height, output_name) {
   try {
-    await sharp(carpeta+"/"+img_name)
+    await sharp(carpeta+"/"+filename)
       .resize({
         width,
         height
       })
       .toFormat('webp')
       .webp({ quality: 50 })
-      .toFile(carpeta+"/"+output_name+img_nombre+'.webp');
+      .toFile(carpeta+"/"+output_name+img_name+'.webp');
   } catch (error) {
     console.log(error);
   }

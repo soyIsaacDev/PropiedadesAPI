@@ -54,7 +54,7 @@ const gcpUploadDataImagenDesarrollo = async (req, res, next) => {
       files.forEach(async (file) => {
         console.log("Image File " + JSON.stringify(file))
         console.log("Resize Image File " + JSON.stringify(file.originalname))
-        const ordenData = ordenImagen.filter((imagen)=>imagen.imageName === file.originalname);
+        const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
 
           const imagenPropiedad = await ImgPropiedad.create({
             orden:ordenData[0].orden,
@@ -62,9 +62,12 @@ const gcpUploadDataImagenDesarrollo = async (req, res, next) => {
             img_name:file.originalname,
             thumbnail_img:file.resizeNameThumbnail,
             detalles_imgGde:file.resizeNameGde,
-            detalles_imgChica:file.resizeNameChico,
             PropiedadId: PropiedadCreada[0].id
           });
+          if(ordenData[0].orden === 1 || ordenData[0].orden === 2 || ordenData[0].orden === 3){
+            imagenPropiedad.detalles_imgChica=file.resizeNameChico;
+            imagenPropiedad.save();
+          }
           console.log("Se Creo la Propiedad" + JSON.stringify(imagenPropiedad));
       })
 
