@@ -161,7 +161,7 @@ async function checkTipoAutorizacion(req, res, next) {
     app.use("/imagenpropiedad", imagen);
     app.use("/Apikeys", apikeys );
     app.use("/dbConstants", dbconstants);
-    app.use("/favoritos", /* isAuthenticated, */ favoritos);
+    app.use("/favoritos", checkIfSignedIn, favoritos);
     app.use("/modeloAsociadoPropiedad", modeloRelacionado);
     app.use("/allProp", /* checkIfSignedIn, */ allPropiedades);
     app.use("/bulk", bulk);
