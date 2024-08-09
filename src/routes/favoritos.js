@@ -14,17 +14,21 @@ server.post("/agregarFavorito",  async (req,res)=> {
         });
         console.log("Cliente ID " + userId + " Prop Id " + PropiedadId)
 
-        const desarrolloFavorito = await Favoritos.create({
-            ClienteId:cliente.id,
-            PropiedadId
-        });
-        const modeloFavorito = await ModelosFavoritos.create({
-            ClienteId:cliente.id,
-            ModeloAsociadoPropiedadId:PropiedadId
-        });
+        if(TipodeProp===1){
+            const desarrolloFavorito = await Favoritos.create({
+                ClienteId:cliente.id,
+                PropiedadId
+            });
+            res.json(desarrolloFavorito)
+        }
+        else{
+            const modeloFavorito = await ModelosFavoritos.create({
+                ClienteId:cliente.id,
+                ModeloAsociadoPropiedadId:PropiedadId
+            });
+            res.json(modeloFavorito)
+        }
         
-        res.json(TipodeProp===1? desarrolloFavorito:modeloFavorito)
-
     } catch (e) {
         res.send(e);
     }
