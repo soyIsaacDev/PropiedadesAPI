@@ -631,8 +631,8 @@ server.get("/bulk", async (req,res)=> {
                 },
                 {
                     type: "image/jpeg",
-                    thumbnail_img: "https://storage.googleapis.com/dadinumco-media/Lagos9.jpg",
-                    detalles_imgGde: "https://storage.googleapis.com/dadinumco-media/Lagos9.jpg",
+                    thumbnail_img: "https://storage.googleapis.com/dadinumco-media/Lagos9.JPG",
+                    detalles_imgGde: "https://storage.googleapis.com/dadinumco-media/Lagos9.JPG",
                     PropiedadId:1,
                     orden:9,
                 },
@@ -737,8 +737,8 @@ server.get("/bulk", async (req,res)=> {
                 },
                 {
                     type: "image/jpeg",
-                    thumbnail_img: "https://storage.googleapis.com/dadinumco-media/Oceano9.jpg",
-                    detalles_imgGde: "https://storage.googleapis.com/dadinumco-media/Oceano9.jpg",
+                    thumbnail_img: "https://storage.googleapis.com/dadinumco-media/Oceano9.JPG",
+                    detalles_imgGde: "https://storage.googleapis.com/dadinumco-media/Oceano9.JPG",
                     PropiedadId:3,
                     orden:9,
                 },
@@ -988,31 +988,10 @@ server.get("/bulk", async (req,res)=> {
                 },
                 {
                     type: "image/jpeg",
-                    thumbnail_img: "https://storage.googleapis.com/dadinumco-media/ElTaj9.jpg",
-                    detalles_imgGde: "https://storage.googleapis.com/dadinumco-media/ElTaj9.jpg",
+                    thumbnail_img: "https://storage.googleapis.com/dadinumco-media/ElTaj9.JPG",
+                    detalles_imgGde: "https://storage.googleapis.com/dadinumco-media/ElTaj9.JPG",
                     PropiedadId:6,
                     orden:10,
-                },
-                {
-                    type: "image/jpeg",
-                    thumbnail_img: "https://storage.googleapis.com/dadinumco-media/ElTaj10.jpg",
-                    detalles_imgGde: "https://storage.googleapis.com/dadinumco-media/ElTaj10.jpg",
-                    PropiedadId:6,
-                    orden:11,
-                },
-                {
-                    type: "image/jpeg",
-                    thumbnail_img: "https://storage.googleapis.com/dadinumco-media/ElTaj11.jpg",
-                    detalles_imgGde: "https://storage.googleapis.com/dadinumco-media/ElTaj11.jpg",
-                    PropiedadId:6,
-                    orden:12,
-                },
-                {
-                    type: "image/jpeg",
-                    thumbnail_img: "https://storage.googleapis.com/dadinumco-media/ElTaj12.jpg",
-                    detalles_imgGde: "https://storage.googleapis.com/dadinumco-media/ElTaj12.jpg",
-                    PropiedadId:6,
-                    orden:13,
                 },
                 
             ]);
@@ -1130,13 +1109,6 @@ server.get("/bulk", async (req,res)=> {
                     type: "image/jpeg",
                     thumbnail_img: "https://storage.googleapis.com/dadinumco-media/ElementoA3.jpg",
                     detalles_imgGde: "https://storage.googleapis.com/dadinumco-media/ElementoA3.jpg",
-                    ModeloAsociadoPropiedadId:5
-                },
-                {
-                    orden:4,
-                    type: "image/jpeg",
-                    thumbnail_img: "https://storage.googleapis.com/dadinumco-media/ElementoA4.jpg",
-                    detalles_imgGde: "https://storage.googleapis.com/dadinumco-media/ElementoA4.jpg",
                     ModeloAsociadoPropiedadId:5
                 },
                 {
