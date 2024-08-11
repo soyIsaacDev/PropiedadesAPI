@@ -17,7 +17,7 @@ const editarDataDesarrollo = async (req, res, next) => {
         TipodePropiedadId, TipoOperacionId, EstiloArquitecturaId, ordenImagen} = parsedbodyObj   
 
       console.log("Upload Multiple Img Controller Property -> " + nombreDesarrollo);
-      //console.log("Orden Imagen "+JSON.stringify(ordenImagen))
+      console.log(ordenImagen)
 
       const PropiedadBuscada = await Propiedad.findByPk(id);
       PropiedadBuscada.nombreDesarrollo = nombreDesarrollo;

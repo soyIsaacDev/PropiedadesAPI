@@ -39,7 +39,7 @@ const uploadImages = (req, res, next) => {
 
     // Validando el tamaño y tipo de imagenes permitidas
     files.forEach(async (file) => {
-      console.log("Files " + JSON.stringify(file));
+      //console.log("Files " + JSON.stringify(file));
 
       const allowedTypes = ['image/jpeg', 'image/png'];
       const maxSize = 5 * 1024 * 1024; // 5MB
@@ -51,7 +51,7 @@ const uploadImages = (req, res, next) => {
       if (file.size > maxSize) {
         errors.push(`File too large: ${file.originalname}`);
       }
-      console.log("Dentro de Ciclo de Validacion de Imagenes");
+      //console.log("Dentro de Ciclo de Validacion de Imagenes");
 
     });
 
@@ -75,7 +75,7 @@ const uploadImages = (req, res, next) => {
     const bodyObj = req.body.data;
     const parsedbodyObj = JSON.parse(bodyObj);
     const { ordenImagen } = parsedbodyObj;
-    console.log(ordenImagen)
+    //console.log(ordenImagen)
     // Cambiando tamaños de imagen
 
     
@@ -100,7 +100,7 @@ const uploadImages = (req, res, next) => {
 
 
       const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
-      console.log(ordenData)
+      //console.log(ordenData)
       //resizeImage(img_name, width, height, output_name)
       resizeImage(file.filename, uniqueDateName, 298, 240, "Thumbnail_WebP_" );
       resizeImage(file.filename, uniqueDateName, 704, 504, "Detalles_Img_Gde_" );
@@ -110,7 +110,7 @@ const uploadImages = (req, res, next) => {
           ordenData.length>0 && ordenData[0].orden === 2 || 
           ordenData.length>0 && ordenData[0].orden === 3)
           {
-            console.log("RESIZE A CHICO")
+            //console.log("RESIZE A CHICO")
             resizeImage(file.filename, uniqueDateName, 428, 242, "Detalles_Img_Chica_");
 
             file.resizeNameChico = `Detalles_Img_Chica_${uniqueDateName}.webp`;
