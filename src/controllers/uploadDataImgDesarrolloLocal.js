@@ -17,6 +17,7 @@ const uploadDataImagenDesarrollo = async (req, res, next) => {
         TipodePropiedadId, TipoOperacionId, EstiloArquitecturaId, ordenImagen} = parsedbodyObj   
 
       console.log("Upload Multiple Img Controller Property -> " + nombreDesarrollo);
+      console.log(ordenImagen)
 
       const PropiedadCreada = await Propiedad.findOrCreate({
         where:{ 
@@ -49,16 +50,16 @@ const uploadDataImagenDesarrollo = async (req, res, next) => {
         console.log("Selecciona una imagen para tu propiedad")
         //return res.send(`Selecciona una imagen para tu propiedad`);
       }
-      console.log("Files en creacion de Instancia " + JSON.stringify(files))
+      //console.log("Files en creacion de Instancia " + JSON.stringify(files))
       // se crea una imagen por cada archivo y se liga a la Propiedad
       files.forEach(async (file) => {
-        console.log("Image File " + JSON.stringify(file));
+        //console.log("Image File " + JSON.stringify(file));
           /* const imagenPropiedad = await ImgPropiedad.create({
             type: file.mimetype,
             img_name: file.filename,
             PropiedadId: PropiedadCreada[0].id
           }); */
-          
+        console.log("File Original Name " + file.originalname)
         const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
         console.log("Orden Data "+JSON.stringify(ordenData))
           const nombre_imagen = file.filename.slice(0, file.filename.length - 4);
