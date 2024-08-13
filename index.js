@@ -45,7 +45,7 @@
 
     if(DEVMODE === "build"){
         corsOptions = {
-            origin: [ 'http://localhost:3000', 'http://192.168.1.12:3000', 'http://192.168.100.2:3000'],
+            origin: [ 'http://localhost:3000', 'http://192.168.1.16:3000', 'http://192.168.100.2:3000'],
             //importante: No dejar la ruta de origen con un "/" al final
             optionsSuccessStatus: 200,
             credentials: true 

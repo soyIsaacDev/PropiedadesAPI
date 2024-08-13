@@ -34,7 +34,7 @@ const uploadModeloImages = (req, res, next) => {
     
     // Validate file types and sizes
     files.forEach((file) => {
-      const allowedTypes = ['image/jpeg', 'image/png'];
+      const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
       const maxSize = 5 * 1024 * 1024; // 5MB
 
       if (!allowedTypes.includes(file.mimetype)) {
@@ -52,7 +52,12 @@ const uploadModeloImages = (req, res, next) => {
     if (errors.length > 0) {
       // Remove uploaded files
       files.forEach((file) => {
-        fs.unlinkSync(file.path);
+        fs.unlinkSync(file.path, (err) => {
+          if (err) {
+              throw err;
+          }
+          console.log("Delete File successfully.");
+        });
       });
 
       return res.status(400).json({ errors });
