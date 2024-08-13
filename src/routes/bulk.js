@@ -78,6 +78,13 @@ server.get("/bulk", async (req,res)=> {
             { nombreAmenidad:"Cancha de Paddel" },
             { nombreAmenidad:"Cancha de Futbol" },
             { nombreAmenidad:"Cancha de Basquetbol" },
+            { nombreAmenidad:"Asadores" },
+            { nombreAmenidad:"Coworking" },
+            { nombreAmenidad:"Fire Pit" },
+            { nombreAmenidad:"Area de Fitness" },
+            { nombreAmenidad:"Jardin" },
+            { nombreAmenidad:"Coffe Station" },
+            { nombreAmenidad:"Salon de TV" },
         ])
         
         const TipodeOpCreada = await TipoOperacion.bulkCreate(
