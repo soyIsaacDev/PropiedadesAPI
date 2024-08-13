@@ -41,7 +41,7 @@ const uploadImages = (req, res, next) => {
     files.forEach(async (file) => {
       //console.log("Files " + JSON.stringify(file));
 
-      const allowedTypes = ['image/jpeg', 'image/png'];
+      const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
       const maxSize = 5 * 1024 * 1024; // 5MB
 
       if (!allowedTypes.includes(file.mimetype)) {
