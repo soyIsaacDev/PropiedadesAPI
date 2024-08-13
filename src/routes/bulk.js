@@ -83,7 +83,7 @@ server.get("/bulk", async (req,res)=> {
             { nombreAmenidad:"Fire Pit" },
             { nombreAmenidad:"Area de Fitness" },
             { nombreAmenidad:"Jardin" },
-            { nombreAmenidad:"Coffe Station" },
+            { nombreAmenidad:"Coffee Station" },
             { nombreAmenidad:"Salon de TV" },
         ])
         
