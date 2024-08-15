@@ -45,7 +45,6 @@ server.get("/bulk", async (req,res)=> {
             {colonia:"Monterosa"},
             {colonia:"Montebello"},
             {colonia:"Real de Castilla"},
-            {colonia:"La Coruña"},
             {colonia:"Altozano"},
         ]);
         
