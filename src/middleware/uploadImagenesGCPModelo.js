@@ -140,7 +140,7 @@ const sendModeloUploadToGCSAsync = async (req, res, next) => {
       file.resizeNameChico = `https://storage.googleapis.com/${GCLOUD_BUCKET}/${resizeNameChico}`;
       
       // Deben agregarse los nombres al file antes del cambio de tamaño, pq de lo contrario no lo agrega
-      const thumbnail = await imgCambioTamaño(file, 298, 240, resizeNameThumbnail);
+      const thumbnail = await imgCambioTamaño(file, 393, 388, resizeNameThumbnail);
       const uploadThumbnail = await uploadFile(thumbnail);
 
       const imgGde = await imgCambioTamaño(file, 704, 504, resizeNameGde);      
@@ -181,7 +181,7 @@ async function imgCambioTamaño (archivo, width, height, nuevoNombre){
               height
           })
           .toFormat('webp')
-          .webp({ quality: 50 })
+          .webp({ quality: 100 })
           .toBuffer()
   }
   return img_a_cambiar;
