@@ -102,7 +102,8 @@ const uploadImages = (req, res, next) => {
       const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
       //console.log(ordenData)
       //resizeImage(img_name, width, height, output_name)
-      resizeImage(file.filename, uniqueDateName, 298, 240, "Thumbnail_WebP_" );
+      resizeImage(file.filename, uniqueDateName, 393, 388, "Thumbnail_WebP_" );
+      /* resizeImage(file.filename, uniqueDateName, 298, 240, "Thumbnail_WebP_" ); */
       resizeImage(file.filename, uniqueDateName, 704, 504, "Detalles_Img_Gde_" );
 
       // Si estan ordenadas al principio se cambia el tamaño a Chico
@@ -134,7 +135,7 @@ async function resizeImage(filename, img_name, width, height, output_name) {
         height
       })
       .toFormat('webp')
-      .webp({ quality: 50 })
+      .webp({ quality: 100 })
       .toFile(carpeta+"/"+output_name+img_name+'.webp');
   } catch (error) {
     console.log(error);
