@@ -62,7 +62,15 @@ const uploadDataImagenDesarrollo = async (req, res, next) => {
         console.log("File Original Name " + file.originalname)
         const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
         console.log("Orden Data "+JSON.stringify(ordenData))
-          const nombre_imagen = file.filename.slice(0, file.filename.length - 4);
+        const esJpeg = file.filename.includes("jpeg");
+        var nombre_imagen = undefined;
+        if(esJpeg){
+          nombre_imagen = file.filename.slice(0, file.filename.length - 5);
+        }
+        else{
+          nombre_imagen = file.filename.slice(0, file.filename.length - 4);
+        }
+          
           const imagenPropiedad = await ImgPropiedad.create({
             orden:ordenData[0].orden,
             type: file.mimetype,

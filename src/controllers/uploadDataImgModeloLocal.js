@@ -51,7 +51,14 @@ const uploadDataImagenModelo = async (req, res) => {
     
         const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
         console.log("Orden Data "+JSON.stringify(ordenData))
-        const nombre_imagen = file.filename.slice(0, file.filename.length - 4);
+        const esJpeg = file.filename.includes("jpeg");
+        var nombre_imagen = undefined;
+        if(esJpeg){
+          nombre_imagen = file.filename.slice(0, file.filename.length - 5);
+        }
+        else{
+          nombre_imagen = file.filename.slice(0, file.filename.length - 4);
+        }
           const imagenModeloAsociado = await ImgModeloAsociado.create({
             orden:ordenData[0].orden,
             type: file.mimetype,

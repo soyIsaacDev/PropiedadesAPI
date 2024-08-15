@@ -11,8 +11,6 @@ server.get("/bulk", async (req,res)=> {
     console.log(DEVMODE);
     
     try {
-        // CONSIDERAR UN MODELO DE ARQUITECTURA
-        // CONSIDERAR PISOS DE LA PROPIEDAD
         const EstadoCreado = await Estado.create({
             estado:"Sonora" 
         });
@@ -45,6 +43,10 @@ server.get("/bulk", async (req,res)=> {
             {colonia:"Jardines de Monaco"},
             {colonia:"Palermo"},
             {colonia:"Monterosa"},
+            {colonia:"Montebello"},
+            {colonia:"Real de Castilla"},
+            {colonia:"La Coruña"},
+            {colonia:"Altozano"},
         ]);
         
           // agregando relaciones entre ellos
@@ -85,11 +87,15 @@ server.get("/bulk", async (req,res)=> {
             { nombreAmenidad:"Jardin" },
             { nombreAmenidad:"Coffee Station" },
             { nombreAmenidad:"Salon de TV" },
+            { nombreAmenidad:"Pet Park" },
+            { nombreAmenidad:"Carril de Nado" },
+            { nombreAmenidad:"Jacuzzi" },
         ])
         
         const TipodeOpCreada = await TipoOperacion.bulkCreate(
             [
                 {tipodeOperacion:"Venta"},
+                {tipodeOperacion:"Pre Venta"},
                 {tipodeOperacion:"Renta"},
             ]
         );
@@ -98,7 +104,8 @@ server.get("/bulk", async (req,res)=> {
             [
                 {tipoPropiedad:"Casa"},
                 {tipoPropiedad:"Departamento"},
-                {tipoPropiedad:"Terreno"}
+                {tipoPropiedad:"Terreno Residencial"}
+
             ]
         );
 
@@ -112,7 +119,7 @@ server.get("/bulk", async (req,res)=> {
 
           console.log("Creando Bulk")
           
-        const Desarrollo = await Propiedad.bulkCreate([
+        /* const Desarrollo = await Propiedad.bulkCreate([
             {
                 nombreDesarrollo:"Lagos",
                 precioMin:1.2,
@@ -216,10 +223,10 @@ server.get("/bulk", async (req,res)=> {
                 EstiloArquitecturaId:2,
             },
         
-        ]);
+        ]); */
           
           /* AmenidadesDesarrollo */
-        const AmenidadesdelDesarrolloCreado = await AmenidadesDesarrolloPropiedad.bulkCreate([
+        /* const AmenidadesdelDesarrolloCreado = await AmenidadesDesarrolloPropiedad.bulkCreate([
             {PropiedadId:Desarrollo[0].id, AmenidadesDesarrolloId:AmenidadDesarrolloCreado[0].id},
             {PropiedadId:Desarrollo[0].id, AmenidadesDesarrolloId:AmenidadDesarrolloCreado[1].id},
             {PropiedadId:Desarrollo[0].id, AmenidadesDesarrolloId:AmenidadDesarrolloCreado[3].id},
@@ -246,9 +253,9 @@ server.get("/bulk", async (req,res)=> {
             {PropiedadId:Desarrollo[5].id, AmenidadesDesarrolloId:AmenidadDesarrolloCreado[5].id},
             {PropiedadId:Desarrollo[5].id, AmenidadesDesarrolloId:AmenidadDesarrolloCreado[6].id},
             {PropiedadId:Desarrollo[5].id, AmenidadesDesarrolloId:AmenidadDesarrolloCreado[8].id},
-        ])
+        ]) */
         
-        const Modelo = await ModeloAsociadoPropiedad.bulkCreate([
+        /* const Modelo = await ModeloAsociadoPropiedad.bulkCreate([
             {
                 nombreModelo:"Lago de Chapala",
                 PropiedadId:Desarrollo[0].id,
@@ -539,9 +546,9 @@ server.get("/bulk", async (req,res)=> {
                 niveles:2,            
             },
             
-        ]);
+        ]); */
 
-        for (let i = 0; i < Modelo.length; i++) {
+        /* for (let i = 0; i < Modelo.length; i++) {
             function RandomInt(min, max) {
                 const minCeiled = Math.ceil(min);
                 const maxFloored = Math.floor(max);
@@ -571,11 +578,11 @@ server.get("/bulk", async (req,res)=> {
                     },
                 ]);
             }            
-        }
+        } */
 
         //detalles_imgChica: "https://storage.googleapis.com/dadinumco-media/
         if(DEVMODE === "Production"){
-            const imagenPropiedad = await ImgPropiedad.bulkCreate([
+            /* const imagenPropiedad = await ImgPropiedad.bulkCreate([
                 //Lagos
                 {
                     type: "image/jpeg",
@@ -1001,9 +1008,9 @@ server.get("/bulk", async (req,res)=> {
                     orden:10,
                 },
                 
-            ]);
+            ]); */
     
-            const imagenModeloAsociado = await ImgModeloAsociado.bulkCreate([
+            /* const imagenModeloAsociado = await ImgModeloAsociado.bulkCreate([
                 //Lago
                 {   
                     orden:1,
@@ -1663,13 +1670,13 @@ server.get("/bulk", async (req,res)=> {
                     detalles_imgGde: "https://storage.googleapis.com/dadinumco-media/ElTajC8.jpg",
                     ModeloAsociadoPropiedadId:17
                 },
-            ]);
+            ]); */
 
-            res.json(imagenModeloAsociado)
+            /* res.json(imagenModeloAsociado) */
         }
         else{
 
-            const imagenPropiedad = await ImgPropiedad.bulkCreate([
+            /* const imagenPropiedad = await ImgPropiedad.bulkCreate([
                 //Lagos
                 {
                     orden:1,
@@ -2116,9 +2123,9 @@ server.get("/bulk", async (req,res)=> {
                     PropiedadId:6
                 },
                 
-            ]);
+            ]); */
     
-            const imagenModeloAsociado = await ImgModeloAsociado.bulkCreate([
+            /* const imagenModeloAsociado = await ImgModeloAsociado.bulkCreate([
                 //Lago
                 {
                     orden:3,
@@ -2789,9 +2796,9 @@ server.get("/bulk", async (req,res)=> {
                     detalles_imgGde: "ElTajC8.jpg",
                     ModeloAsociadoPropiedadId:17
                 },
-            ]);
+            ]); */
 
-            res.json(imagenModeloAsociado)  
+            /* res.json(imagenModeloAsociado) */  
         }
 
             
