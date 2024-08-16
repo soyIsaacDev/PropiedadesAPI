@@ -74,6 +74,8 @@ server.post("/hardDeleteDesarrollo", async (req, res) => {
         where:{PropiedadId:IdDesarrolloABorrar}
       });
 
+      console.log(imagenPropiedad);
+
       for (let i = 0; i < imagenPropiedad.length; i++) {
         console.log("Nombre Imagen A Borrar " + imagenPropiedad[i].img_name);
         deleteImgDesarrollo(imagenPropiedad[i].img_name).catch(console.error);
@@ -85,13 +87,22 @@ server.post("/hardDeleteDesarrollo", async (req, res) => {
       }
 
       async function deleteImgDesarrollo(fileName) {
+        console.log("Delete Imagen Desarrollo "+fileName);
         await storageBucket_Desarrollo.file(fileName).delete();
         console.log(`gs://${GCLOUD_BUCKET_NAME_Desarrollo}/${fileName} deleted`);
       }
+      const ultimoFile = storageBucket_Desarrollo.file(imagenPropiedad[imagenPropiedad.length-1].detalles_imgGde);
+      ultimoFile.exists(function(err, exists) {});
 
-      await DesarrolloABorrar.destroy();
-      await imagenPropiedad.destroy();
-
+      ultimoFile.exists().then(async function(data) {
+        const exists = data[0];
+        console.log(exists)
+        if(exists===0){
+          await imagenPropiedad.destroy();
+          await DesarrolloABorrar.destroy();
+        }
+      });
+      
       res.json("Se borrro el desarrollo ID " + IdDesarrolloABorrar);
     } catch (e) {
       res.send(e)
