@@ -184,7 +184,8 @@ async function imgCambioTamaño (archivo, width, height, nuevoNombre){
       buffer: await sharp(archivo.buffer)
           .resize({
               width,
-              height
+              height,
+              fit:'fill'
           })
           .toFormat('webp')
           .webp({ quality: 100 })
