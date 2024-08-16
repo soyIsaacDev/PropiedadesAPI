@@ -1,4 +1,21 @@
 const server = require("express").Router();
+const {Storage} = require('@google-cloud/storage');
+// Creates a client
+const storage = new Storage();
+
+const config = require('../../configCloudBucket');
+// variable so you can use it in code
+const GCLOUD_BUCKET_NAME_Desarrollo = config.get('GCLOUD_BUCKET');
+
+// Get a reference to the Cloud Storage bucket
+const storageBucket_Desarrollo = storage.bucket(GCLOUD_BUCKET_NAME_Desarrollo);
+
+const GCLOUD_BUCKET_NAME_Mod_Asoc = config.get('GCLOUD_MOD_ASOC_BUCKET');
+const storageBucket_Mod_Asoc = storage.bucket(GCLOUD_BUCKET_NAME_Mod_Asoc);
+
+const { Propiedad, ImgPropiedad, ModeloAsociadoPropiedad, ImgModeloAsociado  } = require("../db");
+
+const DEVMODE = process.env.DEVELOPMENT;
 
 // Upload Local
 
@@ -23,10 +40,6 @@ const {gcpEditarImagenDesarrollo} = require("../controllers/editarDataImgDesarro
   // Modelo
 const {gcpUploadImagenModeloRelacionado} = require("../controllers/uploadDataImgModeloGCP");
 const { gcpEditarImagenModelo } = require("../controllers/editarDataImgModeloGCP"); 
-
-const { Propiedad  } = require("../db");
-
-const DEVMODE = process.env.DEVELOPMENT;
 
 if(DEVMODE === "build" ){
   server.post('/nuevaPropiedad',  uploadImagenesLocal, uploadDataImagenDesarrollo);
@@ -56,8 +69,29 @@ server.post("/hardDeleteDesarrollo", async (req, res) => {
     try {
       const { IdDesarrolloABorrar} = req.body;
       const DesarrolloABorrar = await Propiedad.findByPk(IdDesarrolloABorrar);
+
+      const imagenPropiedad = await ImgPropiedad.findOne({
+        where:{PropiedadId:IdDesarrolloABorrar}
+      });
+
+      for (let i = 0; i < imagenPropiedad.length; i++) {
+        console.log("Nombre Imagen A Borrar " + imagenPropiedad[i].img_name);
+        deleteImgDesarrollo(imagenPropiedad[i].img_name).catch(console.error);
+        deleteImgDesarrollo(imagenPropiedad[i].thumbnail_img).catch(console.error);
+        deleteImgDesarrollo(imagenPropiedad[i].detalles_imgGde).catch(console.error);
+        if(imagenPropiedad[i].detalles_imgChica !== null){
+          deleteImgDesarrollo(imagenPropiedad[i].detalles_imgChica).catch(console.error);
+        }
+      }
+
+      async function deleteImgDesarrollo(fileName) {
+        await storageBucket_Desarrollo.file(fileName).delete();
+        console.log(`gs://${GCLOUD_BUCKET_NAME_Desarrollo}/${fileName} deleted`);
+      }
+
       await DesarrolloABorrar.destroy();
-      
+      await imagenPropiedad.destroy();
+
       res.json("Se borrro el desarrollo ID " + IdDesarrolloABorrar);
     } catch (e) {
       res.send(e)
@@ -68,8 +102,28 @@ server.post("/hardDeleteModeloRelacionado", async (req, res) => {
   try {
     const { IdModeloABorrar} = req.body;
     const modeloRelacionadoABorrar = await ModeloAsociadoPropiedad.findByPk(IdModeloABorrar);
+    const imagenModelo = await ImgModeloAsociado.findOne({
+      where:{ModeloAsociadoPropiedadId:IdModeloABorrar}
+    });
+
+    for (let i = 0; i < imagenModelo.length; i++) {
+      console.log("Nombre Imagen A Borrar " + imagenModelo[i].img_name);
+      deleteImgModelo(imagenModelo[i].img_name).catch(console.error);
+      deleteImgModelo(imagenModelo[i].thumbnail_img).catch(console.error);
+      deleteImgModelo(imagenModelo[i].detalles_imgGde).catch(console.error);
+      if(imagenModelo[i].detalles_imgChica !== null){
+        deleteImgModelo(imagenModelo[i].detalles_imgChica).catch(console.error);
+      }
+    }
+
+    async function deleteImgModelo(fileName) {
+      await storageBucket_Mod_Asoc.file(fileName).delete();  
+      console.log(`gs://${GCLOUD_BUCKET_NAME_Mod_Asoc}/${fileName} deleted`);
+    }
+
     await modeloRelacionadoABorrar.destroy();
-    
+    await imagenModelo.destroy();
+
     res.json("Se Borro el modelo ID " + IdModeloABorrar);
   } catch (e) {
     res.send(e)
