@@ -2807,7 +2807,7 @@ server.get("/bulk", async (req,res)=> {
             /* res.json(imagenModeloAsociado) */  
         }
 
-            
+        res.json(EstiloArq)
 
     } catch (e) {
         res.send(e);
