@@ -65,6 +65,13 @@ else{
   );
 }
 
+const getNombre = (Nombre, caracteres) =>{
+  //Borrando el sufijo de "https://storage.googleapis.com/dadinumco-media/"  ->  47 caracteres 
+  //https://storage.googleapis.com/dadinumco_mod_asociado/   ->  54 caracteres
+  const NombreExtraido = Nombre.slice(caracteres, Nombre.length);
+  return NombreExtraido;
+}
+
 server.post("/hardDeleteDesarrollo", async (req, res) => {
     try {
       const { IdDesarrolloABorrar} = req.body;
@@ -74,34 +81,37 @@ server.post("/hardDeleteDesarrollo", async (req, res) => {
         where:{PropiedadId:IdDesarrolloABorrar}
       });
 
-      console.log(imagenPropiedad);
-
       for (let i = 0; i < imagenPropiedad.length; i++) {
         console.log("Nombre Imagen A Borrar " + imagenPropiedad[i].img_name);
-        deleteImgDesarrollo(imagenPropiedad[i].img_name).catch(console.error);
-        deleteImgDesarrollo(imagenPropiedad[i].thumbnail_img).catch(console.error);
-        deleteImgDesarrollo(imagenPropiedad[i].detalles_imgGde).catch(console.error);
+        const ThumbnailImgName = getNombre(imagenPropiedad[i].thumbnail_img, 47)
+        const ImgGrandeName = getNombre(imagenPropiedad[i].detalles_imgGde, 47);
+        
+        //deleteImgDesarrollo(imagenPropiedad[i].img_name).catch(console.error);
+        deleteImgDesarrollo(ThumbnailImgName).catch(console.error);
+        deleteImgDesarrollo(ImgGrandeName).catch(console.error);
         if(imagenPropiedad[i].detalles_imgChica !== null){
-          deleteImgDesarrollo(imagenPropiedad[i].detalles_imgChica).catch(console.error);
+          const ImgChicaName = getNombre(imagenPropiedad[i].detalles_imgChica, 47);
+          deleteImgDesarrollo(ImgChicaName).catch(console.error);
         }
       }
 
       async function deleteImgDesarrollo(fileName) {
         console.log("Delete Imagen Desarrollo "+fileName);
         const archivoABorrar = await storageBucket_Desarrollo.file(fileName).delete();
-        console.log(`Se Borro el ${ultimoFile}`);
+        console.log(`Se Borro el ${archivoABorrar}`);
       }
-      const ultimoFile = storageBucket_Desarrollo.file(imagenPropiedad[imagenPropiedad.length-1].detalles_imgGde);
+
+      /* const ultimoFile = storageBucket_Desarrollo.file(imagenPropiedad[imagenPropiedad.length-1].detalles_imgGde);
       ultimoFile.exists(function(err, exists) {});
 
       ultimoFile.exists().then(async function(data) {
         const exists = data[0];
         console.log(exists)
         if(exists===0){
-          await imagenPropiedad.destroy();
-          await DesarrolloABorrar.destroy();
         }
-      });
+      }); */
+      await imagenPropiedad.destroy();
+      await DesarrolloABorrar.destroy();
       
       res.json("Se borrro el desarrollo ID " + IdDesarrolloABorrar);
     } catch (e) {
@@ -119,11 +129,15 @@ server.post("/hardDeleteModeloRelacionado", async (req, res) => {
 
     for (let i = 0; i < imagenModelo.length; i++) {
       console.log("Nombre Imagen A Borrar " + imagenModelo[i].img_name);
-      deleteImgModelo(imagenModelo[i].img_name).catch(console.error);
-      deleteImgModelo(imagenModelo[i].thumbnail_img).catch(console.error);
-      deleteImgModelo(imagenModelo[i].detalles_imgGde).catch(console.error);
+      const ThumbnailImgName = getNombre(imagenModelo[i].thumbnail_img, 54);
+      const ImgGrandeName = getNombre(imagenModelo[i].detalles_imgGde, 54);
+
+      //deleteImgModelo(imagenModelo[i].img_name).catch(console.error);
+      deleteImgModelo(ThumbnailImgName).catch(console.error);
+      deleteImgModelo(ImgGrandeName).catch(console.error);
       if(imagenModelo[i].detalles_imgChica !== null){
-        deleteImgModelo(imagenModelo[i].detalles_imgChica).catch(console.error);
+        const ImgChicaName = getNombre(imagenModelo[i].detalles_imgChica, 54)
+        deleteImgModelo(ImgChicaName).catch(console.error);
       }
     }
 
