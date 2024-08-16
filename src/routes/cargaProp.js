@@ -70,7 +70,7 @@ server.post("/hardDeleteDesarrollo", async (req, res) => {
       const { IdDesarrolloABorrar} = req.body;
       const DesarrolloABorrar = await Propiedad.findByPk(IdDesarrolloABorrar);
 
-      const imagenPropiedad = await ImgPropiedad.findOne({
+      const imagenPropiedad = await ImgPropiedad.findAll({
         where:{PropiedadId:IdDesarrolloABorrar}
       });
 
@@ -113,7 +113,7 @@ server.post("/hardDeleteModeloRelacionado", async (req, res) => {
   try {
     const { IdModeloABorrar} = req.body;
     const modeloRelacionadoABorrar = await ModeloAsociadoPropiedad.findByPk(IdModeloABorrar);
-    const imagenModelo = await ImgModeloAsociado.findOne({
+    const imagenModelo = await ImgModeloAsociado.findAll({
       where:{ModeloAsociadoPropiedadId:IdModeloABorrar}
     });
 
