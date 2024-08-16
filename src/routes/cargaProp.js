@@ -88,8 +88,8 @@ server.post("/hardDeleteDesarrollo", async (req, res) => {
 
       async function deleteImgDesarrollo(fileName) {
         console.log("Delete Imagen Desarrollo "+fileName);
-        await storageBucket_Desarrollo.file(fileName).delete();
-        console.log(`gs://${GCLOUD_BUCKET_NAME_Desarrollo}/${fileName} deleted`);
+        const archivoABorrar = await storageBucket_Desarrollo.file(fileName).delete();
+        console.log(`Se Borro el ${ultimoFile}`);
       }
       const ultimoFile = storageBucket_Desarrollo.file(imagenPropiedad[imagenPropiedad.length-1].detalles_imgGde);
       ultimoFile.exists(function(err, exists) {});
