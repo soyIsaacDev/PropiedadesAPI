@@ -66,7 +66,7 @@ else{
 }
 
 const getNombre = (Nombre, caracteres) =>{
-  //Borrando el sufijo de "https://storage.googleapis.com/dadinumco-media/"  ->  47 caracteres 
+  //Borrando el sufijo de "https://storage.googleapis.com/dadinumco-media/"  ->  47 caracteres 47-7
   //https://storage.googleapis.com/dadinumco_mod_asociado/   ->  54 caracteres
   const NombreExtraido = Nombre.slice(caracteres, Nombre.length);
   return NombreExtraido;
@@ -75,7 +75,7 @@ const getNombre = (Nombre, caracteres) =>{
 server.post("/hardDeleteDesarrollo", async (req, res) => {
     try {
       const { IdDesarrolloABorrar} = req.body;
-      const DesarrolloABorrar = await Propiedad.findByPk(IdDesarrolloABorrar);
+      const desarrolloABorrar = await Propiedad.findByPk(IdDesarrolloABorrar);
 
       const imagenPropiedad = await ImgPropiedad.findAll({
         where:{PropiedadId:IdDesarrolloABorrar}
@@ -98,7 +98,7 @@ server.post("/hardDeleteDesarrollo", async (req, res) => {
       async function deleteImgDesarrollo(fileName) {
         console.log("Delete Imagen Desarrollo "+fileName);
         const archivoABorrar = await storageBucket_Desarrollo.file(fileName).delete();
-        console.log(`Se Borro el ${archivoABorrar}`);
+        console.log(`Se Borro el ` + JSON.stringify(archivoABorrar));
       }
 
       /* const ultimoFile = storageBucket_Desarrollo.file(imagenPropiedad[imagenPropiedad.length-1].detalles_imgGde);
@@ -111,7 +111,7 @@ server.post("/hardDeleteDesarrollo", async (req, res) => {
         }
       }); */
       await imagenPropiedad.destroy();
-      await DesarrolloABorrar.destroy();
+      await desarrolloABorrar.destroy();
       
       res.json("Se borrro el desarrollo ID " + IdDesarrolloABorrar);
     } catch (e) {
@@ -142,8 +142,8 @@ server.post("/hardDeleteModeloRelacionado", async (req, res) => {
     }
 
     async function deleteImgModelo(fileName) {
-      await storageBucket_Mod_Asoc.file(fileName).delete();  
-      console.log(`gs://${GCLOUD_BUCKET_NAME_Mod_Asoc}/${fileName} deleted`);
+      const archivoABorrar = await storageBucket_Mod_Asoc.file(fileName).delete();  
+      console.log(`Se Borro el ${archivoABorrar}`);
     }
 
     await modeloRelacionadoABorrar.destroy();
