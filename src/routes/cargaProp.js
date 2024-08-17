@@ -72,7 +72,7 @@ const getNombre = (Nombre, caracteres) =>{
   return NombreExtraido;
 }
 
-server.post("/hardDeleteDesarrollo", async (req, res) => {
+server.post("/hardDeleteDesarrolloAlt", async (req, res) => {
     try {
       const { IdDesarrolloABorrar} = req.body;
       
@@ -152,4 +152,40 @@ server.post("/hardDeleteModeloRelacionado", async (req, res) => {
     res.send(e)
   }
 });
+
+server.post("/hardDeleteDesarrollo", async (req, res) => {
+  try {
+    const { IdDesarrolloABorrar} = req.body;
+    const desarrolloABorrar = await Propiedad.findByPk(IdDesarrolloABorrar);
+    const imagenDesarrollo = await ImgPropiedad.findAll({
+      where:{PropiedadId:IdDesarrolloABorrar}
+    });
+
+    for (let i = 0; i < imagenDesarrollo.length; i++) {
+      const ThumbnailImgName = getNombre(imagenDesarrollo[i].thumbnail_img, 47);
+      const ImgGrandeName = getNombre(imagenDesarrollo[i].detalles_imgGde, 47);
+
+      //deleteImgModelo(imagenDesarrollo[i].img_name).catch(console.error);
+      deleteImagenDesarrollo(ThumbnailImgName).catch(console.error);
+      deleteImagenDesarrollo(ImgGrandeName).catch(console.error);
+      if(imagenDesarrollo[i].detalles_imgChica !== null){
+        const ImgChicaName = getNombre(imagenDesarrollo[i].detalles_imgChica, 47)
+        deleteImagenDesarrollo(ImgChicaName).catch(console.error);
+      }
+    }
+
+    async function deleteImagenDesarrollo(fileName) {
+      const archivoABorrar = await storageBucket_Mod_Asoc.file(fileName).delete();  
+      console.log(`Se Borro el ` + JSON.stringify(archivoABorrar));
+    }
+
+    await desarrolloABorrar.destroy();
+    await imagenDesarrollo.destroy();
+
+    res.json("Se Borro el Desarrollo Id " + IdDesarrolloABorrar);
+  } catch (e) {
+    res.send(e)
+  }
+});
+
 module.exports =  server;
