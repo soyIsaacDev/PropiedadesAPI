@@ -76,6 +76,24 @@ server.post("/hardDeleteDesarrollo", async (req, res) => {
     try {
       const { IdDesarrolloABorrar} = req.body;
       
+      const desarrolloABorrar = await Propiedad.findByPk(IdDesarrolloABorrar);
+      if (desarrolloABorrar === null) {
+        console.log('No se puede buscar el desarrollo por PK');
+      } else {
+        console.log("Desarrollo a Borrar " + JSON.stringify(desarrolloABorrar))
+        await desarrolloABorrar.destroy();
+      }
+      
+      const desarrollobuscado = await Propiedad.findOne({
+        where:{id:IdDesarrolloABorrar}
+      });
+      if (desarrollobuscado === null) {
+        console.log('No se encuentra el desarrrollo!');
+      } else {
+        console.log(JSON.stringify(desarrollobuscado) + " Desarrollo Buscado");
+        await desarrollobuscado.destroy();
+      }
+
 
       const imagenPropiedad = await ImgPropiedad.findAll({
         where:{PropiedadId:IdDesarrolloABorrar}
@@ -102,26 +120,7 @@ server.post("/hardDeleteDesarrollo", async (req, res) => {
 
       await imagenPropiedad.destroy();
 
-      console.log("Si sale de Destroy Imagenes Desarrollo")
-      const desarrolloABorrar = await Propiedad.findByPk(IdDesarrolloABorrar);
-      if (desarrolloABorrar === null) {
-        console.log('No se puede buscar el desarrollo por PK');
-      } else {
-        console.log("Desarrollo a Borrar " + JSON.stringify(desarrolloABorrar))
-        await desarrolloABorrar.destroy();
-      }
-      
-
-      const desarrollobuscado = await Propiedad.findOne({
-        where:{id:IdDesarrolloABorrar}
-      });
-      if (desarrollobuscado === null) {
-        console.log('No se encuentra el desarrrollo!');
-      } else {
-        console.log(JSON.stringify(desarrollobuscado) + " Desarrollo Buscado");
-        await desarrollobuscado.destroy();
-      }
-      
+            
       res.json("Se borrro el desarrollo ID " + IdDesarrolloABorrar);
     } catch (e) {
       res.send(e)
