@@ -75,7 +75,7 @@ const getNombre = (Nombre, caracteres) =>{
 server.post("/hardDeleteDesarrollo", async (req, res) => {
     try {
       const { IdDesarrolloABorrar} = req.body;
-      const desarrolloABorrar = await Propiedad.findByPk(IdDesarrolloABorrar);
+      
 
       const imagenPropiedad = await ImgPropiedad.findAll({
         where:{PropiedadId:IdDesarrolloABorrar}
@@ -96,21 +96,14 @@ server.post("/hardDeleteDesarrollo", async (req, res) => {
       }
 
       async function deleteImgDesarrollo(fileName) {
-        console.log("Delete Imagen Desarrollo "+fileName);
         const archivoABorrar = await storageBucket_Desarrollo.file(fileName).delete();
         console.log(`Se Borro el ` + JSON.stringify(archivoABorrar));
       }
 
-      /* const ultimoFile = storageBucket_Desarrollo.file(imagenPropiedad[imagenPropiedad.length-1].detalles_imgGde);
-      ultimoFile.exists(function(err, exists) {});
-
-      ultimoFile.exists().then(async function(data) {
-        const exists = data[0];
-        console.log(exists)
-        if(exists===0){
-        }
-      }); */
       await imagenPropiedad.destroy();
+
+      const desarrolloABorrar = await Propiedad.findByPk(IdDesarrolloABorrar);
+      console.log("Desarrollo a Borrar " + JSON.stringify(desarrolloABorrar))
       await desarrolloABorrar.destroy();
       
       res.json("Se borrro el desarrollo ID " + IdDesarrolloABorrar);
@@ -143,7 +136,7 @@ server.post("/hardDeleteModeloRelacionado", async (req, res) => {
 
     async function deleteImgModelo(fileName) {
       const archivoABorrar = await storageBucket_Mod_Asoc.file(fileName).delete();  
-      console.log(`Se Borro el ${archivoABorrar}`);
+      console.log(`Se Borro el ` + JSON.stringify(archivoABorrar));
     }
 
     await modeloRelacionadoABorrar.destroy();
