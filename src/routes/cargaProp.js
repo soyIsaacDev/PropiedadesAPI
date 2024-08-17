@@ -175,7 +175,7 @@ server.post("/hardDeleteDesarrollo", async (req, res) => {
     }
 
     async function deleteImagenDesarrollo(fileName) {
-      const archivoABorrar = await storageBucket_Mod_Asoc.file(fileName).delete();  
+      const archivoABorrar = await storageBucket_Desarrollo.file(fileName).delete();  
       console.log(`Se Borro el ` + JSON.stringify(archivoABorrar));
     }
 
