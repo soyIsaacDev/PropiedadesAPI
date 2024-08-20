@@ -77,20 +77,24 @@ const gcpEditarImagenDesarrollo = async (req, res, next) => {
           const imagenPropiedad = await ImgPropiedad.findByPk(ordenImagen[i].id);
           
           async function deleteFile(fileName) {
-            await storageBucket.file(fileName).delete();
-          
-            console.log(`gs://${GCLOUD_BUCKET_NAME}/${fileName} deleted`);
+            const archivoABorrar = await storageBucket.file(fileName).delete();
+            console.log(`Se Borro el ` + JSON.stringify(archivoABorrar));
           }
-
-          console.log("Nombre Imagen A Borrar " + imagenPropiedad.img_name);
-          const ThumbnailNombre = "Thumbnail_WebP_"+ imagenPropiedad.img_name + ".webp";
-          const ImgGdeNombre = "Detalles_Img_Gde_" + imagenPropiedad.img_name + ".webp";
-          const ImgChicaNombre = "Detalles_Img_Chica_" + imagenPropiedad.img_name + ".webp";
+          const getNombre = (Nombre, caracteres) =>{
+            //Borrando el sufijo de "https://storage.googleapis.com/dadinumco-media/"  ->  47 caracteres 47-7
+            //https://storage.googleapis.com/dadinumco_mod_asociado/   ->  54 caracteres
+            const NombreExtraido = Nombre.slice(caracteres, Nombre.length);
+            return NombreExtraido;
+          }
+          
+          const ThumbnailImgNombre = getNombre(imagenPropiedad[i].thumbnail_img, 47)
+          const ImgGdeNombre = getNombre(imagenPropiedad[i].detalles_imgGde, 47);
 
           //deleteFile(imagenPropiedad.img_name).catch(console.error);
-          deleteFile(ThumbnailNombre).catch(console.error);
+          deleteFile(ThumbnailImgNombre).catch(console.error);
           deleteFile(ImgGdeNombre).catch(console.error);
           if(imagenPropiedad.detalles_imgChica !== null){
+            const ImgChicaNombre = getNombre(imagenPropiedad[i].detalles_imgChica, 47);
             deleteFile(ImgChicaNombre).catch(console.error);
           }
           
