@@ -93,13 +93,13 @@ const gcpEditarImagenModelo = async (req, res, next) => {
             const NombreExtraido = Nombre.slice(caracteres, Nombre.length);
             return NombreExtraido;
           }
-          const ThumbnailImgNombre = getNombre(imagenModelo[0].thumbnail_img, 54)
-          const ImgGdeNombre = getNombre(imagenModelo[0].detalles_imgGde, 54);
+          const ThumbnailImgNombre = getNombre(imagenModelo.thumbnail_img, 54)
+          const ImgGdeNombre = getNombre(imagenModelo.detalles_imgGde, 54);
 
           deleteFile(ThumbnailImgNombre).catch(console.error);
           deleteFile(ImgGdeNombre).catch(console.error);
           if(imagenModelo.detalles_imgChica !== null){
-            const ImgChicaNombre = getNombre(imagenModelo[0].detalles_imgChica, 54);
+            const ImgChicaNombre = getNombre(imagenModelo.detalles_imgChica, 54);
             deleteFile(ImgChicaNombre).catch(console.error);
           }
           
