@@ -87,14 +87,14 @@ const gcpEditarImagenDesarrollo = async (req, res, next) => {
             return NombreExtraido;
           }
           
-          const ThumbnailImgNombre = getNombre(imagenPropiedad[0].thumbnail_img, 47)
-          const ImgGdeNombre = getNombre(imagenPropiedad[0].detalles_imgGde, 47);
+          const ThumbnailImgNombre = getNombre(imagenPropiedad.thumbnail_img, 47)
+          const ImgGdeNombre = getNombre(imagenPropiedad.detalles_imgGde, 47);
 
           //deleteFile(imagenPropiedad.img_name).catch(console.error);
           deleteFile(ThumbnailImgNombre).catch(console.error);
           deleteFile(ImgGdeNombre).catch(console.error);
           if(imagenPropiedad.detalles_imgChica !== null){
-            const ImgChicaNombre = getNombre(imagenPropiedad[0].detalles_imgChica, 47);
+            const ImgChicaNombre = getNombre(imagenPropiedad.detalles_imgChica, 47);
             deleteFile(ImgChicaNombre).catch(console.error);
           }
           
