@@ -6,6 +6,7 @@ const sharp = require('sharp');
 
 // Load the module for Cloud Storage
 const {Storage} = require('@google-cloud/storage');
+const { Buffer } = require('node:buffer');
 
 // Multer handles parsing multipart/form-data requests.
 // This instance is configured to store images in memory.
@@ -119,6 +120,9 @@ const sendUploadToGCSAsync = async (req, res, next) => {
     const { ordenImagen } = parsedbodyObj;
 
     files.forEach(async (file) => {
+      // Considerando caracteres especiales
+      const nombreOriginal = Buffer.from(file.originalname).toString()
+      file.originalname= nombreOriginal;
 
       // Agregando Nombre Unico segun la fecha
       const nombreUnicoFecha = Date.now()+"_" + file.originalname;

@@ -70,10 +70,10 @@ server.get("/bulk", async (req,res)=> {
             { nombreAmenidad:"Lavanderia" },
             { nombreAmenidad:"Doble Lavamanos" },
             { nombreAmenidad:"Walk in Closet" },
-            { nombreAmenidad:"Baño Vestidor" },
             { nombreAmenidad:"Estancia" },
             { nombreAmenidad:"Cuarto de Servicio" },
             { nombreAmenidad:"Cuarto de Servicio con Baño" },
+            { nombreAmenidad:"Balcon" },
         ])
         
         const AmenidadDesarrolloCreado = await AmenidadesDesarrollo.bulkCreate([
@@ -96,6 +96,8 @@ server.get("/bulk", async (req,res)=> {
             { nombreAmenidad:"Pet Park" },
             { nombreAmenidad:"Carril de Nado" },
             { nombreAmenidad:"Jacuzzi" },
+            { nombreAmenidad:"Andador de Jogging" },
+            { nombreAmenidad:"Area de Juegos" },
         ])
         
         const TipodeOpCreada = await TipoOperacion.bulkCreate(
