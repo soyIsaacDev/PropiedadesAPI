@@ -121,9 +121,9 @@ const sendUploadToGCSAsync = async (req, res, next) => {
 
     files.forEach(async (file) => {
       // Considerando caracteres especiales
-      const nombreOriginal = Buffer.from(file.originalname, 'ascii').toString('utf8');
+      /* const nombreOriginal = Buffer.from(file.originalname, 'ascii').toString('utf8');
       console.log("Nombre Original " + nombreOriginal)
-      file.originalname= nombreOriginal;
+      file.originalname= nombreOriginal; */
 
       // Agregando Nombre Unico segun la fecha
       const nombreUnicoFecha = Date.now()+"_" + file.originalname;
