@@ -2,6 +2,7 @@
 
 // Imports the Google Cloud client library
 const {Storage} = require('@google-cloud/storage');
+import { Buffer } from 'node:buffer';
 
 const fs = require("fs");
 const {  ImgModeloAsociado, ModeloAsociadoPropiedad, AmenidadesModeloAmenidad, Propiedad } = require("../db");
@@ -112,7 +113,8 @@ const gcpEditarImagenModelo = async (req, res, next) => {
       //  ---- Si se cargaron imagenes nuevas
 
       const crearDatosdeImagenModelo = async (file, ModeloId)=>{
-        const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
+        const nombreOriginal = Buffer.from(file.originalname, 'ascii').toString('utf8');
+        const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === nombreOriginal);
 
         console.log("Image File " + JSON.stringify(file))
         console.log("Resize Image File " + JSON.stringify(file.originalname))

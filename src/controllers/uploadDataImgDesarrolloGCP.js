@@ -1,5 +1,6 @@
 const fs = require("fs");
 const {  ImgPropiedad, Propiedad, AmenidadesDesarrolloPropiedad } = require("../db");
+import { Buffer } from 'node:buffer';
 
 const path = require('path');
 const carpeta = path.join(__dirname, '../../uploads')
@@ -49,7 +50,8 @@ const gcpUploadDataImagenDesarrollo = async (req, res, next) => {
       }
       // se crea una imagen por cada archivo y se liga a la Propiedad
       files.forEach(async (file) => {
-        const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
+        const nombreOriginal = Buffer.from(file.originalname, 'ascii').toString('utf8');
+        const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === nombreOriginal);
 
           const imagenPropiedad = await ImgPropiedad.create({
             orden:ordenData[0].orden,
