@@ -1,6 +1,6 @@
 const fs = require("fs");
 const {  ImgPropiedad, Propiedad, AmenidadesDesarrolloPropiedad } = require("../db");
-import { Buffer } from 'node:buffer';
+const { Buffer } = require('node:buffer');
 
 const path = require('path');
 const carpeta = path.join(__dirname, '../../uploads')

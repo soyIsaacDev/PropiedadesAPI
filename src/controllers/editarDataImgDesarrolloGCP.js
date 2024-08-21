@@ -2,7 +2,7 @@
 
 // Imports the Google Cloud client library
 const {Storage} = require('@google-cloud/storage');
-import { Buffer } from 'node:buffer';
+const { Buffer } = require('node:buffer');
 
 const fs = require("fs");
 const {  ImgPropiedad, Propiedad, AmenidadesDesarrolloPropiedad } = require("../db");

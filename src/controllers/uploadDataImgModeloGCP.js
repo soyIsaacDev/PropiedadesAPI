@@ -1,5 +1,5 @@
 const fs = require("fs");
-import { Buffer } from 'node:buffer';
+const { Buffer } = require('node:buffer');
 const {  ImgModeloAsociado, AmenidadesModeloAmenidad, ModeloAsociadoPropiedad, Propiedad } = require("../db");
 
 const path = require('path');
