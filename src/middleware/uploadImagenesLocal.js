@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path')
 const carpeta = path.join(__dirname, '../../uploads')
 const sharp = require('sharp');
+const { Buffer } = require('node:buffer');
 
 // Configure multer storage and file name
 
@@ -80,7 +81,10 @@ const uploadImages = (req, res, next) => {
 
     
     files.forEach((file) => {
-
+      // Considerando caracteres especiales
+      const nombreOriginal = Buffer.from(file.originalname).toString()
+      file.originalname= nombreOriginal;
+      
       // Agregando Nombre Unico segun la fecha
       const nombreUnicoFecha = file.filename;
       const esJpeg = file.originalname.includes("jpeg")

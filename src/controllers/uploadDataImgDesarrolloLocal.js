@@ -1,5 +1,6 @@
 const fs = require("fs");
 const {  ImgPropiedad, Propiedad, AmenidadesDesarrolloPropiedad } = require("../db");
+const { Buffer } = require('node:buffer');
 
 const path = require('path');
 const carpeta = path.join(__dirname, '../../uploads')
@@ -53,12 +54,6 @@ const uploadDataImagenDesarrollo = async (req, res, next) => {
       //console.log("Files en creacion de Instancia " + JSON.stringify(files))
       // se crea una imagen por cada archivo y se liga a la Propiedad
       files.forEach(async (file) => {
-        //console.log("Image File " + JSON.stringify(file));
-          /* const imagenPropiedad = await ImgPropiedad.create({
-            type: file.mimetype,
-            img_name: file.filename,
-            PropiedadId: PropiedadCreada[0].id
-          }); */
         console.log("File Original Name " + file.originalname)
         const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
         console.log("Orden Data "+JSON.stringify(ordenData))
