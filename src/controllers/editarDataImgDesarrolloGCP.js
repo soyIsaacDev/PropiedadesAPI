@@ -108,8 +108,9 @@ const gcpEditarImagenDesarrollo = async (req, res, next) => {
       //  ---- Si se cargaron imagenes nuevas
 
       const crearDatosdeImagenProp = async (file, PropId)=>{
-        
-        const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
+        // Considerando caracteres especiales
+        const nombreOriginal = Buffer.from(file.originalname, 'ascii').toString('utf8');        
+        const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === nombreOriginal);
 
         console.log("Image File " + JSON.stringify(file))
         console.log("Resize Image File " + JSON.stringify(file.originalname))

@@ -56,6 +56,7 @@ const gcpUploadImagenModeloRelacionado = async (req, res, next) => {
       }
       // se crea una imagen por cada archivo y se liga a la Propiedad
       files.forEach(async (file) => {
+        // Considerando caracteres especiales
         const nombreOriginal = Buffer.from(file.originalname, 'ascii').toString('utf8');
         const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === nombreOriginal);
 

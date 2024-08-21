@@ -113,6 +113,7 @@ const gcpEditarImagenModelo = async (req, res, next) => {
       //  ---- Si se cargaron imagenes nuevas
 
       const crearDatosdeImagenModelo = async (file, ModeloId)=>{
+        // Considerando caracteres especiales
         const nombreOriginal = Buffer.from(file.originalname, 'ascii').toString('utf8');
         const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === nombreOriginal);
 
