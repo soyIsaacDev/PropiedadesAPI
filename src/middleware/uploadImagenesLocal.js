@@ -81,10 +81,9 @@ const uploadImages = (req, res, next) => {
 
     
     files.forEach((file) => {
-      // Considerando caracteres especiales
-      const nombreOriginal = Buffer.from(file.originalname).toString()
-      file.originalname= nombreOriginal;
-      
+      const nombreOriginal = Buffer.from(file.originalname, 'ascii').toString('utf8');
+      console.log("Nombre Original " + nombreOriginal)
+      file.originalname= nombreOriginal
       // Agregando Nombre Unico segun la fecha
       const nombreUnicoFecha = file.filename;
       const esJpeg = file.originalname.includes("jpeg")

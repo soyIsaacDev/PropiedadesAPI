@@ -1,4 +1,5 @@
 const fs = require("fs");
+import { Buffer } from 'node:buffer';
 const {  ImgModeloAsociado, AmenidadesModeloAmenidad, ModeloAsociadoPropiedad, Propiedad } = require("../db");
 
 const path = require('path');
@@ -55,7 +56,8 @@ const gcpUploadImagenModeloRelacionado = async (req, res, next) => {
       }
       // se crea una imagen por cada archivo y se liga a la Propiedad
       files.forEach(async (file) => {
-        const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
+        const nombreOriginal = Buffer.from(file.originalname, 'ascii').toString('utf8');
+        const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === nombreOriginal);
 
         const imagenModeloAsociado = await ImgModeloAsociado.create({
             orden:ordenData[0].orden,
