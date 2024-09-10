@@ -69,7 +69,11 @@ module.exports = s => {
             type: DataTypes.JSON,
             allowNull: true,
         },
-        
+        ref_id:{
+            type:DataTypes.UUID,
+            unique:true,
+            defaultValue: DataTypes.UUIDV4,
+        },
         
     }, {
     timestamps: false,
