@@ -1,7 +1,7 @@
 const server = require("express").Router();
 const express = require("express");
 const path = require('path');
-
+const {literal} = require ('sequelize');
 
 var public = path.join(__dirname,'../../uploads');
 
@@ -214,6 +214,18 @@ server.get("/getAmenidadesDesarrolloSeleccionado/:id", async (req, res) => {
   }
 })
 
+server.get("/seedRefId", async (req, res) => {
+  try {
+    const Desarrollo = await Propiedad.findAll();
+    for (let i = 0; i < Desarrollo.length; i++) {
+      Desarrollo[i].ref_id = literal('uuid_generate_v4()'); 
+      await Desarrollo[i].save();
+    }
+    res.json(Desarrollo)
+  } catch (e) {
+    res.send(e)
+  }
+});
 
 // Para ver las imagenes
 server.use('/imagenes', express.static(public));
