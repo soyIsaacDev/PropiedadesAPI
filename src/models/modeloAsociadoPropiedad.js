@@ -1,9 +1,25 @@
-const {DataTypes} = require ('sequelize');
+const {literal, DataTypes} = require ('sequelize');
 
 module.exports = s => {
     s.define(
         "ModeloAsociadoPropiedad", 
     {
+        /* id: {
+            type:DataTypes.STRING,
+            allowNull:false,
+            autoIncrement: true,
+            primaryKey:true,
+            defaultValue: literal("nextval('custom_sequence')"),
+        }, 
+        /*id:{
+            type: DataTypes.UUID,
+            allowNull: false,
+            primaryKey: true,
+            autoIncrement: false,
+            defaultValue: DataTypes.UUIDV4 // Or DataTypes.UUIDV1
+            
+        },
+        */
         nombreModelo:{
             type: DataTypes.STRING,
             allowNull: true,
@@ -69,9 +85,14 @@ module.exports = s => {
             type: DataTypes.JSON,
             allowNull: true,
         },
-        
+        ref_id:{
+            type:DataTypes.UUID,
+            unique:true,
+            defaultValue: DataTypes.UUIDV4,
+        },
         
     }, {
     timestamps: false,
+		
     });
 }

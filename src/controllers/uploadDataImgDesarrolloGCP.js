@@ -14,6 +14,25 @@ const gcpUploadDataImagenDesarrollo = async (req, res, next) => {
       const { nombreDesarrollo, añodeConstruccion, amenidadesDesarrollo, calle, numeroPropiedad, numeroInterior, 
         colonia, estado, municipio,ciudad, posicion, TipodePropiedadId, TipoOperacionId, EstiloArquitecturaId, ordenImagen} = parsedbodyObj   
 
+        const PropiedadExiste = await Propiedad.findOne({
+          where: {
+            nombreDesarrollo,
+            EstadoId:estado,
+            MunicipioId: municipio,
+            CiudadId:ciudad,
+          }
+        })
+  
+        if(PropiedadExiste){
+          console.log("El desarrollo ya existe")
+          res.json({
+            codigo:0, 
+            Mensaje:`El Desarrollo `+ PropiedadExiste + " ya existe",
+            Error:"Desarrollo Existente"
+          });
+          return;
+        }
+        
       const PropiedadCreada = await Propiedad.findOrCreate({
         where:{ 
           nombreDesarrollo,

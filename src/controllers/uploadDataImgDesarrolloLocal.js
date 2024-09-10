@@ -20,6 +20,25 @@ const uploadDataImagenDesarrollo = async (req, res, next) => {
       console.log("Upload Multiple Img Controller Property -> " + nombreDesarrollo);
       console.log(ordenImagen)
 
+      const PropiedadExiste = await Propiedad.findOne({
+        where: {
+          nombreDesarrollo,
+          EstadoId:estado,
+          MunicipioId: municipio,
+          CiudadId:ciudad,
+        }
+      })
+
+      if(PropiedadExiste){
+        console.log("El desarrollo ya existe")
+        res.json({
+          codigo:0, 
+          Mensaje:`El Desarrollo `+ PropiedadExiste + " ya existe",
+          Error:"Desarrollo Existente"
+        });
+        return;
+      }
+
       const PropiedadCreada = await Propiedad.findOrCreate({
         where:{ 
           nombreDesarrollo,

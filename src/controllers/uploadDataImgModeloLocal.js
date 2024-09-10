@@ -13,6 +13,25 @@ const uploadDataImagenModelo = async (req, res) => {
       } = parsedbodyObj
 
       console.log("Nombre del Modelo " + nombreModelo)
+
+      const ModeloRelacionadoExiste = await ModeloAsociadoPropiedad.findOne({
+        where: {
+          nombreModelo,
+          PropiedadId:parseInt(nombreDesarrollo),
+          CiudadId:ciudad,
+          EstadoId:estado,
+        }
+      })
+
+      if(ModeloRelacionadoExiste){
+        console.log("El modelo ya existe")
+        res.json({
+          codigo:0, 
+          Mensaje:`El Modelo `+ ModeloRelacionadoExiste.nombreModelo + " ya existe",
+          Error:"Modelo Existente"
+        });
+        return;
+      }
       
       const ModeloRelacionadoCreado = await ModeloAsociadoPropiedad.findOrCreate({
         where: {

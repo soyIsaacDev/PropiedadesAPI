@@ -1,4 +1,7 @@
 const server = require("express").Router();
+const fs = require("fs");
+const path = require('path')
+const carpeta = path.join(__dirname, '../../uploads')
 const {Storage} = require('@google-cloud/storage');
 // Creates a client
 const storage = new Storage();
@@ -96,6 +99,17 @@ server.post("/hardDeleteDesarrolloAlt", async (req, res) => {
           deleteImgDesarrollo(ImgChicaName).catch(console.error);
         }
       }
+      if(DEVMODE === "Production"){
+
+        
+      }
+      else{
+        deleteImgModeloLocal(imagenModelo[i].thumbnail_img)
+        deleteImgModeloLocal(imagenModelo[i].detalles_imgGde)
+        if(imagenModelo[i].detalles_imgChica !== null){
+          deleteImgModeloLocal(imagenModelo[i].detalles_imgChica)
+        }
+      }
 
       async function deleteImgDesarrollo(fileName) {
         const archivoABorrar = await storageBucket_Desarrollo.file(fileName).delete();
@@ -130,18 +144,36 @@ server.post("/hardDeleteModeloRelacionado", async (req, res) => {
       const ThumbnailImgName = getNombre(imagenModelo[i].thumbnail_img, 54);
       const ImgGrandeName = getNombre(imagenModelo[i].detalles_imgGde, 54);
 
-      //deleteImgModelo(imagenModelo[i].img_name).catch(console.error);
-      deleteImgModelo(ThumbnailImgName).catch(console.error);
-      deleteImgModelo(ImgGrandeName).catch(console.error);
-      if(imagenModelo[i].detalles_imgChica !== null){
-        const ImgChicaName = getNombre(imagenModelo[i].detalles_imgChica, 54)
-        deleteImgModelo(ImgChicaName).catch(console.error);
+      if(DEVMODE === "Production"){
+        deleteImgModeloServer(ThumbnailImgName).catch(console.error);
+        deleteImgModeloServer(ImgGrandeName).catch(console.error);
+        if(imagenModelo[i].detalles_imgChica !== null){
+          const ImgChicaName = getNombre(imagenModelo[i].detalles_imgChica, 54)
+          deleteImgModeloServer(ImgChicaName).catch(console.error);
+        }
+        
+      }
+      else{
+        deleteImgModeloLocal(imagenModelo[i].thumbnail_img)
+        deleteImgModeloLocal(imagenModelo[i].detalles_imgGde)
+        if(imagenModelo[i].detalles_imgChica !== null){
+          deleteImgModeloLocal(imagenModelo[i].detalles_imgChica)
+        }
       }
     }
 
-    async function deleteImgModelo(fileName) {
+    async function deleteImgModeloServer(fileName) {
       const archivoABorrar = await storageBucket_Mod_Asoc.file(fileName).delete();  
       console.log(`Se Borro el ` + JSON.stringify(archivoABorrar));
+    }
+
+    async function deleteImgModeloLocal(fileName) {
+      fs.unlink(carpeta+"/"+fileName, (err) => {
+        if (err) {
+            console.log(err);
+        }
+        console.log("Se borraron las imagenes " +fileName);
+      }); 
     }
 
     await modeloRelacionadoABorrar.destroy();
