@@ -59,8 +59,12 @@ const uploadModeloImages = (req, res, next) => {
           console.log("Delete File successfully.");
         });
       }); */
-
-      return res.status(400).json({ errors });
+      const respuestaError = {
+        codigo:0, 
+        Mensaje:`Error al intentar crear la imagen`,
+        Error:errors
+      }
+      return res.status(400).json(respuestaError);
     }
 
     // Attach files to the request object

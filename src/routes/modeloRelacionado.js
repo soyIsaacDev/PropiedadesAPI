@@ -9,6 +9,8 @@ const { Propiedad, ImgPropiedad, AmenidadesDesarrollo, AmenidadesPropiedad,Tipod
   TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, Favoritos, ModeloAsociadoPropiedad, 
   ImgModeloAsociado, EstiloArquitectura  } = require("../db");
 
+const {literal} = require ('sequelize');
+
 server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
   try {
     const dataPropiedad = await ModeloAsociadoPropiedad.findAll({
@@ -211,6 +213,33 @@ server.get("/propiedadesconfavoritos/:ClienteId", isAuthenticated, async (req, r
       res.send(e)
   }
 })
+
+server.get("/seedRefId", async (req, res) => {
+  try {
+    const Modelo = await ModeloAsociadoPropiedad.findAll();
+    for (let i = 0; i < Modelo.length; i++) {
+      Modelo[i].ref_id = literal('uuid_generate_v4()'); 
+      await Modelo[i].save();
+    }
+    res.json(Modelo)
+  } catch (e) {
+    res.send(e)
+  }
+});
+
+/* server.get("/pruebaRefId", async (req, res) => {
+  try {
+    const Modelo = await ModeloAsociadoPropiedad.findAll();
+    for (let i = 0; i < Modelo.length; i++) {
+    }
+    Modelo[0].ref_id = literal('uuid_generate_v4()'); 
+    await Modelo[0].save();
+    res.json(Modelo)
+  } catch (e) {
+    res.send(e)
+  }
+}); */
+
 
 // Para ver las imagenes
 server.use('/imagenes', express.static(public));

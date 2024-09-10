@@ -8,6 +8,28 @@ const sharp = require('sharp');
 const {Storage} = require('@google-cloud/storage');
 const { Buffer } = require('node:buffer');
 
+// Create the storage client
+// The Storage(...) factory function accepts an options
+// object which is used to specify which project's Cloud
+// Storage buckets should be used via the projectId
+// property.
+// The projectId is retrieved from the config module.
+// This module retrieves the project ID from the
+// GCLOUD_PROJECT environment variable.
+const storage = new Storage({
+  projectId: config.get('GCLOUD_PROJECT')
+});
+
+// Get the GCLOUD_BUCKET environment variable
+// Recall that earlier you exported the bucket name into an
+// environment variable.
+// The config module provides access to this environment
+// variable so you can use it in code
+const GCLOUD_BUCKET = config.get('GCLOUD_BUCKET');
+
+// Get a reference to the Cloud Storage bucket
+const bucket = storage.bucket(GCLOUD_BUCKET);
+
 // Multer handles parsing multipart/form-data requests.
 // This instance is configured to store images in memory.
 // This makes it straightforward to upload to Cloud Storage.
@@ -24,7 +46,7 @@ const multer = Multer({
 // Custom file upload middleware
 const uploadImagenesGCP = (req, res, next) => {
   // Use multer upload instance
-  multer.array('imagenesfiles', 25)(req, res, (err) => {
+  multer.array('imagenesfiles', 25)(req, res, async (err) => {
     if (err) {
       console.log(err)
       return res.status(400).json({ error: err.message });
@@ -52,6 +74,8 @@ const uploadImagenesGCP = (req, res, next) => {
 
     // Handle validation errors
     if (errors.length > 0) {
+      console.log("Hay un error " + errors)
+      //const imgABorrar = await bucket.file(file.originalname).delete();
       // Remove uploaded files
       /* files.forEach((file) => {
         fs.unlinkSync(file.path, (err) => {
@@ -61,8 +85,12 @@ const uploadImagenesGCP = (req, res, next) => {
           console.log("Delete File successfully.");
         });
       }); */
-
-      return res.status(400).json({ errors });
+      const respuestaError = {
+        codigo:0, 
+        Mensaje:`Error al intentar crear la imagen`,
+        Error:errors
+      }
+      return res.status(400).json(respuestaError);
     }
 
     // Attach files to the request object
@@ -74,27 +102,7 @@ const uploadImagenesGCP = (req, res, next) => {
 
 // [END multer]
 
-// Create the storage client
-// The Storage(...) factory function accepts an options
-// object which is used to specify which project's Cloud
-// Storage buckets should be used via the projectId
-// property.
-// The projectId is retrieved from the config module.
-// This module retrieves the project ID from the
-// GCLOUD_PROJECT environment variable.
-const storage = new Storage({
-  projectId: config.get('GCLOUD_PROJECT')
-});
 
-// Get the GCLOUD_BUCKET environment variable
-// Recall that earlier you exported the bucket name into an
-// environment variable.
-// The config module provides access to this environment
-// variable so you can use it in code
-const GCLOUD_BUCKET = config.get('GCLOUD_BUCKET');
-
-// Get a reference to the Cloud Storage bucket
-const bucket = storage.bucket(GCLOUD_BUCKET);
 
 // Express middleware that will automatically pass uploads to Cloud Storage.
 // req.file is processed and will have a new property:

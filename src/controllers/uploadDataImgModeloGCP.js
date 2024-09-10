@@ -16,7 +16,25 @@ const gcpUploadImagenModeloRelacionado = async (req, res, next) => {
         estado, posicion, ordenImagen
       } = parsedbodyObj
 
+      const ModeloRelacionadoExiste = await ModeloAsociadoPropiedad.findOne({
+        where: {
+          nombreModelo,
+          PropiedadId:parseInt(nombreDesarrollo),
+          CiudadId:ciudad,
+          EstadoId:estado,
+        }
+      })
 
+      if(ModeloRelacionadoExiste){
+        console.log("El modelo ya existe")
+        res.json({
+          codigo:0, 
+          Mensaje:`El Modelo `+ ModeloRelacionadoExiste.nombreModelo + " ya existe",
+          Error:"Modelo Existente"
+        });
+        return;
+      }
+      
       const ModeloRelacionadoCreado = await ModeloAsociadoPropiedad.findOrCreate({
         where: {
           nombreModelo,

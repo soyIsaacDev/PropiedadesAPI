@@ -53,12 +53,11 @@ const uploadImages = (req, res, next) => {
         errors.push(`File too large: ${file.originalname}`);
       }
       //console.log("Dentro de Ciclo de Validacion de Imagenes");
-
     });
 
     // Handle validation errors
     if (errors.length > 0) {
-      console.log("Hay un error")
+      console.log("Hay un error " + errors)
       // Remove uploaded files
       files.forEach((file) => {
         fs.unlinkSync(file.path, (err) => {
@@ -67,10 +66,14 @@ const uploadImages = (req, res, next) => {
           }
           console.log("Delete File successfully.");
         });
-
       });
 
-      return res.status(400).json({ errors });
+      const respuestaError = {
+        codigo:0, 
+        Mensaje:`Error al intentar crear la imagen`,
+        Error:errors
+      }
+      return res.status(400).json(respuestaError);
     }
 
     const bodyObj = req.body.data;
@@ -78,7 +81,6 @@ const uploadImages = (req, res, next) => {
     const { ordenImagen } = parsedbodyObj;
     //console.log(ordenImagen)
     // Cambiando tamaños de imagen
-
     
     files.forEach((file) => {
       const nombreOriginal = Buffer.from(file.originalname, 'ascii').toString('utf8');
@@ -92,7 +94,6 @@ const uploadImages = (req, res, next) => {
         uniqueDateName = nombreUnicoFecha.slice(0, nombreUnicoFecha.length - 5);
       }
       else{
-
         uniqueDateName = nombreUnicoFecha.slice(0, nombreUnicoFecha.length - 4);
       }
 
