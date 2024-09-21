@@ -14,12 +14,16 @@ User.sync({ force: true }) - This creates the table, dropping it first if it alr
 User.sync({ alter: true }) - This checks what is the current state of the table in the database (which columns it has,
              what are their data types, etc), and then performs the necessary changes in the table to make it match the model. */
 
-db.beforeSync(async () => {
+/* db.beforeSync(async () => {
  await db.query('CREATE SEQUENCE IF NOT EXISTS custom_sequence CACHE 1');
-});           
+}); */           
 // Migrations is recomended for production
-db.sync({ force:false, alter:false }).then(function () {
+/* db.sync({ force:false, alter:false }).then(function () {
   app.listen(port, function () {
     console.log("Server is listening on port " + port);
   });
+}); */
+
+app.listen(port, function () {
+  console.log("Server is listening on port " + port);
 });
