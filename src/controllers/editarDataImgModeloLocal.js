@@ -14,7 +14,7 @@ const editarDataModelo = async (req, res, next) => {
       const parsedbodyObj = JSON.parse(bodyObj);
       const { modeloId, desarrolloId, nombreModelo, precio, ciudad, estado, posicion, recamaras,
         niveles, baños, medio_baño, espaciosCochera, cocheraTechada, m2Construccion, m2Terreno, 
-        m2Total, amenidadesPropiedad, ordenImagen         } = parsedbodyObj   
+        m2Total, amenidadesPropiedad, ordenImagen, quitarAmenidadesDesarrollo         } = parsedbodyObj   
 
       //console.log("Upload Multiple Img Controller Modelo -> " + nombreModelo);
       console.log("Desarrollo Id "+desarrolloId)
@@ -59,6 +59,17 @@ const editarDataModelo = async (req, res, next) => {
             AmenidadesPropiedadId:amenidadesPropiedad[i] 
           }
         })
+      }
+
+      // Borrando las amendidades que se quitaron
+      for (let i = 0; i < quitarAmenidadesDesarrollo.length; i++) {        
+        const amenidadaQuitar = await AmenidadesModeloAmenidad.findOne({ 
+          where:{
+            ModeloAsociadoPropiedadId:modeloId,
+            AmenidadesPropiedadId:quitarAmenidadesDesarrollo[i] 
+          }
+        })
+        amenidadaQuitar.destroy();
       }
 
       // buscamos si hay fotos

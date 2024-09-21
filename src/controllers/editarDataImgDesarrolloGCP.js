@@ -32,7 +32,7 @@ const gcpEditarImagenDesarrollo = async (req, res, next) => {
       const parsedbodyObj = JSON.parse(bodyObj);
       const {id, nombreDesarrollo, añodeConstruccion, amenidadesDesarrollo, 
         calle, numeroPropiedad, numeroInterior, colonia, estado, municipio, ciudad, posicion,
-        TipodePropiedadId, TipoOperacionId, EstiloArquitecturaId, ordenImagen} = parsedbodyObj   
+        TipodePropiedadId, TipoOperacionId, EstiloArquitecturaId, ordenImagen, quitarAmenidadesDesarrollo} = parsedbodyObj   
 
       console.log("GCP Upload Multiple Img Controller Property -> " + nombreDesarrollo);
 
@@ -62,6 +62,16 @@ const gcpEditarImagenDesarrollo = async (req, res, next) => {
           }
         })
       }      
+      // Borrando las amendidades que se quitaron
+      for (let i = 0; i < quitarAmenidadesDesarrollo.length; i++) {        
+        const amenidadaQuitar = await AmenidadesDesarrolloPropiedad.findOne({ 
+          where:{
+            PropiedadId:id,
+            AmenidadesDesarrolloId:quitarAmenidadesDesarrollo[i] 
+          }
+        })
+        amenidadaQuitar.destroy();
+      }
       
       // buscamos si hay fotos
       const files = req.files;

@@ -132,6 +132,7 @@ function checkIfSignedIn(req, res, next) {
     next();
   }).catch((error) => {
     console.log("Error " + error)
+    res.json(error)
     //next();
   });
 }
