@@ -14,7 +14,8 @@ const editarDataDesarrollo = async (req, res, next) => {
       const parsedbodyObj = JSON.parse(bodyObj);
       const { id, nombreDesarrollo, añodeConstruccion, amenidadesDesarrollo, 
         calle, numeroPropiedad, numeroInterior, colonia, estado, municipio,ciudad, posicion, 
-        TipodePropiedadId, TipoOperacionId, EstiloArquitecturaId, ordenImagen} = parsedbodyObj   
+        TipodePropiedadId, TipoOperacionId, EstiloArquitecturaId, ordenImagen, 
+        quitarAmenidadesDesarrollo} = parsedbodyObj   
 
       console.log("Upload Multiple Img Controller Property -> " + nombreDesarrollo);
       console.log(ordenImagen)
@@ -43,6 +44,16 @@ const editarDataDesarrollo = async (req, res, next) => {
             AmenidadesDesarrolloId:amenidadesDesarrollo[i] 
           }
         })
+      }
+      // Borrando las amendidades que se quitaron
+      for (let i = 0; i < quitarAmenidadesDesarrollo.length; i++) {        
+        const amenidadaQuitar = await AmenidadesDesarrolloPropiedad.findOne({ 
+          where:{
+            PropiedadId:id,
+            AmenidadesDesarrolloId:quitarAmenidadesDesarrollo[i] 
+          }
+        })
+        amenidadaQuitar.destroy();
       }
       
       // buscamos si hay fotos
@@ -132,7 +143,7 @@ const editarDataDesarrollo = async (req, res, next) => {
       console.log("Error al editar el Desarrollo "+error);
       res.json({
         codigo:0,
-        Mensaje:`Error al intentar crear la imagen del Desarrollo`,
+        Mensaje:`Error al intentar editar el Desarrollo`,
         Error:error
       });
       //res.json(`Error al intentar crear la imagen de la propiedad: ${error}`);

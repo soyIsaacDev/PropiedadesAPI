@@ -112,6 +112,44 @@ server.get("/agregarAmenidadDesarrollo", async (req, res) => {
   }
 })
 
+server.post("/editarAmenidadesDesarrollo", async(req, res) =>{
+  try {
+    const {DesarrolloAmenidadId, NuevoNombreAmenidad } = req.body;
+    const AmenidadDesarrollo = await AmenidadesDesarrollo.findByPk(DesarrolloAmenidadId)
+    AmenidadDesarrollo.nombreAmenidad = NuevoNombreAmenidad;
+    await AmenidadDesarrollo.save();
+    res.json({
+      codigo:1, 
+      Confirmacion:`Se edito la Amenidad --->`+ AmenidadDesarrollo.nombreAmenidad
+    });
+  } catch (e) {
+    res.json({
+      codigo:0, 
+      Mensaje: "No se pudo editar la Amenidad",
+      Error:e
+    });
+  }
+})
+
+server.post("/editarAmenidadesModelo", async(req, res) =>{
+  try {
+    const {ModeloAmenidadId, NuevoNombreAmenidad} = req.body;
+    const AmenidadModelo = await AmenidadesPropiedad.findByPk(ModeloAmenidadId)
+    AmenidadModelo.nombreAmenidad = NuevoNombreAmenidad;
+    await AmenidadModelo.save();
+    res.json({
+      codigo:1, 
+      Confirmacion:`Se edito la Amenidad ---> `+ AmenidadModelo.nombreAmenidad
+    });
+  } catch (e) {
+    res.json({
+      codigo:0, 
+      Mensaje: "No se pudo editar la Amenidad ",
+      Error:e
+    });
+  }
+})
+
 server.get("/getAmenidadesDesarrollo", async (req, res) => { 
   try {
     const AmenidadesDesarrolloFind = await AmenidadesDesarrollo.findAll({
