@@ -13,7 +13,7 @@ const multer = Multer({
   storage: Multer.MemoryStorage,
   limits: {
     fileSize: 10 * 1024 * 1024, // no larger than 10mb
-    fieldSize: 25 * 1024 * 1024 
+    fieldSize: 100 * 1024 * 1024 
   }
 });
 
