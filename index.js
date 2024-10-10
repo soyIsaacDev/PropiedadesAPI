@@ -118,23 +118,25 @@ function getIdToken(req) {
     } */
 function checkIfSignedIn(req, res, next) {
   console.log("Check if Signed In");
-  //console.log("REQ"+req)
   const idToken = getIdToken(req);
-  console.log("ID TOKEN " + idToken)
+  console.log("ID TOKEN " + idToken + " Lenght " + idToken.length)
   // Verify the ID token using the Firebase Admin SDK.
   // User already logged in. Redirect to profile page.
-  admin.auth().verifyIdToken(idToken).then((decodedClaims) => {
-    // User is authenticated, user claims can be retrieved from
-    // decodedClaims.
-    // In this sample code, authenticated users are always redirected to
-    // the profile page.
-    console.log("USUARIO AUTENTICADO")
-    next();
-  }).catch((error) => {
-    console.log("Error " + error)
-    res.json(error)
-    //next();
-  });
+  if(idToken.length > 10){
+    console.log("REVISANDO EL TOKEN")
+    admin.auth().verifyIdToken(idToken).then((decodedClaims) => {
+      // User is authenticated, user claims can be retrieved from
+      //console.log(decodedClaims)
+      // In this sample code, authenticated users are always redirected to
+      // the profile page.
+      console.log("USUARIO AUTENTICADO")
+      next();
+    }).catch((error) => {
+      console.log("Error de Authenticacion " + error)
+      res.json(error)
+      //next();
+    });
+  }
 }
 
 async function checkTipoAutorizacion(req, res, next) {

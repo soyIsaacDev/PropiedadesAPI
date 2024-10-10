@@ -24,6 +24,7 @@ const uploadImages = (req, res, next) => {
   console.log("Upload Imagenes")
   // Use multer upload instance
   upload.array('imagenesfiles', 40)(req, res, (err) => {
+    console.log(req)
     if (err) {
       console.log(err)
       return res.status(400).json({ error: err.message });
@@ -35,8 +36,8 @@ const uploadImages = (req, res, next) => {
     /* req.files.map(file => {
       console.log("Mapping")
       console.log(file)
-    })
-     */
+    }) */
+    
 
     // Validando el tamaño y tipo de imagenes permitidas
     files.forEach(async (file) => {
