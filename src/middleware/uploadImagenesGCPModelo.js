@@ -10,7 +10,7 @@ const {Storage} = require('@google-cloud/storage');
 // [START multer]
 const Multer = require('multer');
 const multer = Multer({
-  storage: Multer.MemoryStorage,
+  
   limits: {
     fileSize: 10 * 1024 * 1024, // no larger than 10mb
     fieldSize: 100 * 1024 * 1024 
