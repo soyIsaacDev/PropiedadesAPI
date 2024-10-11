@@ -59,9 +59,9 @@
             credentials: true 
         };
     }
-    app.use(cors(corsOptions))
-    app.use(express.json({limit: '200mb', extended: true })); //  -->  habilitamos objetos json con el metodo express.json   
-    app.use(express.urlencoded({ limit: '200mb', extended: true }));
+    app.use(cors(corsOptions));
+    app.use(express.json({limit: '200000000' })); //  -->  habilitamos objetos json con el metodo express.json   
+    app.use(express.urlencoded({ limit: '200000000', extended: true }));
     
     app.use(express.static('public')) // --> habilitamos archivos estaticos con el middleware express.static
         //para crear un prefijo en la ruta 
