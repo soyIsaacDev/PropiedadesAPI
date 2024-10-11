@@ -12,8 +12,8 @@ const Multer = require('multer');
 const multer = Multer({
   
   limits: {
-    fileSize: 10 * 1024 * 1024, // no larger than 10mb
-    fieldSize: 100 * 1024 * 1024 
+    fileSize: 200 * 1024 * 1024, // no larger than 10mb
+    fieldSize: 500 * 1024 * 1024 
   }
 });
 
