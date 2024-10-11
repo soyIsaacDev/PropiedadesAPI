@@ -53,7 +53,7 @@
     }
     else{
         corsOptions = {
-            origin: ['https://inmozz.com', 'https://www.inmozz.com', "https://m3inmuebles.com"],
+            origin: ['https://inmozz.com', 'https://inmozz.com/altaPropiedadCuatro', 'https://www.inmozz.com', 'https://www.inmozz.com/altaPropiedadCuatro',"https://m3inmuebles.com"],
             //importante: No dejar la ruta de origen con un "/" al final
             optionsSuccessStatus: 200,
             credentials: true 
