@@ -28,12 +28,16 @@ const uploadModeloImages = (req, res, next) => {
 
     // Retrieve uploaded files
     const files = req.files;
+    //console.log(files)
     const errors = [];
 
     const data = req.body;
     
     // Validate file types and sizes
     files.forEach((file) => {
+      const nombreOriginalforlog = Buffer.from(file.originalname, 'ascii').toString('utf8');
+      console.log("Nombre Original " + nombreOriginalforlog);
+
       const allowedTypes = ['image/jpeg', 'image/png'];
       const maxSize = 10 * 1024 * 1024; // 10MB
 
