@@ -24,7 +24,7 @@ const uploadImages = (req, res, next) => {
   console.log("Upload Imagenes")
   // Use multer upload instance
   upload.array('imagenesfiles', 40)(req, res, (err) => {
-    console.log(req)
+    //console.log(req)
     if (err) {
       console.log(err)
       return res.status(400).json({ error: err.message });
