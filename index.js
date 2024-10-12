@@ -170,7 +170,7 @@ async function checkTipoAutorizacion(req, res, next) {
     app.use("/bulk", bulk);
     app.use("/tipodeUsuario", tipoUsuario);
     //app.use("/cargaProp", checkIfSignedIn, checkTipoAutorizacion, cargaProp);
-    app.use("/cargaProp", checkIfSignedIn({limit: '200000000' }), checkTipoAutorizacion({limit: '200000000' }), cargaProp);
+    app.use("/cargaProp", checkIfSignedIn, checkTipoAutorizacion, cargaProp({limit: '200000000' }));
     //app.use("/authCliente", authCliente);
 
     /* app.use("/propiedades", PropiedadRoute);
