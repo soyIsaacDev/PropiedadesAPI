@@ -202,7 +202,7 @@ const uploadFile = async (file) => new Promise((resolve, reject) => {
   const fileUpload = bucket.file(fileName);
 
   const uploadStream = fileUpload.createWriteStream({
-      resumable: false,
+      resumable: true,
       metadata: {
           contentType: file.mimetype
       }
