@@ -109,6 +109,23 @@ const bucket = storage.bucket(GCLOUD_BUCKET);
 // [START sendUploadToGCS]
 const sendModeloUploadToGCSAsync = async (req, res, next) => {
   try {
+    const maxAgeSeconds = 3600;
+const origin = 'https://www.inmozz.com/';
+const responseHeader = 'Content-Type';
+async function addBucketCors() {
+    await bucket.setCorsConfiguration([
+      {
+        maxAgeSeconds,
+        method: ["GET", "POST", "DELETE"],
+        origin: [origin],
+        responseHeader: [responseHeader],
+      },
+
+    ]);
+
+    console.log(`Se agrego la configuracion de CORSal bucket ${GCLOUD_BUCKET}`);
+  }
+    addBucketCors()
     // buscamos si hay fotos
     const files = req.files;
     if (files == undefined) {
