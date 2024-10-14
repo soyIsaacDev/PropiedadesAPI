@@ -59,7 +59,7 @@
             credentials: true 
         };
     }
-    app.use(cors(corsOptions));
+    app.use(cors(corsOptions))
     app.use(express.json({limit: '200000000' })); //  -->  habilitamos objetos json con el metodo express.json   
     app.use(express.urlencoded({ limit: '200000000', extended: true }));
     
@@ -170,7 +170,7 @@ async function checkTipoAutorizacion(req, res, next) {
     app.use("/bulk", bulk);
     app.use("/tipodeUsuario", tipoUsuario);
     //app.use("/cargaProp", checkIfSignedIn, checkTipoAutorizacion, cargaProp);
-    app.use("/cargaProp", cargaProp);
+    app.use("/cargaProp", checkIfSignedIn, checkTipoAutorizacion, cargaProp);
     //app.use("/authCliente", authCliente);
 
     /* app.use("/propiedades", PropiedadRoute);
