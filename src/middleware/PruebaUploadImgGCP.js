@@ -23,7 +23,7 @@ const multerStorage = multer.diskStorage({
 });
 
 const multerUpload = multer({
-  storage: multerStorage,
+  //storage: multerStorage,
   limits: {
     fileSize: 200 * 1024 * 1024, // no larger than 10mb
     fieldSize: 500 * 1024 * 1024 
@@ -33,6 +33,7 @@ const multerUpload = multer({
 
 
 const pruebaUploadModeloImages = (req, res, next) => {
+  console.log("Empezando a cargar Imagenes")
   // Use multer upload instance
   multerUpload.array('imagenesfiles', 40)(req, res, (err) => {
     if (err) {
@@ -81,6 +82,7 @@ const pruebaUploadModeloImages = (req, res, next) => {
 
 const pruebaSendModeloUploadToGCSAsync = async (req, res, next) => {
   try {
+    console.log("Probando Send")
     // buscamos si hay fotos
     const files = req.files;
     if (files == undefined) {
@@ -115,11 +117,12 @@ const pruebaSendModeloUploadToGCSAsync = async (req, res, next) => {
               contentType: "webp",
               mimetype: "webp"
           });
+          console.log("Imagen subida de "+file.originalname)
       });
     
       uploadStream.end(file.buffer);
     });
-    
+    console.log("Termino de Cargar todas las imagenes")
     res.json({
       codigo:1, 
       Mensaje:`Se cargaron las imagenes correctamente`
