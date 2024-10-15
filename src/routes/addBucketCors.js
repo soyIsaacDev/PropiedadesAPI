@@ -36,8 +36,8 @@ server.get("/", async (req, res) => {
 })
 
 server.get("/quitarCors", async (req, res) => {
-    await storage.bucket(GCLOUD_BUCKE).setCorsConfiguration([]);
+    await storage.bucket(GCLOUD_BUCKET).setCorsConfiguration([]);
 
-    console.log(`Removed CORS configuration from bucket ${GCLOUD_BUCKE}`);
+    console.log(`Removed CORS configuration from bucket ${GCLOUD_BUCKET}`);
 })
 
