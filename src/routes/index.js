@@ -1,7 +1,7 @@
 const server = require("express").Router();
-const cors = require("cors");
+/* const cors = require("cors");
 
-server.use(cors());
+server.use(cors()); */
 
 module.exports = {
     clientes: require("./clienteServer"),

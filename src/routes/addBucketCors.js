@@ -1,3 +1,4 @@
+const server = require("express").Router();
 const {Storage} = require('@google-cloud/storage');
 const config = require('../../configCloudBucket');
 const GCLOUD_BUCKET = config.get('GCLOUD_MOD_ASOC_BUCKET');
