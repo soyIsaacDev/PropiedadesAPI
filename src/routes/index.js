@@ -16,5 +16,6 @@ module.exports = {
     bulk:require("./bulk"),
     tipoUsuario:require("./tipodeUsuario"),
     cargaProp:require("./cargaProp"),
+    addBucketCors:require("./addBucketCors"),
     index: server,
   };
