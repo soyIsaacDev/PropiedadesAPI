@@ -73,7 +73,10 @@ const pruebaUploadModeloImages = (req, res, next) => {
     }
 
     req.files = files;
-    next();
+    res.json({
+      codigo:1, 
+      Mensaje:`Se subieron los archivos`
+    });
     
   });
 };
@@ -106,13 +109,10 @@ const pruebaSendModeloUploadToGCSAsync = async (req, res, next) => {
       uploadStream.on("error", async (err) => {
         console.log("Error uploading image", err);
   
-        reject(err);
       });
   
       uploadStream.on("finish", async () => {
-          resolve({ 
-              name: file.originalname
-          });
+          
           await fileUpload.setMetadata({ 
               contentType: "webp",
               mimetype: "webp"
