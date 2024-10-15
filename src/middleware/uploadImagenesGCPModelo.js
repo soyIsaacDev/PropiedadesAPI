@@ -118,7 +118,7 @@ async function addBucketCors() {
         maxAgeSeconds,
         method: ["GET", "POST", "DELETE"],
         origin: [origin],
-        responseHeader: [responseHeader],
+        responseHeader: ["Content-Type", "Authorization","Access-Control-Allow-Origin"],
       },
 
     ]);

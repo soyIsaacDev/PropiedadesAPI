@@ -171,6 +171,23 @@ async function checkTipoAutorizacion(req, res, next) {
     app.use("/tipodeUsuario", tipoUsuario);
     //app.use("/cargaProp", checkIfSignedIn, checkTipoAutorizacion, cargaProp);
     app.use("/cargaProp", cargaProp);
+    app.use("/corsAuth", addBucketCors)
+
+    const maxAgeSeconds = 3600;
+    const origin = 'https://www.inmozz.com/';
+    async function addBucketCors() {
+        await bucket.setCorsConfiguration([
+          {
+            maxAgeSeconds,
+            method: ["GET", "POST", "DELETE"],
+            origin: [origin],
+            responseHeader: ["Content-Type", "Authorization","Access-Control-Allow-Origin"],
+          },
+    
+        ]);
+    
+        console.log(`Se agrego la configuracion de CORSal bucket ${GCLOUD_BUCKET}`);
+      }
     //app.use("/authCliente", authCliente);
 
     /* app.use("/propiedades", PropiedadRoute);
