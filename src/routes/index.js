@@ -17,5 +17,6 @@ module.exports = {
     tipoUsuario:require("./tipodeUsuario"),
     cargaProp:require("./cargaProp"),
     addBucketCors:require("./addBucketCors"),
+    pruebaCargarImg:require("./pruebaCargaImg"),
     index: server,
   };
