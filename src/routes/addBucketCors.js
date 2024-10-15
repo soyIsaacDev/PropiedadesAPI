@@ -11,7 +11,7 @@ const storage = new Storage({
 
 
 
-server.get("/", async (req, res) => {
+server.get("/agregarCors", async (req, res) => {
     try {
         const maxAgeSeconds = 3600;
         async function addBucketCors() {
@@ -27,7 +27,7 @@ server.get("/", async (req, res) => {
         
             console.log(`Se agrego la configuracion de CORS al bucket ${GCLOUD_BUCKET}`);
         }
-        addBucketCors().catch(console.error);
+        addBucketCors().catch(console.log(error));
     
         process.on('unhandledRejection', err => {
             console.error(err.message);
@@ -35,6 +35,7 @@ server.get("/", async (req, res) => {
           });
           addBucketCors(...process.argv.slice(2));
     } catch (e) {
+        console.log(e)
         res.send(e)
     }
 
