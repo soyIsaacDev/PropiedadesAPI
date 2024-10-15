@@ -1,6 +1,6 @@
 const {Storage} = require('@google-cloud/storage');
-const GCLOUD_BUCKET = config.get('GCLOUD_MOD_ASOC_BUCKET');
 const config = require('../../configCloudBucket');
+const GCLOUD_BUCKET = config.get('GCLOUD_MOD_ASOC_BUCKET');
 
 
 
