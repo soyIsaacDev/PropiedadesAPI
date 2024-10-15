@@ -19,7 +19,7 @@ server.get("/agregarCors", async (req, res) => {
               {
                 maxAgeSeconds,
                 method: ["GET", "POST", "DELETE"],
-                origin: ['https://www.inmozz.com/'],
+                origin: ['https://www.inmozz.com','https://inmozz.com'],
                 responseHeader: ["Content-Type", "Authorization","Access-Control-Allow-Origin"],
               },
         
