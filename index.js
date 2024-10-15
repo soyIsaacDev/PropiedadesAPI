@@ -27,7 +27,7 @@
     dbconstants:require("./dBConstants"),
     apikeys:require("./Apikeys"), */
     const { index, clientes, imagen, propiedad, dbconstants, apikeys, favoritos, 
-      modeloRelacionado, allPropiedades, bulk, tipoUsuario, cargaProp, addBucketCors } = require('./src/routes');
+      modeloRelacionado, allPropiedades, bulk, tipoUsuario, cargaProp, addBucketCors, pruebaCargarImg } = require('./src/routes');
 
     const { TipodeUsuario } = require("./src/db");
     
@@ -172,6 +172,7 @@ async function checkTipoAutorizacion(req, res, next) {
     //app.use("/cargaProp", checkIfSignedIn, checkTipoAutorizacion, cargaProp);
     app.use("/cargaProp", cargaProp);
     app.use("/corsAuth", addBucketCors)
+    app.use("/pruebaCargaProp", pruebaCargarImg),
     //app.use("/authCliente", authCliente);
 
     /* app.use("/propiedades", PropiedadRoute);
