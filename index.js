@@ -27,7 +27,7 @@
     dbconstants:require("./dBConstants"),
     apikeys:require("./Apikeys"), */
     const { index, clientes, imagen, propiedad, dbconstants, apikeys, favoritos, 
-      modeloRelacionado, allPropiedades, bulk, tipoUsuario, cargaProp } = require('./src/routes');
+      modeloRelacionado, allPropiedades, bulk, tipoUsuario, cargaProp, addBucketCors } = require('./src/routes');
 
     const { TipodeUsuario } = require("./src/db");
     
@@ -172,22 +172,6 @@ async function checkTipoAutorizacion(req, res, next) {
     //app.use("/cargaProp", checkIfSignedIn, checkTipoAutorizacion, cargaProp);
     app.use("/cargaProp", cargaProp);
     app.use("/corsAuth", addBucketCors)
-
-    const maxAgeSeconds = 3600;
-    const origin = 'https://www.inmozz.com/';
-    async function addBucketCors() {
-        await bucket.setCorsConfiguration([
-          {
-            maxAgeSeconds,
-            method: ["GET", "POST", "DELETE"],
-            origin: [origin],
-            responseHeader: ["Content-Type", "Authorization","Access-Control-Allow-Origin"],
-          },
-    
-        ]);
-    
-        console.log(`Se agrego la configuracion de CORSal bucket ${GCLOUD_BUCKET}`);
-      }
     //app.use("/authCliente", authCliente);
 
     /* app.use("/propiedades", PropiedadRoute);
