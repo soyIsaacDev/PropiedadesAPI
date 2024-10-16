@@ -56,10 +56,13 @@
             origin: ['https://inmozz.com', 'https://www.inmozz.com', "https://m3inmuebles.com"],
             //importante: No dejar la ruta de origen con un "/" al final
             optionsSuccessStatus: 200,
+            methods:['GET', 'PUT', 'POST', 'DELETE'],
+            allowedHeaders:['Content-Type', 'Authorization'],
             credentials: true 
         };
     }
-    app.use(cors(corsOptions))
+    app.options('*', cors());
+    app.use(cors(corsOptions));
     app.use(express.json({limit: '200000000' })); //  -->  habilitamos objetos json con el metodo express.json   
     app.use(express.urlencoded({ limit: '200000000', extended: true }));
     
