@@ -10,6 +10,7 @@ const {pruebaUploadModeloImages, pruebaSendModeloUploadToGCSAsync} = require('..
 //server.post("/nuevoModeloAsociadoPropiedad", pruebaUploadModeloImages, pruebaSendModeloUploadToGCSAsync); 
 
 server.post("/nuevoModeloAsociadoPropiedad", async (req,res)=>{
+  console.log("SE RECIBEN ARCHIVOS GRANDES")
   res.json({
     codigo:1, 
     Mensaje:`Si pasaron las imagenes`
