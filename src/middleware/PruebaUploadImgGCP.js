@@ -4,7 +4,6 @@ const path = require('path')
 const config = require('../../configCloudBucket');
 // Load the module for Cloud Storage
 const {Storage} = require('@google-cloud/storage');
-const carpeta = path.join(__dirname, '../../uploads')
 const GCLOUD_BUCKET = config.get('GCLOUD_MOD_ASOC_BUCKET');
 
 const storage = new Storage({
@@ -12,28 +11,14 @@ const storage = new Storage({
 });
 const bucket = storage.bucket(GCLOUD_BUCKET);
 
-
-const multerStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, carpeta);
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '_' + file.originalname);
-  }
-});
-
 const multerUpload = multer({
-  //storage: multerStorage,
   limits: {
-    fileSize: 200 * 1024 * 1024, // no larger than 10mb
-    fieldSize: 500 * 1024 * 1024 
+    fileSize: 31 * 1024 * 1024, // no larger than 31mb
+    fieldSize: 31 * 1024 * 1024 
   }
 });
-
-
 
 const pruebaUploadModeloImages = (req, res, next) => {
-  console.log("Empezando a cargar Imagenes")
   // Use multer upload instance
   multerUpload.array('imagenesfiles', 40)(req, res, (err) => {
     if (err) {
@@ -45,20 +30,17 @@ const pruebaUploadModeloImages = (req, res, next) => {
     
     // Validate file types and sizes
     files.forEach((file) => {
-      const ConsoleLog_NombrePara = Buffer.from(file.originalname, 'ascii').toString('utf8');
-      console.log("Nombre Original " + ConsoleLog_NombrePara );
-
+      //const ConsoleLog_NombrePara = Buffer.from(file.originalname, 'ascii').toString('utf8');
       const allowedTypes = ['image/jpeg', 'image/png'];
-      const maxSize = 10 * 1024 * 1024; // 10MB
+      const maxSize = 31 * 1024 * 1024; 
 
       if (!allowedTypes.includes(file.mimetype)) {
-        console.log(`Invalid file type`)
-        errors.push(`Invalid file type: ${file.originalname}`);
+        console.log(`Tipo de archivo invalido`)
+        errors.push(`Tipo de archivo invalido: ${file.originalname}`);
       }
-
       if (file.size > maxSize) {
-        console.log("File too large")
-        errors.push(`File too large: ${file.originalname}`);
+        console.log("Archivo demasiado grande")
+        errors.push(`Archivo demasiado grande: ${file.originalname}`);
       }
     });
 
