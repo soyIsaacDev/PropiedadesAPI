@@ -169,8 +169,7 @@ async function checkTipoAutorizacion(req, res, next) {
     app.use("/allProp", /* checkIfSignedIn, */ allPropiedades);
     app.use("/bulk", bulk);
     app.use("/tipodeUsuario", tipoUsuario);
-    //app.use("/cargaProp", checkIfSignedIn, checkTipoAutorizacion, cargaProp);
-    app.use("/cargaProp", cargaProp);
+    app.use("/cargaProp", checkIfSignedIn, checkTipoAutorizacion, cargaProp);
     app.use("/corsAuth", addBucketCors)
     app.use("/pruebaCargaProp", pruebaCargarImg),
     //app.use("/authCliente", authCliente);
