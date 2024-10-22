@@ -39,11 +39,9 @@ const pruebaSendModeloUploadToGCSAsync = async (req, res, next) => {
         EstadoId:estado,
       }
     })
-    console.log("MODELO RELACIONADO")
-    console.log(ModeloRelacionado.id + " Nombre "+ ModeloRelacionado.nombreModelo);
-    
+
     // Agregando Nombre Unico segun la fecha
-    const nombreUnicoFecha = Date.now()+"_" + file.originalname;
+    const nombreUnicoFecha = Date.now()+"_" + file[0].originalname;
     const esJpeg = file[0].originalname.includes("jpeg")
     var uniqueDateName = undefined;
     if(esJpeg){
@@ -73,7 +71,7 @@ const pruebaSendModeloUploadToGCSAsync = async (req, res, next) => {
     // Agregro al file los nombres segun tamaño
 
     const imagenModeloAsociado = await ImgModeloAsociado.create({
-      orden:ordenImagen.orden,
+      orden:ordenData[0].orden,
       type: file.mimetype,
       ModeloAsociadoPropiedadId: ModeloRelacionado.id,
       img_name: uniqueDateName,
