@@ -112,11 +112,11 @@ const uploadImages = (req, res, next) => {
       resizeImage(file.filename, uniqueDateName, 704, 504, "Detalles_Img_Gde_" );
 
       // Si estan ordenadas al principio se cambia el tamaño a Chico
+      
       if( ordenData.length>0 && ordenData[0].orden === 1 || 
           ordenData.length>0 && ordenData[0].orden === 2 || 
           ordenData.length>0 && ordenData[0].orden === 3)
           {
-            //console.log("RESIZE A CHICO")
             resizeImage(file.filename, uniqueDateName, 428, 242, "Detalles_Img_Chica_");
 
             file.resizeNameChico = `Detalles_Img_Chica_${uniqueDateName}.webp`;

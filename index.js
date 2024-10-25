@@ -133,7 +133,11 @@ function checkIfSignedIn(req, res, next) {
       next();
     }).catch((error) => {
       console.log("Error de Authenticacion " + error)
-      res.json(error)
+      res.json({
+        codigo:0, 
+        Mensaje:"Error de Authenticacion, por favor recarga la pagina",
+        Error:error
+      });
       //next();
     });
   }

@@ -44,7 +44,7 @@ server.get("/getDataandImagenPropiedades", async (req, res) => {
 server.get("/getPropiedadNombre", async (req, res) => {
   try {
     const dataPropiedad = await Propiedad.findAll({
-      attributes: ['id', 'nombreDesarrollo', 'posicion'],
+      attributes: ['id', 'nombreDesarrollo', 'posicion', 'TipodePropiedadId'],
       
     },);
     
