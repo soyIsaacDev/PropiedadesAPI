@@ -14,10 +14,8 @@ const editarDataModelo = async (req, res, next) => {
       const parsedbodyObj = JSON.parse(bodyObj);
       const { modeloId, desarrolloId, nombreModelo, precio, ciudad, estado, posicion, recamaras,
         niveles, baños, medio_baño, espaciosCochera, cocheraTechada, m2Construccion, m2Terreno, 
-        m2Total, amenidadesPropiedad, ordenImagen, quitarAmenidadesDesarrollo         } = parsedbodyObj   
-
-      //console.log("Upload Multiple Img Controller Modelo -> " + nombreModelo);
-      console.log("Desarrollo Id "+desarrolloId)
+        m2Total, amenidadesPropiedad, ordenImagen, quitarAmenidadesModelo         } = parsedbodyObj   
+       
 
       const ModelosdelDesarrollo = await ModeloAsociadoPropiedad.findAll({ 
         where: { 
@@ -52,6 +50,8 @@ const editarDataModelo = async (req, res, next) => {
       
       ModeloBuscado.save();
 
+      console.log("AmenidadesProp "+amenidadesPropiedad)
+      console.log("Quitar AmenidadesProp "+quitarAmenidadesModelo)
       for (let i = 0; i < amenidadesPropiedad.length; i++) {        
         await AmenidadesModeloAmenidad.findOrCreate({ 
           where:{
@@ -62,11 +62,11 @@ const editarDataModelo = async (req, res, next) => {
       }
 
       // Borrando las amendidades que se quitaron
-      for (let i = 0; i < quitarAmenidadesDesarrollo.length; i++) {        
+      for (let i = 0; i < quitarAmenidadesModelo.length; i++) {        
         const amenidadaQuitar = await AmenidadesModeloAmenidad.findOne({ 
           where:{
             ModeloAsociadoPropiedadId:modeloId,
-            AmenidadesPropiedadId:quitarAmenidadesDesarrollo[i] 
+            AmenidadesPropiedadId:quitarAmenidadesModelo[i] 
           }
         })
         amenidadaQuitar.destroy();
@@ -74,7 +74,7 @@ const editarDataModelo = async (req, res, next) => {
 
       // buscamos si hay fotos
       const files = req.files;
-
+      
         for (let i = 0; i < ordenImagen.length; i++) {
           if(ordenImagen[i].editar===1){ // 1 = editar
             const imagenModelo = await ImgModeloAsociado.findByPk(ordenImagen[i].id);
