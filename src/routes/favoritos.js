@@ -145,6 +145,7 @@ server.get("/desarrolloFav/:userId", async (req, res) => {
 
 server.get("/modelosFav/:userId", async (req, res) => {
     try {
+        console.log("SOLICITANDO MODELOS FAV")
         let {userId} = req.params;
 
         const cliente = await Cliente.findOne({
@@ -157,6 +158,7 @@ server.get("/modelosFav/:userId", async (req, res) => {
                 ClienteId:cliente.id
             },
         });
+        console.log(modelosFavoritos)
         res.send(modelosFavoritos)
     } catch (e) {
         res.send(e)

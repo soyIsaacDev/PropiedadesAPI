@@ -11,6 +11,7 @@ const { Propiedad, ImgPropiedad, AmenidadesDesarrollo,TipodePropiedad,TipoOperac
 
 server.get("/getDataandImagenPropiedades", async (req, res) => {
   try {
+    console.log("GET DATA PROPS")
     const dataPropiedad = await Propiedad.findAll({
       order: [
         ['precioMin','ASC']
@@ -29,6 +30,24 @@ server.get("/getDataandImagenPropiedades", async (req, res) => {
           through: {
             attributes: []
           }
+        },
+        {
+          model: TipodePropiedad
+        },
+        {
+          model: TipoOperacion
+        },
+        {
+          model: Ciudad
+        },
+        {
+          model: Municipio
+        },
+        {
+          model: Estado
+        },
+        {
+          model: Colonia
         },
       ]
     },);

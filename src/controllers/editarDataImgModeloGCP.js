@@ -74,7 +74,7 @@ const gcpEditarImagenModelo = async (req, res, next) => {
         const amenidadaQuitar = await AmenidadesModeloAmenidad.findOne({ 
           where:{
             ModeloAsociadoPropiedadId:modeloId,
-            AmenidadesPropiedadId:quitarAmenidadesModelo [i] 
+            AmenidadesPropiedadId:quitarAmenidadesModelo[i] 
           }
         })
         amenidadaQuitar.destroy();

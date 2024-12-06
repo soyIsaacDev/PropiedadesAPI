@@ -62,6 +62,12 @@ server.get("/getDataandImagenModeloAsociadoPropiedad/:PropiedadId", async (req, 
             ['orden','ASC']
           ],
         },
+        {
+          model: AmenidadesPropiedad,
+          through: {
+            attributes: []
+          }
+        },
       ], 
       
     },);
