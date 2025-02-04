@@ -23,7 +23,7 @@ User.sync({ alter: true }) - This checks what is the current state of the table 
     console.log("Server is listening on port " + port);
   });
 }); */
-
+//db.sync({ alter: true });
 app.listen(port, function () {
   console.log("Server is listening on port " + port);
 });

@@ -6,23 +6,24 @@ module.exports = s => {
     {
         userId:{
             type: DataTypes.STRING,
-            allowNull: false 
+            allowNull: true 
         },
         nombre:{
             type: DataTypes.STRING,
-            allowNull: false 
+            allowNull: true 
         },
         email:{
             type: DataTypes.STRING,
+            unique:true,
             allowNull: false 
         },
         telefono:{
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true
         },
         sexo:{
             type: DataTypes.ENUM("Masculino","Femenino"),
-            allowNull: false
+            allowNull: true
         },
         dia_de_nacimiento:{
             type: DataTypes.SMALLINT,

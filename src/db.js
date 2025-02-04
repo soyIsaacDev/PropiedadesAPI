@@ -42,7 +42,7 @@ try {
 }
 
 //Modelos DB
-
+const modelOrganizacion = require("./models/organizacion.js");
 const modelAgente = require("./models/agenteModel");
 const modelPropiedad = require("./models/propiedadModel");
 const modelImgPropiedad = require("./models/imgPropiedad");
@@ -60,7 +60,15 @@ const modelModeloAsociadoPropiedad = require("./models/modeloAsociadoPropiedad")
 const modelImgModeloAsociado = require("./models/imgModeloAsociado");
 const modeloTipodeUsuario = require("./models/tipodeUsuario");
 const modeloEstiloArquitectura = require("./models/estiloArquitectura.js");
+const modelAutorizacion = require("./models/autorizacion.js");
+const modelDesarrollosAutorizados = require("./models/desarrollosAutorizados.js");
+const modelModelosAsociadosAutorizados = require("./models/modelosAsociadosAutorizados.js");
+const modelAgenteDeDesarrollo = require("./models/agentesDeDesarrollo.js");
+const modelHisorialdePagos = require("./models/historialdePagos.js");
+const modelPaquetedePago= require("./models/paquetedePago.js");
 
+
+modelOrganizacion(sequelize);
 modelAgente(sequelize);
 modelPropiedad(sequelize);
 modelImgPropiedad(sequelize);
@@ -78,10 +86,18 @@ modelModeloAsociadoPropiedad(sequelize);
 modelImgModeloAsociado(sequelize);
 modeloTipodeUsuario(sequelize);
 modeloEstiloArquitectura(sequelize);
+modelAutorizacion(sequelize);
+modelDesarrollosAutorizados(sequelize);
+modelModelosAsociadosAutorizados(sequelize);
+modelAgenteDeDesarrollo(sequelize);
+modelHisorialdePagos(sequelize);
+modelPaquetedePago(sequelize);
+
 
 let {Agente, Propiedad, ImgPropiedad, TipodePropiedad, AmenidadesDesarrollo, AmenidadesPropiedad, 
   TipoOperacion, Estado , Municipio, Ciudad, Colonia, Cliente, SesionCliente, ModeloAsociadoPropiedad,
-  ImgModeloAsociado, TipodeUsuario, EstiloArquitectura
+  ImgModeloAsociado, TipodeUsuario, EstiloArquitectura, Autorizacion, DesarrollosAutorizados, 
+  ModelosAsociadosAutorizados, AgenteDeDesarrollo, HistorialdePagos, PaquetedePago, Organizacion
 } = sequelize.models;
 
 // Relaciones DB
@@ -148,8 +164,65 @@ ModeloAsociadoPropiedad.belongsTo(Estado);
 TipodeUsuario.hasMany(Cliente);
 Cliente.belongsTo(TipodeUsuario);
 
+/* TipodeUsuario.hasMany(Agente);
+Agente.belongsTo(TipodeUsuario);
+
+TipodeUsuario.hasMany(AgenteDeDesarrollo);
+AgenteDeDesarrollo.belongsTo(TipodeUsuario); */
+
 EstiloArquitectura.hasMany(Propiedad);
 Propiedad.belongsTo(EstiloArquitectura);
+
+Cliente.hasOne(Autorizacion);
+Autorizacion.belongsTo(Cliente);
+
+Cliente.hasMany(DesarrollosAutorizados);
+DesarrollosAutorizados.belongsTo(Cliente);
+
+Cliente.hasMany(ModelosAsociadosAutorizados);
+ModelosAsociadosAutorizados.belongsTo(Cliente);
+
+Organizacion.hasMany(Cliente);
+Cliente.belongsTo(Organizacion);
+
+Organizacion.hasMany(Propiedad);
+Propiedad.belongsTo(Organizacion);
+
+Organizacion.hasMany(ModeloAsociadoPropiedad);
+ModeloAsociadoPropiedad.belongsTo(Organizacion);
+
+/* AgenteDeDesarrollo.hasOne(Autorizacion);
+Autorizacion.belongsTo(AgenteDeDesarrollo);
+
+Agente.hasMany(DesarrollosAutorizados);
+DesarrollosAutorizados.belongsTo(Agente);
+
+Agente.hasMany(ModelosAsociadosAutorizados);
+ModelosAsociadosAutorizados.belongsTo(Agente);
+
+AgenteDeDesarrollo.belongsToMany(DesarrollosAutorizados, { through: 'AgenteDesarrollo-Desarrollo' });
+DesarrollosAutorizados.belongsToMany(AgenteDeDesarrollo, { through: 'AgenteDesarrollo-Desarrollo' });
+
+AgenteDeDesarrollo.belongsToMany(ModelosAsociadosAutorizados, { through: 'AgenteDesarrollo-ModeloAsociado' });
+ModelosAsociadosAutorizados.belongsToMany(AgenteDeDesarrollo, { through: 'AgenteDesarrollo-ModeloAsociado' });
+
+Agente.hasMany(AgenteDeDesarrollo);
+AgenteDeDesarrollo.belongsTo(Agente); */
+
+Organizacion.hasMany(HistorialdePagos);
+HistorialdePagos.belongsTo(Organizacion);
+
+/* Organizacion.hasMany(Agente);
+Agente.belongsTo(Organizacion);
+
+Organizacion.hasMany(AgenteDeDesarrollo);
+AgenteDeDesarrollo.belongsTo(Organizacion); */
+
+PaquetedePago.hasOne(HistorialdePagos);
+HistorialdePagos.belongsTo(PaquetedePago);
+
+
+
 
 module.exports = {
   ...sequelize.models,

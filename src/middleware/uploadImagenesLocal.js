@@ -21,7 +21,8 @@ const upload = multer({ storage: storage, limits:{fieldSize: 25 * 1024 * 1024} }
 
 // Custom file upload middleware
 const uploadImages = (req, res, next) => {
-  console.log("Upload Imagenes")
+  
+  console.log("Upload Imagenes " + req.auth)
   // Use multer upload instance
   upload.array('imagenesfiles', 40)(req, res, (err) => {
     //console.log(req)

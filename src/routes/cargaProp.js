@@ -16,7 +16,7 @@ const storageBucket_Desarrollo = storage.bucket(GCLOUD_BUCKET_NAME_Desarrollo);
 const GCLOUD_BUCKET_NAME_Mod_Asoc = config.get('GCLOUD_MOD_ASOC_BUCKET');
 const storageBucket_Mod_Asoc = storage.bucket(GCLOUD_BUCKET_NAME_Mod_Asoc);
 
-const { Propiedad, ImgPropiedad, ModeloAsociadoPropiedad, ImgModeloAsociado  } = require("../db");
+const { Propiedad, ImgPropiedad, ModeloAsociadoPropiedad, ImgModeloAsociado, } = require("../db");
 
 const DEVMODE = process.env.DEVELOPMENT;
 

@@ -26,10 +26,13 @@
     autCliente:require("./authCliente"),
     dbconstants:require("./dBConstants"),
     apikeys:require("./Apikeys"), */
-    const { index, clientes, imagen, propiedad, dbconstants, apikeys, favoritos, 
-      modeloRelacionado, allPropiedades, bulk, tipoUsuario, cargaProp, addBucketCors, pruebaCargarImg } = require('./src/routes');
+    const { index, clientes, imagen, propiedad, dbconstants, apikeys, favoritos, modeloRelacionado,
+       allPropiedades, bulk, tipoUsuario, cargaProp, addBucketCors, pruebaCargarImg, historialdePagos,
+       agente, autorizacionUsuario   } = require('./src/routes');
 
     const { TipodeUsuario } = require("./src/db");
+
+    const { checkAutorizacion } = require("./src/middleware/checkAutorizacion.js")
     
     /* app.METHOD(PATH, HANDLER)
     app es una instancia de express.
@@ -174,9 +177,12 @@ async function checkTipoAutorizacion(req, res, next) {
     app.use("/allProp", /* checkIfSignedIn, */ allPropiedades);
     app.use("/bulk", bulk);
     app.use("/tipodeUsuario", tipoUsuario);
-    app.use("/cargaProp", checkIfSignedIn, checkTipoAutorizacion, cargaProp);
+    app.use("/cargaProp", checkIfSignedIn, checkAutorizacion, cargaProp);
     app.use("/corsAuth", addBucketCors)
     app.use("/pruebaCargaProp", pruebaCargarImg),
+    app.use("/historialDePagos", historialdePagos),
+    app.use("/agente", agente),
+    app.use("/checkautorizacion", autorizacionUsuario),
     //app.use("/authCliente", authCliente);
 
     /* app.use("/propiedades", PropiedadRoute);
