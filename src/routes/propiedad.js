@@ -6,8 +6,9 @@ const {literal} = require ('sequelize');
 var public = path.join(__dirname,'../../uploads');
 
 const { Propiedad, ImgPropiedad, AmenidadesDesarrollo,TipodePropiedad,TipoOperacion, Estado, Municipio, Ciudad, 
-  Colonia, Cliente, Favoritos, AmenidadesDesarrolloPropiedad, ModeloAsociadoPropiedad, ImgModeloAsociado  } = require("../db");
-
+  Colonia, Cliente, Favoritos, AmenidadesDesarrolloPropiedad, ModeloAsociadoPropiedad, ImgModeloAsociado,
+  
+} = require("../db");
 
 server.get("/getDataandImagenPropiedades", async (req, res) => {
   try {
@@ -244,6 +245,73 @@ server.get("/seedRefId", async (req, res) => {
   } catch (e) {
     res.send(e)
   }
+});
+
+server.get("/actualizar/:propId/:orgId", async (req, res) =>{
+  try {
+    const {propId, orgId} = req.params
+    const propiedad = await Propiedad.findOne({
+      where:{id:propId},
+    })
+    /* propiedad.OrganizacionId="e29c1eae-6bc4-4e18-9799-995e8ab00994"
+    await propiedad.save(); */
+    await propiedad.update({OrganizacionId:orgId})
+    res.send(propiedad)
+  } catch (error) {
+    res.send(error)
+  }
+})
+
+server.get("/getPropOrganizacion/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const cliente = await Cliente.findOne({where:{userId}})
+    const dataPropiedad = await Propiedad.findAll({
+      where:{ OrganizacionId:cliente.OrganizacionId },
+      order: [
+        ['precioMin','ASC']
+      ],
+      include: [
+        {
+          model: ImgPropiedad,
+          attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+          separate:true,
+          order: [
+            ['orden','ASC']
+          ],
+        },       
+        {
+          model: AmenidadesDesarrollo,
+          through: {
+            attributes: []
+          }
+        },
+        {
+          model: TipodePropiedad
+        },
+        {
+          model: TipoOperacion
+        },
+        {
+          model: Ciudad
+        },
+        {
+          model: Municipio
+        },
+        {
+          model: Estado
+        },
+        {
+          model: Colonia
+        },
+      ]
+    },);
+    
+    dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontraron datos de propiedades"});
+    
+  } catch (e) {
+    res.send(e);
+  } 
 });
 
 // Para ver las imagenes

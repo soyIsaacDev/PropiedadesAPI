@@ -246,6 +246,54 @@ server.get("/seedRefId", async (req, res) => {
   }
 }); */
 
+server.get("/actualizar/:propId/:orgId", async (req, res) =>{
+  try {
+    const {propId, orgId} = req.params
+    const propiedad = await ModeloAsociadoPropiedad.findOne({
+      where:{id:propId},
+    })
+    await propiedad.update({OrganizacionId:orgId})
+    res.send(propiedad)
+  } catch (error) {
+    res.send(error)
+  }
+})
+
+server.get("/getModeloAsociadoPropiedadbyOrg/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const cliente = await Cliente.findOne({ where:{userId} });
+    const dataPropiedad = await ModeloAsociadoPropiedad.findAll({
+      where:{ OrganizacionId:cliente.OrganizacionId },
+      order: [
+        ['precio"','ASC']
+      ],
+      include: [
+        {
+          model: ImgModeloAsociado,
+          attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+          separate:true,
+          order: [
+            ['orden','ASC']
+          ],
+        }, 
+        {
+          model: AmenidadesPropiedad,
+          through: {
+            attributes: []
+          }
+        },
+      ]
+    },);
+    
+    dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontraron datos de propiedades"});
+    
+  } catch (e) {
+    res.send(e);
+  } 
+}
+);
+
 
 // Para ver las imagenes
 server.use('/imagenes', express.static(public));

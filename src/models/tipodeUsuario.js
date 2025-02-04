@@ -4,13 +4,33 @@ module.exports = s => {
     s.define(
         "TipodeUsuario", 
     {
+        id:{
+            type:DataTypes.UUID,
+            unique:true,
+            defaultValue: DataTypes.UUIDV4,
+            primaryKey: true,
+        },
         tipo:{
-            type: DataTypes.ENUM("DueñoIsaacBM","Desarrollador","Cliente"),
+            type: DataTypes.ENUM(
+                "DueñoIsaacBoMiquirray",
+                "Desarrollador",
+                "AgentedeDesarrollo",
+                "Agente",
+                "DueñodePropiedad",
+                "Arquitecto",
+                "Constructor",
+                "ClienteFinal"
+            ),
             allowNull: false
         },
-        userId:{
-            type: DataTypes.STRING,
-            allowNull: false
+        giro:{
+            type: DataTypes.ENUM(
+                "Habitacional",
+                "Comercial",
+                "HabitacionalyComercial",
+                "Mixto",
+                "Todos",
+            ),
         },
     }, {
     timestamps: false,

@@ -2,7 +2,7 @@ const {DataTypes} = require ('sequelize');
 
 module.exports = s => {
     s.define(
-        "Agente", 
+        "AgenteDeDesarrollo", 
     {
         id:{
             type:DataTypes.UUID,
@@ -37,33 +37,16 @@ module.exports = s => {
         },
         tipo:{
             type: DataTypes.ENUM(
-                "DueñoIsaacBM",
-                "Desarrollador",
-                "Agente",
-                "DueñodePropiedad",
-                "Arq/Constructor",
-                "Cliente"
-            ),
-            allowNull: false
-        },
-        giro:{
-            type: DataTypes.ENUM(
-                "Habitacional",
-                "Comercial",
-                "HabitacionalyComercial",
-                "Mixto",
-                "Todos",
+                "AgentedeDesarrollo",
             ),
             allowNull: false
         },
         escala:{
             type: DataTypes.ENUM(
-                "Desarrollador",
                 "Agente",
             ),
             allowNull: false
-        },
-        
+        },  
     }, {
     timestamps: false,
     });
