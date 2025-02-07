@@ -31,3 +31,8 @@ Produccion
 
 Revisar si envia correos al momento de registrar Agentes o es necesario cambiar la credenciales de OAuth a App Publicada en Google Cloud
     https://medium.com/@nickroach_50526/sending-emails-with-node-js-using-smtp-gmail-and-oauth2-316fe9c790a1
+
+
+Planteandome si es mejor separar las autorizaciones en:
+    Autorizacion de Publicar -> en Tabla de cliente?
+    Autorizacion de Manejo de Usuarios  -> en tabla de Tipo de Usuario?

@@ -1,4 +1,4 @@
-const { Autorizacion, Cliente  } = require("../db");
+const { Autorizacion, Cliente, TipodeUsuario,  } = require("../db");
 const confirmaAutorizacion = require("express").Router();
 
 const checkAutorizacion = async (req, res, next)  => {
@@ -21,19 +21,64 @@ const checkAutorizacion = async (req, res, next)  => {
     }
 }
 
-confirmaAutorizacion.get("/checkautorizacion/:userId", async (req, res)=>{
- try {
-    console.log("Checando la Autorizacion del usuario")
-    const { userId } = req.params;
-        const cliente = await Cliente.findOne({
-            where:{ userId }
-        })
-        const autorizacion = await Autorizacion.findOne({
+const checkManejodeUsuarios = async (req, res, next) => {
+    try{        
+        const agentes = req.body; // se reciben los datos en un Array
+        
+        const agentePrincipal = await Cliente.findOne({ 
+            where:{ userId:agentes[0].userIdAgentePrincipal 
+        }})
+        const tipodeUsuario = await TipodeUsuario.findOne({
             where:{
-                ClienteId:cliente.id
+                id:agentePrincipal.TipodeUsuarioId
             }
         })
-        res.json(autorizacion)
+
+        // Usuarios autorizados a agregar agentes
+        if(tipodeUsuario.tipo === "DueñoIsaacBoMiquirray" || tipodeUsuario.tipo === "Desarrollador" 
+            || tipodeUsuario.tipo === "Arquitecto" || tipodeUsuario.tipo === "Constructor" )
+        {
+            req.orgId = agentePrincipal.OrganizacionId
+            next();
+        }  
+
+        // Usuarios NO Autorizados a agregar agentes
+        if(tipodeUsuario.tipo === "ClienteFinal" || tipodeUsuario.tipo === "Agente" 
+          || tipodeUsuario.tipo === "AgentedeDesarrollo" || tipodeUsuario.tipo === "AgendedeDesarrollo" 
+          || tipodeUsuario.tipo === "DueñodePropiedad" 
+        )  res.send("Usuario No Autorizado");
+
+    } catch(error){
+        res.send(error)
+    }
+}
+
+confirmaAutorizacion.post("/revisarCaracteristicasUsuario", async (req, res)=>{
+ try {
+    console.log("Checando la Autorizacion del usuario")
+    const { userId } = req.body;
+        const cliente = await Cliente.findOne({
+            where:{ userId },
+            include: [
+                { model: TipodeUsuario },
+                { model: Autorizacion },
+            ]
+        })
+        
+        let tipodeUsuario = cliente.TipodeUsuario.tipo;
+        let autorizacion = cliente.Autorizacion.niveldeAutorizacion;
+        console.log(tipodeUsuario)
+        if(cliente){
+            // Estos usuarios estan autorizados a Publicar Propiedades
+            if(tipodeUsuario ==="DueñodePropiedad" || tipodeUsuario === "DueñoIsaacBoMiquirray" 
+                || tipodeUsuario === "Desarrollador" || tipodeUsuario === "Arquitecto" 
+                || tipodeUsuario === "Constructor" ) 
+            res.send( {tipodeUsuario, autorizacion:"Completa"})
+            // Usuarios con autorizacion variable
+            else if(tipodeUsuario === "AgentedeDesarrollo") res.send( {tipodeUsuario, autorizacion} )
+            else res.send( {tipodeUsuario, autorizacion:"Ninguna", })
+        }
+        else res.json({mensaje:"El Cliente No Existe"})
  } catch (error) {
     res.send(error)
  }
@@ -56,4 +101,4 @@ confirmaAutorizacion.get("/borrarAuth/:clienteId", async (req, res)=>{
 })
 
 
-module.exports = {checkAutorizacion, confirmaAutorizacion};
+module.exports = {checkAutorizacion, checkManejodeUsuarios, confirmaAutorizacion};

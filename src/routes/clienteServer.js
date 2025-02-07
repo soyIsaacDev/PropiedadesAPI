@@ -5,6 +5,7 @@ const OAuth2 = google.auth.OAuth2;
 const { Cliente, TipodeUsuario, Organizacion, Autorizacion } = require("../db");
 const { Op } = require("sequelize");
 
+const { checkManejodeUsuarios } = require("../middleware/checkAutorizacion");
 
 server.post("/nuevoCliente", async (req, res) => { 
   try {
@@ -34,8 +35,7 @@ server.post("/nuevoCliente", async (req, res) => {
       }   
     });
     
-
-    if(tipoUsuario === "Agente" || tipoUsuario === "DueñodePropiedad") {
+    if(tipoUsuario === "DueñodePropiedad") {
       const org = await Organizacion.create({organizacion:email});
       cliente[0].OrganizacionId = org.id;
     }
@@ -46,6 +46,12 @@ server.post("/nuevoCliente", async (req, res) => {
     }
 
     cliente[0].TipodeUsuarioId= userTipo.id;
+
+    const clienteAut = await Autorizacion.create({ 
+      niveldeAutorizacion: "Completa",
+      ClienteId:cliente[0].id,
+    })
+    
     await cliente[0].save();
 
     res.json(cliente);
@@ -108,6 +114,7 @@ server.post("/revisarCaracteristicasUsuario", async (req, res) => {
         { model: Autorizacion },
       ]
     });
+    
     cliente? res.json(cliente) : res.json({mensaje:"El Cliente No Existe"});
   } catch (error) {
     res.send(error);
@@ -122,19 +129,17 @@ server.get("/buscarOrg/:nombreOrg", async (req, res) => {
     });
     console.log(org)
 
-    org? res.json(org) : res.json({mensaje:"No existe esta organizacion"});
+    org? res.json(org) : res.json({mensaje:"Confirmado: No existe esta organizacion"});
   } catch (error) {
     res.send(error);
   }
 });
 
-server.post("/agregarAgenteAdicional", async (req, res) => { 
+server.post("/agregarAgenteAdicional", checkManejodeUsuarios, async (req, res) => { 
   try {
-    const agentes = req.body; // se envian los datos en un Array
-    const agentePrincipal = await Cliente.findOne({ 
-      where:{ userId:agentes[0].userIdAgentePrincipal 
-    }})
-    const orgId = agentePrincipal.OrganizacionId;
+    const agentes = req.body; // se reciben los datos en un Array
+    const organizacionId = req.orgId; // se recibe de checkManejodeUsuarios
+
     const userTipo = await TipodeUsuario.findOne({
       where: {
         tipo:"AgentedeDesarrollo"
@@ -147,31 +152,37 @@ server.post("/agregarAgenteAdicional", async (req, res) => {
           email:agentes[i].email,
         },
         defaults: {          
-          OrganizacionId:orgId,
+          OrganizacionId:organizacionId,
           TipodeUsuarioId: userTipo.id,
         }      
       });
-      console.log("Creando Autorizacion")
-      /* const clienteAuth = await Autorizacion.create({ 
+      const clienteAut = await Autorizacion.create({ 
         niveldeAutorizacion:agentes[i].niveldeAutorizacion,
         ClienteId:cliente[0].id
-      }) */
+      })
     }
-    res.send(agentes)
+    res.send(agentes);
+
+     //}
   } catch (error) {
     res.send(error);
   }
 });
 
+const gmailClientId = process.env.GMAIL_CLIENT_ID;
+const gmailClientSecret = process.env.GMAIL_CLIENT_SECRET;
+const gmailRedirectUrl = process.env.GMAIL_REDIRECT_URL;
+const gmailRefreshToken = process.env.GMAIL_REFRESH_TOKEN;
+
 server.get("/agregarAgentes", async (req, res) => { 
   try {
     const oauth2Client = new OAuth2(
-      '1004482635540-b3hq76mgf70n5nleie441vdjtahj7ii2.apps.googleusercontent.com', // ClientID
-      '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', // Client Secret
-      "https://developers.google.com/oauthplayground" // Redirect URL
+      gmailClientId, // ClientID
+      gmailClientSecret, // Client Secret
+      gmailRedirectUrl // Redirect URL
     );
     oauth2Client.setCredentials({
-      refresh_token: '1//04ffSDmkmKtHfCgYIARAAGAQSNwF-L9Ir-uwpq7sOVs6ngZHy5SOWGY80LzPM_--Fwr6uoz7a39v_9PBAfU0drKT0-ub33gGlgIU'
+      refresh_token: gmailRefreshToken
     });
     const accessToken = oauth2Client.getAccessToken();
 
@@ -239,4 +250,27 @@ server.get("/borrarCliente", async (req, res) => {
     res.send(error);
   }
 });
+
+server.get("/clienteIsaac", async (req, res) => { 
+  try {
+    const cliente = await Cliente.findOne({
+        where: {
+          id:1
+        }
+    });
+
+    const clienteAut = await Autorizacion.create({ 
+      niveldeAutorizacion: "Completa",
+      ClienteId:1,
+    })
+    cliente.OrganizacionId = "64dfee18-5047-4363-b329-34df1ed8633b";
+    cliente.TipodeUsuarioId = "0fafbf3f-9505-4e92-b831-7bffe3b4b109"
+    await cliente.save();
+
+    res.json(cliente);
+  } catch (error) {
+    res.send(error);
+  }
+});
+
 module.exports = server;
