@@ -2,7 +2,9 @@ const server = require("express").Router();
 /* const cors = require("cors");
 
 server.use(cors()); */
-const { confirmaAutorizacion } = require("../middleware/checkAutorizacion");
+const { servidorAutorizacion } = require("../middleware/checkAutorizacion");
+const { servidorPago } = require("../middleware/checkPago");
+
 module.exports = {
     clientes: require("./clienteServer"),
     imagen: require("./imgPropiedad"),
@@ -20,6 +22,7 @@ module.exports = {
     pruebaCargarImg:require("./pruebaCargaImg"),
     agente:require("./agenteServer"),
     historialdePagos:require("./historialdepagos"),
-    autorizacionUsuario:confirmaAutorizacion,
+    autorizacionUsuario:servidorAutorizacion,
+    pagodeServicio:servidorPago,
     index: server,
   };

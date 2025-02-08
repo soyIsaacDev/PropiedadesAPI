@@ -1,5 +1,5 @@
 const { Autorizacion, Cliente, TipodeUsuario,  } = require("../db");
-const confirmaAutorizacion = require("express").Router();
+const servidorAutorizacion = require("express").Router();
 
 const checkAutorizacion = async (req, res, next)  => {
     try {
@@ -53,7 +53,7 @@ const checkManejodeUsuarios = async (req, res, next) => {
     }
 }
 
-confirmaAutorizacion.post("/revisarCaracteristicasUsuario", async (req, res)=>{
+servidorAutorizacion.post("/revisarCaracteristicasUsuario", async (req, res)=>{
  try {
     console.log("Checando la Autorizacion del usuario")
     const { userId } = req.body;
@@ -85,7 +85,7 @@ confirmaAutorizacion.post("/revisarCaracteristicasUsuario", async (req, res)=>{
 })
 
 
-confirmaAutorizacion.get("/borrarAuth/:clienteId", async (req, res)=>{
+servidorAutorizacion.get("/borrarAuth/:clienteId", async (req, res)=>{
   try {
     const { clienteId } = req.params;
     const autorizacion = await Autorizacion.findOne({
@@ -101,4 +101,4 @@ confirmaAutorizacion.get("/borrarAuth/:clienteId", async (req, res)=>{
 })
 
 
-module.exports = {checkAutorizacion, checkManejodeUsuarios, confirmaAutorizacion};
+module.exports = {checkAutorizacion, checkManejodeUsuarios, servidorAutorizacion};
