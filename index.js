@@ -28,7 +28,7 @@
     apikeys:require("./Apikeys"), */
     const { index, clientes, imagen, propiedad, dbconstants, apikeys, favoritos, modeloRelacionado,
        allPropiedades, bulk, tipoUsuario, cargaProp, addBucketCors, pruebaCargarImg, historialdePagos,
-       agente, autorizacionUsuario   } = require('./src/routes');
+       agente, autorizacionUsuario, pagodeServicio   } = require('./src/routes');
 
     const { TipodeUsuario } = require("./src/db");
 
@@ -183,6 +183,7 @@ async function checkTipoAutorizacion(req, res, next) {
     app.use("/historialDePagos", historialdePagos),
     app.use("/agente", agente),
     app.use("/checkautorizacion", autorizacionUsuario),
+    app.use("/revisarPagos", pagodeServicio),
     //app.use("/authCliente", authCliente);
 
     /* app.use("/propiedades", PropiedadRoute);

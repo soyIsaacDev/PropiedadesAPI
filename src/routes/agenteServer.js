@@ -10,7 +10,7 @@ const formatDateYMD = (date) => {
     return formattedDate;
 };
 
-const checkPago = require("../middleware/checkPago");
+const {checkPago }= require("../middleware/checkPago");
 
 server.post("/checarPago", checkPago, async (req,res)=> {
     res.send("PAGO OK")
@@ -156,7 +156,7 @@ server.get("/nuevoPago", async(req,res)=>{
     try {
         const historial = await HistorialdePagos.findAll({
             where:{
-                OrganizacionId:"7e86e24b-5ecb-4b80-926a-8aa1a6bd3a61"
+                OrganizacionId:"e29c1eae-6bc4-4e18-9799-995e8ab00994"
             },
             order: [
                 ['fechaFin','DESC']
@@ -186,7 +186,7 @@ server.get("/nuevoPago", async(req,res)=>{
                 {               
                     fechaInicio:hoy,
                     fechaFin:ProximoMes,
-                    OrganizacionId:"7e86e24b-5ecb-4b80-926a-8aa1a6bd3a61",
+                    OrganizacionId:"e29c1eae-6bc4-4e18-9799-995e8ab00994",
                     PaquetedePagoId:1, 
                 }
             )     
