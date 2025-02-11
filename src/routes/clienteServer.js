@@ -2,7 +2,7 @@ const server = require("express").Router();
 var nodemailer = require('nodemailer');
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
-const { Cliente, TipodeUsuario, Organizacion, Autorizacion } = require("../db");
+const { Cliente, TipodeUsuario, Organizacion } = require("../db");
 const { Op } = require("sequelize");
 
 const { checkManejodeUsuarios } = require("../middleware/checkAutorizacion");
@@ -24,20 +24,33 @@ server.post("/nuevoCliente", async (req, res) => {
           dia_de_nacimiento,
           mes_de_nacimiento,
           año_de_nacimiento, 
-          planeacion_compra
+          planeacion_compra,
         }      
     });
 
-    const userTipo = await TipodeUsuario.findOne({
-      where: {
-        tipo:tipoUsuario,
-        giro
-      }   
-    });
+    if(tipoUsuario === "Desarrollador"){
+      const userTipo = await TipodeUsuario.findOne({
+        where: {
+          tipo:"Desarrollador",
+          giro
+        }   
+      });
+      cliente[0].TipodeUsuarioId= userTipo.id;
+      cliente[0].autorizaciondePublicar = "Completa";
+    }
+    
     
     if(tipoUsuario === "DueñodePropiedad") {
       const org = await Organizacion.create({organizacion:email});
       cliente[0].OrganizacionId = org.id;
+      const userTipo = await TipodeUsuario.findOne({
+        where: {
+          tipo:"DueñodePropiedad",
+          giro
+        }   
+      });
+      cliente[0].TipodeUsuarioId= userTipo.id;
+      cliente[0].autorizaciondePublicar = "Completa";
     }
 
     if(organizacion){      
@@ -45,12 +58,10 @@ server.post("/nuevoCliente", async (req, res) => {
       cliente[0].OrganizacionId = org.id;
     }
 
-    cliente[0].TipodeUsuarioId= userTipo.id;
-
-    const clienteAut = await Autorizacion.create({ 
+    /* const clienteAut = await Autorizacion.create({ 
       niveldeAutorizacion: "Completa",
       ClienteId:cliente[0].id,
-    })
+    }) */
     
     await cliente[0].save();
 
@@ -100,7 +111,7 @@ server.post("/mostrarTour", async (req, res) => {
   }
 })
 
-server.post("/revisarCaracteristicasUsuario", async (req, res) => {
+/* server.post("/revisarCaracteristicasUsuario", async (req, res) => {
   try {
     let {userId, email} = req.body;
     //let {email} = req.params;
@@ -119,7 +130,7 @@ server.post("/revisarCaracteristicasUsuario", async (req, res) => {
   } catch (error) {
     res.send(error);
   }
-});
+}); */
 
 server.get("/buscarOrg/:nombreOrg", async (req, res) => {
   try {
@@ -135,10 +146,40 @@ server.get("/buscarOrg/:nombreOrg", async (req, res) => {
   }
 });
 
+const gmailClientId = process.env.GMAIL_CLIENT_ID;
+const gmailClientSecret = process.env.GMAIL_CLIENT_SECRET;
+const gmailRedirectUrl = process.env.GMAIL_REDIRECT_URL;
+const gmailRefreshToken = process.env.GMAIL_REFRESH_TOKEN;
+const gmailPassword = process.env.GMAIL_PASSWORD;
+
 server.post("/agregarAgenteAdicional", checkManejodeUsuarios, async (req, res) => { 
   try {
     const agentes = req.body; // se reciben los datos en un Array
     const organizacionId = req.orgId; // se recibe de checkManejodeUsuarios
+    const agentePrincipal = req.agentePrincipal; // se recibe de checkManejodeUsuarios
+
+    // Prep para enviar correo
+    const oauth2Client = new OAuth2(
+      gmailClientId, // ClientID
+      gmailClientSecret, // Client Secret
+      gmailRedirectUrl // Redirect URL
+    );
+    oauth2Client.setCredentials({
+      refresh_token: gmailRefreshToken
+    });
+    const accessToken = oauth2Client.getAccessToken();
+    var transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        type: 'OAuth2',
+        user:'isaacborbon@gmail.com',
+        pass:gmailPassword,
+        clientId:gmailClientId,
+        clientSecret:gmailClientSecret,
+        refreshToken:gmailRefreshToken,
+        accessToken:accessToken
+      }
+    });
 
     const userTipo = await TipodeUsuario.findOne({
       where: {
@@ -154,13 +195,35 @@ server.post("/agregarAgenteAdicional", checkManejodeUsuarios, async (req, res) =
         defaults: {          
           OrganizacionId:organizacionId,
           TipodeUsuarioId: userTipo.id,
+          autorizaciondePublicar:agentes[i].niveldeAutorizacion
         }      
       });
-      const clienteAut = await Autorizacion.create({ 
+
+      /* const clienteAut = await Autorizacion.create({ 
         niveldeAutorizacion:agentes[i].niveldeAutorizacion,
         ClienteId:cliente[0].id
-      })
+      }) */
+
+      //Enviar correo de invitacion
+
+      var mailOptions = {
+        from: 'isaacborbon@gmail.com',
+        to: agentes[i].email,
+        subject: `${agentePrincipal} te invita a unirte a su empresa`,
+        text: 'Unete a mi empresa a Inmozz dando click en el siguiente link'
+      };
+      
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+          transporter.close();
+        }
+      });
+
     }
+    
     res.send(agentes);
 
      //}
@@ -169,12 +232,7 @@ server.post("/agregarAgenteAdicional", checkManejodeUsuarios, async (req, res) =
   }
 });
 
-const gmailClientId = process.env.GMAIL_CLIENT_ID;
-const gmailClientSecret = process.env.GMAIL_CLIENT_SECRET;
-const gmailRedirectUrl = process.env.GMAIL_REDIRECT_URL;
-const gmailRefreshToken = process.env.GMAIL_REFRESH_TOKEN;
-
-server.get("/agregarAgentes", async (req, res) => { 
+server.get("/enviarCorreoNuevoAgente", async (req, res) => { 
   try {
     const oauth2Client = new OAuth2(
       gmailClientId, // ClientID
@@ -191,10 +249,10 @@ server.get("/agregarAgentes", async (req, res) => {
       auth: {
         type: 'OAuth2',
         user:'isaacborbon@gmail.com',
-        pass:'tLAmj4X285113',
-        clientId:'1004482635540-b3hq76mgf70n5nleie441vdjtahj7ii2.apps.googleusercontent.com',
-        clientSecret:'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',
-        refreshToken:'1//04ffSDmkmKtHfCgYIARAAGAQSNwF-L9Ir-uwpq7sOVs6ngZHy5SOWGY80LzPM_--Fwr6uoz7a39v_9PBAfU0drKT0-ub33gGlgIU',
+        pass:gmailPassword,
+        clientId:gmailClientId,
+        clientSecret:gmailClientSecret,
+        refreshToken:gmailRefreshToken,
         accessToken:accessToken
       }
     });
@@ -259,12 +317,9 @@ server.get("/clienteIsaac", async (req, res) => {
         }
     });
 
-    const clienteAut = await Autorizacion.create({ 
-      niveldeAutorizacion: "Completa",
-      ClienteId:1,
-    })
     cliente.OrganizacionId = "64dfee18-5047-4363-b329-34df1ed8633b";
-    cliente.TipodeUsuarioId = "0fafbf3f-9505-4e92-b831-7bffe3b4b109"
+    cliente.TipodeUsuarioId = "0fafbf3f-9505-4e92-b831-7bffe3b4b109";
+    cliente.autorizaciondePublicar = "Completa"
     await cliente.save();
 
     res.json(cliente);

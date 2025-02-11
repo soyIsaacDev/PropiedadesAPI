@@ -20,8 +20,6 @@ module.exports = {
     cargaProp:require("./cargaProp"),
     addBucketCors:require("./addBucketCors"),
     pruebaCargarImg:require("./pruebaCargaImg"),
-    agente:require("./agenteServer"),
-    historialdePagos:require("./historialdepagos"),
     autorizacionUsuario:servidorAutorizacion,
     pagodeServicio:servidorPago,
     index: server,

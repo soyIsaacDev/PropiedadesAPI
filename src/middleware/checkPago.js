@@ -9,7 +9,6 @@ const checkPago = async function (req, res, next) {
     const cliente = await Cliente.findOne({
         where:{ userId },
     })
-    
     const historialdePagos = await HistorialdePagos.findAll({
         where:{
             OrganizacionId:cliente.OrganizacionId
@@ -18,21 +17,19 @@ const checkPago = async function (req, res, next) {
             ['fechaFin','DESC']
         ],
     })
-    if(historialdePagos){
+    if(historialdePagos.length>0){
         //Formateando como fecha para poder comparar
         const fechaHistorial = new Date(historialdePagos[0].fechaFin);
         const hoy = new Date();
         if(hoy < fechaHistorial){
-            //res.send("Si esta pagado")
             next();
         }
         else{
-            console.log("No Pagado")
-            res.send("NO pagado")
+            res.json({pago:"NO pagado"})
         }
 
     }
-    else res.send("No existen pagos")
+    else res.json({pago:"No existen pagos"})
   } catch (e) {
       res.send(e)
   }
@@ -40,7 +37,7 @@ const checkPago = async function (req, res, next) {
 
 servidorPago.get("/revisarPago/:userId", checkPago, async (req, res)=>{
   try {
-    res.send("Pagado")
+    res.json({pago:"Se encuentra pagado"})
   } catch (error) {
     res.send(error)
   }

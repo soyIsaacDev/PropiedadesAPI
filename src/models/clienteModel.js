@@ -4,6 +4,13 @@ module.exports = s => {
     s.define(
         "Cliente", 
     {
+        id:{
+            type:DataTypes.UUID,
+            unique:true,
+            defaultValue: DataTypes.UUIDV4,
+            primaryKey: true,
+            allowNull:false,
+        },
         userId:{
             type: DataTypes.STRING,
             allowNull: true 
@@ -44,7 +51,16 @@ module.exports = s => {
         mostrar_Tour:{
             type:DataTypes.BOOLEAN,
             allowNull:true
-        }
+        },
+        autorizaciondePublicar:{
+            type: DataTypes.ENUM(
+                "Ninguna",
+                "Agregar",
+                "Editar",
+                "Completa"
+            ),
+            allowNull: true
+        }, 
     }, {
     timestamps: false,
     });

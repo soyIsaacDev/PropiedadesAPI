@@ -1,4 +1,4 @@
-const { Autorizacion, Cliente, TipodeUsuario,  } = require("../db");
+const { Cliente, TipodeUsuario,  } = require("../db");
 const servidorAutorizacion = require("express").Router();
 
 const checkAutorizacion = async (req, res, next)  => {
@@ -8,13 +8,13 @@ const checkAutorizacion = async (req, res, next)  => {
         const cliente = await Cliente.findOne({
             where:{ userId}
         })
-        const autorizacion = await Autorizacion.findOne({
+        /* const autorizacion = await Autorizacion.findOne({
             where:{
                 ClienteId:cliente.id
             }
-        })
-        req.auth = autorizacion.niveldeAutorizacion
-        if(autorizacion.niveldeAutorizacion !== "Ninguna") next()
+        }) */
+        req.auth = cliente.autorizaciondePublicar;
+        if(cliente.autorizaciondePublicar !== "Ninguna") next()
         else console.log("EL USUARIO NO ESTA AUTORIZADO")
     } catch (e) {
         res.send(e)
@@ -35,18 +35,21 @@ const checkManejodeUsuarios = async (req, res, next) => {
         })
 
         // Usuarios autorizados a agregar agentes
-        if(tipodeUsuario.tipo === "DueñoIsaacBoMiquirray" || tipodeUsuario.tipo === "Desarrollador" 
-            || tipodeUsuario.tipo === "Arquitecto" || tipodeUsuario.tipo === "Constructor" )
+        /* if(tipodeUsuario.tipo === "DueñoIsaacBoMiquirray" || tipodeUsuario.tipo === "Desarrollador" 
+            || tipodeUsuario.tipo === "Arquitecto" || tipodeUsuario.tipo === "Constructor" ) */
+        if(tipodeUsuario.manejaUsuarios==="Si")
         {
-            req.orgId = agentePrincipal.OrganizacionId
+            req.orgId = agentePrincipal.OrganizacionId;
+            req.agentePrincipal = agentePrincipal.nombre;
             next();
         }  
 
         // Usuarios NO Autorizados a agregar agentes
-        if(tipodeUsuario.tipo === "ClienteFinal" || tipodeUsuario.tipo === "Agente" 
+        /* if(tipodeUsuario.tipo === "ClienteFinal" || tipodeUsuario.tipo === "Agente" 
           || tipodeUsuario.tipo === "AgentedeDesarrollo" || tipodeUsuario.tipo === "AgendedeDesarrollo" 
           || tipodeUsuario.tipo === "DueñodePropiedad" 
-        )  res.send("Usuario No Autorizado");
+        ) */ 
+       else res.send("Usuario No Autorizado");
 
     } catch(error){
         res.send(error)
@@ -61,21 +64,22 @@ servidorAutorizacion.post("/revisarCaracteristicasUsuario", async (req, res)=>{
             where:{ userId },
             include: [
                 { model: TipodeUsuario },
-                { model: Autorizacion },
+                /* { model: Autorizacion }, */
             ]
         })
         
         let tipodeUsuario = cliente.TipodeUsuario.tipo;
-        let autorizacion = cliente.Autorizacion.niveldeAutorizacion;
+        //let autorizacion = cliente.Autorizacion.niveldeAutorizacion;
         console.log(tipodeUsuario)
         if(cliente){
             // Estos usuarios estan autorizados a Publicar Propiedades
-            if(tipodeUsuario ==="DueñodePropiedad" || tipodeUsuario === "DueñoIsaacBoMiquirray" 
+            /* if(tipodeUsuario ==="DueñodePropiedad" || tipodeUsuario === "DueñoIsaacBoMiquirray" 
                 || tipodeUsuario === "Desarrollador" || tipodeUsuario === "Arquitecto" 
-                || tipodeUsuario === "Constructor" ) 
+                || tipodeUsuario === "Constructor" ) */ 
+            if(tipodeUsuario.manejaUsuarios==="Si")
             res.send( {tipodeUsuario, autorizacion:"Completa"})
             // Usuarios con autorizacion variable
-            else if(tipodeUsuario === "AgentedeDesarrollo") res.send( {tipodeUsuario, autorizacion} )
+            else if(tipodeUsuario === "AgentedeDesarrollo") res.send( {tipodeUsuario, autorizacion:cliente.autorizaciondePublicar} )
             else res.send( {tipodeUsuario, autorizacion:"Ninguna", })
         }
         else res.json({mensaje:"El Cliente No Existe"})
@@ -85,7 +89,7 @@ servidorAutorizacion.post("/revisarCaracteristicasUsuario", async (req, res)=>{
 })
 
 
-servidorAutorizacion.get("/borrarAuth/:clienteId", async (req, res)=>{
+/* servidorAutorizacion.get("/borrarAuth/:clienteId", async (req, res)=>{
   try {
     const { clienteId } = req.params;
     const autorizacion = await Autorizacion.findOne({
@@ -98,7 +102,7 @@ servidorAutorizacion.get("/borrarAuth/:clienteId", async (req, res)=>{
   } catch (error) {
     res.send(error)
   }
-})
+}) */
 
 
 module.exports = {checkAutorizacion, checkManejodeUsuarios, servidorAutorizacion};
