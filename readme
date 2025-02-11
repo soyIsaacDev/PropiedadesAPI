@@ -4,18 +4,12 @@ Add variabls to .env file
 and
 Add /*.env to gitIgnore
 
-Revisar metodo de checkTipoAutorizacion en Index 
-Modifique Agente Model   - Migrar Id a Id de UUID
 Modifique estructura tipo de Usuario
     borrar la relacion tipodeUsuario - Cliente por un momento
     cambiar el id a UUID
     borrar contenido
-Agregando tabla de Autorizacion
 Agregando tabla de Pago
 Agregando tabla de Historial de Pagos
-Agregando tabla de Desarrollos Autorizados
-Agregando tabla de Modelos Asociados Autorizados
-Agregando tabla de Agentes a Cargo
 
 cambiar en Cliente 
     agregar Id como UUID
@@ -31,8 +25,3 @@ Produccion
 
 Revisar si envia correos al momento de registrar Agentes o es necesario cambiar la credenciales de OAuth a App Publicada en Google Cloud
     https://medium.com/@nickroach_50526/sending-emails-with-node-js-using-smtp-gmail-and-oauth2-316fe9c790a1
-
-
-Planteandome si es mejor separar las autorizaciones en:
-    Autorizacion de Publicar -> en Tabla de cliente?
-    Autorizacion de Manejo de Usuarios  -> en tabla de Tipo de Usuario?

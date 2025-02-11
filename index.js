@@ -27,12 +27,13 @@
     dbconstants:require("./dBConstants"),
     apikeys:require("./Apikeys"), */
     const { index, clientes, imagen, propiedad, dbconstants, apikeys, favoritos, modeloRelacionado,
-       allPropiedades, bulk, tipoUsuario, cargaProp, addBucketCors, pruebaCargarImg, historialdePagos,
-       agente, autorizacionUsuario, pagodeServicio   } = require('./src/routes');
+       allPropiedades, bulk, tipoUsuario, cargaProp, addBucketCors, pruebaCargarImg, historialdePagos, 
+       autorizacionUsuario, pagodeServicio   } = require('./src/routes');
 
     const { TipodeUsuario } = require("./src/db");
 
     const { checkAutorizacion } = require("./src/middleware/checkAutorizacion.js")
+    const { checkPago } = require("./src/middleware/checkPago");
     
     /* app.METHOD(PATH, HANDLER)
     app es una instancia de express.
@@ -147,7 +148,7 @@ function checkIfSignedIn(req, res, next) {
   }
 }
 
-async function checkTipoAutorizacion(req, res, next) {
+/* async function checkTipoAutorizacion(req, res, next) {
   console.log("Checando tipo de autorizacion");
   //console.log("REQ"+req)
   try{
@@ -163,11 +164,11 @@ async function checkTipoAutorizacion(req, res, next) {
   catch(e){
     res.json(e);
   }
-}
+} */
 
     //app.use("/", authCliente);
     
-    app.use("/clientes", clientes);
+    app.use("/clientes", clientes); // Autorizacion para agregar usuarios revisada a nivel ruta
     app.use("/propiedades", propiedad);
     app.use("/imagenpropiedad", imagen);
     app.use("/Apikeys", apikeys );
@@ -177,11 +178,9 @@ async function checkTipoAutorizacion(req, res, next) {
     app.use("/allProp", /* checkIfSignedIn, */ allPropiedades);
     app.use("/bulk", bulk);
     app.use("/tipodeUsuario", tipoUsuario);
-    app.use("/cargaProp", checkIfSignedIn, checkAutorizacion, cargaProp);
+    app.use("/cargaProp", checkIfSignedIn, checkAutorizacion, checkPago, cargaProp);
     app.use("/corsAuth", addBucketCors)
     app.use("/pruebaCargaProp", pruebaCargarImg),
-    app.use("/historialDePagos", historialdePagos),
-    app.use("/agente", agente),
     app.use("/checkautorizacion", autorizacionUsuario),
     app.use("/revisarPagos", pagodeServicio),
     //app.use("/authCliente", authCliente);

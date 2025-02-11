@@ -10,26 +10,11 @@ const formatDateYMD = (date) => {
     return formattedDate;
 };
 
-const {checkPago }= require("../middleware/checkPago");
-
-server.post("/checarPago", checkPago, async (req,res)=> {
-    res.send("PAGO OK")
-})
+const {checkPago } = require("../middleware/checkPago");
 
 server.get("/", async (req,res)=> {
     try {
-        const crearAgente = await Agente.create(
-            {
-                nombre:"Juan",
-                apellidoP:"Garza",
-                apellidoM:"Miquirray",
-                Email:"jgarza@gmail.com",
-                Telefono:"66212234562",
-                tipo:"Desarrollador",
-                giro:"Habitacional",
-                escala:"Desarrollador",
-            }
-        )
+        
         const crearOrg = await Organizacion.create({
             organizacion:"Velox",
         });
@@ -37,20 +22,6 @@ server.get("/", async (req,res)=> {
         crearAgente.OrganizacionId=crearOrg.id;
         crearAgente.save();
 
-        const AgenteDesarollo = await AgenteDeDesarrollo.create(
-            {
-                nombre:"Cristina",
-                apellidoP:"Morales",
-                apellidoM:"juarez",
-                Email:"cmorales@gmail.com",
-                Telefono:"66212538591",
-                tipo:"AgentedeDesarrollo",
-                escala:"Agente",
-                AgenteId:crearAgente.id,
-                OrganizacionId:crearOrg.id,
-            },
-        )
-        
         const paquetePago1Gratis = await PaquetedePago.create(
             {                
                 nombrePaquete:"Gratis",
@@ -65,8 +36,6 @@ server.get("/", async (req,res)=> {
                 fechaFinOferta:"2025-04-01",
             }
         )
-
-        
 
         res.send(crearAgente)
 
@@ -197,117 +166,5 @@ server.get("/nuevoPago", async(req,res)=>{
     }
 })
 
-//server.get("/historialdePagosAgentes", async(req,res)=>{
-server.get("/historialdePagosAgentes/:tipodeAgente/:idAgente", async(req,res)=>{
-    try {
-        const { tipodeAgente, idAgente} = req.params;
-        //const { tipodeAgente, idAgente} = req.body;
-        var agente;
-        if(tipodeAgente==="AgenteDeDesarrollo"){
-            agente = await AgenteDeDesarrollo.findOne({
-                where:{
-                    id:idAgente
-                }            
-            });
-        }
-        else{
-            agente = await Agente.findOne({
-                where:{
-                    id:idAgente
-                }            
-            });
-        }
-        const historialdePagos = await HistorialdePagos.findAll({
-            where:{
-                OrganizacionId:agente.OrganizacionId
-            },
-            order: [
-                ['fechaFin','DESC']
-            ],
-        })
-        
-        //Formateando como fecha para poder comparar
-        const fechaHistorial = new Date(historialdePagos[0].fechaFin);
-        const hoy = new Date();
-        if(hoy < fechaHistorial){
-            res.send("Si esta pagado")
-            //Next
-        }
-        else{
-            res.send("NO pagado")
-        }
-    } catch (e) {
-        res.send(e)
-    }
-});
 
-server.get("/agentes", async(req, res)=>{
-    try {
-        const Agentes = await Agente.findAll();
-        res.send(Agentes)
-    } catch (e) {
-        res.send(e)
-    }
-})
-
-server.get("/agentesdeDesarrollo", async(req, res)=>{
-    try {
-        const Agentes = await AgenteDeDesarrollo.findAll();
-        res.send(Agentes)
-    } catch (e) {
-        res.send(e)
-    }
-})
-
-server.get("/autorizarAgente", async (req, res) => {
-    try {
-        const autorizacion = await Autorizacion.findOrCreate({
-            where:{
-                AgenteDeDesarrolloId:"636a4ca4-6dc4-44c1-82f6-b19ed89057a8",
-            },
-            defaults:{
-                niveldeAutorizacion:"Editar"
-            }            
-        })
-        console.log(autorizacion)
-        if(autorizacion[1] === false) res.send("Ya tiene auth previa");
-        else res.send(autorizacion);
-    } catch (e) {
-        res.send(e)
-    }
-})
-server.get("/borrarAutorizacion", async (req,res)=> {
-    try {
-        await Autorizacion.destroy({
-            where:{
-                AgenteDeDesarrolloId:"636a4ca4-6dc4-44c1-82f6-b19ed89057a8",
-            }
-        })
-        res.send("Borrado")
-    } catch (e) {
-        res.send(e)
-    }
-})
-server.get("/borrarTablas", async (req,res)=> {
-    try {
-       await Agente.destroy({
-        where:{
-            nombre:"Juan"
-        }
-       });
-       await Agente.destroy({
-        where:{
-            nombre:"Cristina"
-        }
-       });
-       await Organizacion.destroy({
-        where:{
-            organizacion:"Velox"
-        }
-       })
-       res.send("Ok")
-    } catch (e) {
-        res.send(e)
-    }
-})
 module.exports = server;
