@@ -74,6 +74,10 @@ module.exports = s => {
             unique:true,
             defaultValue: DataTypes.UUIDV4,
         },
+        publicada:{
+            type: DataTypes.ENUM("Si","No"),
+            allowNull: true
+        },
         
     }, {
     timestamps: false,

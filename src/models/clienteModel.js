@@ -9,7 +9,6 @@ module.exports = s => {
             unique:true,
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true,
-            allowNull:false,
         },
         userId:{
             type: DataTypes.STRING,

@@ -1,5 +1,5 @@
 const server = require("express").Router();
-const { TipodeUsuario, Cliente } = require("../db");
+const { TipodeUsuario, Cliente, TipodeOrganizacion } = require("../db");
 
 server.get("/usuarioPrincipal", async (req,res)=> {
   try{
@@ -32,104 +32,190 @@ server.get("/nuevoTipodeUsuario", async (req, res) => {
       {
         tipo:"DueñoIsaacBoMiquirray",
         giro:"Todos", 
+        manejaUsuarios:"Si",
+        tipodeOperacionAut:"Todas",
+        cantidadPropVenta:90000,
+        cantidadPropRenta:90000,
+        cantidadPropPreVenta:90000,
       }, 
        {
         tipo:"Desarrollador",
         giro:"Habitacional", 
+        manejaUsuarios:"Si",
+        tipodeOperacionAut:"Venta",
+        cantidadPropVenta:100,
+        cantidadPropRenta:100,
+        cantidadPropPreVenta:0,
       },
       
       {
         tipo:"Desarrollador",
         giro:"Comercial", 
+        manejaUsuarios:"Si",
+        tipodeOperacionAut:"Venta",
+        cantidadPropVenta:100,
+        cantidadPropRenta:100,
+        cantidadPropPreVenta:0,
+        
       },
       
       {
         tipo:"Desarrollador",
         giro:"HabitacionalyComercial", 
+        manejaUsuarios:"Si",
+        tipodeOperacionAut:"Venta",
+        cantidadPropVenta:100,
+        cantidadPropRenta:100,
+        cantidadPropPreVenta:0,
       },
       
       {
         tipo:"Desarrollador",
         giro:"Mixto", 
+        manejaUsuarios:"Si",
+        tipodeOperacionAut:"Venta",
+        cantidadPropVenta:100,
+        cantidadPropRenta:100,
+        cantidadPropPreVenta:0,
       },
       
       {
         tipo:"Desarrollador",
         giro:"Todos", 
+        manejaUsuarios:"Si",
+        tipodeOperacionAut:"Venta",
+        cantidadPropVenta:100,
+        cantidadPropRenta:100,
+        cantidadPropPreVenta:0,
       },
-      
       {
         tipo:"AgentedeDesarrollo",
         giro:"Todos",
-      },
-      
-      {
-        tipo:"Agente", 
-        giro:"Habitacional",
-      },
-      
-      {
-        tipo:"Agente", 
-        giro:"Comercial",
-      },
-      {
-        tipo:"Agente", 
-        giro:"HabitacionalyComercial",
-      },
-      {
-        tipo:"Agente", 
-        giro:"Mixto",
-      },
-      {
-        tipo:"Agente", 
-        giro:"Todos",
-      },
-      {
-        tipo:"Arquitecto", 
-        giro:"Habitacional",
-      },
-      {
-        tipo:"Arquitecto", 
-        giro:"Comercial",
-      },
-      
-      {
-        tipo:"Arquitecto", 
-        giro:"HabitacionalyComercial",
-      },
-      {
-        tipo:"Arquitecto", 
-        giro:"Mixto",
-      },
-      {
-        tipo:"Arquitecto", 
-        giro:"Todos",
-      },
-      {
-        tipo:"Constructor", 
-        giro:"Comercial",
-      },
-      
-      {
-        tipo:"Constructor", 
-        giro:"HabitacionalyComercial",
-      },
-      {
-        tipo:"Constructor", 
-        giro:"Mixto",
-      },
-      {
-        tipo:"Constructor", 
-        giro:"Todos",
+        manejaUsuarios:"No",
+        tipodeOperacionAut:"Venta",
+        cantidadPropVenta:100,
+        cantidadPropRenta:100,
+        cantidadPropPreVenta:0,
       },
       {
         tipo:"ClienteFinal", 
         giro:"Todos",
+        manejaUsuarios:"No",
+        tipodeOperacionAut:"NoAutorizado",
+        cantidadPropVenta:0,
+        cantidadPropRenta:0,
+        cantidadPropPreVenta:0,
       },
       {
         tipo:"DueñodePropiedad",
         giro:"Todos",
+        manejaUsuarios:"No",
+        tipodeOperacionAut:"VentayRenta",
+        cantidadPropVenta:1,
+        cantidadPropRenta:1,
+        cantidadPropPreVenta:0,
       }, 
+      /* {
+        tipo:"Arquitecto", 
+        giro:"Habitacional",
+        manejaUsuarios:"No",
+        tipodeOperacionAut:"",
+        cantidadPropVenta:"",
+      },
+      {
+        tipo:"Arquitecto", 
+        giro:"Comercial",
+        manejaUsuarios:"No",
+        tipodeOperacionAut:"",
+        cantidadPropVenta:"",
+      },
+      
+      {
+        tipo:"Arquitecto", 
+        giro:"HabitacionalyComercial",
+        manejaUsuarios:"No",
+        tipodeOperacionAut:"",
+        cantidadPropVenta:"",
+      },
+      {
+        tipo:"Arquitecto", 
+        giro:"Mixto",
+        manejaUsuarios:"No",
+        tipodeOperacionAut:"",
+        cantidadPropVenta:"",
+      },
+      {
+        tipo:"Arquitecto", 
+        giro:"Todos",
+        manejaUsuarios:"No",
+        tipodeOperacionAut:"",
+        cantidadPropVenta:"",
+      },
+      {
+        tipo:"Constructor", 
+        giro:"Comercial",
+        manejaUsuarios:"No",
+        tipodeOperacionAut:"",
+        cantidadPropVenta:"",
+      },      
+      {
+        tipo:"Constructor", 
+        giro:"HabitacionalyComercial",
+        manejaUsuarios:"No",
+        tipodeOperacionAut:"",
+        cantidadPropVenta:"",
+      },
+      {
+        tipo:"Constructor", 
+        giro:"Mixto",
+        manejaUsuarios:"No",
+        tipodeOperacionAut:"",
+        cantidadPropVenta:"",
+      },
+      {
+        tipo:"Constructor", 
+        giro:"Todos",
+        manejaUsuarios:"No",
+        tipodeOperacionAut:"",
+        cantidadPropVenta:"",
+      }, */
+      
+      /* {
+        tipo:"Agente", 
+        giro:"Habitacional",
+        manejaUsuarios:"No",
+        tipodeOperacionAut:"",
+        cantidadPropVenta:"",
+      },
+      
+      {
+        tipo:"Agente", 
+        giro:"Comercial",
+        manejaUsuarios:"No",
+        tipodeOperacionAut:"",
+        cantidadPropVenta:"",
+      },
+      {
+        tipo:"Agente", 
+        giro:"HabitacionalyComercial",
+        manejaUsuarios:"No",
+        tipodeOperacionAut:"",
+        cantidadPropVenta:"",
+      },
+      {
+        tipo:"Agente", 
+        giro:"Mixto",
+        manejaUsuarios:"No",
+        tipodeOperacionAut:"",
+        cantidadPropVenta:"",
+      },
+      {
+        tipo:"Agente", 
+        giro:"Todos",
+        manejaUsuarios:"No",
+        tipodeOperacionAut:"",
+        cantidadPropVenta:"",
+      }, */
     ])
     
     res.send(tiposdeUsuario);

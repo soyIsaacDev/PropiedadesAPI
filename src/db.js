@@ -60,6 +60,7 @@ const modeloTipodeUsuario = require("./models/tipodeUsuario");
 const modeloEstiloArquitectura = require("./models/estiloArquitectura.js");
 const modelHisorialdePagos = require("./models/historialdePagos.js");
 const modelPaquetedePago= require("./models/paquetedePago.js");
+const modelTipodeOrganizacion =require("./models/tipodeOrganizacion.js");
 
 
 modelOrganizacion(sequelize);
@@ -80,12 +81,13 @@ modeloTipodeUsuario(sequelize);
 modeloEstiloArquitectura(sequelize);
 modelHisorialdePagos(sequelize);
 modelPaquetedePago(sequelize);
+modelTipodeOrganizacion(sequelize);
 
 
 let {Propiedad, ImgPropiedad, TipodePropiedad, AmenidadesDesarrollo, AmenidadesPropiedad, 
   TipoOperacion, Estado , Municipio, Ciudad, Colonia, Cliente, ModeloAsociadoPropiedad,
   ImgModeloAsociado, TipodeUsuario, EstiloArquitectura, HistorialdePagos, PaquetedePago, 
-  Organizacion
+  Organizacion, TipodeOrganizacion,
 } = sequelize.models;
 
 // Relaciones DB
@@ -167,6 +169,9 @@ HistorialdePagos.belongsTo(Organizacion);
 PaquetedePago.hasOne(HistorialdePagos);
 HistorialdePagos.belongsTo(PaquetedePago);
 
+
+TipodeOrganizacion.hasMany(Organizacion);
+Organizacion.belongsTo(TipodeOrganizacion);
 
 module.exports = {
   ...sequelize.models,
