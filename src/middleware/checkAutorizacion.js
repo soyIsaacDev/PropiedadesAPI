@@ -6,16 +6,26 @@ const checkAutorizacion = async (req, res, next)  => {
         const { userId} = req.body;
         console.log("REVISANDO AUTORIZACION "+userId)
         const cliente = await Cliente.findOne({
-            where:{ userId}
-        })
-        /* const autorizacion = await Autorizacion.findOne({
+            where:{ userId:userId}
+        });
+        const tipodeUsuario = await TipodeUsuario.findOne({
             where:{
-                ClienteId:cliente.id
+                id:cliente.TipodeUsuarioId
             }
-        }) */
+        })
+        
         req.auth = cliente.autorizaciondePublicar;
+        req.tipodeUsuario = tipodeUsuario.tipo;
+        req.manejaUsuarios = tipodeUsuario.manejaUsuarios;
         if(cliente.autorizaciondePublicar !== "Ninguna") next()
-        else console.log("EL USUARIO NO ESTA AUTORIZADO")
+        else {
+            console.log("EL USUARIO NO ESTA AUTORIZADO")
+            res.json({
+                tipodeUsuario:req.tipodeUsuario, 
+                manejaUsuarios:req.manejaUsuarios,
+                autorizaciondePublicar:req.auth
+            })
+        }
     } catch (e) {
         res.send(e)
     }
@@ -34,9 +44,6 @@ const checkManejodeUsuarios = async (req, res, next) => {
             }
         })
 
-        // Usuarios autorizados a agregar agentes
-        /* if(tipodeUsuario.tipo === "DueñoIsaacBoMiquirray" || tipodeUsuario.tipo === "Desarrollador" 
-            || tipodeUsuario.tipo === "Arquitecto" || tipodeUsuario.tipo === "Constructor" ) */
         if(tipodeUsuario.manejaUsuarios==="Si")
         {
             req.orgId = agentePrincipal.OrganizacionId;
@@ -44,11 +51,6 @@ const checkManejodeUsuarios = async (req, res, next) => {
             next();
         }  
 
-        // Usuarios NO Autorizados a agregar agentes
-        /* if(tipodeUsuario.tipo === "ClienteFinal" || tipodeUsuario.tipo === "Agente" 
-          || tipodeUsuario.tipo === "AgentedeDesarrollo" || tipodeUsuario.tipo === "AgendedeDesarrollo" 
-          || tipodeUsuario.tipo === "DueñodePropiedad" 
-        ) */ 
        else res.send("Usuario No Autorizado");
 
     } catch(error){
@@ -56,36 +58,43 @@ const checkManejodeUsuarios = async (req, res, next) => {
     }
 }
 
-servidorAutorizacion.post("/revisarCaracteristicasUsuario", async (req, res)=>{
+servidorAutorizacion.post("/revisarCaracteristicasUsuario", checkAutorizacion, async (req, res)=>{
  try {
-    console.log("Checando la Autorizacion del usuario")
-    const { userId } = req.body;
-        const cliente = await Cliente.findOne({
-            where:{ userId },
-            include: [
-                { model: TipodeUsuario },
-                /* { model: Autorizacion }, */
-            ]
-        })
-        
-        let tipodeUsuario = cliente.TipodeUsuario.tipo;
-        //let autorizacion = cliente.Autorizacion.niveldeAutorizacion;
-        console.log(tipodeUsuario)
-        if(cliente){
-            // Estos usuarios estan autorizados a Publicar Propiedades
-            /* if(tipodeUsuario ==="DueñodePropiedad" || tipodeUsuario === "DueñoIsaacBoMiquirray" 
-                || tipodeUsuario === "Desarrollador" || tipodeUsuario === "Arquitecto" 
-                || tipodeUsuario === "Constructor" ) */ 
-            if(tipodeUsuario.manejaUsuarios==="Si")
-            res.send( {tipodeUsuario, autorizacion:"Completa"})
-            // Usuarios con autorizacion variable
-            else if(tipodeUsuario === "AgentedeDesarrollo") res.send( {tipodeUsuario, autorizacion:cliente.autorizaciondePublicar} )
-            else res.send( {tipodeUsuario, autorizacion:"Ninguna", })
-        }
-        else res.json({mensaje:"El Cliente No Existe"})
+    console.log(req.autorizaciondePublicar)
+    res.send({
+        tipodeUsuario:req.tipodeUsuario, 
+        manejaUsuarios:req.manejaUsuarios,
+        autorizaciondePublicar:req.auth
+    })
+    
  } catch (error) {
     res.send(error)
  }
+})
+
+servidorAutorizacion.get("/actualizar", async (req, res)=>{
+  try{
+      const cliente = await Cliente.findOne({
+          where:{
+              email:"borbonisaac@hotmail.com"
+          }
+      });
+      cliente.autorizaciondePublicar = "Editar";
+      await cliente.save(); 
+      
+
+
+      /* const tipodeUsuario = await TipodeUsuario.update(
+        {manejaUsuarios:"Si"},
+        {where:{
+            tipo:"Desarrollador"
+        }}
+      ); */
+      res.send(cliente)
+  }
+  catch(error){
+    res.send(error)
+  }
 })
 
 

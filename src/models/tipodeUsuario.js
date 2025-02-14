@@ -34,7 +34,7 @@ module.exports = s => {
         },
         manejaUsuarios:{
             type: DataTypes.ENUM("Si","No"),
-            allowNull: true
+            allowNull: false
         },
     }, {
     timestamps: false,

@@ -14,8 +14,9 @@ const {literal} = require ('sequelize');
 server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
   try {
     const dataPropiedad = await ModeloAsociadoPropiedad.findAll({
+      where:{publicada:"Si"},
       order: [
-        ['precio"','ASC']
+        ['precio"','DESC']
       ],
       include: [
         {

@@ -7,17 +7,28 @@ var public = path.join(__dirname,'../../uploads');
 
 const { Propiedad, ImgPropiedad, AmenidadesDesarrollo,TipodePropiedad,TipoOperacion, Estado, Municipio, Ciudad, 
   Colonia, Cliente, Favoritos, AmenidadesDesarrolloPropiedad, ModeloAsociadoPropiedad, ImgModeloAsociado,
+  Organizacion, TipodeOrganizacion,
   
 } = require("../db");
+const organizacion = require("../models/organizacion");
 
 server.get("/getDataandImagenPropiedades", async (req, res) => {
   try {
     console.log("GET DATA PROPS")
     const dataPropiedad = await Propiedad.findAll({
+      where:{publicada:"Si"},
       order: [
-        ['precioMin','ASC']
+        ['precioMin','DESC']
       ],
       include: [
+        {
+          model: Organizacion,
+          include: [
+            {
+              model: TipodeOrganizacion
+            }
+          ]
+        },
         {
           model: ImgPropiedad,
           attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
@@ -52,7 +63,13 @@ server.get("/getDataandImagenPropiedades", async (req, res) => {
         },
       ]
     },);
-    
+    /* const cuentaProps = await Propiedad.count(
+      {
+        where:{publicada:"Si"}, 
+        attributes: ['publicada','OrganizacionId'], 
+        group:['publicada','OrganizacionId'] 
+    });
+    const FiltroProps = dataPropiedad.filter() */
     dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontraron datos de propiedades"});
     
   } catch (e) {
@@ -262,6 +279,18 @@ server.get("/actualizar/:propId/:orgId", async (req, res) =>{
   }
 })
 
+server.get("/actualizarPublicacion", async (req, res) =>{
+  try {
+    const propiedad = await Propiedad.findAll();
+    for (let i = 0; i < propiedad.length; i++) {
+      await propiedad[i].update({publicada:"Si"})
+    }
+    res.send(propiedad)
+  } catch (error) {
+    res.send(error)
+  }
+})
+
 server.get("/getPropOrganizacion/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
@@ -313,6 +342,102 @@ server.get("/getPropOrganizacion/:userId", async (req, res) => {
     res.send(e);
   } 
 });
+
+server.get("/cuentaxOrg", async (req, res) => {
+  try {
+
+    const dataPropiedad = await Propiedad.findAll({
+      where:{publicada:"Si"},
+    })
+
+    /* const maxVentas = org[0].TipodeOrganizacion.cantidadPropVenta;
+    const propOrgId = prop.OrganizacionId
+    const cuentadeVentas = prop.TipoOperacionId;
+    const cuentaPropiedades = [];
+    const cuentas = {
+      org:"",
+      cuentadeVentas:"",
+      cuentadeRentas:"",
+    } */
+    const dataPropAmpliada = [];
+    for (let i = 0; i < dataPropiedad.length; i++) {
+      dataPropiedad[i].cuentaVentas = 5;
+      dataPropAmpliada.push(dataPropiedad[i])
+      /* //venta
+      if(dataPropiedad.TipoOperacionId===1){
+        cuentas.org = dataPropiedad.OrganizacionId;
+        cuentas.cuentadeVentas = +1
+      }
+      if(dataPropiedad.TipoOperacionId===3){
+        cuentas.org = dataPropiedad.OrganizacionId;
+        cuentas.cuentadeRentas = +1
+      }      */ 
+    }
+    
+
+    /* const cuentaProps = await Propiedad.count(
+      {
+        where:{publicada:"Si"}, 
+        attributes: ['publicada','OrganizacionId'], 
+        group:['publicada','OrganizacionId'] 
+    });
+    const OrgConMasProps = [];
+    for (let i = 0; i < cuentaProps.length; i++) {
+      if(cuentaProps[i].count>2){
+        OrgConMasProps.push(cuentaProps[i].OrganizacionId)
+      }
+    }
+    
+    const org = await Organizacion.findAll({
+      include:  TipodeOrganizacion
+    })
+    
+    
+    
+
+    const orgConPublicacionesdeMas = [];
+    for (let i = 0; i < cuentaProps.length; i++) {
+      for (let x = 0; x < org.length; x++) {
+        const publicacionesdeMas = {
+          organizacion:org[x].id,
+          venta:"",
+          renta:""
+        }
+        if(cuentaProps[i].OrganizacionId === org[x].id){
+          if(cuentaProps[i].count > org[0].TipodeOrganizacion.cantidadPropVenta){ 
+            publicacionesdeMas.venta = org[0].TipodeOrganizacion.cantidadPropVenta - cuentaProps[i].count;
+          }
+          if(cuentaProps[i].count > org[0].TipodeOrganizacion.cantidadPropRenta){
+            publicacionesdeMas.renta = org[0].TipodeOrganizacion.cantidadPropRenta - cuentaProps[i].count;
+          }
+          // Si hay rentas o ventas de mas se manda al array
+          if(publicacionesdeMas.venta || publicacionesdeMas.renta){
+            orgConPublicacionesdeMas.push(publicacionesdeMas);
+          }
+        }
+        
+      }
+      
+    } */
+    res.send(dataPropAmpliada)
+  }
+  catch(error){
+    res.send(error)
+  }
+})
+
+server.get("/orgyTipo", async (req, res) => {
+  try {
+    const org = await Organizacion.findAll({
+      include:  TipodeOrganizacion
+    })
+    
+    res.send(org)
+  }
+  catch(error){
+    res.send(error)
+  }
+})
 
 // Para ver las imagenes
 server.use('/imagenes', express.static(public));
