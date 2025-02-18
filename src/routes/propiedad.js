@@ -346,11 +346,21 @@ server.get("/getPropOrganizacion/:userId", async (req, res) => {
 server.get("/cuentaxOrg", async (req, res) => {
   try {
 
-    const dataPropiedad = await Propiedad.findAll({
+     const dataPropiedad = await Propiedad.findAll({
       where:{publicada:"Si"},
+      include: [
+        {
+          model: Organizacion,
+          include: [
+            {
+              model: TipodeOrganizacion
+            }
+          ]
+        },
+      ]
+      
     })
-
-    /* const maxVentas = org[0].TipodeOrganizacion.cantidadPropVenta;
+    /*const maxVentas = org[0].TipodeOrganizacion.cantidadPropVenta;
     const propOrgId = prop.OrganizacionId
     const cuentadeVentas = prop.TipoOperacionId;
     const cuentaPropiedades = [];
@@ -358,12 +368,11 @@ server.get("/cuentaxOrg", async (req, res) => {
       org:"",
       cuentadeVentas:"",
       cuentadeRentas:"",
-    } */
+    }
     const dataPropAmpliada = [];
     for (let i = 0; i < dataPropiedad.length; i++) {
-      dataPropiedad[i].cuentaVentas = 5;
-      dataPropAmpliada.push(dataPropiedad[i])
-      /* //venta
+     
+      //venta
       if(dataPropiedad.TipoOperacionId===1){
         cuentas.org = dataPropiedad.OrganizacionId;
         cuentas.cuentadeVentas = +1
@@ -371,8 +380,8 @@ server.get("/cuentaxOrg", async (req, res) => {
       if(dataPropiedad.TipoOperacionId===3){
         cuentas.org = dataPropiedad.OrganizacionId;
         cuentas.cuentadeRentas = +1
-      }      */ 
-    }
+      }      
+    } */
     
 
     /* const cuentaProps = await Propiedad.count(
@@ -380,15 +389,15 @@ server.get("/cuentaxOrg", async (req, res) => {
         where:{publicada:"Si"}, 
         attributes: ['publicada','OrganizacionId'], 
         group:['publicada','OrganizacionId'] 
-    });
-    const OrgConMasProps = [];
+    }); */
+    /* const OrgConMasProps = [];
     for (let i = 0; i < cuentaProps.length; i++) {
       if(cuentaProps[i].count>2){
         OrgConMasProps.push(cuentaProps[i].OrganizacionId)
       }
-    }
+    } */
     
-    const org = await Organizacion.findAll({
+    /* const org = await Organizacion.findAll({
       include:  TipodeOrganizacion
     })
     
@@ -417,9 +426,8 @@ server.get("/cuentaxOrg", async (req, res) => {
         }
         
       }
-      
     } */
-    res.send(dataPropAmpliada)
+    res.send(dataPropiedad )
   }
   catch(error){
     res.send(error)

@@ -125,7 +125,7 @@ server.get("/nuevoPago", async(req,res)=>{
     try {
         const historial = await HistorialdePagos.findAll({
             where:{
-                OrganizacionId:"e29c1eae-6bc4-4e18-9799-995e8ab00994"
+                OrganizacionId:"b7b986c7-b2e9-45fa-8087-eda07c1b22ae"
             },
             order: [
                 ['fechaFin','DESC']
@@ -155,7 +155,7 @@ server.get("/nuevoPago", async(req,res)=>{
                 {               
                     fechaInicio:hoy,
                     fechaFin:ProximoMes,
-                    OrganizacionId:"e29c1eae-6bc4-4e18-9799-995e8ab00994",
+                    OrganizacionId:"b7b986c7-b2e9-45fa-8087-eda07c1b22ae",
                     PaquetedePagoId:1, 
                 }
             )     
