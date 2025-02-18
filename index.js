@@ -28,12 +28,14 @@
     apikeys:require("./Apikeys"), */
     const { index, clientes, imagen, propiedad, dbconstants, apikeys, favoritos, modeloRelacionado,
        allPropiedades, bulk, tipoUsuario, cargaProp, addBucketCors, pruebaCargarImg, historialdePagos, 
-       autorizacionUsuario, pagodeServicio   } = require('./src/routes');
+       autorizacionUsuario, pagodeServicio,   
+       paquetesdePago} = require('./src/routes');
 
     const { TipodeUsuario } = require("./src/db");
 
     const { checkAutorizacion } = require("./src/middleware/checkAutorizacion.js")
-    const { checkPago } = require("./src/middleware/checkPago");
+    const { checkPagosActivos, servidorPago } = require("./src/middleware/checkPago");
+    const { checkCantProps, servidorCantProps } = require("./src/middleware/checkCantProps.js");
     
     /* app.METHOD(PATH, HANDLER)
     app es una instancia de express.
@@ -178,11 +180,14 @@ function checkIfSignedIn(req, res, next) {
     app.use("/allProp", /* checkIfSignedIn, */ allPropiedades);
     app.use("/bulk", bulk);
     app.use("/tipodeUsuario", tipoUsuario);
-    app.use("/cargaProp", checkIfSignedIn, checkAutorizacion, checkPago, cargaProp);
+    app.use("/cargaProp", checkIfSignedIn, checkAutorizacion, checkCantProps, cargaProp);
     app.use("/corsAuth", addBucketCors)
     app.use("/pruebaCargaProp", pruebaCargarImg),
     app.use("/checkautorizacion", autorizacionUsuario),
     app.use("/revisarPagos", pagodeServicio),
+    app.use("/checkPublicacion", servidorCantProps),
+    app.use("/paquetesdePago", paquetesdePago),
+    app.use("/checkpago", servidorPago)
     //app.use("/authCliente", authCliente);
 
     /* app.use("/propiedades", PropiedadRoute);

@@ -22,5 +22,6 @@ module.exports = {
     pruebaCargarImg:require("./pruebaCargaImg"),
     autorizacionUsuario:servidorAutorizacion,
     pagodeServicio:servidorPago,
+    paquetesdePago:require("./paquetesdePago"),
     index: server,
   };
