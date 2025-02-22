@@ -1,13 +1,31 @@
+const { parse } = require("dotenv");
 const { Cliente, TipodeUsuario,  } = require("../db");
 const servidorAutorizacion = require("express").Router();
 
 const checkAutorizacion = async (req, res, next)  => {
     try {
-        const { userId} = req.body;
+        var userId = "";
+        
+        const bodyObj = req.body.data;
+        // Si los datos vienen de un formData
+        if(bodyObj){
+          const parsedbodyObj = JSON.parse(bodyObj);
+          userId = parsedbodyObj.userId
+        }
+        // los datos vienen en el body del request
+        else{
+          userId = req.body.userId;
+        }        
+        
         console.log("REVISANDO AUTORIZACION "+userId)
         const cliente = await Cliente.findOne({
             where:{ userId:userId}
         });
+        if(cliente === null) {
+            res.json({mensaje:"El Cliente No Existe"});
+            return;
+        }
+        
         const tipodeUsuario = await TipodeUsuario.findOne({
             where:{
                 id:cliente.TipodeUsuarioId
@@ -17,6 +35,7 @@ const checkAutorizacion = async (req, res, next)  => {
         req.auth = cliente.autorizaciondePublicar;
         req.tipodeUsuario = tipodeUsuario.tipo;
         req.manejaUsuarios = tipodeUsuario.manejaUsuarios;
+
         if(cliente.autorizaciondePublicar !== "Ninguna") next()
         else {
             console.log("EL USUARIO NO ESTA AUTORIZADO")
@@ -27,7 +46,7 @@ const checkAutorizacion = async (req, res, next)  => {
             })
         }
     } catch (e) {
-        res.send(e)
+        res.send("Error en checkAutorizacion"+e)
     }
 }
 
@@ -60,8 +79,8 @@ const checkManejodeUsuarios = async (req, res, next) => {
 
 servidorAutorizacion.post("/revisarCaracteristicasUsuario", checkAutorizacion, async (req, res)=>{
  try {
-    console.log(req.autorizaciondePublicar)
-    res.send({
+    console.log(req.auth)
+    res.json({
         tipodeUsuario:req.tipodeUsuario, 
         manejaUsuarios:req.manejaUsuarios,
         autorizaciondePublicar:req.auth

@@ -16,16 +16,18 @@ module.exports = s => {
                 "Venta",
                 "Renta",
                 "Venta/Renta",
+                "VentaoRenta",
                 "PreVenta",
                 "Todas",
             ),
-            allowNull: false,
+            allowNull: true,
         },
         periodicidad:{
             type: DataTypes.STRING,
         },     
         cantidaddePropiedades:{
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            allowNull: true,
         }, 
         tipodePago:{
             type: DataTypes.ENUM(
@@ -34,20 +36,19 @@ module.exports = s => {
             ),
             allowNull: false,
         },
-        
-        tipodePropiedad:{
+        tipodeDesarrollo:{
             type: DataTypes.ENUM(
                 "Desarrollo",
-                "Individual",
+                "Modelo",
             ),
-            allowNull: false,
+            allowNull: true,
         },
         tiempodeConstruccion:{
             type: DataTypes.ENUM(
-                "Nueva",
+                "Nuevo",
                 "ConUso",
             ),
-            allowNull: false,
+            allowNull: true,
         },
         fechaInicioOferta:{
             type: DataTypes.DATEONLY,
