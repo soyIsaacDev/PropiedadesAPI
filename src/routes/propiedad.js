@@ -78,13 +78,17 @@ server.get("/getDataandImagenPropiedades", async (req, res) => {
 }
 );
 
-server.get("/getPropiedadNombre", async (req, res) => {
+server.get("/getPropiedadNombre/:userId", async (req, res) => {
   try {
+    const {userId} = req.params;
+    const cliente = await Cliente.findOne({
+      where:{userId:userId}
+    });
     const dataPropiedad = await Propiedad.findAll({
+      where:{OrganizacionId:cliente.OrganizacionId},
       attributes: ['id', 'nombreDesarrollo', 'posicion', 'TipodePropiedadId'],
       
-    },);
-    
+    });
     dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontraron datos de propiedades"});
     
   } catch (e) {

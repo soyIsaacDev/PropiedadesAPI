@@ -169,6 +169,12 @@ HistorialdePagos.belongsTo(Organizacion);
 PaquetedePago.hasOne(HistorialdePagos);
 HistorialdePagos.belongsTo(PaquetedePago);
 
+TipodeOrganizacion.belongsToMany(PaquetedePago, { through: 'PaquetePagoPorOrg' });
+PaquetedePago.belongsToMany(TipodeOrganizacion, { through: 'PaquetePagoPorOrg' });
+
+/* TipodeOrganizacion.hasOne(PaquetedePago);
+PaquetedePago.belongsTo(TipodeOrganizacion);
+*/
 
 TipodeOrganizacion.hasMany(Organizacion);
 Organizacion.belongsTo(TipodeOrganizacion);

@@ -47,10 +47,10 @@ server.post("/nuevoCliente", async (req, res) => {
       cliente[0].autorizaciondePublicar = "Completa";
     }
     
-    
     if(tipoUsuario === "DueñodePropiedad") {
+      
       const tipodeOrganizacion = await TipodeOrganizacion.findOne({
-        where:{ nombreTipoOrg:"General" }
+        where:{ nombreTipoOrg:"TratoDirecto" }
       });
       const org = await Organizacion.create({
         organizacion:email,
@@ -58,8 +58,7 @@ server.post("/nuevoCliente", async (req, res) => {
       });
       const userTipo = await TipodeUsuario.findOne({
         where: {
-          tipo:"DueñodePropiedad",
-          giro
+          tipo:"DueñodePropiedad"
         }   
       });
       cliente[0].OrganizacionId = org.id;
@@ -304,11 +303,11 @@ server.get("/borrarCliente", async (req, res) => {
   try {
     const cliente = await Cliente.destroy({
       where:{
-        id:"0f953a50-a6b6-4ebc-9ecf-1ac765aa7e1c"
+        id:"7b0cb44a-c7af-4b1c-a7e4-f7b4943f1f68"
       }
     });
     const orgDest = await Organizacion.destroy({
-      where:{id:"7cd0992a-8ae7-41a6-a7ef-1510a85451a6"}
+      where:{id:"64e97a09-8c0f-409a-aca4-3694f93c98df"}
     })
 
     cliente? res.json(cliente) : res.json({mensaje:"El Cliente No Existe"});

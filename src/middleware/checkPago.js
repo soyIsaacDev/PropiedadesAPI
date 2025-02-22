@@ -1,8 +1,6 @@
 const { HistorialdePagos, Cliente, Propiedad, Organizacion, TipodeOrganizacion, PaquetedePago,  } = require("../db");
 const servidorPago = require("express").Router();
 
-//servidorPago.get("/revisarPago/:userId", checkPagosActivos,checkCantProps, async (req, res)=>{
-
 
 const checkPagosActivos = async function (req, res, next) {
   try {
@@ -20,7 +18,7 @@ const checkPagosActivos = async function (req, res, next) {
         ],
         include:  PaquetedePago
     })
-    //res.json(historialdePagos)
+    
     if(historialdePagos.length>0){
       const paquetesActivos = [];
       for (let i = 0; i < historialdePagos.length; i++) {
@@ -33,6 +31,7 @@ const checkPagosActivos = async function (req, res, next) {
           paquetesActivos.push(historialActivo);
         }
       }
+      
       if(paquetesActivos && paquetesActivos.length>0){
         req.paquetesActivos = paquetesActivos;
         req.orgId = cliente.OrganizacionId;
@@ -97,78 +96,104 @@ const checkPagosActivos = async function (req, res, next) {
   }
 } */
 
-const checkEnPaqueteActivo = async (req, res, next)  => {
+const checkPublicacionesRestantes = async (req, res, next)  => {
   try {
     const paquetesActivos = req.paquetesActivos;
     
-    const cuentaProps = await Propiedad.count(
-    {
-      where:{ publicada:"Si" , OrganizacionId:paquetesActivos[0].orgId }, 
-      attributes: ['publicada', 'TipoOperacionId', 'OrganizacionId'], 
-      group:['publicada', 'TipoOperacionId', 'OrganizacionId'] 
-    });
-    /* const org = await Organizacion.findOne({
-      where:{ id:paquetesActivos.orgId },
-      include:  TipodeOrganizacion
-      }) */
     const publicacionesDisponibles = {
       organizacion:paquetesActivos[0].orgId,
       venta:0,
       renta:0,
       preVenta:0,
     }
+    
     // Organizando el total de operaciones disponibles
     for (let i = 0; i < paquetesActivos.length; i++) {
       if(paquetesActivos[i].tipodeOperacion === "Venta")
         publicacionesDisponibles.venta = publicacionesDisponibles.venta+paquetesActivos[i].cantidaddePropiedades;
       if(paquetesActivos[i].tipodeOperacion === "Renta")
         publicacionesDisponibles.renta = publicacionesDisponibles.renta+paquetesActivos[i].cantidaddePropiedades;
-      if(paquetesActivos[i].tipodeOperacion === "PreVenta")
+      if(paquetesActivos[i].tipodeOperacion === "VentaoRenta"){
         publicacionesDisponibles.renta = publicacionesDisponibles.renta+paquetesActivos[i].cantidaddePropiedades;
+        publicacionesDisponibles.venta = publicacionesDisponibles.venta+paquetesActivos[i].cantidaddePropiedades;
+        publicacionesDisponibles.tipodeOperacion = "VentaoRenta"
+      }
+      if(paquetesActivos[i].tipodeOperacion === "PreVenta")
+        publicacionesDisponibles.preVenta = publicacionesDisponibles.preVenta+paquetesActivos[i].cantidaddePropiedades;
     }
+
+    const cuentaProps = await Propiedad.count(
+      {
+        where:{ publicada:"Si" , OrganizacionId:paquetesActivos[0].orgId }, 
+        attributes: ['publicada', 'TipoOperacionId', 'OrganizacionId'], 
+        group:['publicada', 'TipoOperacionId', 'OrganizacionId'] 
+      }
+    );
 
     const publicacionesRestantes = {
       organizacion:paquetesActivos[0].orgId,
-      venta:0,
-      renta:0,
-      preVenta:0,
+      venta:publicacionesDisponibles.venta,
+      renta:publicacionesDisponibles.renta,
+      preVenta:publicacionesDisponibles.preVenta,
     }      
+    
     for (let i = 0; i < cuentaProps.length; i++) {
-      if(cuentaProps[i].TipoOperacionId === 1){ 
+      if(publicacionesDisponibles.tipodeOperacion === "VentaoRenta" && cuentaProps[i].TipoOperacionId === 1
+        ||
+        publicacionesDisponibles.tipodeOperacion === "VentaoRenta" && cuentaProps[i].TipoOperacionId === 3
+      ){
         publicacionesRestantes.venta = publicacionesDisponibles.venta - cuentaProps[i].count;
-      }
-      if(cuentaProps[i].TipoOperacionId === 3 ){
         publicacionesRestantes.renta =  publicacionesDisponibles.renta - cuentaProps[i].count;
       }
-      if(cuentaProps[i].TipoOperacionId === 2 ){
-        publicacionesRestantes.preVenta =  publicacionesDisponibles.preVenta - cuentaProps[i].count;
+      else{
+        if(cuentaProps[i].TipoOperacionId === 1){ 
+          publicacionesRestantes.venta = publicacionesDisponibles.venta - cuentaProps[i].count;
+        }
+        if(cuentaProps[i].TipoOperacionId === 3 ){
+          publicacionesRestantes.renta =  publicacionesDisponibles.renta - cuentaProps[i].count;
+        }
+        if(cuentaProps[i].TipoOperacionId === 2 ){
+          publicacionesRestantes.preVenta =  publicacionesDisponibles.preVenta - cuentaProps[i].count;
+        }
       }
     }
     // Si hay rentas o ventas se manda mensaje
     if(publicacionesRestantes.venta > 0 || publicacionesRestantes.renta > 0 || publicacionesRestantes.preVenta > 0){
-      /* publicacionesRestantes.mensaje = "No cuentas con autorizacion para publicar mas propiedades"
-      res.json(publicacionesDisponibles) */
       req.publicaciones = publicacionesRestantes;
       next();
     } 
     else {
       publicacionesRestantes.mensaje = "No cuentas con autorizacion para publicar mas propiedades"
-      res.json(publicacionesRestantes)
-        /* req.publicaciones = publicacionesRestantes;
-        next(); */
+      res.json(publicacionesRestantes);
     } 
   } catch (e) {
       res.send(e)
   }
 }
 
-servidorPago.use(checkPagosActivos, checkEnPaqueteActivo);
+const checkTipodeOrganizacion = async(req, res, next) => {
+  try {
+    //const publicacionesRestantes = req.publicacionesRestantes; 
+    const orgId = req.orgId;
+    const org = await Organizacion.findOne({
+      where:{ id:orgId },
+      include:  TipodeOrganizacion
+    })
+    req.TipodeOrg = org.TipodeOrganizacion;
+    next();
+  } catch (error) {
+    res.json(error)
+  }
+}
+
+servidorPago.use(checkPagosActivos, checkPublicacionesRestantes, checkTipodeOrganizacion);
 
 servidorPago.post("/revisarPago",  async (req, res)=>{
   try {
-    const publicacionesRestantes = req.publicaciones
-    console.log(publicacionesRestantes)
-    res.json({pago:"Se encuentra pagado"})
+    const publicacionesRestantes = req.publicaciones;
+    const tipodeOrg = req.TipodeOrg;
+    //console.log(publicacionesRestantes)
+    res.json({pago:"Se encuentra pagado", publicacionesRestantes, tipodeOrg})
   } catch (error) {
     res.send(error)
   }

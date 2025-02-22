@@ -4,6 +4,7 @@
     const express = require('express');
     const app = express();
     const cors = require('cors');
+    const multer = require('multer');
     /* var passport = require('passport');
     var Sequelize = require("sequelize");
     const session = require('express-session'); */
@@ -182,7 +183,8 @@ function checkIfSignedIn(req, res, next) {
     app.use("/tipodeUsuario", tipoUsuario);
     app.use("/cargaProp", checkIfSignedIn, checkAutorizacion, checkCantProps, cargaProp);
     app.use("/corsAuth", addBucketCors)
-    app.use("/pruebaCargaProp", pruebaCargarImg),
+    // multer.any permite revisar un form data
+    app.use("/pruebaCargaProp", multer().any(), checkAutorizacion, pruebaCargarImg),
     app.use("/checkautorizacion", autorizacionUsuario),
     app.use("/revisarPagos", pagodeServicio),
     app.use("/checkPublicacion", servidorCantProps),

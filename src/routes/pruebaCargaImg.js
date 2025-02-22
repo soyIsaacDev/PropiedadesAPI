@@ -12,7 +12,8 @@ const upload = multer();
 // Modelo
 
 // Procesar datos de FormData --> https://khendrikse.netlify.app/blog/send-data-with-formdata/
-server.post("/dataNuevoModeloAsociadoPropiedad", upload.none(), pruebaGcpUploadImagenModeloRelacionado); 
+                                    // multer.none permite revisar un form data sin cargar archivos
+server.post("/dataNuevoModeloAsociadoPropiedad", pruebaGcpUploadImagenModeloRelacionado); 
 server.post("/nuevoModeloAsociadoPropiedad", pruebaUploadModeloImages, pruebaSendModeloUploadToGCSAsync); 
 
 //server.post("/nuevoModeloAsociadoPropiedad", pruebaUploadModeloImages, pruebaSendModeloUploadToGCSAsync); 

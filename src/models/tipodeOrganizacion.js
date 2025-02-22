@@ -20,8 +20,27 @@ module.exports = s => {
                 "Venta",
                 "Renta",
                 "VentayRenta",
+                "VentaoRenta",
                 "PreVenta",                
                 "Todas"
+            ),
+            allowNull: false
+        },
+        tipodeDesarrolloAut:{
+            type: DataTypes.ENUM(
+                "Desarrollo",
+                "Modelo",
+                "Todos",
+                "NoAutorizado",
+            ),
+            allowNull: false
+        },
+        tiempodeConstruccionAut:{
+            type: DataTypes.ENUM(
+                "Nuevo",
+                "ConUso",
+                "Todas",
+                "NoAutorizado",
             ),
             allowNull: false
         },

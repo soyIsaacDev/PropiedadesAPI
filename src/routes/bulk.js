@@ -2824,13 +2824,17 @@ server.get("/nuevoTipoOrg", async (req, res) => {
       {
         nombreTipoOrg:"Desarrolladora",
         tipodeOperacionAut:"Venta",
+        tipodeDesarrolloAut:"Desarrollo",
+        tiempodeConstruccionAut:"Nuevo",
         cantidadPropVenta:100,
         cantidadPropRenta:0,
         cantidadPropPreVenta:0,
       }, 
       {
         nombreTipoOrg:"TratoDirecto",
-        tipodeOperacionAut:"Venta",
+        tipodeOperacionAut:"VentaoRenta",
+        tipodeDesarrolloAut:"Modelo",
+        tiempodeConstruccionAut:"ConUso",
         cantidadPropVenta:1,
         cantidadPropRenta:1,
         cantidadPropPreVenta:0,
@@ -2838,6 +2842,8 @@ server.get("/nuevoTipoOrg", async (req, res) => {
       {
         nombreTipoOrg:"DireccionTotal",
         tipodeOperacionAut:"Todas",
+        tipodeDesarrolloAut:"Todos",
+        tiempodeConstruccionAut:"Todas",
         cantidadPropVenta:90000,
         cantidadPropRenta:90000,
         cantidadPropPreVenta:90000,
@@ -2845,6 +2851,9 @@ server.get("/nuevoTipoOrg", async (req, res) => {
       {
         nombreTipoOrg:"General",
         tipodeOperacionAut:"NoAutorizado",
+        tipodeOperacionAut:"NoAutorizado",
+        tipodeDesarrolloAut:"NoAutorizado",
+        tiempodeConstruccionAut:"NoAutorizado",
         cantidadPropVenta:0,
         cantidadPropRenta:0,
         cantidadPropPreVenta:0,
@@ -2960,11 +2969,37 @@ server.get("/nuevoTipodeUsuario", async (req, res) => {
         cantidadPropPreVenta:0,
       }, 
     ])
-    
     res.send(tiposdeUsuario);
   } catch (error) {
     res.send(error);
   }
 });
+
+server.get("/actualizarTipoOrg", async (req, res) => { 
+    try {
+        console.log("Actualizando Tipo Org")
+        const tipoOrg = {
+            nombreTipoOrg:"TratoDirecto",
+            tipodeOperacionAut:"VentaoRenta",
+            tipodeDesarrolloAut:"Modelo",
+            tiempodeConstruccionAut:"ConUso",
+            cantidadPropVenta:1,
+            cantidadPropRenta:1,
+            cantidadPropPreVenta:0,
+          }
+        const tipoOrganizacion = await TipodeOrganizacion.findOne({
+            where:{nombreTipoOrg:tipoOrg.nombreTipoOrg}
+        })
+        //res.json(tipoOrganizacion)
+        await tipoOrganizacion.update({
+            tipodeOperacionAut:tipoOrg.tipodeOperacionAut,
+            tipodeDesarrolloAut:tipoOrg.tipodeDesarrolloAut,
+            tiempodeConstruccionAut:tipoOrg.tiempodeConstruccionAut,
+        });
+        res.json(tipoOrganizacion)
+    } catch (error) {
+        res.send
+    }
+})
 
 module.exports =  server;

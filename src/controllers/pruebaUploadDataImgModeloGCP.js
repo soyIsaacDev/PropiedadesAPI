@@ -1,4 +1,5 @@
 const {  AmenidadesModeloAmenidad, ModeloAsociadoPropiedad, Propiedad } = require("../db");
+const { Op } = require("sequelize");
 
 const pruebaGcpUploadImagenModeloRelacionado = async (req, res, next) => {
     try {
@@ -6,7 +7,7 @@ const pruebaGcpUploadImagenModeloRelacionado = async (req, res, next) => {
       console.log("REVISANDO BODY")
       const bodyObj = req.body.data;
       
-      //console.log(bodyObj)
+      console.log(bodyObj)
       const parsedbodyObj = JSON.parse(bodyObj);
       const { nombreModelo, nombreDesarrollo, ciudad, precio, niveles, recamaras,
         baños, medio_baño, espaciosCochera, cocheraTechada, tipodePropiedad,
@@ -15,26 +16,30 @@ const pruebaGcpUploadImagenModeloRelacionado = async (req, res, next) => {
       } = parsedbodyObj
       
 
-      const ModeloRelacionadoExiste = await ModeloAsociadoPropiedad.findOne({
-        where: {
-          nombreModelo,
-          PropiedadId:parseInt(nombreDesarrollo),
-          CiudadId:ciudad,
-          EstadoId:estado,
+      if(nombreModelo){
+        const ModeloRelacionadoExiste = await ModeloAsociadoPropiedad.findOne({
+          where: {
+            nombreModelo,
+            PropiedadId:parseInt(nombreDesarrollo),
+            CiudadId:ciudad,
+            EstadoId:estado,
+          }
+          
+        })
+  
+        if(ModeloRelacionadoExiste){
+          console.log("El modelo ya existe")
+          res.json({
+            codigo:0, 
+            Mensaje:`El Modelo `+ ModeloRelacionadoExiste.nombreModelo + " ya existe",
+            Error:"Modelo Existente"
+          });
+          return;
         }
-      })
-
-      if(ModeloRelacionadoExiste){
-        console.log("El modelo ya existe")
-        res.json({
-          codigo:0, 
-          Mensaje:`El Modelo `+ ModeloRelacionadoExiste.nombreModelo + " ya existe",
-          Error:"Modelo Existente"
-        });
-        return;
+        
       }
       
-      const ModeloRelacionadoCreado = await ModeloAsociadoPropiedad.findOrCreate({
+      const ModeloRelacionadoCreado = await ModeloAsociadoPropiedad.create({
         where: {
           nombreModelo,
           PropiedadId:parseInt(nombreDesarrollo),
@@ -59,39 +64,41 @@ const pruebaGcpUploadImagenModeloRelacionado = async (req, res, next) => {
 
       for (let i = 0; i < amenidadesPropiedad.length; i++) {        
         await AmenidadesModeloAmenidad.create({ 
-          ModeloAsociadoPropiedadId:ModeloRelacionadoCreado[0].id, 
+          ModeloAsociadoPropiedadId:ModeloRelacionadoCreado.id, 
           AmenidadesPropiedadId:amenidadesPropiedad[i] })
       }
   
       // Agregar tipo de propiedad y operacion al Desarrollo
       // Modificar Precio Min y Max en Desarrollo
-      const Desarrollo = await Propiedad.findByPk(parseInt(nombreDesarrollo));
+      if(nombreDesarrollo){
+        const Desarrollo = await Propiedad.findByPk(parseInt(nombreDesarrollo));
 
-      if(Desarrollo.TipodePropiedadId === null){
-        Desarrollo.TipodePropiedadId = tipodePropiedad;
-        await Desarrollo.save();
+        if(Desarrollo.TipodePropiedadId === null){
+          Desarrollo.TipodePropiedadId = tipodePropiedad;
+          await Desarrollo.save();
+        }
+        if(Desarrollo.TipoOperacionId === null){
+          Desarrollo.TipoOperacionId = tipodeOperacion;
+          await Desarrollo.save();
+        }
+        if(Desarrollo.precioMin === null && Desarrollo.precioMax === null){
+          Desarrollo.precioMin = precio;
+          Desarrollo.precioMax = precio;
+          await Desarrollo.save();
+        }
+        else if(precio < Desarrollo.precioMin){
+          Desarrollo.precioMin = precio;
+          await Desarrollo.save();
+        }
+        else if(precio > Desarrollo.precioMax){
+          Desarrollo.precioMax = precio;
+          await Desarrollo.save();
+        }
+        res.json({
+          codigo:1, 
+          Mensaje:`Se cargaron los datos del modelo relacionado`
+        });
       }
-      if(Desarrollo.TipoOperacionId === null){
-        Desarrollo.TipoOperacionId = tipodeOperacion;
-        await Desarrollo.save();
-      }
-      if(Desarrollo.precioMin === null && Desarrollo.precioMax === null){
-        Desarrollo.precioMin = precio;
-        Desarrollo.precioMax = precio;
-        await Desarrollo.save();
-      }
-      else if(precio < Desarrollo.precioMin){
-        Desarrollo.precioMin = precio;
-        await Desarrollo.save();
-      }
-      else if(precio > Desarrollo.precioMax){
-        Desarrollo.precioMax = precio;
-        await Desarrollo.save();
-      }
-      res.json({
-        codigo:1, 
-        Mensaje:`Se cargaron los datos del modelo relacionado`
-      });
 
       /* const modeloCreadoJSON = { codigo:1, Mensaje:`Se creo el modelo `+ ModeloRelacionadoCreado[0].nombreModelo} ;
       res.json(modeloCreadoJSON? modeloCreadoJSON :{mensaje:"No Se pudo crear el modelo"} ); */
