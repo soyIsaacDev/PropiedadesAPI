@@ -12,65 +12,79 @@ const storage = new Storage({
 });
 const bucket = storage.bucket(GCLOUD_BUCKET);
 
-const pruebaSendModeloUploadToGCSAsync = async (req, res, next) => {
+const cargarImagenGCP = async (req, res, next) => {
   try {
     console.log("Probando Send")
     // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
     const bodyObj = req.body.data;
     const parsedbodyObj = JSON.parse(bodyObj);
-    const { ordenImagen, nombreModelo, nombreDesarrollo, ciudad, estado } = parsedbodyObj
+    const { ordenImagen, modeloId, nombreModelo, nombreDesarrollo, ciudad, estado } = parsedbodyObj
 
+    console.log("Modelo Id " + modeloId)
     // buscamos si hay fotos
     const file = req.files;
     if (file == undefined) {
       console.log("req.file Undefined")
-      return next()
+      res.json({
+        codigo:0, 
+        Mensaje:`El archivo a subir esta Undefined`
+      });
     }
-    if (!file) {
+    else if (!file) {
       console.log("No hay archivos a subir")
-      return next();
+      res.json({
+        codigo:0, 
+        Mensaje:`No hay archivos a subir`
+      });
     }
 
-    const ModeloRelacionado = await ModeloAsociadoPropiedad.findOne({
+    /* const ModeloRelacionado = await ModeloAsociadoPropiedad.findOne({
       where: {
         nombreModelo,
         PropiedadId:parseInt(nombreDesarrollo),
         CiudadId:ciudad,
         EstadoId:estado,
       }
-    })
+    }) */
 
-    // Agregando Nombre Unico segun la fecha
-    const nombreUnicoFecha = Date.now()+"_" + file[0].originalname;
-    const esJpeg = file[0].originalname.includes("jpeg")
-    var uniqueDateName = undefined;
-    if(esJpeg){
-      uniqueDateName = nombreUnicoFecha.slice(0, nombreUnicoFecha.length - 5);
-    }
     else{
-      uniqueDateName = nombreUnicoFecha.slice(0, nombreUnicoFecha.length - 4);
+
+      // Agregando Nombre Unico segun la fecha
+      const nombreUnicoFecha = Date.now()+"_" + file[0].originalname;
+      const esJpeg = file[0].originalname.includes("jpeg")
+      var uniqueDateName = undefined;
+      if(esJpeg){
+        uniqueDateName = nombreUnicoFecha.slice(0, nombreUnicoFecha.length - 5);
+      }
+      else{
+        uniqueDateName = nombreUnicoFecha.slice(0, nombreUnicoFecha.length - 4);
+      }
+  
+      const thumbnail_img = await imgCambioTamaño(file[0], 393, 388, `Thumbnail_WebP_${uniqueDateName}.webp`);
+      const uploadThumbnail = await uploadFile(thumbnail_img);
+  
+      const imgGde = await imgCambioTamaño(file[0], 704, 504, `Detalles_Img_Gde_${uniqueDateName}.webp`);      
+      const uploadBig = await uploadFile(imgGde);
+      
+      const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file[0].originalname);
+  
+      // Si estan ordenadas al principio se cambia el tamaño a Chico
+      if( ordenData.length>0 && ordenData[0].orden === 1 || 
+          ordenData.length>0 && ordenData[0].orden === 2 || 
+          ordenData.length>0 && ordenData[0].orden === 3)
+      {
+        const imagenChica = await imgCambioTamaño(file[0], 428, 242, `Detalles_Img_Chica_${uniqueDateName}.webp`);
+        const uploadImgDetChica = await uploadFile(imagenChica);
+      }
+  
+      req.data = {file, ordenData, GCLOUD_BUCKET, uniqueDateName};
+
+      next();
     }
-
-    const thumbnail_img = await imgCambioTamaño(file[0], 393, 388, `Thumbnail_WebP_${uniqueDateName}.webp`);
-    const uploadThumbnail = await uploadFile(thumbnail_img);
-
-    const imgGde = await imgCambioTamaño(file[0], 704, 504, `Detalles_Img_Gde_${uniqueDateName}.webp`);      
-    const uploadBig = await uploadFile(imgGde);
     
-    const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file[0].originalname);
-
-    // Si estan ordenadas al principio se cambia el tamaño a Chico
-    if( ordenData.length>0 && ordenData[0].orden === 1 || 
-        ordenData.length>0 && ordenData[0].orden === 2 || 
-        ordenData.length>0 && ordenData[0].orden === 3)
-    {
-      const imagenChica = await imgCambioTamaño(file[0], 428, 242, `Detalles_Img_Chica_${uniqueDateName}.webp`);
-      const uploadImgDetChica = await uploadFile(imagenChica);
-    }
-
     // Agregro al file los nombres segun tamaño
 
-    const imagenModeloAsociado = await ImgModeloAsociado.create({
+    /* const imagenModeloAsociado = await ImgModeloAsociado.create({
       orden:ordenData[0].orden,
       type: file.mimetype,
       ModeloAsociadoPropiedadId: ModeloRelacionado.id,
@@ -81,12 +95,9 @@ const pruebaSendModeloUploadToGCSAsync = async (req, res, next) => {
     });
  
     console.log(imagenModeloAsociado)
-    console.log("Termino de Cargar la imagen")
+    console.log("Termino de Cargar la imagen") */
     
-    res.json({
-      codigo:1, 
-      Mensaje:`Si pasaron las imagenes`
-    });
+    
 
   } catch (e) {
     console.log("Error " + e)
@@ -147,5 +158,5 @@ const uploadFile = async (file) => new Promise((resolve, reject) => {
 })
 
 module.exports = {
-  pruebaSendModeloUploadToGCSAsync
+  cargarImagenGCP
 };

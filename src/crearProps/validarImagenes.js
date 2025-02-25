@@ -8,7 +8,7 @@ const multerUpload = multer({
   }
 });
 
-const pruebaUploadModeloImages = (req, res, next) => {
+const validarImagenes = (req, res, next) => {
   // Use multer upload instance
   multerUpload.array('imagenesfiles', 40)(req, res, (err) => {
     if (err) {
@@ -55,5 +55,5 @@ const pruebaUploadModeloImages = (req, res, next) => {
 };
 
 module.exports = {
-  pruebaUploadModeloImages
+  validarImagenes
 };
