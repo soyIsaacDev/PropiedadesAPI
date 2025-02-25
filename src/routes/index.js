@@ -19,7 +19,7 @@ module.exports = {
     tipoUsuario:require("./tipodeUsuario"),
     cargaProp:require("./cargaProp"),
     addBucketCors:require("./addBucketCors"),
-    pruebaCargarImg:require("./pruebaCargaImg"),
+    cargarPropMultiplesGCP:require("./cargarPropMultiplesGCP"),
     autorizacionUsuario:servidorAutorizacion,
     pagodeServicio:servidorPago,
     paquetesdePago:require("./paquetesdePago"),

@@ -60,7 +60,8 @@ const modeloTipodeUsuario = require("./models/tipodeUsuario");
 const modeloEstiloArquitectura = require("./models/estiloArquitectura.js");
 const modelHisorialdePagos = require("./models/historialdePagos.js");
 const modelPaquetedePago= require("./models/paquetedePago.js");
-const modelTipodeOrganizacion =require("./models/tipodeOrganizacion.js");
+const modelTipodeOrganizacion = require("./models/tipodeOrganizacion.js");
+const modelPropiedadIndependiente = require("./models/propiedadIndependiente.js");
 
 
 modelOrganizacion(sequelize);
@@ -82,12 +83,13 @@ modeloEstiloArquitectura(sequelize);
 modelHisorialdePagos(sequelize);
 modelPaquetedePago(sequelize);
 modelTipodeOrganizacion(sequelize);
+modelPropiedadIndependiente(sequelize);
 
 
 let {Propiedad, ImgPropiedad, TipodePropiedad, AmenidadesDesarrollo, AmenidadesPropiedad, 
   TipoOperacion, Estado , Municipio, Ciudad, Colonia, Cliente, ModeloAsociadoPropiedad,
   ImgModeloAsociado, TipodeUsuario, EstiloArquitectura, HistorialdePagos, PaquetedePago, 
-  Organizacion, TipodeOrganizacion,
+  Organizacion, TipodeOrganizacion, PropiedadIndependiente
 } = sequelize.models;
 
 // Relaciones DB
