@@ -10,6 +10,7 @@ const { pruebaMiddleware } = require('../middleware/pruebaMiddleware');
 
 const { crearPropIndependiente } = require('../crearProps/crearPropIndependiente');
 const { crearModeloRelacionado } = require('../crearProps/crearModeloRelacionado');
+const { crearTablaImgModeloAsociado } = require('../crearProps/crearTablaImgModeloAsociado');
 const upload = multer();
 
 // Modelo
@@ -17,7 +18,8 @@ const upload = multer();
 // Procesar datos de FormData --> https://khendrikse.netlify.app/blog/send-data-with-formdata/
                                     // multer.none permite revisar un form data sin cargar archivos
 server.post("/dataNuevoModeloAsociadoPropiedad", crearModeloRelacionado); 
-server.post("/nuevoModeloAsociadoPropiedad", validarImagenes, cargarImagenGCP); 
+server.post("/nuevoModeloAsociadoPropiedad", validarImagenes, cargarImagenGCP, crearTablaImgModeloAsociado); 
+//server.post("/nuevoModeloAsociadoPropiedad",  crearTablaImgModeloAsociado); 
 
 server.post("/dataPropIndependiente", crearPropIndependiente, validarImagenes );
 

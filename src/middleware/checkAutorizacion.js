@@ -1,10 +1,11 @@
 const { parse } = require("dotenv");
 const { Cliente, TipodeUsuario,  } = require("../db");
 const servidorAutorizacion = require("express").Router();
+const multer = require('multer');
 
 const checkAutorizacion = async (req, res, next)  => {
     try {
-        var userId = "";
+        let userId = "";
         
         const bodyObj = req.body.data;
         // Si los datos vienen de un formData
@@ -46,6 +47,7 @@ const checkAutorizacion = async (req, res, next)  => {
             })
         }
     } catch (e) {
+        console.log("Error en checkAutorizacion"+e);
         res.send("Error en checkAutorizacion"+e)
     }
 }

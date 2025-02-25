@@ -13,31 +13,14 @@ const crearModeloRelacionado = async (req, res, next) => {
         propiedadIndepeniente
       } = parsedbodyObj
 
-      const ModeloRelacionadoExiste = await ModeloAsociadoPropiedad.findOne({
-        where: {
+      const [ModeloRelacionado, creado] = await ModeloAsociadoPropiedad.findOrCreate({
+        where:{
           nombreModelo,
           PropiedadId:parseInt(nombreDesarrollo),
           CiudadId:ciudad,
           EstadoId:estado,
-        }          
-      })
-
-      if(ModeloRelacionadoExiste){
-        console.log("El modelo ya existe")
-        res.json({
-          codigo:0, 
-          Mensaje:`El Modelo `+ ModeloRelacionadoExiste.nombreModelo + " ya existe",
-          Error:"Modelo Existente"
-        });
-        //return;
-      }
-      else{
-
-        const ModeloRelacionadoCreado = await ModeloAsociadoPropiedad.create({
-          nombreModelo,
-          PropiedadId:parseInt(nombreDesarrollo),
-          CiudadId:ciudad,
-          EstadoId:estado,
+        },
+        defaults:{
           posicion,
           precio,
           niveles,
@@ -54,11 +37,15 @@ const crearModeloRelacionado = async (req, res, next) => {
           numeroInterior,  
           TipodePropiedadId,  
           publicada, */
-        });
-  
+        }
+        
+      });
+
+      if(creado === true){
+
         for (let i = 0; i < amenidadesPropiedad.length; i++) {        
           await AmenidadesModeloAmenidad.create({ 
-            ModeloAsociadoPropiedadId:ModeloRelacionadoCreado.id, 
+            ModeloAsociadoPropiedadId:ModeloRelacionado.id, 
             AmenidadesPropiedadId:amenidadesPropiedad[i] })
         }
     
@@ -68,7 +55,7 @@ const crearModeloRelacionado = async (req, res, next) => {
           const Desarrollo = await Propiedad.findByPk(parseInt(nombreDesarrollo));
   
           if(Desarrollo.TipodePropiedadId === null){
-            Desarrollo.TipodePropiedadId = tipodePropiedad;
+            Desarrollo.TipodePropiedadId = TipodePropiedadId;
             await Desarrollo.save();
           }
           if(Desarrollo.TipoOperacionId === null){
@@ -88,17 +75,26 @@ const crearModeloRelacionado = async (req, res, next) => {
             Desarrollo.precioMax = precio;
             await Desarrollo.save();
           }
+
           res.json({
             codigo:1, 
             Mensaje:`Se cargaron los datos del modelo relacionado`,
-            modeloId:ModeloRelacionadoCreado.id
+            modeloId:ModeloRelacionado.id
+          });
+
+        }
+        else{
+          
+          console.log("El modelo ya existe " + creado)
+          res.json({
+            codigo:0, 
+            Mensaje:`El Modelo `+ ModeloRelacionado.nombreModelo + " ya existe",
+            Error:"Modelo Existente"
           });
         }
+        
       }
-      
 
-      /* const modeloCreadoJSON = { codigo:1, Mensaje:`Se creo el modelo `+ ModeloRelacionadoCreado[0].nombreModelo} ;
-      res.json(modeloCreadoJSON? modeloCreadoJSON :{mensaje:"No Se pudo crear el modelo"} ); */
     } catch (error) {
       console.log("Error al intentar crear los datos del Modelo " + error);
       res.json({

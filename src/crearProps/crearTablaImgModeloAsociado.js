@@ -6,25 +6,32 @@ const crearTablaImgModeloAsociado = async (req, res, next) => {
         // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
         const bodyObj = req.body.data;
         const parsedbodyObj = JSON.parse(bodyObj);
-        const { nombreModelo, nombreDesarrollo, ciudad, estado } = parsedbodyObj
+        const { nombreModelo, nombreDesarrollo, ciudad, estado, modeloId } = parsedbodyObj
 
-        const ModeloRelacionado = await ModeloAsociadoPropiedad.findOne({
+        console.log("Modelo Id " + modeloId)
+        /* const ModeloRelacionado = await ModeloAsociadoPropiedad.findOne({
             where: {
               nombreModelo,
               PropiedadId:parseInt(nombreDesarrollo),
               CiudadId:ciudad,
               EstadoId:estado,
             }
+        }) 
+
+        const ModeloRelacionado = await ModeloAsociadoPropiedad.findOne({
+            where: { id:modeloId }
         })
+            */
 
         
         const {file, ordenData, GCLOUD_BUCKET, uniqueDateName} = req.data;
+        console.log(ordenData + " Bucket " + GCLOUD_BUCKET + " Name " +uniqueDateName )
         // Agregro al file los nombres segun tamaño
 
         const imagenModeloAsociado = await ImgModeloAsociado.create({
         orden:ordenData[0].orden,
         type: file.mimetype,
-        ModeloAsociadoPropiedadId: ModeloRelacionado.id,
+        ModeloAsociadoPropiedadId: modeloId,
         img_name: uniqueDateName,
         detalles_imgGde: `https://storage.googleapis.com/${GCLOUD_BUCKET}/Detalles_Img_Gde_${uniqueDateName}.webp`,
         thumbnail_img: `https://storage.googleapis.com/${GCLOUD_BUCKET}/Thumbnail_WebP_${uniqueDateName}.webp`,

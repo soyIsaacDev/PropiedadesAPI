@@ -50,8 +50,8 @@ const cargarImagenGCP = async (req, res, next) => {
     else{
 
       // Agregando Nombre Unico segun la fecha
-      const nombreUnicoFecha = Date.now()+"_" + file[0].originalname;
-      const esJpeg = file[0].originalname.includes("jpeg")
+      const nombreUnicoFecha = Date.now()+"_" + file.originalname;
+      const esJpeg = file.originalname.includes("jpeg")
       var uniqueDateName = undefined;
       if(esJpeg){
         uniqueDateName = nombreUnicoFecha.slice(0, nombreUnicoFecha.length - 5);
@@ -60,25 +60,25 @@ const cargarImagenGCP = async (req, res, next) => {
         uniqueDateName = nombreUnicoFecha.slice(0, nombreUnicoFecha.length - 4);
       }
   
-      const thumbnail_img = await imgCambioTamaño(file[0], 393, 388, `Thumbnail_WebP_${uniqueDateName}.webp`);
+      const thumbnail_img = await imgCambioTamaño(file, 393, 388, `Thumbnail_WebP_${uniqueDateName}.webp`);
       const uploadThumbnail = await uploadFile(thumbnail_img);
   
-      const imgGde = await imgCambioTamaño(file[0], 704, 504, `Detalles_Img_Gde_${uniqueDateName}.webp`);      
+      const imgGde = await imgCambioTamaño(file, 704, 504, `Detalles_Img_Gde_${uniqueDateName}.webp`);      
       const uploadBig = await uploadFile(imgGde);
       
-      const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file[0].originalname);
+      const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
   
       // Si estan ordenadas al principio se cambia el tamaño a Chico
       if( ordenData.length>0 && ordenData[0].orden === 1 || 
           ordenData.length>0 && ordenData[0].orden === 2 || 
           ordenData.length>0 && ordenData[0].orden === 3)
       {
-        const imagenChica = await imgCambioTamaño(file[0], 428, 242, `Detalles_Img_Chica_${uniqueDateName}.webp`);
+        const imagenChica = await imgCambioTamaño(file, 428, 242, `Detalles_Img_Chica_${uniqueDateName}.webp`);
         const uploadImgDetChica = await uploadFile(imagenChica);
       }
   
       req.data = {file, ordenData, GCLOUD_BUCKET, uniqueDateName};
-
+      console.log("Fin de Carga Imagen")
       next();
     }
     
