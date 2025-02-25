@@ -38,6 +38,29 @@
     const { checkPagosActivos, servidorPago } = require("./src/middleware/checkPago");
     const { checkCantProps, servidorCantProps } = require("./src/middleware/checkCantProps.js");
     
+    const multerUpload = multer({
+      limits: {
+        fileSize: 31 * 1024 * 1024, // no larger than 31mb
+        fieldSize: 31 * 1024 * 1024 
+      }
+    })
+    
+    const useMulter = (req, res, next) => {
+
+      multerUpload.single('imagenesfiles')(req, res, (err) => {
+        console.log("En Multer Upload")
+        if (err) {
+          console.log("Error en Array "+err)
+          const respuestaError = {
+            codigo:0, 
+            Mensaje:`Error al intentar crear la imagen`,
+            Error:err.message
+          }
+          return res.status(400).json(respuestaError);
+        }
+        else next()
+      })
+    }
     /* app.METHOD(PATH, HANDLER)
     app es una instancia de express.
     METHOD es un método de solicitud HTTP.
@@ -185,7 +208,7 @@ function checkIfSignedIn(req, res, next) {
     app.use("/corsAuth", addBucketCors);
     // Carga propiedades 1 x 1 para no saturar Cors
     // multer.any permite revisar un form data
-    app.use("/cargarPropMultiplesGCP", multer().any(), checkAutorizacion, cargarPropMultiplesGCP),
+    app.use("/cargarPropMultiplesGCP", useMulter, checkAutorizacion, cargarPropMultiplesGCP),
     app.use("/checkautorizacion", autorizacionUsuario),
     app.use("/revisarPagos", pagodeServicio),
     app.use("/checkPublicacion", servidorCantProps),
