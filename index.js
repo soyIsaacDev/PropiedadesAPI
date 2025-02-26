@@ -28,7 +28,7 @@
     dbconstants:require("./dBConstants"),
     apikeys:require("./Apikeys"), */
     const { index, clientes, imagen, propiedad, dbconstants, apikeys, favoritos, modeloRelacionado,
-       allPropiedades, bulk, tipoUsuario, cargaProp, addBucketCors, cargarPropMultiplesGCP, historialdePagos, 
+       allPropiedades, bulk, tipoUsuario, cargaProp, addBucketCors, cargarPropMultiples, historialdePagos, 
        autorizacionUsuario, pagodeServicio,   
        paquetesdePago} = require('./src/routes');
 
@@ -222,7 +222,7 @@ function checkIfSignedIn(req, res, next) {
     app.use("/cargaProp", checkIfSignedIn, checkAutorizacion, checkCantProps, cargaProp);
     app.use("/corsAuth", addBucketCors);
     // Carga propiedades 1 x 1 para cargar imagenes de grandes tamaños y no saturar Cors    
-    app.use("/cargarPropMultiplesGCP", useMulter, checkAutorizacion, cargarPropMultiplesGCP),
+    app.use("/cargarPropMultiples", useMulter, checkAutorizacion, cargarPropMultiples),
     app.use("/checkautorizacion", autorizacionUsuario),
     app.use("/revisarPagos", pagodeServicio),
     app.use("/checkPublicacion", servidorCantProps),

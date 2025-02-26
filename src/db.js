@@ -62,6 +62,7 @@ const modelHisorialdePagos = require("./models/historialdePagos.js");
 const modelPaquetedePago= require("./models/paquetedePago.js");
 const modelTipodeOrganizacion = require("./models/tipodeOrganizacion.js");
 const modelPropiedadIndependiente = require("./models/propiedadIndependiente.js");
+const modelImgPropiedadIndependiente = require("./models/imgPropiedadIndependiente.js");
 
 
 modelOrganizacion(sequelize);
@@ -84,12 +85,13 @@ modelHisorialdePagos(sequelize);
 modelPaquetedePago(sequelize);
 modelTipodeOrganizacion(sequelize);
 modelPropiedadIndependiente(sequelize);
+modelImgPropiedadIndependiente(sequelize);
 
 
 let {Propiedad, ImgPropiedad, TipodePropiedad, AmenidadesDesarrollo, AmenidadesPropiedad, 
   TipoOperacion, Estado , Municipio, Ciudad, Colonia, Cliente, ModeloAsociadoPropiedad,
   ImgModeloAsociado, TipodeUsuario, EstiloArquitectura, HistorialdePagos, PaquetedePago, 
-  Organizacion, TipodeOrganizacion, PropiedadIndependiente
+  Organizacion, TipodeOrganizacion, PropiedadIndependiente, ImgPropiedadIndependiente
 } = sequelize.models;
 
 // Relaciones DB
@@ -101,7 +103,6 @@ ImgPropiedad.belongsTo(Propiedad);
 Propiedad.belongsTo(TipodePropiedad);
 TipodePropiedad.hasMany(Propiedad);
 
-
 Propiedad.belongsToMany(AmenidadesDesarrollo, { through: 'AmenidadesDesarrolloPropiedad' });
 AmenidadesDesarrollo.belongsToMany(Propiedad, { through: 'AmenidadesDesarrolloPropiedad' });
 
@@ -111,12 +112,6 @@ AmenidadesPropiedad.belongsToMany(ModeloAsociadoPropiedad, { through: 'Amenidade
 TipoOperacion.hasMany(Propiedad);
 Propiedad.belongsTo(TipoOperacion);
 
-Estado.hasMany(Municipio);
-Municipio.belongsTo(Estado);
-
-Municipio.hasMany(Ciudad);
-Ciudad.belongsTo(Municipio);
-
 Estado.hasMany(Propiedad);
 Propiedad.belongsTo(Estado);
 
@@ -125,9 +120,6 @@ Propiedad.belongsTo(Municipio);
 
 Ciudad.hasMany(Propiedad);
 Propiedad.belongsTo(Ciudad);
-
-Colonia.belongsToMany(Ciudad, { through: 'ColoniaCiudad' });
-Ciudad.belongsToMany(Colonia, { through: 'ColoniaCiudad' });
 
 Colonia.hasMany(Propiedad);
 Propiedad.belongsTo(Colonia);
@@ -150,11 +142,49 @@ ModeloAsociadoPropiedad.belongsTo(Ciudad);
 Estado.hasMany(ModeloAsociadoPropiedad);
 ModeloAsociadoPropiedad.belongsTo(Estado);
 
-TipodeUsuario.hasMany(Cliente);
-Cliente.belongsTo(TipodeUsuario);
-
 EstiloArquitectura.hasMany(Propiedad);
 Propiedad.belongsTo(EstiloArquitectura);
+
+
+// Relaciones de Propiedad Independiente
+
+PropiedadIndependiente.hasMany(ImgPropiedadIndependiente);
+ImgPropiedadIndependiente.belongsTo(PropiedadIndependiente);
+
+PropiedadIndependiente.belongsTo(TipodePropiedad);
+TipodePropiedad.hasMany(PropiedadIndependiente);
+
+PropiedadIndependiente.belongsToMany(AmenidadesPropiedad, { through: 'AmenidadesPropIndependienteAmenidad' });
+AmenidadesPropiedad.belongsToMany(PropiedadIndependiente, { through: 'AmenidadesPropIndependienteAmenidad' });
+
+TipoOperacion.hasMany(PropiedadIndependiente);
+PropiedadIndependiente.belongsTo(TipoOperacion);
+
+Estado.hasMany(PropiedadIndependiente);
+PropiedadIndependiente.belongsTo(Estado);
+
+Municipio.hasMany(PropiedadIndependiente);
+PropiedadIndependiente.belongsTo(Municipio);
+
+Ciudad.hasMany(PropiedadIndependiente);
+PropiedadIndependiente.belongsTo(Ciudad);
+
+Colonia.hasMany(PropiedadIndependiente);
+PropiedadIndependiente.belongsTo(Colonia);
+
+Cliente.belongsToMany(PropiedadIndependiente, { through: 'PropIndependienteFavoritas' });
+PropiedadIndependiente.belongsToMany(Cliente, { through: 'PropIndependienteFavoritas' });
+
+EstiloArquitectura.hasMany(PropiedadIndependiente);
+PropiedadIndependiente.belongsTo(EstiloArquitectura);
+
+Organizacion.hasMany(PropiedadIndependiente);
+PropiedadIndependiente.belongsTo(Organizacion);
+
+// Organizacion
+
+TipodeOrganizacion.hasMany(Organizacion);
+Organizacion.belongsTo(TipodeOrganizacion);
 
 Organizacion.hasMany(Cliente);
 Cliente.belongsTo(Organizacion);
@@ -174,12 +204,18 @@ HistorialdePagos.belongsTo(PaquetedePago);
 TipodeOrganizacion.belongsToMany(PaquetedePago, { through: 'PaquetePagoPorOrg' });
 PaquetedePago.belongsToMany(TipodeOrganizacion, { through: 'PaquetePagoPorOrg' });
 
-/* TipodeOrganizacion.hasOne(PaquetedePago);
-PaquetedePago.belongsTo(TipodeOrganizacion);
-*/
+TipodeUsuario.hasMany(Cliente);
+Cliente.belongsTo(TipodeUsuario);
 
-TipodeOrganizacion.hasMany(Organizacion);
-Organizacion.belongsTo(TipodeOrganizacion);
+// Territorio
+Estado.hasMany(Municipio);
+Municipio.belongsTo(Estado);
+
+Municipio.hasMany(Ciudad);
+Ciudad.belongsTo(Municipio);
+
+Colonia.belongsToMany(Ciudad, { through: 'ColoniaCiudad' });
+Ciudad.belongsToMany(Colonia, { through: 'ColoniaCiudad' });
 
 module.exports = {
   ...sequelize.models,
