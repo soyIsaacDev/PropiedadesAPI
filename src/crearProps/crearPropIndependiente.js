@@ -1,7 +1,9 @@
-const {  AmenidadesModeloAmenidad, ModeloAsociadoPropiedad, PropiedadIndependiente } = require("../db");
+const {  AmenidadesModeloAmenidad, PropiedadIndependiente } = require("../db");
 const { Op } = require("sequelize");
 
-const crearPropIndependiente = async (req, res, next) => {
+// Crear Relaciones en DB
+
+const crearPropIndependiente = async (req, res) => {
     try {
       // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
       const bodyObj = req.body.data;
@@ -13,66 +15,61 @@ const crearPropIndependiente = async (req, res, next) => {
         propiedadIndepeniente
       } = parsedbodyObj
 
-      const PropiedadIndependienteExiste = await PropiedadIndependiente.findOne({
+      const [PropiedadIndependienteCreada, creado] = await PropiedadIndependiente.findOrCreate({
         where: {
           CiudadId:ciudad,
           EstadoId:estado,
           MunicipioId:municipio,
           calle,
           numeroPropiedad,
+          numeroInterior,
+        },
+        defaults: {
+          precio,          
+          posicion,
+          niveles,
+          recamaras, 
+          baños,
+          medio_baño,
+          espaciosCochera,
+          cocheraTechada,
+          m2Construccion,
+          m2Terreno,
+          m2Total, 
+          añodeConstruccion,
+          //publicada,
+          //TipodeOperacionId:tipodeOperacion,
+          //TipodePropiedadId,  
         }        
       })
 
-      if(PropiedadIndependienteExiste){
-        console.log("La Propiedad Independiente ya existe")
-        res.json({
-          codigo:0, 
-          Mensaje:`La propiedad  `+ PropiedadIndependienteExiste.calle + " " + PropiedadIndependienteExiste.numeroPropiedad +" ya existe",
-          Error:"Propiedad Independiente Existente"
-        });
-        //return;
-      }
-      else{
-        const PropiedadIndependienteCreada = await PropiedadIndependiente.create({
-          where: {
-            CiudadId:ciudad,
-            EstadoId:estado,
-            //MunicipioId:municipio
-          },
-          defaults: {
-            precio,
-            calle,
-            numeroPropiedad,
-            numeroInterior,
-            posicion,
-            niveles,
-            recamaras, 
-            baños,
-            medio_baño,
-            espaciosCochera,
-            cocheraTechada,
-            m2Construccion,
-            m2Terreno,
-            m2Total, 
-            añodeConstruccion,
-            //publicada,
-            //TipodeOperacionId:tipodeOperacion,
-            //TipodePropiedadId,  
-          }  
-        });
-        
-  
-        for (let i = 0; i < amenidadesPropiedad.length; i++) {        
+      if(creado === true){
+
+        /*  +++++ CREAR LA RELACION ++++++*/
+
+        /* for (let i = 0; i < amenidadesPropiedad.length; i++) {        
           await AmenidadesModeloAmenidad.create({ 
             ModeloAsociadoPropiedadId:PropiedadIndependienteCreada.id, 
             AmenidadesPropiedadId:amenidadesPropiedad[i] })
-        }  
-        next();
+        }   */
+        // Se creo la PropiedadIndependiente Exitosamente
+        res.json({
+          codigo:1, 
+          Mensaje:`Se cargaron los datos la propiedad Independiente`,
+          propIndependienteId:PropiedadIndependienteCreada.id
+        });
+      }
+      else{
+        // Ya existia la PropiedadIndependiente
+        console.log("La Propiedad Independiente ya existe")
+        res.json({
+          codigo:0, 
+          Mensaje:`La propiedad  `+ PropiedadIndependienteCreada.calle + " " + PropiedadIndependienteCreada.numeroPropiedad +" ya existe",
+          Error:"Propiedad Independiente Existente"
+        });
       }
       
       
-      /* const modeloCreadoJSON = { codigo:1, Mensaje:`Se creo el modelo `+ PropiedadIndependienteCreada[0].nombreModelo} ;
-      res.json(modeloCreadoJSON? modeloCreadoJSON :{mensaje:"No Se pudo crear el modelo"} ); */
     } catch (error) {
       console.log("Error al intentar crear los datos del Modelo " + error);
       res.json({

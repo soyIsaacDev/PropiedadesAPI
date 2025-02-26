@@ -76,6 +76,7 @@ const crearModeloRelacionado = async (req, res, next) => {
             await Desarrollo.save();
           }
 
+          // Se creo el ModeloRelacionado Exitosamente
           res.json({
             codigo:1, 
             Mensaje:`Se cargaron los datos del modelo relacionado`,
@@ -84,8 +85,8 @@ const crearModeloRelacionado = async (req, res, next) => {
 
         }
         else{
-          
-          console.log("El modelo ya existe " + creado)
+          // Ya existia el ModeloRelacionado
+          console.log("El modeloRelacionado ya existe " + creado)
           res.json({
             codigo:0, 
             Mensaje:`El Modelo `+ ModeloRelacionado.nombreModelo + " ya existe",

@@ -1,40 +1,25 @@
 const server = require("express").Router();
-const multer = require('multer');
 
-// Upload Google Cloud 
+// Upload Imagenes
 // Se carga cada imagen por separado, permitiendo cargar imagenes de tamaños grandes
 
-const { validarImagenes }= require('../crearProps/validarImagenes');
-const { cargarImagenGCP } = require('../crearProps/cargarImgGCP');// Upload Solo Imagenes
-const { pruebaMiddleware } = require('../middleware/pruebaMiddleware');
-
-const { crearPropIndependiente } = require('../crearProps/crearPropIndependiente');
 const { crearModeloRelacionado } = require('../crearProps/crearModeloRelacionado');
-const { crearTablaImgModeloAsociado } = require('../crearProps/crearTablaImgModeloAsociado');
-const upload = multer();
+const { crearPropIndependiente } = require('../crearProps/crearPropIndependiente');
 
-// Modelo
+const { validarImagenes }= require('../crearProps/validarImagenes');
+const { cargarImagenGCPyLocal } = require('../crearProps/cargarImgGCPyLocal');// Upload Solo Imagenes
+
+const { crearTablaImgModeloAsociado } = require('../crearProps/crearTablaImgModeloAsociado');
+
 
 // Procesar datos de FormData --> https://khendrikse.netlify.app/blog/send-data-with-formdata/
-                                    // multer.none permite revisar un form data sin cargar archivos
+
+// Modelo
 server.post("/dataNuevoModeloAsociadoPropiedad", crearModeloRelacionado); 
-server.post("/nuevoModeloAsociadoPropiedad", validarImagenes, cargarImagenGCP, crearTablaImgModeloAsociado); 
-//server.post("/nuevoModeloAsociadoPropiedad",  crearTablaImgModeloAsociado); 
+server.post("/nuevoModeloAsociadoPropiedad", validarImagenes, cargarImagenGCPyLocal, crearTablaImgModeloAsociado); 
 
-server.post("/dataPropIndependiente", crearPropIndependiente, validarImagenes );
-
-//server.post("/nuevoModeloAsociadoPropiedad", validarImagenes, cargarImagenGCP); 
-/* server.post("/nuevoModeloAsociadoPropiedad", async (req,res)=>{
-  console.log("SE RECIBEN ARCHIVOS GRANDES")
-  res.json({
-    codigo:1, 
-    Mensaje:`Si pasaron las imagenes`
-  });
-}); */
-
-server.post("/funcionando", async (req,res)=>{
-  console.log("Funcionando OK")
-  res.json("Funcionando OK")
-}); 
+// Propiedad Independiente
+server.post("/dataPropIndependiente", crearPropIndependiente );
+server.post("/nuevaPropIndependiente", validarImagenes, cargarImagenGCPyLocal );
 
 module.exports =  server;
