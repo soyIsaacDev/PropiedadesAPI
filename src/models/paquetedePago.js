@@ -11,7 +11,7 @@ module.exports = s => {
         precio:{
             type: DataTypes.DOUBLE
         },
-        tipodeOperacion:{
+        /* tipodeOperacion:{
             type: DataTypes.ENUM(
                 "Venta",
                 "Renta",
@@ -21,14 +21,14 @@ module.exports = s => {
                 "Todas",
             ),
             allowNull: true,
-        },
+        }, */
         periodicidad:{
             type: DataTypes.STRING,
         },     
-        cantidaddePropiedades:{
+        /* cantidaddePropiedades:{
             type: DataTypes.INTEGER,
             allowNull: true,
-        }, 
+        },  */
         tipodePago:{
             type: DataTypes.ENUM(
                 "Pagado",
@@ -36,7 +36,7 @@ module.exports = s => {
             ),
             allowNull: false,
         },
-        tipodeDesarrollo:{
+        /* tipodeDesarrollo:{
             type: DataTypes.ENUM(
                 "Desarrollo",
                 "Modelo",
@@ -49,7 +49,7 @@ module.exports = s => {
                 "ConUso",
             ),
             allowNull: true,
-        },
+        }, */
         fechaInicioOferta:{
             type: DataTypes.DATEONLY,
         },

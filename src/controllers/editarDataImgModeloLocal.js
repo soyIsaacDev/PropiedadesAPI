@@ -4,7 +4,7 @@ const {  ImgModeloAsociado, ModeloAsociadoPropiedad, AmenidadesModeloAmenidad } 
 const path = require('path');
 const estiloArquitectura = require("../models/estiloArquitectura");
 const carpeta = path.join(__dirname, '../../uploads')
-console.log("DIRECTORIO" + carpeta)
+//console.log("DIRECTORIO" + carpeta)
 
 const editarDataModelo = async (req, res, next) => {
   console.log("upload Imagen Propiedad" )

@@ -29,7 +29,7 @@ module.exports = s => {
         tipodeDesarrolloAut:{
             type: DataTypes.ENUM(
                 "Desarrollo",
-                "Modelo",
+                "PropiedadIndependiente",
                 "Todos",
                 "NoAutorizado",
             ),

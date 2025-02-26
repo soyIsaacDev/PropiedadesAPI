@@ -1,3 +1,4 @@
+const { types } = require('pg');
 const {DataTypes} = require ('sequelize');
 
 module.exports = s => {
@@ -73,6 +74,10 @@ module.exports = s => {
             type: DataTypes.ENUM("Si","No"),
             allowNull: true
         },
+        tratoDirecto:{
+            type:DataTypes.BOOLEAN,
+            allowNull:false
+        }
         
     }, {
     timestamps: false,

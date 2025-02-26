@@ -2,7 +2,7 @@ const { Propiedad, Organizacion, TipodeOrganizacion } = require("../db");
 const servidorCantProps = require("express").Router();
 
 const checkCantProps = async (req, res, next)  => {
-    try {
+    /* try {
       const { orgId } = req.params;
       const cuentaProps = await Propiedad.count(
       {
@@ -49,7 +49,7 @@ const checkCantProps = async (req, res, next)  => {
 
     } catch (e) {
         res.send(e)
-    }
+    } */
 }
 
 servidorCantProps.get("/:orgId", checkCantProps, async (req, res)=>{
