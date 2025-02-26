@@ -8,18 +8,18 @@ const crearPropIndependiente = async (req, res) => {
       // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
       const bodyObj = req.body.data;
       const parsedbodyObj = JSON.parse(bodyObj);
-      const { precio, calle, numeroPropiedad, numeroInterior, posicion, ciudad, estado, municipio,
+      const { precio, calle, numeroPropiedad, numeroInterior, posicion, ciudad, estado, municipio, colonia,
         niveles, recamaras, baños, medio_baño, espaciosCochera, cocheraTechada,   
         m2Construccion, m2Terreno, m2Total, añodeConstruccion,  publicada, 
-        tipodeOperacion, TipodePropiedadId, amenidadesPropiedad,
-        propiedadIndepeniente
+        TipoOperacionId, TipodePropiedadId, amenidadesPropiedad,
       } = parsedbodyObj
 
       const [PropiedadIndependienteCreada, creado] = await PropiedadIndependiente.findOrCreate({
         where: {
-          CiudadId:ciudad,
           EstadoId:estado,
           MunicipioId:municipio,
+          CiudadId:ciudad,
+          ColoniumId:colonia,
           calle,
           numeroPropiedad,
           numeroInterior,
@@ -38,20 +38,18 @@ const crearPropIndependiente = async (req, res) => {
           m2Total, 
           añodeConstruccion,
           //publicada,
-          //TipodeOperacionId:tipodeOperacion,
-          //TipodePropiedadId,  
+          TipoOperacionId:1, // venta
+          TipodePropiedadId,  
         }        
       })
 
       if(creado === true){
 
-        /*  +++++ CREAR LA RELACION ++++++*/
-
-        /* for (let i = 0; i < amenidadesPropiedad.length; i++) {        
-          await AmenidadesModeloAmenidad.create({ 
-            ModeloAsociadoPropiedadId:PropiedadIndependienteCreada.id, 
+        for (let i = 0; i < amenidadesPropiedad.length; i++) {        
+          await AmenidadesPropIndependienteAmenidad.create({ 
+            PropiedadIndependienteId:PropiedadIndependienteCreada.id, 
             AmenidadesPropiedadId:amenidadesPropiedad[i] })
-        }   */
+        }  
         // Se creo la PropiedadIndependiente Exitosamente
         res.json({
           codigo:1, 
@@ -64,7 +62,7 @@ const crearPropIndependiente = async (req, res) => {
         console.log("La Propiedad Independiente ya existe")
         res.json({
           codigo:0, 
-          Mensaje:`La propiedad  `+ PropiedadIndependienteCreada.calle + " " + PropiedadIndependienteCreada.numeroPropiedad +" ya existe",
+          Mensaje:`La propiedad ubicada en `+ PropiedadIndependienteCreada.calle + " " + PropiedadIndependienteCreada.numeroPropiedad +" ya existe",
           Error:"Propiedad Independiente Existente"
         });
       }

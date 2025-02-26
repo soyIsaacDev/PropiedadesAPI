@@ -2981,7 +2981,7 @@ server.get("/actualizarTipoOrg", async (req, res) => {
         const tipoOrg = {
             nombreTipoOrg:"TratoDirecto",
             tipodeOperacionAut:"VentaoRenta",
-            tipodeDesarrolloAut:"Modelo",
+            tipodeDesarrolloAut:"PropiedadIndependiente",
             tiempodeConstruccionAut:"ConUso",
             cantidadPropVenta:1,
             cantidadPropRenta:1,

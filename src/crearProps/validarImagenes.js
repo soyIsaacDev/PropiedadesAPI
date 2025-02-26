@@ -2,6 +2,7 @@
 const fs = require('fs');
 
 const validarImagenes = (req, res, next) => {
+  try {
     const file = req.file;
     const errors = [];
 
@@ -51,6 +52,15 @@ const validarImagenes = (req, res, next) => {
 
     req.files = file;
     next();    
+    
+  } catch (error) {
+    const respuestaError = {
+      codigo:0, 
+      Mensaje:`Error al validar la imagen catch`,
+      Error:error
+    }
+    return res.status(400).json(respuestaError);
+  }
   //});
 };
 

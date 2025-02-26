@@ -34,7 +34,7 @@ const cargarImagenGCPyLocal = async (req, res, next) => {
     // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
     const bodyObj = req.body.data;
     const parsedbodyObj = JSON.parse(bodyObj);
-    const { ordenImagen, esDesarrollo } = parsedbodyObj
+    const { ordenImagen, tipodeDesarrollo } = parsedbodyObj
     const file = req.files;
 
     // Agregando Nombre Unico segun la fecha
@@ -51,10 +51,10 @@ const cargarImagenGCPyLocal = async (req, res, next) => {
     if(DEVMODE === "Production" ){
       // Cambia el tamaño y lo sube a Google Cloud
       const thumbnail_img = await imgCambioTamaño(file, 393, 388, `Thumbnail_WebP_${uniqueDateName}.webp`);
-      const uploadThumbnail = await uploadFile(thumbnail_img, esDesarrollo);
+      const uploadThumbnail = await uploadFile(thumbnail_img, tipodeDesarrollo);
   
       const imgGde = await imgCambioTamaño(file, 704, 504, `Detalles_Img_Gde_${uniqueDateName}.webp`);      
-      const uploadBig = await uploadFile(imgGde, esDesarrollo);
+      const uploadBig = await uploadFile(imgGde, tipodeDesarrollo);
     }
     else {
       // Cambia el tamaño y lo guarda en local
@@ -72,7 +72,7 @@ const cargarImagenGCPyLocal = async (req, res, next) => {
     {
       if(DEVMODE === "Production" ){
         const imagenChica = await imgCambioTamaño(file, 428, 242, `Detalles_Img_Chica_${uniqueDateName}.webp`);
-        const uploadImgDetChica = await uploadFile(imagenChica, esDesarrollo);
+        const uploadImgDetChica = await uploadFile(imagenChica, tipodeDesarrollo);
       }
       else{
         resizeImage(file.filename, uniqueDateName, 428, 242, "Detalles_Img_Chica_");
@@ -111,10 +111,10 @@ async function imgCambioTamaño (archivo, width, height, nuevoNombre){
   return img_a_cambiar;
 }
 
-const uploadFile = async (file, esDesarrollo) => new Promise((resolve, reject) => {
+const uploadFile = async (file, tipodeDesarrollo) => new Promise((resolve, reject) => {
  let fileUpload = "";
  
- if(esDesarrollo){
+ if(tipodeDesarrollo=== "Desarrollo"){
   fileUpload = desarrolloBucket.file(file.originalname);
  }
  else{

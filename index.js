@@ -219,9 +219,11 @@ function checkIfSignedIn(req, res, next) {
     app.use("/allProp", /* checkIfSignedIn, */ allPropiedades);
     app.use("/bulk", bulk);
     app.use("/tipodeUsuario", tipoUsuario);
+    // Eliminar checkCantProps? Parece que el modo correcto esta en checkPago
     app.use("/cargaProp", checkIfSignedIn, checkAutorizacion, checkCantProps, cargaProp);
     app.use("/corsAuth", addBucketCors);
     // Carga propiedades 1 x 1 para cargar imagenes de grandes tamaños y no saturar Cors    
+    // agregar checkPago  En Front lo reviso desde este middleware
     app.use("/cargarPropMultiples", useMulter, checkAutorizacion, cargarPropMultiples),
     app.use("/checkautorizacion", autorizacionUsuario),
     app.use("/revisarPagos", pagodeServicio),

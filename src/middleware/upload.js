@@ -10,7 +10,7 @@ const imageFilter = (req, file, cb) => {
   }
 };
 
-console.log("DIRECTORIO  "+ carpeta)
+//console.log("DIRECTORIO  "+ carpeta)
 
 var storage = multer.diskStorage({
   destination: (req, file, cb) => {

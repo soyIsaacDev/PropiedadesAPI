@@ -3,7 +3,7 @@ const {  ImgPropiedad, Propiedad, AmenidadesDesarrolloPropiedad } = require("../
 
 const path = require('path');
 const carpeta = path.join(__dirname, '../../uploads')
-console.log("DIRECTORIO" + carpeta)
+//console.log("DIRECTORIO" + carpeta)
 
 const editarDataDesarrollo = async (req, res, next) => {
   console.log("upload Imagen Propiedad" )

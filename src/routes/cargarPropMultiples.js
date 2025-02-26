@@ -9,17 +9,16 @@ const { crearPropIndependiente } = require('../crearProps/crearPropIndependiente
 const { validarImagenes }= require('../crearProps/validarImagenes');
 const { cargarImagenGCPyLocal } = require('../crearProps/cargarImgGCPyLocal');// Upload Solo Imagenes
 
-const { crearTablaImgModeloAsociado } = require('../crearProps/crearTablaImgModeloAsociado');
+const crearTablaImg = require('../crearProps/crearTablaImg');
 
 
 // Procesar datos de FormData --> https://khendrikse.netlify.app/blog/send-data-with-formdata/
 
 // Modelo
-server.post("/dataNuevoModeloAsociadoPropiedad", crearModeloRelacionado); 
-server.post("/nuevoModeloAsociadoPropiedad", validarImagenes, cargarImagenGCPyLocal, crearTablaImgModeloAsociado); 
+server.post("/crearModeloAsociadoPropiedad", crearModeloRelacionado); 
+server.post("/cargarImagen", validarImagenes, cargarImagenGCPyLocal, crearTablaImg); 
 
 // Propiedad Independiente
-server.post("/dataPropIndependiente", crearPropIndependiente );
-server.post("/nuevaPropIndependiente", validarImagenes, cargarImagenGCPyLocal );
+server.post("/crearaPropIndependiente", crearPropIndependiente );
 
 module.exports =  server;

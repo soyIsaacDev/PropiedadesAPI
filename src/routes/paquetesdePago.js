@@ -45,10 +45,13 @@ server.get("/", async (req,res)=> {
     }
 });
 
+
+/* Actualize las relaciones y formas de validar 
+Por eso esta desactivado
 server.get("/nuevopaquetedepago", async (req,res)=> {
     try {
       // Cambiar relacion en DB de TipodePropiedad a TipodeOrganizacion
-      /* const nuevoPaquete = {                
+       const nuevoPaquete = {                
         nombrePaquete:"TratoDirecto",
         precio:0,
         tipodeOperacion:"VentaoRenta",
@@ -60,7 +63,7 @@ server.get("/nuevopaquetedepago", async (req,res)=> {
         fechaInicioOferta:"2025-01-01",
         fechaFinOferta:"2025-05-31",
         nombreTipoOrg:"TratoDirecto"
-      } */
+      } 
       const nuevoPaquete = {                
         nombrePaquete:"Desarrollador",
         precio:0,
@@ -138,7 +141,8 @@ server.get("/nuevopaquetedepago", async (req,res)=> {
     } catch (e) {
         res.send(e)
     }
-})
+}) */
+   
 
 server.get("/RelacionPaquetePagoPorOrg", async(req,res)=>{
     try {
@@ -157,7 +161,7 @@ server.get("/RelacionPaquetePagoPorOrg", async(req,res)=>{
     }
 })
 
-server.get("/paquetepagoGratis", async (req,res)=> {
+/* server.get("/paquetepagoGratis", async (req,res)=> {
     try {
         const paquetePago1Gratis = await PaquetedePago.create(
             {                
@@ -178,7 +182,7 @@ server.get("/paquetepagoGratis", async (req,res)=> {
     } catch (e) {
         res.send(e)
     }
-})
+}) */
 
 server.get("/paquetes", async(req,res)=>{
     try {
@@ -305,9 +309,9 @@ server.get("/nuevoPago", async(req,res)=>{
     }
 })
 
-server.get("/newPaqPagoOtrForma", async (req,res)=> {
+server.get("/nuevopaquetedepago", async (req,res)=> {
     try {
-      // Cambiar relacion en DB de TipodePropiedad a TipodeOrganizacion
+        // AGREGAR VALIDACION DE NO SUPERAR LAS CANTIDADES DE TIPODEORGANIZACION
       const nuevoPaquete = {   
         tipodeOrg:"TratoDirecto",             
         nombrePaquete:"TratoDirecto",
@@ -333,7 +337,26 @@ server.get("/newPaqPagoOtrForma", async (req,res)=> {
         nombreTipoOrg:"Desarrolladora"
       } */
 
-      
+    const autorizacionesDeOrg = await TipodeOrganizacion.findOne({
+        where:{nombreTipoOrg:nuevoPaquete.nombreTipoOrg}
+    })
+
+    // Validaciones 
+    const cantidadPropsValidada = "La cantidad que intentas cargar No esta autorizada"
+    
+    if(autorizacionesDeOrg.tipodeOperacionAut === "Venta" && autorizacionesDeOrg.cantidadPropVenta >= nuevoPaquete.cantidaddePropiedades) 
+        cantidadPropsValidada = nuevoPaquete.cantidaddePropiedades;
+    if(autorizacionesDeOrg.tipodeOperacionAut==="VentayRenta" && autorizacionesDeOrg.cantidadPropRenta >= nuevoPaquete.cantidaddePropiedades){
+      cantidadPropsValidada = nuevoPaquete.cantidaddePropiedades;
+    }
+    if(autorizacionesDeOrg.tipodeOperacionAut==="VentaoRenta" && autorizacionesDeOrg.cantidadPropRenta >= nuevoPaquete.cantidaddePropiedades){
+        cantidadPropsValidada = nuevoPaquete.cantidaddePropiedades;
+    }
+    if(autorizacionesDeOrg.tipodeOperacionAut === "PreVenta" && autorizacionesDeOrg.cantidadPropPreVenta >= nuevoPaquete.cantidaddePropiedades){
+      cantidadPropsValidada = nuevoPaquete.cantidaddePropiedades;
+    }
+    
+
     // Todas las validaciones son correctas
     const paqueteCreado = await PaquetedePago.create(
     {                
