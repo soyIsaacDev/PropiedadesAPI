@@ -38,38 +38,6 @@
     const { checkPagosActivos, servidorPago } = require("./src/middleware/checkPago");
     const { checkCantProps, servidorCantProps } = require("./src/middleware/checkCantProps.js");
     
-    const multerUpload = multer({
-      limits: {
-        fileSize: 31 * 1024 * 1024, // no larger than 31mb
-        fieldSize: 31 * 1024 * 1024 
-      }
-    })
-    
-    const useMulter = (req, res, next) => {
-
-      multerUpload.single('imagenesfiles')(req, res, (err) => {
-        console.log("En Multer Upload")
-        if (err) {
-          console.log("Error en Array "+err)
-          const respuestaError = {
-            codigo:0, 
-            Mensaje:`Error al intentar crear la imagen`,
-            Error:err.message
-          }
-          return res.status(400).json(respuestaError);
-        }
-        else next()
-      })
-    }
-    /* app.METHOD(PATH, HANDLER)
-    app es una instancia de express.
-    METHOD es un método de solicitud HTTP.
-    PATH es una vía de acceso en el servidor.
-    HANDLER es la función que se ejecuta cuando se correlaciona la ruta. */
-
-    // app.use([path,] callback [, callback...])    --> http://expressjs.com/es/api.html#app.use
-    //   nos permite montar middlewares a la ruta especificada  
-    //                                  si no se espcifican rutas se montara el middleware en toda la aplicacion
     const DEVMODE = process.env.DEVELOPMENT;
     var corsOptions= undefined;
 
@@ -90,6 +58,53 @@
             credentials: true 
         };
     }
+
+    const path = require('path')
+    const carpeta = path.join(__dirname, './uploads')
+
+    const storage = multer.diskStorage({
+      destination: (req, file, cb) => {
+        cb(null, carpeta);
+      },
+      filename: (req, file, cb) => {
+        cb(null, Date.now() + '_' + file.originalname);
+      }
+    });
+
+    const multerUpload = multer({
+      storage: storage,
+      limits: {
+        fileSize: 31 * 1024 * 1024, // no larger than 31mb
+        fieldSize: 31 * 1024 * 1024 
+      }
+    })
+    
+    // uso de Multer para subir imagenes y datos en form-data
+    const useMulter = (req, res, next) => {
+      
+      multerUpload.single('imagenesfiles')(req, res, (err) => {
+        if (err) {
+          console.log("Error en multerUpload en Index "+err)
+          const respuestaError = {
+            codigo:0, 
+            Mensaje:`Error al intentar crear la imagen`,
+            Error:err.message
+          }
+          return res.status(400).json(respuestaError);
+        }
+        else next()
+      })
+    }
+    /* app.METHOD(PATH, HANDLER)
+    app es una instancia de express.
+    METHOD es un método de solicitud HTTP.
+    PATH es una vía de acceso en el servidor.
+    HANDLER es la función que se ejecuta cuando se correlaciona la ruta. */
+
+    // app.use([path,] callback [, callback...])    --> http://expressjs.com/es/api.html#app.use
+    //   nos permite montar middlewares a la ruta especificada  
+    //                                  si no se espcifican rutas se montara el middleware en toda la aplicacion
+    
     app.use(cors(corsOptions))
     app.use(express.json({limit: '200000000' })); //  -->  habilitamos objetos json con el metodo express.json   
     app.use(express.urlencoded({ limit: '200000000', extended: true }));
@@ -206,8 +221,7 @@ function checkIfSignedIn(req, res, next) {
     app.use("/tipodeUsuario", tipoUsuario);
     app.use("/cargaProp", checkIfSignedIn, checkAutorizacion, checkCantProps, cargaProp);
     app.use("/corsAuth", addBucketCors);
-    // Carga propiedades 1 x 1 para no saturar Cors
-    // multer.any permite revisar un form data
+    // Carga propiedades 1 x 1 para cargar imagenes de grandes tamaños y no saturar Cors    
     app.use("/cargarPropMultiplesGCP", useMulter, checkAutorizacion, cargarPropMultiplesGCP),
     app.use("/checkautorizacion", autorizacionUsuario),
     app.use("/revisarPagos", pagodeServicio),
