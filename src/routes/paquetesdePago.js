@@ -1,6 +1,6 @@
 const server = require("express").Router();
 
-const { Agente, Organizacion, AgenteDeDesarrollo, PaquetedePago, HistorialdePagos, Autorizacion, TipodePropiedad, TipodeOrganizacion, PaquetePagoPorOrg } = require("../db");
+const { Agente, Organizacion, AgenteDeDesarrollo, PaquetedePago, HistorialdePagos, Autorizacion, TipodePropiedad, AutorizacionesXTipodeOrg, PaquetePagoPorOrg } = require("../db");
 
 const formatDateYMD = (date) => {
     // Convert the date to ISO string
@@ -50,7 +50,7 @@ server.get("/", async (req,res)=> {
 Por eso esta desactivado
 server.get("/nuevopaquetedepago", async (req,res)=> {
     try {
-      // Cambiar relacion en DB de TipodePropiedad a TipodeOrganizacion
+      // Cambiar relacion en DB de TipodePropiedad a AutorizacionesXTipodeOrg
        const nuevoPaquete = {                
         nombrePaquete:"TratoDirecto",
         precio:0,
@@ -85,7 +85,7 @@ server.get("/nuevopaquetedepago", async (req,res)=> {
         tiempodeConstruccion:"El Tiempo de Construccion No esta autorizado",
       }
       
-      const autorizacionesDeOrg = await TipodeOrganizacion.findOne({
+      const autorizacionesDeOrg = await AutorizacionesXTipodeOrg.findOne({
         where:{nombreTipoOrg:nuevoPaquete.nombreTipoOrg}
       })
       // Validaciones 
@@ -131,7 +131,7 @@ server.get("/nuevopaquetedepago", async (req,res)=> {
           fechaFinOferta:nuevoPaquete.fechaFinOferta,
         })
         const paquetes = await PaquetePagoPorOrg.create({
-            TipodeOrganizacionId:autorizacionesDeOrg.id,
+            AutorizacionesXTipodeOrgId:autorizacionesDeOrg.id,
             PaquetedePagoId:paqueteCreado.id
         });
         res.json(paqueteCreado )
@@ -148,11 +148,11 @@ server.get("/RelacionPaquetePagoPorOrg", async(req,res)=>{
     try {
 
         const paquetes = await PaquetePagoPorOrg.create({
-            TipodeOrganizacionId:"31b4efa7-1535-4422-bf87-0dcd4aab8ddc",
+            AutorizacionesXTipodeOrgId:"31b4efa7-1535-4422-bf87-0dcd4aab8ddc",
             PaquetedePagoId:1
         });
         const paquetes2 = await PaquetePagoPorOrg.create({
-            TipodeOrganizacionId:"31b4efa7-1535-4422-bf87-0dcd4aab8ddc",
+            AutorizacionesXTipodeOrgId:"31b4efa7-1535-4422-bf87-0dcd4aab8ddc",
             PaquetedePagoId:2
         });
         res.send(paquetes)
@@ -197,7 +197,7 @@ server.get("/paquetesConTipoOrg", async(req,res)=>{
     try {
       const paquetedePago = await PaquetedePago.findOne({
         where:{id:1},
-        include:TipodeOrganizacion
+        include:AutorizacionesXTipodeOrg
       });
       res.send(paquetedePago)
     } catch (e) {
@@ -270,21 +270,21 @@ server.get("/nuevoPago", async(req,res)=>{
        
        const organizacion = await Organizacion.findOne({
          where:{id:orgId},
-         include:TipodeOrganizacion
+         include:AutorizacionesXTipodeOrg
        })
        
        const paquetedePago = await PaquetedePago.findOne({
          where:{id:idPaquetedePagoAComprar},
-         include:TipodeOrganizacion
+         include:AutorizacionesXTipodeOrg
        });
-       console.log(paquetedePago.TipodeOrganizacions)
+       console.log(paquetedePago.AutorizacionesXTipodeOrgs)
        //VALIDACIONES
        if(organizacion) validacion.orgActiva = 1;
        // Revisando si el paquete de pago existe
        if(paquetedePago) validacion.paqueteExistente = 1;
        //Revisamos si el tipo de organizacion esta autorizada a ese paquete de pago
-       for (let i = 0; i < paquetedePago.TipodeOrganizacions.length; i++) {
-        if(organizacion && organizacion.TipodeOrganizacionId === paquetedePago.TipodeOrganizacions[i].id) validacion.autorizacionOrg = 1; 
+       for (let i = 0; i < paquetedePago.AutorizacionesXTipodeOrgs.length; i++) {
+        if(organizacion && organizacion.AutorizacionesXTipodeOrgId === paquetedePago.AutorizacionesXTipodeOrgs[i].id) validacion.autorizacionOrg = 1; 
        }
        // Revisamos si el paquete aun se encuentra activo
        if(new Date(paquetedePago.fechaFinOferta) >= fechaFindePago) validacion.paqueteActivo = 1;
@@ -311,53 +311,16 @@ server.get("/nuevoPago", async(req,res)=>{
 
 server.get("/nuevopaquetedepago", async (req,res)=> {
     try {
-        // AGREGAR VALIDACION DE NO SUPERAR LAS CANTIDADES DE TIPODEORGANIZACION
       const nuevoPaquete = {   
         tipodeOrg:"TratoDirecto",             
         nombrePaquete:"TratoDirecto",
         precio:0,
         periodicidad:"Mensual",     
-        cantidaddePropiedades:1, 
         tipodePago:"Gratuito",
         fechaInicioOferta:"2025-01-01",
         fechaFinOferta:"2025-05-31",
-        
       }
-      /* const nuevoPaquete = {                
-        nombrePaquete:"Desarrollador",
-        precio:0,
-        tipodeOperacion:"Venta",
-        periodicidad:"Mensual",     
-        cantidaddePropiedades:100, 
-        tipodePago:"Gratuito",
-        tipodeDesarrollo:"Desarrollo",
-        tiempodeConstruccion:"Nuevo",
-        fechaInicioOferta:"2025-01-01",
-        fechaFinOferta:"2025-05-31",
-        nombreTipoOrg:"Desarrolladora"
-      } */
 
-    const autorizacionesDeOrg = await TipodeOrganizacion.findOne({
-        where:{nombreTipoOrg:nuevoPaquete.nombreTipoOrg}
-    })
-
-    // Validaciones 
-    const cantidadPropsValidada = "La cantidad que intentas cargar No esta autorizada"
-    
-    if(autorizacionesDeOrg.tipodeOperacionAut === "Venta" && autorizacionesDeOrg.cantidadPropVenta >= nuevoPaquete.cantidaddePropiedades) 
-        cantidadPropsValidada = nuevoPaquete.cantidaddePropiedades;
-    if(autorizacionesDeOrg.tipodeOperacionAut==="VentayRenta" && autorizacionesDeOrg.cantidadPropRenta >= nuevoPaquete.cantidaddePropiedades){
-      cantidadPropsValidada = nuevoPaquete.cantidaddePropiedades;
-    }
-    if(autorizacionesDeOrg.tipodeOperacionAut==="VentaoRenta" && autorizacionesDeOrg.cantidadPropRenta >= nuevoPaquete.cantidaddePropiedades){
-        cantidadPropsValidada = nuevoPaquete.cantidaddePropiedades;
-    }
-    if(autorizacionesDeOrg.tipodeOperacionAut === "PreVenta" && autorizacionesDeOrg.cantidadPropPreVenta >= nuevoPaquete.cantidaddePropiedades){
-      cantidadPropsValidada = nuevoPaquete.cantidaddePropiedades;
-    }
-    
-
-    // Todas las validaciones son correctas
     const paqueteCreado = await PaquetedePago.create(
     {                
       nombrePaquete:nuevoPaquete.nombrePaquete,
@@ -368,12 +331,13 @@ server.get("/nuevopaquetedepago", async (req,res)=> {
       fechaFinOferta:nuevoPaquete.fechaFinOferta,
     });
     console.log(paqueteCreado)
-    const tipodeOrg = await TipodeOrganizacion.findOne({
+
+    const tipodeOrg = await AutorizacionesXTipodeOrg.findOne({
         where:{nombreTipoOrg:nuevoPaquete.tipodeOrg}
     })
 
     const paquetes = await PaquetePagoPorOrg.create({
-        TipodeOrganizacionId:tipodeOrg.id,
+        AutorizacionesXTipodeOrgId:tipodeOrg.id,
         PaquetedePagoId:paqueteCreado.id
     });
     

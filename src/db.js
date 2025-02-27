@@ -60,7 +60,7 @@ const modeloTipodeUsuario = require("./models/tipodeUsuario");
 const modeloEstiloArquitectura = require("./models/estiloArquitectura.js");
 const modelHisorialdePagos = require("./models/historialdePagos.js");
 const modelPaquetedePago= require("./models/paquetedePago.js");
-const modelTipodeOrganizacion = require("./models/tipodeOrganizacion.js");
+const modelAutorizacionesXTipodeOrg = require("./models/autorizacionesXTipodeOrg.js");
 const modelPropiedadIndependiente = require("./models/propiedadIndependiente.js");
 const modelImgPropiedadIndependiente = require("./models/imgPropiedadIndependiente.js");
 
@@ -83,7 +83,7 @@ modeloTipodeUsuario(sequelize);
 modeloEstiloArquitectura(sequelize);
 modelHisorialdePagos(sequelize);
 modelPaquetedePago(sequelize);
-modelTipodeOrganizacion(sequelize);
+modelAutorizacionesXTipodeOrg(sequelize);
 modelPropiedadIndependiente(sequelize);
 modelImgPropiedadIndependiente(sequelize);
 
@@ -91,7 +91,7 @@ modelImgPropiedadIndependiente(sequelize);
 let {Propiedad, ImgPropiedad, TipodePropiedad, AmenidadesDesarrollo, AmenidadesPropiedad, 
   TipoOperacion, Estado , Municipio, Ciudad, Colonia, Cliente, ModeloAsociadoPropiedad,
   ImgModeloAsociado, TipodeUsuario, EstiloArquitectura, HistorialdePagos, PaquetedePago, 
-  Organizacion, TipodeOrganizacion, PropiedadIndependiente, ImgPropiedadIndependiente
+  Organizacion, AutorizacionesXTipodeOrg, PropiedadIndependiente, ImgPropiedadIndependiente
 } = sequelize.models;
 
 // Relaciones DB
@@ -183,8 +183,8 @@ PropiedadIndependiente.belongsTo(Organizacion);
 
 // Organizacion
 
-TipodeOrganizacion.hasMany(Organizacion);
-Organizacion.belongsTo(TipodeOrganizacion);
+AutorizacionesXTipodeOrg.hasMany(Organizacion);
+Organizacion.belongsTo(AutorizacionesXTipodeOrg);
 
 Organizacion.hasMany(Cliente);
 Cliente.belongsTo(Organizacion);
@@ -201,8 +201,8 @@ HistorialdePagos.belongsTo(Organizacion);
 PaquetedePago.hasOne(HistorialdePagos);
 HistorialdePagos.belongsTo(PaquetedePago);
 
-TipodeOrganizacion.belongsToMany(PaquetedePago, { through: 'PaquetePagoPorOrg' });
-PaquetedePago.belongsToMany(TipodeOrganizacion, { through: 'PaquetePagoPorOrg' });
+AutorizacionesXTipodeOrg.belongsToMany(PaquetedePago, { through: 'PaquetePagoPorOrg' });
+PaquetedePago.belongsToMany(AutorizacionesXTipodeOrg, { through: 'PaquetePagoPorOrg' });
 
 TipodeUsuario.hasMany(Cliente);
 Cliente.belongsTo(TipodeUsuario);

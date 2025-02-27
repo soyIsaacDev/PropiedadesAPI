@@ -7,7 +7,7 @@ var public = path.join(__dirname,'../../uploads');
 
 const { Propiedad, ImgPropiedad, AmenidadesDesarrollo,TipodePropiedad,TipoOperacion, Estado, Municipio, Ciudad, 
   Colonia, Cliente, Favoritos, AmenidadesDesarrolloPropiedad, ModeloAsociadoPropiedad, ImgModeloAsociado,
-  Organizacion, TipodeOrganizacion,
+  Organizacion, AutorizacionesXTipodeOrg,
   
 } = require("../db");
 const organizacion = require("../models/organizacion");
@@ -25,7 +25,7 @@ server.get("/getDataandImagenPropiedades", async (req, res) => {
           model: Organizacion,
           include: [
             {
-              model: TipodeOrganizacion
+              model: AutorizacionesXTipodeOrg
             }
           ]
         },
@@ -357,14 +357,14 @@ server.get("/cuentaxOrg", async (req, res) => {
           model: Organizacion,
           include: [
             {
-              model: TipodeOrganizacion
+              model: AutorizacionesXTipodeOrg
             }
           ]
         },
       ]
       
     })
-    /*const maxVentas = org[0].TipodeOrganizacion.cantidadPropVenta;
+    /*const maxVentas = org[0].AutorizacionesXTipodeOrg.cantidadPropVenta;
     const propOrgId = prop.OrganizacionId
     const cuentadeVentas = prop.TipoOperacionId;
     const cuentaPropiedades = [];
@@ -402,7 +402,7 @@ server.get("/cuentaxOrg", async (req, res) => {
     } */
     
     /* const org = await Organizacion.findAll({
-      include:  TipodeOrganizacion
+      include:  AutorizacionesXTipodeOrg
     })
     
     
@@ -417,11 +417,11 @@ server.get("/cuentaxOrg", async (req, res) => {
           renta:""
         }
         if(cuentaProps[i].OrganizacionId === org[x].id){
-          if(cuentaProps[i].count > org[0].TipodeOrganizacion.cantidadPropVenta){ 
-            publicacionesdeMas.venta = org[0].TipodeOrganizacion.cantidadPropVenta - cuentaProps[i].count;
+          if(cuentaProps[i].count > org[0].AutorizacionesXTipodeOrg.cantidadPropVenta){ 
+            publicacionesdeMas.venta = org[0].AutorizacionesXTipodeOrg.cantidadPropVenta - cuentaProps[i].count;
           }
-          if(cuentaProps[i].count > org[0].TipodeOrganizacion.cantidadPropRenta){
-            publicacionesdeMas.renta = org[0].TipodeOrganizacion.cantidadPropRenta - cuentaProps[i].count;
+          if(cuentaProps[i].count > org[0].AutorizacionesXTipodeOrg.cantidadPropRenta){
+            publicacionesdeMas.renta = org[0].AutorizacionesXTipodeOrg.cantidadPropRenta - cuentaProps[i].count;
           }
           // Si hay rentas o ventas de mas se manda al array
           if(publicacionesdeMas.venta || publicacionesdeMas.renta){
@@ -441,7 +441,7 @@ server.get("/cuentaxOrg", async (req, res) => {
 server.get("/orgyTipo", async (req, res) => {
   try {
     const org = await Organizacion.findAll({
-      include:  TipodeOrganizacion
+      include:  AutorizacionesXTipodeOrg
     })
     
     res.send(org)

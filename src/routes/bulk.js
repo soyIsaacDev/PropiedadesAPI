@@ -2,7 +2,7 @@ const server = require("express").Router();
 const { Propiedad, Estado, Municipio, Ciudad, Colonia, AmenidadesPropiedad, AmenidadesDesarrollo,
     TipoOperacion, TipodePropiedad, ImgPropiedad, ModeloAsociadoPropiedad, ImgModeloAsociado, 
     ColoniaCiudad, AmenidadesDesarrolloPropiedad, AmenidadesModeloAmenidad, EstiloArquitectura,
-    Organizacion, TipodeOrganizacion, TipodeUsuario } = require("../db");
+    Organizacion, AutorizacionesXTipodeOrg, TipodeUsuario, HistorialdePagos, PaquetedePago, PaquetePagoPorOrg } = require("../db");
 const organizacion = require("../models/organizacion");
 
 
@@ -2820,7 +2820,7 @@ server.get("/bulk", async (req,res)=> {
 
 server.get("/nuevoTipoOrg", async (req, res) => { 
   try {
-    const tiposdeOrg = await TipodeOrganizacion.bulkCreate([
+    const tiposdeOrg = await AutorizacionesXTipodeOrg.bulkCreate([
       {
         nombreTipoOrg:"Desarrolladora",
         tipodeOperacionAut:"Venta",
@@ -2871,7 +2871,7 @@ server.get("/nuevoTipoOrg", async (req, res) => {
         const organizacion = await Organizacion.findOne({
             where:{organizacion:nombre}
         })
-        await organizacion.update({TipodeOrganizacionId:orgTId});
+        await organizacion.update({AutorizacionesXTipodeOrgId:orgTId});
         res.send(organizacion)
     } catch (error) {
         res.send
@@ -2975,6 +2975,53 @@ server.get("/nuevoTipodeUsuario", async (req, res) => {
   }
 });
 
+
+server.get("/crearAutorizacionXTipodeOrg", async (req, res) => { 
+    try {
+        const autorizacionXTipoOrg = await AutorizacionesXTipodeOrg.bulkCreate([
+            {
+                nombreTipoOrg:"DireccionTotal",
+                tipodeOperacionAut:"Todas",
+                tipodeDesarrolloAut:"Todos",
+                tiempodeConstruccionAut:"Todas",
+                cantidadPropVenta:90000,
+                cantidadPropRenta:90000,
+                cantidadPropPreVenta:90000,
+            },
+            {
+                nombreTipoOrg:"Desarrolladora",
+                tipodeOperacionAut:"Venta",
+                tipodeDesarrolloAut:"Desarrollo",
+                tiempodeConstruccionAut:"Nuevo",
+                cantidadPropVenta:100,
+                cantidadPropRenta:0,
+                cantidadPropPreVenta:0,
+            },
+            {
+                nombreTipoOrg:"TratoDirecto",
+                tipodeOperacionAut:"VentaoRenta",
+                tipodeDesarrolloAut:"PropiedadIndependiente",
+                tiempodeConstruccionAut:"ConUso",
+                cantidadPropVenta:1,
+                cantidadPropRenta:1,
+                cantidadPropPreVenta:0,
+            },
+            {
+                nombreTipoOrg:"General",
+                tipodeOperacionAut:"NoAutorizado",
+                tipodeDesarrolloAut:"NoAutorizado",
+                tiempodeConstruccionAut:"NoAutorizado",
+                cantidadPropVenta:0,
+                cantidadPropRenta:0,
+                cantidadPropPreVenta:0,
+            },
+        ])
+        res.json(autorizacionXTipoOrg);
+    } catch (error) {
+        res.send(error)
+    }
+})
+
 server.get("/actualizarTipoOrg", async (req, res) => { 
     try {
         console.log("Actualizando Tipo Org")
@@ -2987,7 +3034,7 @@ server.get("/actualizarTipoOrg", async (req, res) => {
             cantidadPropRenta:1,
             cantidadPropPreVenta:0,
           }
-        const tipoOrganizacion = await TipodeOrganizacion.findOne({
+        const tipoOrganizacion = await AutorizacionesXTipodeOrg.findOne({
             where:{nombreTipoOrg:tipoOrg.nombreTipoOrg}
         })
         //res.json(tipoOrganizacion)
@@ -3000,6 +3047,74 @@ server.get("/actualizarTipoOrg", async (req, res) => {
     } catch (error) {
         res.send
     }
+})
+
+server.get("/crearPaquetePago", async (req, res) => {
+  try {
+    const paquetesCreados = await PaquetedePago.bulkCreate([
+      {          
+        nombrePaquete:"DireccionTotal",
+        precio:0,
+        periodicidad:"Mensual",     
+        tipodePago:"Gratuito",
+        fechaInicioOferta:"2025-01-01",
+        fechaFinOferta:"2200-01-01",
+      },
+      {
+        tipodeOrg:"Desarrolladora",             
+        nombrePaquete:"Desarrollador",
+        precio:0,
+        periodicidad:"Mensual",     
+        tipodePago:"Gratuito",
+        fechaInicioOferta:"2025-01-01",
+        fechaFinOferta:"2025-05-31",
+      },
+      {
+        tipodeOrg:"TratoDirecto",             
+        nombrePaquete:"TratoDirecto",
+        precio:0,
+        periodicidad:"Mensual",     
+        tipodePago:"Gratuito",
+        fechaInicioOferta:"2025-01-01",
+        fechaFinOferta:"2025-05-31",
+      },
+    ])
+
+    const paquetesxOrg = await PaquetePagoPorOrg.bulkCreate([
+        { // Direccion
+            AutorizacionesXTipodeOrgId:"41a8c882-0d85-4c91-a17a-e94c42e2248a",
+            PaquetedePagoId:paquetesCreados[0].id
+        },
+        { // Desarrollador
+            AutorizacionesXTipodeOrgId:"fd02f96f-888a-40f1-a170-7d2778980f19",
+            PaquetedePagoId:paquetesCreados[1].id
+        },
+        {  // TratoDirecto
+            AutorizacionesXTipodeOrgId:"22a44bfc-ce80-4803-bc7e-cda92be7448a",
+            PaquetedePagoId:paquetesCreados[2].id
+        },
+    ]);
+
+    const pagar = await HistorialdePagos.bulkCreate([
+        {   // Inmozz
+            fechaInicio:"2025-02-01",
+            fechaFin:"2200-01-01",
+            OrganizacionId:"b7b986c7-b2e9-45fa-8087-eda07c1b22ae",
+            PaquetedePagoId:paquetesCreados[0].id,          
+        },
+        {   // General 
+            fechaInicio:"2025-02-01",
+            fechaFin:"2025-05-31",
+            OrganizacionId:"6521961c-1a27-4cec-956a-e0891faa577f",
+            PaquetedePagoId:paquetesCreados[1].id,          
+        },
+    ])
+
+    res.json(paquetesCreados);
+
+  } catch (error) {
+    res.json(error)
+  }
 })
 
 module.exports =  server;

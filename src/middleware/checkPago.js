@@ -1,4 +1,4 @@
-const { HistorialdePagos, Cliente, Propiedad, Organizacion, TipodeOrganizacion, PaquetedePago,  } = require("../db");
+const { HistorialdePagos, Cliente, Propiedad, Organizacion, AutorizacionesXTipodeOrg, PaquetedePago,  } = require("../db");
 const servidorPago = require("express").Router();
 
 
@@ -33,7 +33,7 @@ const checkPagosActivos = async function (req, res, next) {
       }
       
       if(paquetesActivos && paquetesActivos.length>0){
-        req.paquetesActivos = paquetesActivos;
+        //req.paquetesActivos = paquetesActivos;
         req.orgId = cliente.OrganizacionId;
         next();
       }
@@ -47,165 +47,68 @@ const checkPagosActivos = async function (req, res, next) {
   }
 }
 
-const checkCantProps = async (req, res, next)  => {
+const checkPublicacionesRestantesyAutxTipodeOrg = async (req, res, next)  => {
   try {
-    
-    const orgId  = req.orgId;
-    const cuentaProps = await Propiedad.count(
-    {
-      where:{ publicada:"Si" , OrganizacionId:paquetesActivos.orgId }, 
-      attributes: ['publicada', 'TipoOperacionId', 'OrganizacionId'], 
-      group:['publicada', 'TipoOperacionId', 'OrganizacionId'] 
-    });
+    const orgId = req.orgId;
+
     const org = await Organizacion.findOne({
       where:{ id:orgId },
-      include:  TipodeOrganizacion
+      include:  AutorizacionesXTipodeOrg
     })
     
-    for (let i = 0; i < cuentaProps.length; i++) {
-      const publicacionesdeMas = {
-        organizacion:org.id,
-        venta:"",
-        renta:"",
-        preVenta:"",
-      }
-      if(cuentaProps[i].OrganizacionId === org.id){
-          if(cuentaProps[i].TipoOperacionId === 1 && cuentaProps[i].count > org.TipodeOrganizacion.cantidadPropVenta){ 
-            publicacionesdeMas.venta = org.TipodeOrganizacion.cantidadPropVenta - cuentaProps[i].count;
-          }
-          if(cuentaProps[i].TipoOperacionId === 3 && cuentaProps[i].count > org.TipodeOrganizacion.cantidadPropRenta){
-            publicacionesdeMas.renta = org.TipodeOrganizacion.cantidadPropRenta - cuentaProps[i].count;
-          }
-          if(cuentaProps[i].TipoOperacionId === 2 && cuentaProps[i].count > org.TipodeOrganizacion.cantidadPropPreVenta){
-            publicacionesdeMas.preVenta = org.TipodeOrganizacion.cantidadPropPreVenta - cuentaProps[i].count;
-          }
-
-      }
-      // Si hay rentas o ventas de manda mensaje
-      if(publicacionesdeMas.venta || publicacionesdeMas.renta || publicacionesdeMas.preVenta){
-        publicacionesdeMas.mensaje = "No cuentas con autorizacion para publicar mas propiedades"
-        res.json(publicacionesdeMas)
-      } 
-      else {
-          req.publicaciones = publicacionesdeMas;
-          next();
-      } 
-    }
-  } catch (e) {
-      res.send(e)
-  }
-}
-
-const checkPublicacionesRestantesyTipodeOrg = async (req, res, next)  => {
-  try {
-    const paquetesActivos = req.paquetesActivos;
-    
-    const publicacionesDisponibles = {
-      organizacion:paquetesActivos[0].orgId,
-      venta:0,
-      renta:0,
-      preVenta:0,
-    }
-    
-    // Organizando el total de operaciones disponibles
-    for (let i = 0; i < paquetesActivos.length; i++) {
-      if(paquetesActivos[i].tipodeOperacion === "Venta")
-                                    // Suma lo anterior (empieza en 0) + paquetes activos
-        publicacionesDisponibles.venta = publicacionesDisponibles.venta+paquetesActivos[i].cantidaddePropiedades;
-      if(paquetesActivos[i].tipodeOperacion === "Renta")
-        publicacionesDisponibles.renta = publicacionesDisponibles.renta+paquetesActivos[i].cantidaddePropiedades;
-      if(paquetesActivos[i].tipodeOperacion === "VentaoRenta"){
-        publicacionesDisponibles.renta = publicacionesDisponibles.renta+paquetesActivos[i].cantidaddePropiedades;
-        publicacionesDisponibles.venta = publicacionesDisponibles.venta+paquetesActivos[i].cantidaddePropiedades;
-        publicacionesDisponibles.tipodeOperacion = "VentaoRenta"
-      }
-      if(paquetesActivos[i].tipodeOperacion === "PreVenta")
-        publicacionesDisponibles.preVenta = publicacionesDisponibles.preVenta+paquetesActivos[i].cantidaddePropiedades;
-    }
-
-    const org = await Organizacion.findOne({
-      where:{ id:paquetesActivos[0].orgId },
-      include:  TipodeOrganizacion
-    })
-    
-    // Revisando que las Publicaciones Disponibles NO superen las cantidades autorizadas al tipo de Organizacion
-    for (let i = 0; i < publicacionesDisponibles.length; i++) {
-      if(publicacionesDisponibles[i].venta > org.TipodeOrganizacion.cantidadPropVenta)
-        publicacionesDisponibles[i].venta = org.TipodeOrganizacion.cantidadPropVenta
-      if(publicacionesDisponibles[i].renta > org.TipodeOrganizacion.cantidadPropRenta)
-        publicacionesDisponibles[i].renta = org.TipodeOrganizacion.cantidadPropRenta
-      if(publicacionesDisponibles[i].preVenta > org.TipodeOrganizacion.cantidadPropPreVenta)
-        publicacionesDisponibles[i].preVenta = org.TipodeOrganizacion.cantidadPropPreVenta
-    }
-
-
     const cuentaProps = await Propiedad.count(
       {
-        where:{ publicada:"Si" , OrganizacionId:paquetesActivos[0].orgId }, 
+        where:{ publicada:"Si" , OrganizacionId:orgId }, 
         attributes: ['publicada', 'TipoOperacionId', 'OrganizacionId'], 
         group:['publicada', 'TipoOperacionId', 'OrganizacionId'] 
       }
     );
 
-    const publicacionesRestantes = {
-      organizacion:paquetesActivos[0].orgId,
-      venta:publicacionesDisponibles.venta,
-      renta:publicacionesDisponibles.renta,
-      preVenta:publicacionesDisponibles.preVenta,
-    }      
+    const publicacionesAutorizadas = {
+      organizacion:orgId,
+      venta:org.AutorizacionesXTipodeOrg.cantidadPropVenta,
+      renta:org.AutorizacionesXTipodeOrg.cantidadPropRenta,
+      preVenta:org.AutorizacionesXTipodeOrg.cantidadPropPreVenta,
+      tipodeOperacionAut:org.AutorizacionesXTipodeOrg.tipodeOperacionAut,
+    }   
     
     for (let i = 0; i < cuentaProps.length; i++) {
       // En VentaoRenta se descuentan las disponibles - las rentadas o vendidas
-      if(publicacionesDisponibles.tipodeOperacion === "VentaoRenta" && cuentaProps[i].TipoOperacionId === 1
+      if(publicacionesAutorizadas.tipodeOperacionAut === "VentaoRenta" && cuentaProps[i].TipoOperacionId === 1
         ||
-        publicacionesDisponibles.tipodeOperacion === "VentaoRenta" && cuentaProps[i].TipoOperacionId === 3
+        publicacionesAutorizadas.tipodeOperacionAut === "VentaoRenta" && cuentaProps[i].TipoOperacionId === 3
       ){
-        publicacionesRestantes.venta = publicacionesDisponibles.venta - cuentaProps[i].count;
-        publicacionesRestantes.renta =  publicacionesDisponibles.renta - cuentaProps[i].count;
+        publicacionesAutorizadas.venta = publicacionesAutorizadas.venta - cuentaProps[i].count;
+        publicacionesAutorizadas.renta =  publicacionesAutorizadas.renta - cuentaProps[i].count;
       }
       else{
         if(cuentaProps[i].TipoOperacionId === 1){ 
-          publicacionesRestantes.venta = publicacionesDisponibles.venta - cuentaProps[i].count;
+          publicacionesAutorizadas.venta = publicacionesAutorizadas.venta - cuentaProps[i].count;
         }
         if(cuentaProps[i].TipoOperacionId === 3 ){
-          publicacionesRestantes.renta =  publicacionesDisponibles.renta - cuentaProps[i].count;
+          publicacionesAutorizadas.renta =  publicacionesAutorizadas.renta - cuentaProps[i].count;
         }
         if(cuentaProps[i].TipoOperacionId === 2 ){
-          publicacionesRestantes.preVenta =  publicacionesDisponibles.preVenta - cuentaProps[i].count;
+          publicacionesAutorizadas.preVenta =  publicacionesAutorizadas.preVenta - cuentaProps[i].count;
         }
       }
     }
     // Si hay Publicaciones Restantes se avanza
-    if(publicacionesRestantes.venta > 0 || publicacionesRestantes.renta > 0 || publicacionesRestantes.preVenta > 0){
-      req.TipodeOrg = org.TipodeOrganizacion;
-      req.publicaciones = publicacionesRestantes;
+    if(publicacionesAutorizadas.venta > 0 || publicacionesAutorizadas.renta > 0 || publicacionesAutorizadas.preVenta > 0){
+      req.TipodeOrg = org.AutorizacionesXTipodeOrg;
+      req.publicaciones = publicacionesAutorizadas;
       next();
     } 
     else {
-      publicacionesRestantes.mensaje = "No cuentas con autorizacion para publicar mas propiedades"
-      res.json(publicacionesRestantes);
+      publicacionesAutorizadas.mensaje = "No cuentas con autorizacion para publicar mas propiedades"
+      res.json(publicacionesAutorizadas);
     } 
   } catch (e) {
       res.send(e)
   }
 }
 
-const checkTipodeOrganizacion = async(req, res, next) => {
-  try {
-    //const publicacionesRestantes = req.publicacionesRestantes; 
-    const orgId = req.orgId;
-    const org = await Organizacion.findOne({
-      where:{ id:orgId },
-      include:  TipodeOrganizacion
-    })
-    req.TipodeOrg = org.TipodeOrganizacion;
-    next();
-  } catch (error) {
-    res.json(error)
-  }
-}
-
-servidorPago.use(checkPagosActivos, checkPublicacionesRestantesyTipodeOrg);
+servidorPago.use(checkPagosActivos, checkPublicacionesRestantesyAutxTipodeOrg);
 
 servidorPago.post("/revisarPago",  async (req, res)=>{
   try {

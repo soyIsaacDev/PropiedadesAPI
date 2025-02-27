@@ -2,7 +2,7 @@ const server = require("express").Router();
 var nodemailer = require('nodemailer');
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
-const { Cliente, TipodeUsuario, Organizacion, TipodeOrganizacion } = require("../db");
+const { Cliente, TipodeUsuario, Organizacion, AutorizacionesXTipodeOrg } = require("../db");
 const { Op } = require("sequelize");
 
 const { checkManejodeUsuarios } = require("../middleware/checkAutorizacion");
@@ -29,7 +29,7 @@ server.post("/nuevoCliente", async (req, res) => {
     });
 
     if(tipoUsuario === "Desarrollador"){
-      const tipodeOrganizacion = await TipodeOrganizacion.findOne({
+      const tipodeOrganizacion = await AutorizacionesXTipodeOrg.findOne({
         where:{ nombreTipoOrg:"Desarrolladora" }
       });
       const userTipo = await TipodeUsuario.findOne({
@@ -40,7 +40,7 @@ server.post("/nuevoCliente", async (req, res) => {
       });
       const org = await Organizacion.create({
         organizacion:organizacion,
-        TipodeOrganizacionId:tipodeOrganizacion.id
+        AutorizacionesXTipodeOrgId:tipodeOrganizacion.id
       });
       cliente[0].OrganizacionId = org.id;
       cliente[0].TipodeUsuarioId= userTipo.id;
@@ -49,12 +49,12 @@ server.post("/nuevoCliente", async (req, res) => {
     
     if(tipoUsuario === "DueñodePropiedad") {
       
-      const tipodeOrganizacion = await TipodeOrganizacion.findOne({
+      const tipodeOrganizacion = await AutorizacionesXTipodeOrg.findOne({
         where:{ nombreTipoOrg:"TratoDirecto" }
       });
       const org = await Organizacion.create({
         organizacion:email,
-        TipodeOrganizacionId:tipodeOrganizacion.id
+        AutorizacionesXTipodeOrgId:tipodeOrganizacion.id
       });
       const userTipo = await TipodeUsuario.findOne({
         where: {
@@ -334,7 +334,7 @@ server.get("/clienteIsaac", async (req, res) => {
         id:"b7b986c7-b2e9-45fa-8087-eda07c1b22ae"
       }
     })
-    org.TipodeOrganizacionId = "31b4efa7-1535-4422-bf87-0dcd4aab8ddc"
+    org.AutorizacionesXTipodeOrgId = "31b4efa7-1535-4422-bf87-0dcd4aab8ddc"
     await org.save();
 
     res.json(cliente);

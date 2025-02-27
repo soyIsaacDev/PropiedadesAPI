@@ -1,4 +1,4 @@
-const { Propiedad, Organizacion, TipodeOrganizacion } = require("../db");
+const { Propiedad, Organizacion, AutorizacionesXTipodeOrg } = require("../db");
 const servidorCantProps = require("express").Router();
 
 const checkCantProps = async (req, res, next)  => {
@@ -12,7 +12,7 @@ const checkCantProps = async (req, res, next)  => {
       });
       const org = await Organizacion.findOne({
         where:{ id:orgId },
-        include:  TipodeOrganizacion
+        include:  AutorizacionesXTipodeOrg
       })
       
       for (let i = 0; i < cuentaProps.length; i++) {
@@ -23,14 +23,14 @@ const checkCantProps = async (req, res, next)  => {
           preVenta:"",
         }
         if(cuentaProps[i].OrganizacionId === org.id){
-            if(cuentaProps[i].TipoOperacionId === 1 && cuentaProps[i].count < org.TipodeOrganizacion.cantidadPropVenta){ 
-              publicacionesdeMas.venta = org.TipodeOrganizacion.cantidadPropVenta - cuentaProps[i].count;
+            if(cuentaProps[i].TipoOperacionId === 1 && cuentaProps[i].count < org.AutorizacionesXTipodeOrg.cantidadPropVenta){ 
+              publicacionesdeMas.venta = org.AutorizacionesXTipodeOrg.cantidadPropVenta - cuentaProps[i].count;
             }
-            if(cuentaProps[i].TipoOperacionId === 3 && cuentaProps[i].count > org.TipodeOrganizacion.cantidadPropRenta){
-              publicacionesdeMas.renta = org.TipodeOrganizacion.cantidadPropRenta - cuentaProps[i].count;
+            if(cuentaProps[i].TipoOperacionId === 3 && cuentaProps[i].count > org.AutorizacionesXTipodeOrg.cantidadPropRenta){
+              publicacionesdeMas.renta = org.AutorizacionesXTipodeOrg.cantidadPropRenta - cuentaProps[i].count;
             }
-            if(cuentaProps[i].TipoOperacionId === 2 && cuentaProps[i].count > org.TipodeOrganizacion.cantidadPropPreVenta){
-              publicacionesdeMas.preVenta = org.TipodeOrganizacion.cantidadPropPreVenta - cuentaProps[i].count;
+            if(cuentaProps[i].TipoOperacionId === 2 && cuentaProps[i].count > org.AutorizacionesXTipodeOrg.cantidadPropPreVenta){
+              publicacionesdeMas.preVenta = org.AutorizacionesXTipodeOrg.cantidadPropPreVenta - cuentaProps[i].count;
             }
 
         }
