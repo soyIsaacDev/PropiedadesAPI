@@ -25,6 +25,8 @@ server.get("/usuarioPrincipal", async (req,res)=> {
 });
 
 
+/*
+YA ESTA EN BULK
 server.get("/nuevoTipodeUsuario", async (req, res) => { 
   try {
     //const tiposdeUsuario = await TipodeUsuario.create(
@@ -115,7 +117,7 @@ server.get("/nuevoTipodeUsuario", async (req, res) => {
         cantidadPropRenta:1,
         cantidadPropPreVenta:0,
       }, 
-      /* {
+       {
         tipo:"Arquitecto", 
         giro:"Habitacional",
         manejaUsuarios:"No",
@@ -215,14 +217,14 @@ server.get("/nuevoTipodeUsuario", async (req, res) => {
         manejaUsuarios:"No",
         tipodeOperacionAut:"",
         cantidadPropVenta:"",
-      }, */
+      }, 
     ])
     
     res.send(tiposdeUsuario);
   } catch (error) {
     res.send(error);
   }
-});
+}); */
 
 /* server.get("/borrarUsuario", async (req, res) => {
   try {
