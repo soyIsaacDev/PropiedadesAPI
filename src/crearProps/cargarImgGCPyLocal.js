@@ -26,6 +26,9 @@ const storage = new Storage({
 const modeloBucket = storage.bucket(MOD_ASOC_BUCKET_GCLOUD_BUCKET);
 const desarrolloBucket = storage.bucket(DESARROLLO_GCLOUD_BUCKET);
 
+const path = require('path')
+const carpeta = path.join(__dirname, '../../uploads')
+
 const DEVMODE = process.env.DEVELOPMENT;
 
 

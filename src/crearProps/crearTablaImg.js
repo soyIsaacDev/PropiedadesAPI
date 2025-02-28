@@ -18,14 +18,14 @@ const crearTablaImg = async (req, res, next) => {
 
         if(DEVMODE === "Production" ){
             // Agregro al file los nombres segun tamaño
-            detalles_imgGde: `https://storage.googleapis.com/${MOD_ASOC_BUCKET_GCLOUD_BUCKET}/Detalles_Img_Gde_${uniqueDateName}.webp`;
-            thumbnail_img: `https://storage.googleapis.com/${MOD_ASOC_BUCKET_GCLOUD_BUCKET}/Thumbnail_WebP_${uniqueDateName}.webp`;
-            detalles_imgChica: `https://storage.googleapis.com/${MOD_ASOC_BUCKET_GCLOUD_BUCKET}/Detalles_Img_Chica_${uniqueDateName}.webp`;
+            detalles_imgGde = `https://storage.googleapis.com/${MOD_ASOC_BUCKET_GCLOUD_BUCKET}/Detalles_Img_Gde_${uniqueDateName}.webp`;
+            thumbnail_img = `https://storage.googleapis.com/${MOD_ASOC_BUCKET_GCLOUD_BUCKET}/Thumbnail_WebP_${uniqueDateName}.webp`;
+            detalles_imgChica = `https://storage.googleapis.com/${MOD_ASOC_BUCKET_GCLOUD_BUCKET}/Detalles_Img_Chica_${uniqueDateName}.webp`;
         }
         else{
-            detalles_imgGde:`Detalles_Img_Gde_${uniqueDateName}.webp`;
-            thumbnail_img:`Thumbnail_WebP_${uniqueDateName}.webp`;
-            detalles_imgChica:`Detalles_Img_Chica_${uniqueDateName}.webp`;
+            detalles_imgGde = `Detalles_Img_Gde_${uniqueDateName}.webp`;
+            thumbnail_img = `Thumbnail_WebP_${uniqueDateName}.webp`;
+            detalles_imgChica = `Detalles_Img_Chica_${uniqueDateName}.webp`;
         }
 
         if(tipodeDesarrollo === 'ModeloRelacionado'){

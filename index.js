@@ -32,11 +32,8 @@
        autorizacionUsuario, pagodeServicio,   
        paquetesdePago} = require('./src/routes');
 
-    const { TipodeUsuario } = require("./src/db");
-
     const { checkAutorizacion } = require("./src/middleware/checkAutorizacion.js")
-    const { checkPagosActivos, servidorPago } = require("./src/middleware/checkPago");
-    const { checkCantProps, servidorCantProps } = require("./src/middleware/checkCantProps.js");
+    const { checkPagosActivos, checkPublicacionesRestantesyAutxTipodeOrg, servidorPago } = require("./src/middleware/checkPago");
     
     const DEVMODE = process.env.DEVELOPMENT;
     var corsOptions= undefined;
@@ -220,14 +217,13 @@ function checkIfSignedIn(req, res, next) {
     app.use("/bulk", bulk);
     app.use("/tipodeUsuario", tipoUsuario);
     // Eliminar checkCantProps? Parece que el modo correcto esta en checkPago
-    app.use("/cargaProp", checkIfSignedIn, checkAutorizacion, checkCantProps, cargaProp);
+    app.use("/cargaProp", checkIfSignedIn, checkAutorizacion, cargaProp);
     app.use("/corsAuth", addBucketCors);
-    // Carga propiedades 1 x 1 para cargar imagenes de grandes tamaños y no saturar Cors    
-    // agregar checkPago  En Front lo reviso desde este middleware
-    app.use("/cargarPropMultiples", useMulter, checkAutorizacion, cargarPropMultiples),
+    // Carga propiedades 1 x 1 para cargar imagenes de grandes tamaños y no saturar Cors
+    app.use("/cargarPropMultiples", useMulter, checkAutorizacion, checkPagosActivos, 
+      checkPublicacionesRestantesyAutxTipodeOrg, cargarPropMultiples),
     app.use("/checkautorizacion", autorizacionUsuario),
     app.use("/revisarPagos", pagodeServicio),
-    app.use("/checkPublicacion", servidorCantProps),
     app.use("/paquetesdePago", paquetesdePago),
     app.use("/checkpago", servidorPago)
     //app.use("/authCliente", authCliente);

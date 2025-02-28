@@ -4,21 +4,29 @@ const servidorPago = require("express").Router();
 
 const checkPagosActivos = async function (req, res, next) {
   try {
-    const { userId} = req.body;
+    const userId = req.body.userId;
+    
+    let orgId = req.orgId;
 
-    const cliente = await Cliente.findOne({
+    if(userId){
+      const cliente = await Cliente.findOne({
         where:{ userId },
-    })
+      })
+      orgId = cliente.OrganizacionId;
+    }
+    // Paso la orgId segun de donde venga sin depender de la que esta previamente
+    req.orgId = orgId;
+
     const historialdePagos = await HistorialdePagos.findAll({
         where:{
-            OrganizacionId:cliente.OrganizacionId
+            OrganizacionId:orgId
         },
         order: [
             ['fechaFin','DESC']
         ],
         include:  PaquetedePago
     })
-    
+    console.log(historialdePagos[0].fechaFin)
     if(historialdePagos.length>0){
       const paquetesActivos = [];
       for (let i = 0; i < historialdePagos.length; i++) {
@@ -33,8 +41,9 @@ const checkPagosActivos = async function (req, res, next) {
       }
       
       if(paquetesActivos && paquetesActivos.length>0){
+        
         //req.paquetesActivos = paquetesActivos;
-        req.orgId = cliente.OrganizacionId;
+        //req.orgId = cliente.OrganizacionId;
         next();
       }
       else{
@@ -50,7 +59,6 @@ const checkPagosActivos = async function (req, res, next) {
 const checkPublicacionesRestantesyAutxTipodeOrg = async (req, res, next)  => {
   try {
     const orgId = req.orgId;
-
     const org = await Organizacion.findOne({
       where:{ id:orgId },
       include:  AutorizacionesXTipodeOrg
@@ -122,4 +130,4 @@ servidorPago.post("/revisarPago",  async (req, res)=>{
 })
 
 
-module.exports = { checkPagosActivos, servidorPago };
+module.exports = { checkPagosActivos, checkPublicacionesRestantesyAutxTipodeOrg, servidorPago };
