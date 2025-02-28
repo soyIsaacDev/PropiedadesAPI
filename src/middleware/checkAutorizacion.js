@@ -1,7 +1,6 @@
 const { parse } = require("dotenv");
 const { Cliente, TipodeUsuario,  } = require("../db");
 const servidorAutorizacion = require("express").Router();
-const multer = require('multer');
 
 const checkAutorizacion = async (req, res, next)  => {
     try {
@@ -36,6 +35,7 @@ const checkAutorizacion = async (req, res, next)  => {
         req.auth = cliente.autorizaciondePublicar;
         req.tipodeUsuario = tipodeUsuario.tipo;
         req.manejaUsuarios = tipodeUsuario.manejaUsuarios;
+        req.orgId = cliente.OrganizacionId
 
         if(cliente.autorizaciondePublicar !== "Ninguna") next()
         else {

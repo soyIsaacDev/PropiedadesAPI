@@ -3,6 +3,7 @@ const { Op } = require("sequelize");
 
 const crearModeloRelacionado = async (req, res, next) => {
     try {
+      const orgId = req.orgId;
       // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
       const bodyObj = req.body.data;
       const parsedbodyObj = JSON.parse(bodyObj);
@@ -37,6 +38,7 @@ const crearModeloRelacionado = async (req, res, next) => {
           numeroInterior,  
           TipodePropiedadId,  
           publicada, */
+          OrganizacionId:orgId
         }
         
       });

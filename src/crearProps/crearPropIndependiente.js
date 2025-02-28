@@ -1,17 +1,20 @@
-const {  AmenidadesModeloAmenidad, PropiedadIndependiente } = require("../db");
+const {  AmenidadesPropIndependienteAmenidad, PropiedadIndependiente } = require("../db");
 const { Op } = require("sequelize");
 
 // Crear Relaciones en DB
 
 const crearPropIndependiente = async (req, res) => {
     try {
+      const orgId = req.orgId;
+      console.log("Org Id " + orgId)
+
       // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
       const bodyObj = req.body.data;
       const parsedbodyObj = JSON.parse(bodyObj);
       const { precio, calle, numeroPropiedad, numeroInterior, posicion, ciudad, estado, municipio, colonia,
         niveles, recamaras, baños, medio_baño, espaciosCochera, cocheraTechada,   
-        m2Construccion, m2Terreno, m2Total, añodeConstruccion,  publicada, 
-        TipoOperacionId, TipodePropiedadId, amenidadesPropiedad,
+        m2Construccion, m2Terreno, m2Total, añodeConstruccion, 
+        TipoOperacionId, TipodePropiedadId, amenidadesPropiedad, tratoDirecto,
       } = parsedbodyObj
 
       const [PropiedadIndependienteCreada, creado] = await PropiedadIndependiente.findOrCreate({
@@ -37,9 +40,11 @@ const crearPropIndependiente = async (req, res) => {
           m2Terreno,
           m2Total, 
           añodeConstruccion,
+          tratoDirecto,
           //publicada,
           TipoOperacionId:1, // venta
           TipodePropiedadId,  
+          OrganizacionId:orgId
         }        
       })
 

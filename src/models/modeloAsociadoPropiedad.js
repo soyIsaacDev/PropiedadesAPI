@@ -92,7 +92,8 @@ module.exports = s => {
         },
         publicada:{
             type: DataTypes.ENUM("Si","No"),
-            allowNull: true
+            allowNull: true,
+            defaultValue:"No",
         },
         
     }, {

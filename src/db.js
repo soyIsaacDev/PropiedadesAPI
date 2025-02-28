@@ -201,8 +201,8 @@ HistorialdePagos.belongsTo(Organizacion);
 PaquetedePago.hasOne(HistorialdePagos);
 HistorialdePagos.belongsTo(PaquetedePago);
 
-AutorizacionesXTipodeOrg.belongsToMany(PaquetedePago, { through: 'PaquetePagoPorOrg' });
-PaquetedePago.belongsToMany(AutorizacionesXTipodeOrg, { through: 'PaquetePagoPorOrg' });
+/* AutorizacionesXTipodeOrg.belongsToMany(PaquetedePago, { through: 'PaquetePagoPorOrg' });
+PaquetedePago.belongsToMany(AutorizacionesXTipodeOrg, { through: 'PaquetePagoPorOrg' }); */
 
 TipodeUsuario.hasMany(Cliente);
 Cliente.belongsTo(TipodeUsuario);
