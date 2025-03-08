@@ -11,10 +11,10 @@ const { Propiedad, ImgPropiedad, AmenidadesDesarrollo, AmenidadesPropiedad,Tipod
 
 const {literal} = require ('sequelize');
 
-server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
+/* server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
   try {
     const dataPropiedad = await ModeloAsociadoPropiedad.findAll({
-      where:{publicada:"Si"},
+      //where:{publicada:"Si"},
       order: [
         ['precio"','DESC']
       ],
@@ -32,6 +32,47 @@ server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
           through: {
             attributes: []
           }
+        },
+      ]
+    },);
+    
+    dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontraron datos de propiedades"});
+    
+  } catch (e) {
+    res.send(e);
+  } 
+}
+); */
+
+server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
+  try {
+    let {userId} = req.query;
+
+    const dataPropiedad = await ModeloAsociadoPropiedad.findAll({
+      //where:{publicada:"Si"},
+      order: [
+        ['precio"','DESC']
+      ],
+      include: [
+        {
+          model: ImgModeloAsociado,
+          attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+          separate:true,
+          order: [
+            ['orden','ASC']
+          ],
+        }, 
+        {
+          model: AmenidadesPropiedad,
+          through: {
+            attributes: []
+          }
+        },
+        { // El modelo Cliente da la relacion de Favoritos
+          model:Cliente,
+          attributes: ["id", "userId"],
+          required: false, // Mantiene propiedades sin clientes
+          where: userId ? { userId } : {userId:"x000"} // Filtra solo si se pasa un userId, de lo contrario se da un UserId que no existe
         },
       ]
     },);
@@ -175,6 +216,49 @@ function isAuthenticated (req, res, next) {
     next()}
   else next('route')
 }
+
+server.get("/modelosFavoritos/:userId",  async (req, res) => {
+  try {
+      let {userId} = req.params;
+
+      const cliente = await Cliente.findOne({
+        where: {
+            userId
+          }
+      });
+
+      const ModeloAsociado = await ModeloAsociadoPropiedad.findAll({
+          //where:{publicada:"Si"},
+          order: [
+            ['precio"','DESC']
+          ],
+          include: [
+            {
+              model: ImgModeloAsociado,
+              attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+              separate:true,
+              order: [
+                ['orden','ASC']
+              ],
+            }, 
+            {
+              model: AmenidadesPropiedad,
+              through: {
+                attributes: []
+              }
+            },
+            {
+              model:Cliente,
+              attributes: ['id'],
+            }
+          ]
+      });
+      res.json(ModeloAsociado)
+  }
+  catch (error){
+      res.json(error)
+  }
+})
 
 server.get("/propiedadesconfavoritos/:ClienteId", isAuthenticated, async (req, res) => {
   try {

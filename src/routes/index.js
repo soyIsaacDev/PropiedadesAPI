@@ -23,5 +23,6 @@ module.exports = {
     autorizacionUsuario:servidorAutorizacion,
     pagodeServicio:servidorPago,
     paquetesdePago:require("./paquetesdePago"),
+    propIndependiente:require("./propIndependiente"),
     index: server,
   };

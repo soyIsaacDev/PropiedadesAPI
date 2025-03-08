@@ -1,32 +1,45 @@
 const server = require("express").Router();
 const { Op } = require("sequelize");
 
-const { Propiedad, Favoritos, ImgPropiedad, Cliente, ModelosFavoritos, ModeloAsociadoPropiedad, ImgModeloAsociado  } = require("../db");
+const { Propiedad, Favoritos, ImgPropiedad, Cliente, ModelosFavoritos, ModeloAsociadoPropiedad,
+    AmenidadesPropiedad,
+  ImgModeloAsociado, PropIndependienteFavoritas,
+   AmenidadesDesarrollo,TipodePropiedad,TipoOperacion, Estado, Municipio, Ciudad, 
+  Colonia,  AmenidadesDesarrolloPropiedad, 
+  Organizacion, AutorizacionesXTipodeOrg, 
+  } = require("../db");
 
 // TipodeProp:  1 = Desarrollo : 2 = ModeloAsociado
 server.post("/agregarFavorito",  async (req,res)=> {
     try {
-        const { userId, PropiedadId, TipodeProp} = req.body;
+        const { userId, PropiedadId, tipodeDesarrollo} = req.body;
         const cliente = await Cliente.findOne({
             where: {
                 userId
               }
         });
         console.log("Cliente ID " + userId + " Prop Id " + PropiedadId)
-
-        if(TipodeProp===1){
+        
+        if(tipodeDesarrollo==="Desarrollo"){
             const desarrolloFavorito = await Favoritos.create({
                 ClienteId:cliente.id,
                 PropiedadId
             });
             res.json(desarrolloFavorito)
         }
-        else{
+        else if(tipodeDesarrollo==="Modelo"){
             const modeloFavorito = await ModelosFavoritos.create({
                 ClienteId:cliente.id,
                 ModeloAsociadoPropiedadId:PropiedadId
             });
             res.json(modeloFavorito)
+        }
+        else if(tipodeDesarrollo==="Independiente"){
+            const independienteFavorita = await PropIndependienteFavoritas.create({
+                ClienteId:cliente.id,
+                PropiedadIndependienteId:PropiedadId
+            });
+            res.json(independienteFavorita)
         }
         
     } catch (e) {
@@ -36,30 +49,46 @@ server.post("/agregarFavorito",  async (req,res)=> {
 
 server.post("/eliminarFavorito", async(req, res) => {
     try {
-        const { userId, PropiedadId, TipodeProp } = req.body;
+        const { userId, PropiedadId, tipodeDesarrollo } = req.body;
         const cliente = await Cliente.findOne({
             where: {
                 userId
               }
         });
-        const eliminarDesarrolloFavorito = await Favoritos.findOne({
-            where: {
-                [Op.and]:[{"PropiedadId":PropiedadId}, {"ClienteId":cliente.id}]
-            }
-        })
-        const eliminarModeloFavorito = await ModelosFavoritos.findOne({
-            where: {
-                [Op.and]:[{"ModeloAsociadoPropiedadId":PropiedadId}, {"ClienteId":cliente.id}]
-            }
-        })
-        if(TipodeProp===1){
-            await eliminarDesarrolloFavorito.destroy();
-        }
-        else{
-            await eliminarModeloFavorito.destroy();
+        
+        switch (tipodeDesarrollo) {
+            case "Desarrollo":
+                const eliminarDesarrolloFavorito = await Favoritos.findOne({
+                    where: {
+                        [Op.and]:[{"PropiedadId":PropiedadId}, {"ClienteId":cliente.id}]
+                    }
+                })
+                await eliminarDesarrolloFavorito.destroy();
+                favoritoEliminado = eliminarDesarrolloFavorito;
+                break;
+            case "Modelo":
+                const eliminarModeloFavorito = await ModelosFavoritos.findOne({
+                    where: {
+                        [Op.and]:[{"ModeloAsociadoPropiedadId":PropiedadId}, {"ClienteId":cliente.id}]
+                    }
+                })
+                await eliminarModeloFavorito.destroy();
+                favoritoEliminado = eliminarModeloFavorito;
+                break;
+            case "Independiente":
+                const eliminarIndependienteFavorito = await PropIndependienteFavoritas.findOne({
+                    where: {
+                        [Op.and]:[{"PropiedadIndependienteId":PropiedadId}, {"ClienteId":cliente.id}]
+                    }
+                })
+                await eliminarIndependienteFavorito.destroy();
+                favoritoEliminado = eliminarIndependienteFavorito;
+                break;
+            default:
+                break;
         }
 
-        res.json(TipodeProp===1? eliminarDesarrolloFavorito : eliminarModeloFavorito);
+        res.json(favoritoEliminado);
     } catch (e) {
         res.send(e);
     }
@@ -126,6 +155,7 @@ server.get("/favoritos/:userId", async (req, res) => {
 server.get("/desarrolloFav/:userId", async (req, res) => {
     try {
         let {userId} = req.params;
+        if(userId === null){res.json([])}
 
         const cliente = await Cliente.findOne({
             where: {
@@ -137,7 +167,8 @@ server.get("/desarrolloFav/:userId", async (req, res) => {
                 ClienteId:cliente.id
             },
         });
-        res.send(propiedadFavorita)
+        console.log(propiedadFavorita)
+        propiedadFavorita? res.json(propiedadFavorita) : res.json([])        
     } catch (e) {
         res.send(e)
     }
@@ -147,6 +178,7 @@ server.get("/modelosFav/:userId", async (req, res) => {
     try {
         console.log("SOLICITANDO MODELOS FAV")
         let {userId} = req.params;
+        if(userId === null){res.json([])}
 
         const cliente = await Cliente.findOne({
             where: {
@@ -158,8 +190,28 @@ server.get("/modelosFav/:userId", async (req, res) => {
                 ClienteId:cliente.id
             },
         });
-        console.log(modelosFavoritos)
         res.send(modelosFavoritos)
+    } catch (e) {
+        res.send(e)
+    }
+})
+
+server.get("/independienteFav/:userId", async (req, res) => {
+    try {
+        let {userId} = req.params;
+        if(userId === null){res.json([])}
+
+        const cliente = await Cliente.findOne({
+            where: {
+                userId
+              }
+        });
+        const independienteFavorita = await PropIndependienteFavoritas.findAll({
+            where: {
+                ClienteId:cliente.id
+            },
+        });
+        res.send(independienteFavorita)
     } catch (e) {
         res.send(e)
     }
@@ -183,6 +235,7 @@ server.get("/propiedadesconfavoritos/:userId",  async (req, res) => {
               }
             ]
         },);
+
         
         const AllModelos = await ModeloAsociadoPropiedad.findAll({
           order: [
@@ -237,11 +290,14 @@ server.get("/propiedadesconfavoritos/:userId",  async (req, res) => {
             }
         }
             
-        res.json(AllPropandFav);
+        //res.json(AllPropandFav);
     } catch (e) {
         res.send(e)
     }
   });
+
+  
+
 
 
 

@@ -78,7 +78,10 @@ module.exports = s => {
             type: DataTypes.ENUM("Si","No"),
             allowNull: true
         },
-        
+        tipodeDesarrollo:{
+            type:DataTypes.ENUM("Desarrollo"),
+            defaultValue:"Desarrollo"
+        }
     }, {
     timestamps: false,
     });

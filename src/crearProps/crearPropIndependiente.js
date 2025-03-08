@@ -15,6 +15,7 @@ const crearPropIndependiente = async (req, res) => {
         niveles, recamaras, baños, medio_baño, espaciosCochera, cocheraTechada,   
         m2Construccion, m2Terreno, m2Total, añodeConstruccion, 
         TipoOperacionId, TipodePropiedadId, amenidadesPropiedad, tratoDirecto,
+        EstiloArquitecturaId,
       } = parsedbodyObj
 
       const [PropiedadIndependienteCreada, creado] = await PropiedadIndependiente.findOrCreate({
@@ -44,7 +45,8 @@ const crearPropIndependiente = async (req, res) => {
           //publicada,
           TipoOperacionId:1, // venta
           TipodePropiedadId,  
-          OrganizacionId:orgId
+          OrganizacionId:orgId,
+          //EstiloArquitecturaId
         }        
       })
 

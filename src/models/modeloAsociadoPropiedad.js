@@ -95,7 +95,10 @@ module.exports = s => {
             allowNull: true,
             defaultValue:"No",
         },
-        
+        tipodeDesarrollo:{
+            type:DataTypes.ENUM("Modelo"),
+            defaultValue:"Modelo"
+        }
     }, {
     timestamps: false,
 		
