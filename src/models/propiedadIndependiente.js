@@ -78,8 +78,11 @@ module.exports = s => {
             type:DataTypes.BOOLEAN,
             allowNull:false,
             defaultValue:false,
+        },
+        tipodeDesarrollo:{
+            type:DataTypes.ENUM("Independiente"),
+            defaultValue:"Independiente"
         }
-        
     }, {
     timestamps: false,
     });

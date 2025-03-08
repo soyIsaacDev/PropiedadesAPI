@@ -29,7 +29,7 @@
     apikeys:require("./Apikeys"), */
     const { index, clientes, imagen, propiedad, dbconstants, apikeys, favoritos, modeloRelacionado,
        allPropiedades, bulk, tipoUsuario, cargaProp, addBucketCors, cargarPropMultiples, historialdePagos, 
-       autorizacionUsuario, pagodeServicio,   
+       autorizacionUsuario, pagodeServicio, propIndependiente,   
        paquetesdePago} = require('./src/routes');
 
     const { checkAutorizacion } = require("./src/middleware/checkAutorizacion.js")
@@ -214,6 +214,7 @@ function checkIfSignedIn(req, res, next) {
     app.use("/favoritos", favoritos);
     app.use("/modeloAsociadoPropiedad", modeloRelacionado);
     app.use("/allProp", /* checkIfSignedIn, */ allPropiedades);
+    app.use("/propiedadesIndependientes", propIndependiente);
     app.use("/bulk", bulk);
     app.use("/tipodeUsuario", tipoUsuario);
     // Eliminar checkCantProps? Parece que el modo correcto esta en checkPago

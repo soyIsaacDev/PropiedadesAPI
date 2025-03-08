@@ -2,6 +2,10 @@ const server = require("express").Router();
 const express = require("express");
 const path = require('path');
 const {literal} = require ('sequelize');
+const { sequelize } = require("sequelize");
+const { QueryTypes } = require('sequelize');
+const { db } = require("../db");
+const { Op } = require('sequelize');
 
 var public = path.join(__dirname,'../../uploads');
 
@@ -12,10 +16,11 @@ const { Propiedad, ImgPropiedad, AmenidadesDesarrollo,TipodePropiedad,TipoOperac
 } = require("../db");
 const organizacion = require("../models/organizacion");
 
-server.get("/getDataandImagenPropiedades", async (req, res) => {
+// Se incluye el modelo Cliente el cual arroja datos de FAVORITOS
+server.get("/getDataandImagenPropiedades",  async (req, res) => {
   try {
-    console.log("GET DATA PROPS")
-    const dataPropiedad = await Propiedad.findAll({
+    let {userId} = req.query;
+    const desarrollo = await Propiedad.findAll({
       where:{publicada:"Si"},
       order: [
         ['precioMin','DESC']
@@ -61,22 +66,23 @@ server.get("/getDataandImagenPropiedades", async (req, res) => {
         {
           model: Colonia
         },
+        {// El modelo Cliente da la relacion de Favoritos
+          model:Cliente,
+          attributes: ["id", "userId"],
+          required: false, // Mantiene propiedades sin clientes
+          where: userId ? { userId } : {userId:"x000"} // Filtra solo si se pasa un userId, de lo contrario se da un UserId que no existe
+        },
+        
       ]
-    },);
-    /* const cuentaProps = await Propiedad.count(
-      {
-        where:{publicada:"Si"}, 
-        attributes: ['publicada','OrganizacionId'], 
-        group:['publicada','OrganizacionId'] 
     });
-    const FiltroProps = dataPropiedad.filter() */
-    dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontraron datos de propiedades"});
-    
-  } catch (e) {
-    res.send(e);
-  } 
-}
-);
+    userId? console.log("Get Data Propiedad " + JSON.stringify(userId)):console.log("Get data Propiedad")
+    res.json(desarrollo)
+  }
+  catch(error){
+    console.log(error)
+      res.json(error)
+  }
+})
 
 server.get("/getPropiedadNombre/:userId", async (req, res) => {
   try {
@@ -455,3 +461,13 @@ server.get("/orgyTipo", async (req, res) => {
 server.use('/imagenes', express.static(public));
 
 module.exports =  server;
+
+
+/* 
+Consulta RAW SQL
+where: {
+  id: {
+    [Op.in]: db.literal(`(SELECT id FROM "Clientes" WHERE id = '${cliente.id}')`)
+  }
+} 
+  */
