@@ -49,6 +49,57 @@ server.post("/agregarFavorito",  async (req,res)=> {
     }
 })
 
+server.post("/agregarFavoritosMasivo",  async (req,res)=> {
+    try {
+        const { userId, PropiedadId, tipodeDesarrollo, favoritos} = req.body;
+        const cliente = await Cliente.findOne({
+            where: {
+                userId
+              }
+        });
+
+        const favoritosIndexados = {
+            '3kds': { refId: '3kds', propiedadId: 2, tipodeDesarrollo: 2 },
+            'xv52': { refId: 'xv52', propiedadId: 2, tipodeDesarrollo: 1 },
+            'abc12': { refId: 'abc12', propiedadId: 3, tipodeDesarrollo: 2 },
+          };
+          
+        for(let property in favoritos){
+
+        }
+
+        console.log("Cliente ID " + cliente.id + " Prop Id " + PropiedadId + " Tipo " + tipodeDesarrollo)
+        
+        if(tipodeDesarrollo==="Desarrollo"){
+            console.log("Crear desarrollo")
+            const desarrolloFavorito = await Favoritos.create({
+                ClienteId:cliente.id,
+                PropiedadId
+            });
+            console.log(desarrolloFavorito)
+            res.json(desarrolloFavorito)
+        }
+        else if(tipodeDesarrollo==="Modelo"){
+            const modeloFavorito = await ModelosFavoritos.create({
+                ClienteId:cliente.id,
+                ModeloAsociadoPropiedadId:PropiedadId
+            });
+            res.json(modeloFavorito)
+        }
+        else if(tipodeDesarrollo==="Independiente"){
+            const independienteFavorita = await PropIndependienteFavoritas.create({
+                ClienteId:cliente.id,
+                PropiedadIndependienteId:PropiedadId
+            });
+            res.json(independienteFavorita)
+        }
+        
+    } catch (e) {
+        res.send(e);
+    }
+})
+
+
 server.post("/eliminarFavorito", async(req, res) => {
     try {
         const { userId, PropiedadId, tipodeDesarrollo } = req.body;
