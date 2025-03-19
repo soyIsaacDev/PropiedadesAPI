@@ -1,5 +1,5 @@
 
-const { ImgModeloAsociado, ImgPropiedadIndependiente } = require("../db");
+const {ImgPropiedad, ImgModeloAsociado, ImgPropiedadIndependiente } = require("../db");
 const DEVMODE = process.env.DEVELOPMENT;
 
 const crearTablaImg = async (req, res, next) => {
@@ -7,20 +7,23 @@ const crearTablaImg = async (req, res, next) => {
         // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
         const bodyObj = req.body.data;
         const parsedbodyObj = JSON.parse(bodyObj);
-        const { tipodeDesarrollo, modeloId, propIndependienteId } = parsedbodyObj
+        const { tipodeDesarrollo, desarrolloId, modeloId, propIndependienteId } = parsedbodyObj
 
         
-        const {file, ordenData, MOD_ASOC_BUCKET_GCLOUD_BUCKET, uniqueDateName} = req.data;
+        const {file, ordenData, MOD_ASOC_BUCKET_GCLOUD_BUCKET, DESARROLLO_GCLOUD_BUCKET, uniqueDateName} = req.data;
         
         let detalles_imgGde = undefined;
         let thumbnail_img = undefined;
-        let detalles_imgChica = undefined
+        let detalles_imgChica = undefined;
+        let BucketConfig = undefined;
 
         if(DEVMODE === "Production" ){
+            if(tipodeDesarrollo=== "Desarrollo") BucketConfig = DESARROLLO_GCLOUD_BUCKET;
+            else BucketConfig = MOD_ASOC_BUCKET_GCLOUD_BUCKET;
             // Agregro al file los nombres segun tamaño
-            detalles_imgGde = `https://storage.googleapis.com/${MOD_ASOC_BUCKET_GCLOUD_BUCKET}/Detalles_Img_Gde_${uniqueDateName}.webp`;
-            thumbnail_img = `https://storage.googleapis.com/${MOD_ASOC_BUCKET_GCLOUD_BUCKET}/Thumbnail_WebP_${uniqueDateName}.webp`;
-            detalles_imgChica = `https://storage.googleapis.com/${MOD_ASOC_BUCKET_GCLOUD_BUCKET}/Detalles_Img_Chica_${uniqueDateName}.webp`;
+            detalles_imgGde = `https://storage.googleapis.com/${BucketConfig}/Detalles_Img_Gde_${uniqueDateName}.webp`;
+            thumbnail_img = `https://storage.googleapis.com/${BucketConfig}/Thumbnail_WebP_${uniqueDateName}.webp`;
+            detalles_imgChica = `https://storage.googleapis.com/${BucketConfig}/Detalles_Img_Chica_${uniqueDateName}.webp`;
         }
         else{
             detalles_imgGde = `Detalles_Img_Gde_${uniqueDateName}.webp`;
@@ -28,7 +31,19 @@ const crearTablaImg = async (req, res, next) => {
             detalles_imgChica = `Detalles_Img_Chica_${uniqueDateName}.webp`;
         }
 
-        if(tipodeDesarrollo === 'ModeloRelacionado'){
+        if(tipodeDesarrollo === 'Desarrollo'){
+            const imagenDesarrollo = await ImgPropiedad.create({
+                orden:ordenData[0].orden,
+                type: file.mimetype,
+                PropiedadId: desarrolloId,
+                img_name: uniqueDateName,
+                detalles_imgGde,
+                thumbnail_img,
+                detalles_imgChica,        
+            });
+        }
+
+        else if(tipodeDesarrollo === 'ModeloRelacionado'){
             const imagenModeloAsociado = await ImgModeloAsociado.create({
                 orden:ordenData[0].orden,
                 type: file.mimetype,
@@ -58,6 +73,7 @@ const crearTablaImg = async (req, res, next) => {
         });
 
     } catch (error) {
+        console.log(error)
         const respuestaError = {
             codigo:0, 
             Mensaje:`Error al crear la tabla de la imagen catch`,

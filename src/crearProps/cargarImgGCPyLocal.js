@@ -37,7 +37,7 @@ const cargarImagenGCPyLocal = async (req, res, next) => {
     // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
     const bodyObj = req.body.data;
     const parsedbodyObj = JSON.parse(bodyObj);
-    const { ordenImagen, tipodeDesarrollo } = parsedbodyObj
+    const { ordenImagen, tipodeDesarrollo } = parsedbodyObj;
     const file = req.files;
 
     // Agregando Nombre Unico segun la fecha

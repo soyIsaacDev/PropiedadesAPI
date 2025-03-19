@@ -9,7 +9,7 @@ const validarImagenes = (req, res, next) => {
     // Validate file types and sizes
     //const ConsoleLog_NombrePara = Buffer.from(file.originalname, 'ascii').toString('utf8');
 
-    const allowedTypes = ['image/jpeg', 'image/png'];
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
     const maxSize = 31 * 1024 * 1024; 
     console.log("Dentro de Validacion Files ForEach")
 

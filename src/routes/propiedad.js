@@ -114,6 +114,7 @@ server.get("/detallespropiedad", async (req, res) => {
 server.get("/detallespropiedad/:id", async (req, res) => {
   try {
     const {id} = req.params;
+    const {userId} = req.query;
     console.log("Buscando Detalles" + id);
     const dataPropiedad = await Propiedad.findOne({
       where:{id:id},
@@ -148,6 +149,12 @@ server.get("/detallespropiedad/:id", async (req, res) => {
         },
         {
           model: Colonia
+        },
+        {// El modelo Cliente da la relacion de Favoritos
+          model:Cliente,
+          attributes: ["id", "userId"],
+          required: false, // Mantiene propiedades sin clientes
+          where: userId ? { userId } : {userId:"x000"} // Filtra solo si se pasa un userId, de lo contrario se da un UserId que no existe
         },
       ]
     })
@@ -454,6 +461,19 @@ server.get("/orgyTipo", async (req, res) => {
   }
   catch(error){
     res.send(error)
+  }
+})
+
+server.get("/hardDelete/:refId", async (req,res) => {
+  try {
+    const {refId} = req.params
+    const prop = await Propiedad.findOne({
+      where:{ref_id:refId}
+    })
+    await prop.destroy();
+    res.json("BORRADO")
+  } catch (error) {
+    res.json(error)
   }
 })
 

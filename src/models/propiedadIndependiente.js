@@ -9,6 +9,7 @@ module.exports = s => {
             type:DataTypes.UUID,
             unique:true,
             defaultValue: DataTypes.UUIDV4,
+            primaryKey: true,
         },
         precio:{
             type: DataTypes.FLOAT,
