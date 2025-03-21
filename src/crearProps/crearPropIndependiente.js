@@ -54,14 +54,14 @@ const crearPropIndependiente = async (req, res) => {
 
         for (let i = 0; i < amenidadesPropiedad.length; i++) {        
           await AmenidadesPropIndependienteAmenidad.create({ 
-            PropiedadIndependienteRefId:PropiedadIndependienteCreada.ref_id, 
+            PropiedadIndependienteId:PropiedadIndependienteCreada.id, 
             AmenidadesPropiedadId:amenidadesPropiedad[i] })
         }  
         // Se creo la PropiedadIndependiente Exitosamente
         res.json({
           codigo:1, 
           Mensaje:`Se cargaron los datos la propiedad Independiente`,
-          propIndependienteRefId:PropiedadIndependienteCreada.ref_id
+          propIndependienteId:PropiedadIndependienteCreada.id
         });
       }
       else{

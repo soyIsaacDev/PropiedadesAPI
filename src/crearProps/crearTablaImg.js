@@ -7,7 +7,7 @@ const crearTablaImg = async (req, res, next) => {
         // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
         const bodyObj = req.body.data;
         const parsedbodyObj = JSON.parse(bodyObj);
-        const { tipodeDesarrollo, desarrolloId, modeloId, propIndependienteRefId } = parsedbodyObj
+        const { tipodeDesarrollo, desarrolloId, modeloId, propIndependienteId } = parsedbodyObj
 
         
         const {file, ordenData, MOD_ASOC_BUCKET_GCLOUD_BUCKET, DESARROLLO_GCLOUD_BUCKET, uniqueDateName} = req.data;
@@ -58,7 +58,7 @@ const crearTablaImg = async (req, res, next) => {
             const imagenPropiedadIndependiente = await ImgPropiedadIndependiente.create({
                 orden:ordenData[0].orden,
                 type: file.mimetype,
-                PropiedadIndependienteRefId: propIndependienteRefId,
+                PropiedadIndependienteId: propIndependienteId,
                 img_name: uniqueDateName,
                 detalles_imgGde,
                 thumbnail_img,
@@ -73,7 +73,7 @@ const crearTablaImg = async (req, res, next) => {
         });
 
     } catch (error) {
-        console.log(error)
+        console.log(error);
         const respuestaError = {
             codigo:0, 
             Mensaje:`Error al crear la tabla de la imagen catch`,
