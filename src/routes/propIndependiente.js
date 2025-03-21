@@ -43,11 +43,11 @@ server.get("/getPropiedadesIndependientes", async (req, res) => {
     }
 })
 
-server.get("/detallesPropIndependiente/:ref_id", async (req, res) => {
+server.get("/detallesPropIndependiente/:id", async (req, res) => {
   try {
-    const {ref_id} = req.params;
+    const {id} = req.params;
     const dataPropiedad = await PropiedadIndependiente.findOne({
-      where:{ref_id:ref_id},
+      where:{id:id},
       order: [
         [ImgPropiedadIndependiente, 'orden','ASC']
       ],
