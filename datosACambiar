@@ -1,0 +1,16 @@
+/* 
+Desarrollo - 
+    ImgDesarrollo
+    amenidades_del_desarrollos
+    Favoritos
+    AmenidadesDesarrollo -> amenidades_desarrolloss
+    AmenidadesDesarrolloAmenidad -> amenidades_del_desarrollos
+
+Modelo
+    ModeloAsociadoPropiedads -> modelo_asociado_al_desarrollos
+    ImgModelo
+    ModelosFavoritos
+    AmenidadesPropiedad  -> amenidades_modelos
+    AmenidadesModeloAmenidad  -> amenidades-del-modelos
+
+ */

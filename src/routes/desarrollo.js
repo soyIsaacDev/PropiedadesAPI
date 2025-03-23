@@ -9,18 +9,16 @@ const { Op } = require('sequelize');
 
 var public = path.join(__dirname,'../../uploads');
 
-const { Propiedad, ImgPropiedad, AmenidadesDesarrollo,TipodePropiedad,TipoOperacion, Estado, Municipio, Ciudad, 
-  Colonia, Cliente, Favoritos, AmenidadesDesarrolloPropiedad, ModeloAsociadoPropiedad, ImgModeloAsociado,
+const { Desarrollo, ImgDesarrollo, AmenidadesDesarrollo, TipodePropiedad, TipoOperacion, Estado, Municipio, Ciudad, 
+  Colonia, Cliente, desarrollos_favoritos, amenidades_del_desarrollos, ModeloAsociadoAlDesarrollo, ImgModeloAsociado,
   Organizacion, AutorizacionesXTipodeOrg,
-  
 } = require("../db");
-const organizacion = require("../models/organizacion");
 
 // Se incluye el modelo Cliente el cual arroja datos de FAVORITOS
 server.get("/getDataandImagenPropiedades",  async (req, res) => {
   try {
     let {userId} = req.query;
-    const desarrollo = await Propiedad.findAll({
+    const desarrollo = await Desarrollo.findAll({
       where:{publicada:"Si"},
       order: [
         ['precioMin','DESC']
@@ -35,7 +33,7 @@ server.get("/getDataandImagenPropiedades",  async (req, res) => {
           ]
         },
         {
-          model: ImgPropiedad,
+          model: ImgDesarrollo,
           attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
           separate:true,
           order: [
@@ -66,7 +64,7 @@ server.get("/getDataandImagenPropiedades",  async (req, res) => {
         {
           model: Colonia
         },
-        {// El modelo Cliente da la relacion de Favoritos
+        {// El modelo Cliente da la relacion de desarrollos_favoritos
           model:Cliente,
           attributes: ["id", "userId"],
           required: false, // Mantiene propiedades sin clientes
@@ -90,7 +88,7 @@ server.get("/getPropiedadNombre/:userId", async (req, res) => {
     const cliente = await Cliente.findOne({
       where:{userId:userId}
     });
-    const dataPropiedad = await Propiedad.findAll({
+    const dataPropiedad = await Desarrollo.findAll({
       where:{OrganizacionId:cliente.OrganizacionId},
       attributes: ['id', 'nombreDesarrollo', 'posicion', 'TipodePropiedadId'],
       
@@ -116,14 +114,14 @@ server.get("/detallespropiedad/:id", async (req, res) => {
     const {id} = req.params;
     const {userId} = req.query;
     console.log("Buscando Detalles" + id);
-    const dataPropiedad = await Propiedad.findOne({
+    const dataPropiedad = await Desarrollo.findOne({
       where:{id:id},
       order: [
-        [ImgPropiedad,'orden','ASC']
+        [ImgDesarrollo,'orden','ASC']
       ],
       include: [
         {
-          model: ImgPropiedad,
+          model: ImgDesarrollo,
           attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
         },
         {
@@ -150,7 +148,7 @@ server.get("/detallespropiedad/:id", async (req, res) => {
         {
           model: Colonia
         },
-        {// El modelo Cliente da la relacion de Favoritos
+        {// El modelo Cliente da la relacion de desarrollos_favoritos
           model:Cliente,
           attributes: ["id", "userId"],
           required: false, // Mantiene propiedades sin clientes
@@ -182,16 +180,16 @@ server.get("/propiedadesconfavoritos/:userId",  async (req, res) => {
           }
       });
 
-      const AllPropiedades = await Propiedad.findAll({
+      const AllPropiedades = await Desarrollo.findAll({
           include: [
             {
-              model: ImgPropiedad,
+              model: ImgDesarrollo,
               attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
             }
           ]
       },);
       
-      const AllModelos = await ModeloAsociadoPropiedad.findAll({
+      const AllModelos = await ModeloAsociadoAlDesarrollo.findAll({
         order: [
           ['precio"','ASC']
         ],
@@ -207,7 +205,7 @@ server.get("/propiedadesconfavoritos/:userId",  async (req, res) => {
         ]
       },);
 
-      const Fav = await Favoritos.findAll({
+      const Fav = await desarrollos_favoritos.findAll({
           where: {
               ClienteId:cliente.id
             }
@@ -228,7 +226,7 @@ server.get("/propiedadesconfavoritos/:userId",  async (req, res) => {
                   baños: AllPropiedades[i].baños,
                   favorita: 1,
                   posicion:AllPropiedades[i].posicion,
-                  ImgPropiedads: AllPropiedades[i].ImgPropiedads,
+                  ImgDesarrollos: AllPropiedades[i].ImgDesarrollos,
                   
                 }  */
                 AllPropandFav.push(AllPropCopy[i]);
@@ -245,9 +243,8 @@ server.get("/getAmenidadesDesarrolloSeleccionado/:id", async (req, res) => {
   try {
     const {id} = req.params;
     console.log("Buscando Amenidades" + id);
-    const amenidades = await AmenidadesDesarrolloPropiedad.findAll({
-      where:{PropiedadId:id},
-      attributes: ["PropiedadId", "AmenidadesDesarrolloId"],
+    const amenidades = await amenidades_del_desarrollos.findAll({
+      where:{DesarrolloId:id},
     });
     /* const dataPropiedad = await Propiedad.findOne({
       where:{id:id},
@@ -270,7 +267,7 @@ server.get("/getAmenidadesDesarrolloSeleccionado/:id", async (req, res) => {
 
 server.get("/seedRefId", async (req, res) => {
   try {
-    const Desarrollo = await Propiedad.findAll();
+    const Desarrollo = await Desarrollo.findAll();
     for (let i = 0; i < Desarrollo.length; i++) {
       Desarrollo[i].ref_id = literal('uuid_generate_v4()'); 
       await Desarrollo[i].save();
@@ -284,7 +281,7 @@ server.get("/seedRefId", async (req, res) => {
 server.get("/actualizar/:propId/:orgId", async (req, res) =>{
   try {
     const {propId, orgId} = req.params
-    const propiedad = await Propiedad.findOne({
+    const propiedad = await Desarrollo.findOne({
       where:{id:propId},
     })
     /* propiedad.OrganizacionId="e29c1eae-6bc4-4e18-9799-995e8ab00994"
@@ -298,7 +295,7 @@ server.get("/actualizar/:propId/:orgId", async (req, res) =>{
 
 server.get("/actualizarPublicacion", async (req, res) =>{
   try {
-    const propiedad = await Propiedad.findAll();
+    const propiedad = await Desarrollo.findAll();
     for (let i = 0; i < propiedad.length; i++) {
       await propiedad[i].update({publicada:"Si"})
     }
@@ -312,14 +309,14 @@ server.get("/getPropOrganizacion/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
     const cliente = await Cliente.findOne({where:{userId}})
-    const dataPropiedad = await Propiedad.findAll({
+    const dataPropiedad = await Desarrollo.findAll({
       where:{ OrganizacionId:cliente.OrganizacionId },
       order: [
         ['precioMin','ASC']
       ],
       include: [
         {
-          model: ImgPropiedad,
+          model: ImgDesarrollo,
           attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
           separate:true,
           order: [
@@ -363,7 +360,7 @@ server.get("/getPropOrganizacion/:userId", async (req, res) => {
 server.get("/cuentaxOrg", async (req, res) => {
   try {
 
-     const dataPropiedad = await Propiedad.findAll({
+     const dataPropiedad = await Desarrollo.findAll({
       where:{publicada:"Si"},
       include: [
         {
@@ -464,11 +461,11 @@ server.get("/orgyTipo", async (req, res) => {
   }
 })
 
-server.get("/hardDelete/:refId", async (req,res) => {
+server.get("/hardDelete/:Id", async (req,res) => {
   try {
-    const {refId} = req.params
-    const prop = await Propiedad.findOne({
-      where:{ref_id:refId}
+    const {Id} = req.params
+    const prop = await Desarrollo.findOne({
+      where:{id:Id}
     })
     await prop.destroy();
     res.json("BORRADO")

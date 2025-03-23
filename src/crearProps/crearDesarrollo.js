@@ -1,4 +1,4 @@
-const {  ImgPropiedad, Propiedad, AmenidadesDesarrolloPropiedad } = require("../db");
+const {   Desarrollo, amenidades_del_desarrollos } = require("../db");
 
 
 const crearDesarrollo = async (req, res, next) => {
@@ -7,14 +7,11 @@ const crearDesarrollo = async (req, res, next) => {
       // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
       const bodyObj = req.body.data;
       const parsedbodyObj = JSON.parse(bodyObj);
-      const { nombreDesarrollo, precio, calle, numeroPropiedad, numeroInterior, posicion, ciudad, estado, municipio,
-        niveles, recamaras, baños, medio_baño, espaciosCochera, cocheraTechada,   
-        m2Construccion, m2Terreno, m2Total, añodeConstruccion,  publicada, 
-        tipodeOperacion, TipodePropiedadId, amenidadesDesarrollo, ordenImagen,
-        propiedadIndepeniente, EstiloArquitecturaId, colonia
+      const { nombreDesarrollo, calle, numeroPropiedad, posicion, ciudad, estado, municipio,
+        añodeConstruccion, amenidadesDesarrollo, EstiloArquitecturaId, colonia
       } = parsedbodyObj
 
-      const [DesarrolloCreado, creado] = await Propiedad.findOrCreate({
+      const [DesarrolloCreado, creado] = await Desarrollo.findOrCreate({
         where:{
           nombreDesarrollo,
           EstadoId:estado,
@@ -28,7 +25,6 @@ const crearDesarrollo = async (req, res, next) => {
           añodeConstruccion,
           calle,
           numeroPropiedad,
-          numeroInterior,
           ColoniumId:colonia,
           posicion,
           publicada:"Si",
@@ -40,7 +36,7 @@ const crearDesarrollo = async (req, res, next) => {
       if(creado === true){
 
         for (let i = 0; i < amenidadesDesarrollo.length; i++) {        
-          await AmenidadesDesarrolloPropiedad.create({ 
+          await amenidades_del_desarrollos.create({ 
             PropiedadId:DesarrolloCreado.id, 
             AmenidadesDesarrolloId:amenidadesDesarrollo[i] })
         }

@@ -22,6 +22,11 @@ module.exports = s => {
         detalles_imgChica: {
           type: DataTypes.STRING,
         },
-      });
+      },     
+      {
+        tableName: 'img_modelo_asociado',
+        timestamps: false,
+      }
+    );
   
   };

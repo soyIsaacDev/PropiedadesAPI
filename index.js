@@ -22,12 +22,7 @@
         storage: "./session.sqlite",
     }); */
 
-    /* imagen: require("./imgPropiedad"),
-    propiedad:require("./propiedad"),
-    autCliente:require("./authCliente"),
-    dbconstants:require("./dBConstants"),
-    apikeys:require("./Apikeys"), */
-    const { index, clientes, imagen, propiedad, dbconstants, apikeys, favoritos, modeloRelacionado,
+    const { index, clientes, imagen, desarrollo, dbconstants, apikeys, favoritos, modeloAsociadoAlDesarrollo,
        allPropiedades, bulk, tipoUsuario, cargaProp, addBucketCors, cargarPropMultiples, historialdePagos, 
        autorizacionUsuario, pagodeServicio, propIndependiente,   
        paquetesdePago} = require('./src/routes');
@@ -209,12 +204,12 @@ function checkIfSignedIn(req, res, next) {
     //app.use("/", authCliente);
     
     app.use("/clientes", clientes); // Autorizacion para agregar usuarios revisada a nivel ruta
-    app.use("/propiedades", propiedad);
+    app.use("/propiedades", desarrollo);
     app.use("/imagenpropiedad", imagen);
     app.use("/Apikeys", apikeys );
     app.use("/dbConstants", dbconstants);
     app.use("/favoritos", favoritos);
-    app.use("/modeloAsociadoPropiedad", modeloRelacionado);
+    app.use("/modeloAsociadoPropiedad", modeloAsociadoAlDesarrollo);
     app.use("/allProp", /* checkIfSignedIn, */ allPropiedades);
     app.use("/propiedadesIndependientes", propIndependiente);
     app.use("/bulk", bulk);

@@ -1,21 +1,22 @@
 const server = require("express").Router();
-const { Propiedad, ImgPropiedad, ModeloAsociadoPropiedad, ImgModeloAsociado, AmenidadesDesarrollo, TipodePropiedad, TipoOperacion, Ciudad, Municipio, Estado, Colonia, EstiloArquitectura   } = require("../db");
+const { Desarrollo, ImgDesarrollo, ModeloAsociadoAlDesarrollo, ImgModeloAsociado, AmenidadesDesarrollo, 
+  TipodePropiedad, TipoOperacion, Ciudad, Municipio, Estado, Colonia, EstiloArquitectura   } = require("../db");
 
 server.get("/getTodasLasPropiedades", async (req, res) => {
     try {
-      const dataDesarrollo = await Propiedad.findAll({
+      const dataDesarrollo = await Desarrollo.findAll({
         order: [
             ['id', 'ASC'],
         ],
         include: [
           {
-            model: ImgPropiedad,
+            model: ImgDesarrollo,
             attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
           }
         ]
       },);      
       
-      const dataModelo = await ModeloAsociadoPropiedad.findAll({
+      const dataModelo = await ModeloAsociadoAlDesarrollo.findAll({
         order: [
             ['PropiedadId', 'ASC'],
         ],
@@ -64,13 +65,13 @@ server.get("/getTodasLasPropiedades", async (req, res) => {
 server.get("/getTodasLasPropiedadesconIncludes", async (req, res) => {
   try {
     console.log("AllProp Get Todas Las Propiedades con Includes")
-    const dataDesarrollo = await Propiedad.findAll({
+    const dataDesarrollo = await Desarrollo.findAll({
       order: [
           ['id', 'ASC'],
       ],
       include: [
         {
-          model: ImgPropiedad,
+          model: ImgDesarrollo,
           attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
         },
         
@@ -102,7 +103,7 @@ server.get("/getTodasLasPropiedadesconIncludes", async (req, res) => {
           model: Colonia
         },
         {
-          model: ModeloAsociadoPropiedad,
+          model: ModeloAsociadoAlDesarrollo,
           include: 
             {
               model: ImgModeloAsociado,

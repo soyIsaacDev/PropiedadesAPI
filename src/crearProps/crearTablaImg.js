@@ -1,5 +1,5 @@
 
-const {ImgPropiedad, ImgModeloAsociado, ImgPropiedadIndependiente } = require("../db");
+const {ImgDesarrollo, ImgModeloAsociado, ImgPropiedadIndependiente } = require("../db");
 const DEVMODE = process.env.DEVELOPMENT;
 
 const crearTablaImg = async (req, res, next) => {
@@ -32,7 +32,7 @@ const crearTablaImg = async (req, res, next) => {
         }
 
         if(tipodeDesarrollo === 'Desarrollo'){
-            const imagenDesarrollo = await ImgPropiedad.create({
+            const imagenDesarrollo = await ImgDesarrollo.create({
                 orden:ordenData[0].orden,
                 type: file.mimetype,
                 PropiedadId: desarrolloId,
@@ -43,7 +43,7 @@ const crearTablaImg = async (req, res, next) => {
             });
         }
 
-        else if(tipodeDesarrollo === 'ModeloRelacionado'){
+        else if(tipodeDesarrollo === 'Modelo'){
             const imagenModeloAsociado = await ImgModeloAsociado.create({
                 orden:ordenData[0].orden,
                 type: file.mimetype,

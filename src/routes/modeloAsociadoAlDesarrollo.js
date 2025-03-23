@@ -5,8 +5,8 @@ const path = require('path');
 
 var public = path.join(__dirname,'../../uploads');
 
-const { Propiedad, ImgPropiedad, AmenidadesDesarrollo, AmenidadesPropiedad,TipodePropiedad, 
-  TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, Favoritos, ModeloAsociadoPropiedad, 
+const { Desarrollo, ImgDesarrollo, AmenidadesDesarrollo, AmenidadesModelo, TipodePropiedad, 
+  TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, Favoritos, ModeloAsociadoAlDesarrollo, 
   ImgModeloAsociado, EstiloArquitectura  } = require("../db");
 
 const {literal} = require ('sequelize');
@@ -28,7 +28,7 @@ const {literal} = require ('sequelize');
           ],
         }, 
         {
-          model: AmenidadesPropiedad,
+          model: AmenidadesModelo, 
           through: {
             attributes: []
           }
@@ -48,7 +48,7 @@ server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
   try {
     let {userId} = req.query;
 
-    const dataPropiedad = await ModeloAsociadoPropiedad.findAll({
+    const dataPropiedad = await ModeloAsociadoAlDesarrollo.findAll({
       //where:{publicada:"Si"},
       order: [
         ['precio"','DESC']
@@ -63,7 +63,7 @@ server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
           ],
         }, 
         {
-          model: AmenidadesPropiedad,
+          model: AmenidadesModelo, 
           through: {
             attributes: []
           }
@@ -88,7 +88,7 @@ server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
 server.get("/getDataandImagenModeloAsociadoPropiedad/:PropiedadId", async (req, res) => {
   try {
     const {PropiedadId} = req.params;
-    const dataPropiedad = await ModeloAsociadoPropiedad.findAll({
+    const dataPropiedad = await ModeloAsociadoAlDesarrollo.findAll({
       where: {
         PropiedadId
       },
@@ -105,7 +105,7 @@ server.get("/getDataandImagenModeloAsociadoPropiedad/:PropiedadId", async (req, 
           ],
         },
         {
-          model: AmenidadesPropiedad,
+          model: AmenidadesModelo, 
           through: {
             attributes: []
           }
@@ -147,7 +147,7 @@ server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
   try {
     const {id} = req.params;
     console.log("Buscando Detalles" + id);
-    const dataPropiedad = await ModeloAsociadoPropiedad.findOne({
+    const dataPropiedad = await ModeloAsociadoAlDesarrollo.findOne({
       where:{id:id},
       order: [
         [ImgModeloAsociado, 'orden','ASC']
@@ -158,16 +158,16 @@ server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
           attributes: ['orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
         },
         {
-          model: AmenidadesPropiedad,
+          model: AmenidadesModelo, 
           through: {
             attributes: []
           }
         },
         {
-          model: Propiedad,
+          model: Desarrollo,
           attributes: ['id','precioMin', 'precioMax', 'calle', 'numeroPropiedad','posicion'],
           include: [{
-              model: ImgPropiedad,
+              model: ImgDesarrollo,
               attributes: ['orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
               separate:true,
               order: [
@@ -227,7 +227,7 @@ server.get("/modelosFavoritos/:userId",  async (req, res) => {
           }
       });
 
-      const ModeloAsociado = await ModeloAsociadoPropiedad.findAll({
+      const ModeloAsociado = await ModeloAsociadoAlDesarrollo.findAll({
           //where:{publicada:"Si"},
           order: [
             ['precio"','DESC']
@@ -242,7 +242,7 @@ server.get("/modelosFavoritos/:userId",  async (req, res) => {
               ],
             }, 
             {
-              model: AmenidadesPropiedad,
+              model: AmenidadesModelo, 
               through: {
                 attributes: []
               }
@@ -264,10 +264,10 @@ server.get("/propiedadesconfavoritos/:ClienteId", isAuthenticated, async (req, r
   try {
       let {ClienteId} = req.params;
 
-      const AllPropiedades = await Propiedad.findAll({
+      const AllPropiedades = await Desarrollo.findAll({
           include: [
             {
-              model: ImgPropiedad,
+              model: ImgDesarrollo,
               attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
             }
           ]
@@ -289,7 +289,7 @@ server.get("/propiedadesconfavoritos/:ClienteId", isAuthenticated, async (req, r
               baños: AllPropiedades[i].baños,
               favorita: 0,
               posicion:AllPropiedades[i].posicion,
-              ImgPropiedads: AllPropiedades[i].ImgPropiedads,
+              ImgDesarrollos: AllPropiedades[i].ImgDesarrollos,
               
           }
           for (let x = 0; x < Fav.length; x++) {
@@ -307,7 +307,7 @@ server.get("/propiedadesconfavoritos/:ClienteId", isAuthenticated, async (req, r
 
 server.get("/seedRefId", async (req, res) => {
   try {
-    const Modelo = await ModeloAsociadoPropiedad.findAll();
+    const Modelo = await ModeloAsociadoAlDesarrollo.findAll();
     for (let i = 0; i < Modelo.length; i++) {
       Modelo[i].ref_id = literal('uuid_generate_v4()'); 
       await Modelo[i].save();
@@ -320,7 +320,7 @@ server.get("/seedRefId", async (req, res) => {
 
 /* server.get("/pruebaRefId", async (req, res) => {
   try {
-    const Modelo = await ModeloAsociadoPropiedad.findAll();
+    const Modelo = await ModeloAsociadoAlDesarrollo.findAll();
     for (let i = 0; i < Modelo.length; i++) {
     }
     Modelo[0].ref_id = literal('uuid_generate_v4()'); 
@@ -334,7 +334,7 @@ server.get("/seedRefId", async (req, res) => {
 server.get("/actualizar/:propId/:orgId", async (req, res) =>{
   try {
     const {propId, orgId} = req.params
-    const propiedad = await ModeloAsociadoPropiedad.findOne({
+    const propiedad = await ModeloAsociadoAlDesarrollo.findOne({
       where:{id:propId},
     })
     await propiedad.update({OrganizacionId:orgId})
@@ -348,7 +348,7 @@ server.get("/getModeloAsociadoPropiedadbyOrg/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
     const cliente = await Cliente.findOne({ where:{userId} });
-    const dataPropiedad = await ModeloAsociadoPropiedad.findAll({
+    const dataPropiedad = await ModeloAsociadoAlDesarrollo.findAll({
       where:{ OrganizacionId:cliente.OrganizacionId },
       order: [
         ['precio"','ASC']
@@ -363,7 +363,7 @@ server.get("/getModeloAsociadoPropiedadbyOrg/:userId", async (req, res) => {
           ],
         }, 
         {
-          model: AmenidadesPropiedad,
+          model: AmenidadesModelo, 
           through: {
             attributes: []
           }
