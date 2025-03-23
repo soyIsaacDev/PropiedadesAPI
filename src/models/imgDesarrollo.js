@@ -2,8 +2,8 @@ const {DataTypes} = require ('sequelize');
 
 module.exports = s => {
     s.define(
-      "ImgPropiedad", 
-      {
+      'ImgDesarrollo', 
+    {
       orden:{
         type:DataTypes.INTEGER
       },
@@ -23,6 +23,10 @@ module.exports = s => {
         type: DataTypes.STRING,
       },
 
-    });
+    },
+    {
+      tableName: 'img_desarrollos' // Nombre de la tabla en minúsculas
+    }
+  );
   
-  };
+}

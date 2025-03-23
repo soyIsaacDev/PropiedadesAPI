@@ -10,6 +10,7 @@ module.exports = s => {
             unique: true 
         }        
     }, {
-    timestamps: false,
+        tableName: 'amenidades_desarrollos',
+        timestamps: false,
     });
 }

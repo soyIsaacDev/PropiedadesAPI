@@ -17,7 +17,7 @@ User.sync({ alter: true }) - This checks what is the current state of the table 
 /* db.beforeSync(async () => {
  await db.query('CREATE SEQUENCE IF NOT EXISTS custom_sequence CACHE 1');
 }); */           
-// Migrations is recomended for production
+// (Es mejor una transaccion) Migrations is recomended for production
 /* db.sync({ force:false, alter:false }).then(function () {
   app.listen(port, function () {
     console.log("Server is listening on port " + port);

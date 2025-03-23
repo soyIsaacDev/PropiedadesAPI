@@ -4,7 +4,7 @@ const server = require("express").Router();
 // Se carga cada imagen por separado, permitiendo cargar imagenes de tamaños grandes
 
 const { crearDesarrollo } = require('../crearProps/crearDesarrollo')
-const { crearModeloRelacionado } = require('../crearProps/crearModeloRelacionado');
+const { crearModeloAsociadoDesarrollo } = require('../crearProps/crearModeloAsociadoAlDesarrollo');
 const { crearPropIndependiente } = require('../crearProps/crearPropIndependiente');
 
 const { validarImagenes }= require('../crearProps/validarImagenes');
@@ -17,7 +17,7 @@ const crearTablaImg = require('../crearProps/crearTablaImg');
 // Desarrollo
 server.post("/crearDesarrollo", crearDesarrollo);
 // Modelo
-server.post("/crearModeloAsociadoPropiedad", crearModeloRelacionado); 
+server.post("/crearModeloAsociadoPropiedad", crearModeloAsociadoDesarrollo); 
 // Propiedad Independiente
 server.post("/crearaPropIndependiente", crearPropIndependiente );
 

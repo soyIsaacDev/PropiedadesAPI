@@ -2,24 +2,14 @@ const {literal, DataTypes} = require ('sequelize');
 
 module.exports = s => {
     s.define(
-        "ModeloAsociadoPropiedad", 
+        'ModeloAsociadoAlDesarrollo', 
     {
-        /* id: {
-            type:DataTypes.STRING,
-            allowNull:false,
-            autoIncrement: true,
+        id:{
+            type:DataTypes.UUID,
             primaryKey:true,
-            defaultValue: literal("nextval('custom_sequence')"),
-        }, 
-        /*id:{
-            type: DataTypes.UUID,
-            allowNull: false,
-            primaryKey: true,
-            autoIncrement: false,
-            defaultValue: DataTypes.UUIDV4 // Or DataTypes.UUIDV1
-            
+            unique:true,
+            defaultValue: DataTypes.UUIDV4,
         },
-        */
         nombreModelo:{
             type: DataTypes.STRING,
             allowNull: true,
@@ -61,19 +51,11 @@ module.exports = s => {
             type:DataTypes.FLOAT,
             allowNull:true
         },
-        m2Total:{
+        m2Patios:{
             type:DataTypes.FLOAT,
             allowNull:true
         },
         añodeConstruccion:{
-            type: DataTypes.INTEGER,
-            allowNull: true,
-        },
-        calle:{
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        numeroPropiedad:{
             type: DataTypes.INTEGER,
             allowNull: true,
         },
@@ -85,11 +67,6 @@ module.exports = s => {
             type: DataTypes.JSON,
             allowNull: true,
         },
-        ref_id:{
-            type:DataTypes.UUID,
-            unique:true,
-            defaultValue: DataTypes.UUIDV4,
-        },
         publicada:{
             type: DataTypes.ENUM("Si","No"),
             allowNull: true,
@@ -99,8 +76,9 @@ module.exports = s => {
             type:DataTypes.ENUM("Modelo"),
             defaultValue:"Modelo"
         }
-    }, {
-    timestamps: false,
-		
+    },
+    {
+        tableName: 'modelo_asociado_al_desarrollos',
+        timestamps: false,
     });
 }

@@ -1,13 +1,8 @@
 const server = require("express").Router();
 const { Op } = require("sequelize");
 
-const { Propiedad, Favoritos, ImgPropiedad, Cliente, ModelosFavoritos, ModeloAsociadoPropiedad,
-    AmenidadesPropiedad,
-  ImgModeloAsociado, PropIndependienteFavoritas,
-   AmenidadesDesarrollo,TipodePropiedad,TipoOperacion, Estado, Municipio, Ciudad, 
-  Colonia,  AmenidadesDesarrolloPropiedad, 
-  Organizacion, AutorizacionesXTipodeOrg, 
-  } = require("../db");
+const { Desarrollo, desarrollos_favoritos, ImgDesarrollo, Cliente, modelos_favoritos, ModeloAsociadoAlDesarrollo,
+  ImgModeloAsociado, prop_independientes_favoritas,  } = require("../db");
 
 // TipodeProp:  1 = Desarrollo : 2 = ModeloAsociado
 server.post("/agregarFavorito",  async (req,res)=> {
@@ -22,7 +17,7 @@ server.post("/agregarFavorito",  async (req,res)=> {
         
         if(tipodeDesarrollo==="Desarrollo"){
             console.log("Crear desarrollo")
-            const desarrolloFavorito = await Favoritos.create({
+            const desarrolloFavorito = await desarrollos_favoritos.create({
                 ClienteId:cliente.id,
                 PropiedadId
             });
@@ -30,14 +25,14 @@ server.post("/agregarFavorito",  async (req,res)=> {
             res.json(desarrolloFavorito)
         }
         else if(tipodeDesarrollo==="Modelo"){
-            const modeloFavorito = await ModelosFavoritos.create({
+            const modeloFavorito = await modelos_favoritos.create({
                 ClienteId:cliente.id,
-                ModeloAsociadoPropiedadId:PropiedadId
+                ModeloAsociadoAlDesarrolloId:PropiedadId
             });
             res.json(modeloFavorito)
         }
         else if(tipodeDesarrollo==="Independiente"){
-            const independienteFavorita = await PropIndependienteFavoritas.create({
+            const independienteFavorita = await prop_independientes_favoritas.create({
                 ClienteId:cliente.id,
                 PropiedadIndependienteId:PropiedadId
             });
@@ -72,7 +67,7 @@ server.post("/agregarFavoritosMasivo",  async (req,res)=> {
         
         if(tipodeDesarrollo==="Desarrollo"){
             console.log("Crear desarrollo")
-            const desarrolloFavorito = await Favoritos.create({
+            const desarrolloFavorito = await desarrollos_favoritos.create({
                 ClienteId:cliente.id,
                 PropiedadId
             });
@@ -80,14 +75,14 @@ server.post("/agregarFavoritosMasivo",  async (req,res)=> {
             res.json(desarrolloFavorito)
         }
         else if(tipodeDesarrollo==="Modelo"){
-            const modeloFavorito = await ModelosFavoritos.create({
+            const modeloFavorito = await modelos_favoritos.create({
                 ClienteId:cliente.id,
-                ModeloAsociadoPropiedadId:PropiedadId
+                ModeloAsociadoAlDesarrolloId:PropiedadId
             });
             res.json(modeloFavorito)
         }
         else if(tipodeDesarrollo==="Independiente"){
-            const independienteFavorita = await PropIndependienteFavoritas.create({
+            const independienteFavorita = await prop_independientes_favoritas.create({
                 ClienteId:cliente.id,
                 PropiedadIndependienteId:PropiedadId
             });
@@ -111,7 +106,7 @@ server.post("/eliminarFavorito", async(req, res) => {
         
         switch (tipodeDesarrollo) {
             case "Desarrollo":
-                const eliminarDesarrolloFavorito = await Favoritos.findOne({
+                const eliminarDesarrolloFavorito = await desarrollos_favoritos.findOne({
                     where: {
                         [Op.and]:[{"PropiedadId":PropiedadId}, {"ClienteId":cliente.id}]
                     }
@@ -120,16 +115,16 @@ server.post("/eliminarFavorito", async(req, res) => {
                 favoritoEliminado = eliminarDesarrolloFavorito;
                 break;
             case "Modelo":
-                const eliminarModeloFavorito = await ModelosFavoritos.findOne({
+                const eliminarModeloFavorito = await modelos_favoritos.findOne({
                     where: {
-                        [Op.and]:[{"ModeloAsociadoPropiedadId":PropiedadId}, {"ClienteId":cliente.id}]
+                        [Op.and]:[{"ModeloAsociadoAlDesarrolloId":PropiedadId}, {"ClienteId":cliente.id}]
                     }
                 })
                 await eliminarModeloFavorito.destroy();
                 favoritoEliminado = eliminarModeloFavorito;
                 break;
             case "Independiente":
-                const eliminarIndependienteFavorito = await PropIndependienteFavoritas.findOne({
+                const eliminarIndependienteFavorito = await prop_independientes_favoritas.findOne({
                     where: {
                         [Op.and]:[{"PropiedadIndependienteId":PropiedadId}, {"ClienteId":cliente.id}]
                     }
@@ -150,7 +145,7 @@ server.post("/eliminarFavorito", async(req, res) => {
 server.get("/esfavorita/:PropiedadId/:ClienteId", async (req, res) => {
     try {
         const { PropiedadId, ClienteId } = req.params
-        const propiedadFavorita = await Favoritos.findOne({
+        const propiedadFavorita = await desarrollos_favoritos.findOne({
             where: {
                 [Op.and]:[{"PropiedadId":PropiedadId}, {"ClienteId":ClienteId}]
             }
@@ -181,7 +176,7 @@ server.get("/favoritos/:userId", async (req, res) => {
         const FavoritasconImg = [];
 
         for (let i = 0; i < propiedadesFavoritas.Propiedads.length; i++) {
-            const imgProp = await ImgPropiedad.findAll({
+            const imgProp = await ImgDesarrollo.findAll({
                 where: {
                     PropiedadId:propiedadesFavoritas.Propiedads[i].id
                 },
@@ -194,7 +189,7 @@ server.get("/favoritos/:userId", async (req, res) => {
                 recamaras: propiedadesFavoritas.Propiedads[i].recamaras,
                 baños: propiedadesFavoritas.Propiedads[i].baños,
                 favorita: 1,
-                ImgPropiedads:imgProp
+                ImgDesarrollos:imgProp
             }
             FavoritasconImg.push(Favoritas)
         }
@@ -215,7 +210,7 @@ server.get("/desarrolloFav/:userId", async (req, res) => {
                 userId
               }
         });
-        const propiedadFavorita = await Favoritos.findAll({
+        const propiedadFavorita = await desarrollos_favoritos.findAll({
             where: {
                 ClienteId:cliente.id
             },
@@ -238,7 +233,7 @@ server.get("/modelosFav/:userId", async (req, res) => {
                 userId
               }
         });
-        const modelosFavoritos = await ModelosFavoritos.findAll({
+        const modelosFavoritos = await modelos_favoritos.findAll({
             where: {
                 ClienteId:cliente.id
             },
@@ -259,7 +254,7 @@ server.get("/independienteFav/:userId", async (req, res) => {
                 userId
               }
         });
-        const independienteFavorita = await PropIndependienteFavoritas.findAll({
+        const independienteFavorita = await prop_independientes_favoritas.findAll({
             where: {
                 ClienteId:cliente.id
             },
@@ -280,17 +275,17 @@ server.get("/propiedadesconfavoritos/:userId",  async (req, res) => {
             }
         });
   
-        const AllPropiedades = await Propiedad.findAll({
+        const AllPropiedades = await Desarrollo.findAll({
             include: [
               {
-                model: ImgPropiedad,
+                model: ImgDesarrollo,
                 attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
               }
             ]
         },);
 
         
-        const AllModelos = await ModeloAsociadoPropiedad.findAll({
+        const AllModelos = await ModeloAsociadoAlDesarrollo.findAll({
           order: [
             ['precio"','ASC']
           ],
@@ -306,13 +301,13 @@ server.get("/propiedadesconfavoritos/:userId",  async (req, res) => {
           ]
         },);
   
-        const desarrollosFavoritos = await Favoritos.findAll({
+        const desarrollosFavoritos = await desarrollos_favoritos.findAll({
             where: {
                 ClienteId:cliente.id
               }
         });
 
-        const modeloFavorito = await ModelosFavoritos.findAll({
+        const modeloFavorito = await modelos_favoritos.findAll({
             where: {
                 ClienteId:cliente.id
             },
@@ -333,7 +328,7 @@ server.get("/propiedadesconfavoritos/:userId",  async (req, res) => {
             for (let z = 0; z < AllModelosCopy.length; z++) {
                 if(AllModelosCopy[z].PropiedadId === AllPropCopy[i].id ){
                     for (let y = 0; y < modeloFavorito.length; y++) {
-                        if(modeloFavorito[y].ModeloAsociadoPropiedadId === AllModelosCopy[z].id){
+                        if(modeloFavorito[y].ModeloAsociadoAlDesarrolloId === AllModelosCopy[z].id){
 
                             AllModelosCopy[z].favorita = 1;
                             AllPropandFav.push(AllModelosCopy[z]);
