@@ -23,6 +23,11 @@ module.exports = s => {
         type: DataTypes.STRING,
       },
 
-    });
+    },     
+    {
+      tableName: 'img_propiedades_independientes',
+      timestamps: false,
+    }
+  );
   
   };

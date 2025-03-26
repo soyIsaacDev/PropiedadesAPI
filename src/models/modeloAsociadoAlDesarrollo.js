@@ -78,7 +78,7 @@ module.exports = s => {
         }
     },
     {
-        tableName: 'modelo_asociado_al_desarrollos',
+        tableName: 'modelos_asociados_a_los_desarrollos',
         timestamps: false,
     });
 }

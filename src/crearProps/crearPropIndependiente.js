@@ -1,4 +1,4 @@
-const {  AmenidadesPropIndependienteAmenidad, PropiedadIndependiente } = require("../db");
+const {  amenidades_de_las_prop_independientes, PropiedadIndependiente } = require("../db");
 const { Op } = require("sequelize");
 
 // Crear Relaciones en DB
@@ -53,7 +53,7 @@ const crearPropIndependiente = async (req, res) => {
       if(creado === true){
 
         for (let i = 0; i < amenidadesPropiedad.length; i++) {        
-          await AmenidadesPropIndependienteAmenidad.create({ 
+          await amenidades_de_las_prop_independientes.create({ 
             PropiedadIndependienteId:PropiedadIndependienteCreada.id, 
             AmenidadesPropiedadId:amenidadesPropiedad[i] })
         }  

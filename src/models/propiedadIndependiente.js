@@ -5,7 +5,7 @@ module.exports = s => {
     s.define(
         "PropiedadIndependiente", 
     {
-        ref_id:{
+        id:{
             type:DataTypes.UUID,
             unique:true,
             defaultValue: DataTypes.UUIDV4,
@@ -63,7 +63,7 @@ module.exports = s => {
             type:DataTypes.FLOAT,
             allowNull:true
         },
-        m2Total:{
+        m2Patios:{
             type:DataTypes.FLOAT,
             allowNull:true
         },
@@ -84,7 +84,9 @@ module.exports = s => {
             type:DataTypes.ENUM("Independiente"),
             defaultValue:"Independiente"
         }
-    }, {
-    timestamps: false,
+    }, 
+    {
+        tableName: 'propiedades_independientes',
+        timestamps: false,
     });
 }

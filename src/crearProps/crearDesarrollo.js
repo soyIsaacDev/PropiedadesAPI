@@ -1,4 +1,4 @@
-const {   Desarrollo, amenidades_del_desarrollos } = require("../db");
+const {   Desarrollo, amenidades_de_los_desarrollos } = require("../db");
 
 
 const crearDesarrollo = async (req, res, next) => {
@@ -36,8 +36,8 @@ const crearDesarrollo = async (req, res, next) => {
       if(creado === true){
 
         for (let i = 0; i < amenidadesDesarrollo.length; i++) {        
-          await amenidades_del_desarrollos.create({ 
-            PropiedadId:DesarrolloCreado.id, 
+          await amenidades_de_los_desarrollos.create({ 
+            DesarrolloId:DesarrolloCreado.id, 
             AmenidadesDesarrolloId:amenidadesDesarrollo[i] })
         }
     

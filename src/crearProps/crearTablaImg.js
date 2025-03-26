@@ -35,7 +35,7 @@ const crearTablaImg = async (req, res, next) => {
             const imagenDesarrollo = await ImgDesarrollo.create({
                 orden:ordenData[0].orden,
                 type: file.mimetype,
-                PropiedadId: desarrolloId,
+                DesarrolloId: desarrolloId,
                 img_name: uniqueDateName,
                 detalles_imgGde,
                 thumbnail_img,
@@ -47,7 +47,7 @@ const crearTablaImg = async (req, res, next) => {
             const imagenModeloAsociado = await ImgModeloAsociado.create({
                 orden:ordenData[0].orden,
                 type: file.mimetype,
-                ModeloAsociadoPropiedadId: modeloId,
+                ModeloAsociadoAlDesarrolloId: modeloId,
                 img_name: uniqueDateName,
                 detalles_imgGde,
                 thumbnail_img,
@@ -58,7 +58,7 @@ const crearTablaImg = async (req, res, next) => {
             const imagenPropiedadIndependiente = await ImgPropiedadIndependiente.create({
                 orden:ordenData[0].orden,
                 type: file.mimetype,
-                PropiedadIndependienteId: propIndependienteId,
+                PropiedadIndependienteRefId: propIndependienteId,
                 img_name: uniqueDateName,
                 detalles_imgGde,
                 thumbnail_img,

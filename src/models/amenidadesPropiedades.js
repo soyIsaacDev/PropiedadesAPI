@@ -2,7 +2,7 @@ const {DataTypes} = require ('sequelize');
 
 module.exports = s => {
     s.define(
-        "AmenidadesModelo", 
+        "AmenidadesdelaPropiedad", 
     {
         nombreAmenidad:{
             type: DataTypes.STRING,
@@ -10,7 +10,7 @@ module.exports = s => {
             unique: true 
         }        
     }, {
-        tableName: 'amenidades_modelos',
+        tableName: 'amenidades_propiedades',
     timestamps: false,
     });
 }

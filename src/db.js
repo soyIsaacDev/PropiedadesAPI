@@ -47,7 +47,7 @@ const modelDesarrollo = require("./models/desarrollo.js");
 const modelImgDesarrollo = require("./models/imgDesarrollo.js");
 const modelTipodePropiedad = require("./models/tipodePropiedad");
 const modelAmenidadesDesarrollo = require("./models/amenidadesDesarrollo");
-const modelAmenidadPropiedad = require("./models/amenidadesModelo.js");
+const modelAmenidadesPropiedades = require("./models/amenidadesPropiedades.js");
 const modelTipodeOperacion = require("./models/tipoOperacion");
 const modelEstado = require("./models/estado");
 const modelMunicipio = require("./models/municipio");
@@ -70,7 +70,7 @@ modelDesarrollo(sequelize);
 modelImgDesarrollo(sequelize);
 modelTipodePropiedad(sequelize);
 modelAmenidadesDesarrollo(sequelize);
-modelAmenidadPropiedad(sequelize);
+modelAmenidadesPropiedades(sequelize);
 modelTipodeOperacion(sequelize);
 modelEstado(sequelize);
 modelMunicipio(sequelize);
@@ -88,7 +88,7 @@ modelPropiedadIndependiente(sequelize);
 modelImgPropiedadIndependiente(sequelize);
 
 
-let {Desarrollo, ImgDesarrollo, TipodePropiedad, AmenidadesDesarrollo, AmenidadesModelo, 
+let {Desarrollo, ImgDesarrollo, TipodePropiedad, AmenidadesDesarrollo, AmenidadesdelaPropiedad, 
   TipoOperacion, Estado , Municipio, Ciudad, Colonia, Cliente, ModeloAsociadoAlDesarrollo,
   ImgModeloAsociado, TipodeUsuario, EstiloArquitectura, HistorialdePagos, PaquetedePago, 
   Organizacion, AutorizacionesXTipodeOrg, PropiedadIndependiente, ImgPropiedadIndependiente
@@ -103,8 +103,8 @@ ImgDesarrollo.belongsTo(Desarrollo);
 Desarrollo.belongsTo(TipodePropiedad);
 TipodePropiedad.hasMany(Desarrollo);
 
-Desarrollo.belongsToMany(AmenidadesDesarrollo, { through: 'amenidades_del_desarrollos', timestamps: false, });
-AmenidadesDesarrollo.belongsToMany(Desarrollo, { through: 'amenidades_del_desarrollos', timestamps: false, });
+Desarrollo.belongsToMany(AmenidadesDesarrollo, { through: 'amenidades_de_los_desarrollos', timestamps: false, });
+AmenidadesDesarrollo.belongsToMany(Desarrollo, { through: 'amenidades_de_los_desarrollos', timestamps: false, });
 
 TipoOperacion.hasMany(Desarrollo);
 Desarrollo.belongsTo(TipoOperacion);
@@ -132,8 +132,8 @@ Desarrollo.belongsTo(EstiloArquitectura);
 ModeloAsociadoAlDesarrollo.hasMany(ImgModeloAsociado);
 ImgModeloAsociado.belongsTo(ModeloAsociadoAlDesarrollo);
 
-ModeloAsociadoAlDesarrollo.belongsToMany(AmenidadesModelo, { through: 'amenidades_del_modelo', timestamps: false, });
-AmenidadesModelo.belongsToMany(ModeloAsociadoAlDesarrollo, { through: 'amenidades_del_modelo', timestamps: false, });
+ModeloAsociadoAlDesarrollo.belongsToMany(AmenidadesdelaPropiedad, { through: 'amenidades_de_los_modelos', timestamps: false, });
+AmenidadesdelaPropiedad.belongsToMany(ModeloAsociadoAlDesarrollo, { through: 'amenidades_de_los_modelos', timestamps: false, });
 
 Cliente.belongsToMany(ModeloAsociadoAlDesarrollo, { through: 'modelos_favoritos', timestamps: false, });
 ModeloAsociadoAlDesarrollo.belongsToMany(Cliente, { through: 'modelos_favoritos', timestamps: false, });
@@ -156,8 +156,8 @@ ImgPropiedadIndependiente.belongsTo(PropiedadIndependiente);
 PropiedadIndependiente.belongsTo(TipodePropiedad);
 TipodePropiedad.hasMany(PropiedadIndependiente);
 
-PropiedadIndependiente.belongsToMany(AmenidadesModelo, { through: 'amenidades_de_la_prop_independiente', timestamps: false, });
-AmenidadesModelo.belongsToMany(PropiedadIndependiente, { through: 'amenidades_de_la_prop_independiente', timestamps: false, });
+PropiedadIndependiente.belongsToMany(AmenidadesdelaPropiedad, { through: 'amenidades_de_las_prop_independientes', timestamps: false, });
+AmenidadesdelaPropiedad.belongsToMany(PropiedadIndependiente, { through: 'amenidades_de_las_prop_independientes', timestamps: false, });
 
 TipoOperacion.hasMany(PropiedadIndependiente);
 PropiedadIndependiente.belongsTo(TipoOperacion);
