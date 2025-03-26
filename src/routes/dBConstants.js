@@ -1,7 +1,7 @@
 const server = require("express").Router();
 
 const { Estado , Municipio, Ciudad, Colonia, ColoniaCiudad, AmenidadesDesarrollo, 
-  AmenidadesPropiedad, TipoOperacion, TipodePropiedad, AmenidadesModeloAmenidad, EstiloArquitectura } = require("../db");
+  AmenidadesdelaPropiedad, TipoOperacion, TipodePropiedad, EstiloArquitectura } = require("../db");
 
 server.post("/agregarEntidadGeografica", async (req, res) => { 
   try {
@@ -85,7 +85,7 @@ server.get("/agregarAmenidadDesarrollo", async (req, res) => {
     const {DesarrolloAmenity, PropertyAmenity} = req.query;
     //si llega vacio un dato
     if(DesarrolloAmenity===""){
-      const AmenidadPropiedadCreada = await AmenidadesPropiedad.findOrCreate({
+      const AmenidadPropiedadCreada = await AmenidadesdelaPropiedad.findOrCreate({
         where:{ nombreAmenidad:PropertyAmenity }
       })
       res.json({AmenidadPropiedadCreada});
@@ -101,7 +101,7 @@ server.get("/agregarAmenidadDesarrollo", async (req, res) => {
       const AmenidadDesarrolloCreado = await AmenidadesDesarrollo.findOrCreate({
         where:{ nombreAmenidad:DesarrolloAmenity }
       })
-      const AmenidadPropiedadCreada = await AmenidadesPropiedad.findOrCreate({
+      const AmenidadPropiedadCreada = await AmenidadesdelaPropiedad.findOrCreate({
         where:{ nombreAmenidad:PropertyAmenity }
       })
       res.json({AmenidadDesarrolloCreado, AmenidadPropiedadCreada});
@@ -131,10 +131,10 @@ server.post("/editarAmenidadesDesarrollo", async(req, res) =>{
   }
 })
 
-server.post("/editarAmenidadesModelo", async(req, res) =>{
+server.post("/editarAmenidadesdelaPropiedad", async(req, res) =>{
   try {
     const {ModeloAmenidadId, NuevoNombreAmenidad} = req.body;
-    const AmenidadModelo = await AmenidadesPropiedad.findByPk(ModeloAmenidadId)
+    const AmenidadModelo = await AmenidadesdelaPropiedad.findByPk(ModeloAmenidadId)
     AmenidadModelo.nombreAmenidad = NuevoNombreAmenidad;
     await AmenidadModelo.save();
     res.json({
@@ -163,14 +163,14 @@ server.get("/getAmenidadesDesarrollo", async (req, res) => {
   }
 })
 
-server.get("/getAmenidadesPropiedad", async (req, res) => { 
+server.get("/getAmenidadesdelaPropiedad", async (req, res) => { 
   try {
-    const AmenidadesPropiedadFind = await AmenidadesPropiedad.findAll({
+    const AmenidadesdelaPropiedadFind = await AmenidadesdelaPropiedad.findAll({
       order: [
         ['nombreAmenidad', 'ASC'],
       ]
     });
-    res.json(AmenidadesPropiedadFind);
+    res.json(AmenidadesdelaPropiedadFind);
   } catch (e) {
     res.send(e);
   }

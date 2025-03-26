@@ -204,7 +204,7 @@ function checkIfSignedIn(req, res, next) {
     //app.use("/", authCliente);
     
     app.use("/clientes", clientes); // Autorizacion para agregar usuarios revisada a nivel ruta
-    app.use("/propiedades", desarrollo);
+    app.use("/desarrollos", desarrollo);
     app.use("/imagenpropiedad", imagen);
     app.use("/Apikeys", apikeys );
     app.use("/dbConstants", dbconstants);

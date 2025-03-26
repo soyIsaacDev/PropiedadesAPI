@@ -24,7 +24,7 @@ module.exports = s => {
         },
       },     
       {
-        tableName: 'img_modelo_asociado',
+        tableName: 'img_modelos_asociados',
         timestamps: false,
       }
     );

@@ -5,7 +5,7 @@ const path = require('path');
 
 var public = path.join(__dirname,'../../uploads');
 
-const { Desarrollo, ImgDesarrollo, AmenidadesDesarrollo, AmenidadesModelo, TipodePropiedad, 
+const { Desarrollo, ImgDesarrollo, AmenidadesDesarrollo, AmenidadesdelaPropiedad, TipodePropiedad, 
   TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, Favoritos, ModeloAsociadoAlDesarrollo, 
   ImgModeloAsociado, EstiloArquitectura  } = require("../db");
 
@@ -28,7 +28,7 @@ const {literal} = require ('sequelize');
           ],
         }, 
         {
-          model: AmenidadesModelo, 
+          model: AmenidadesdelaPropiedad, 
           through: {
             attributes: []
           }
@@ -63,7 +63,7 @@ server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
           ],
         }, 
         {
-          model: AmenidadesModelo, 
+          model: AmenidadesdelaPropiedad, 
           through: {
             attributes: []
           }
@@ -85,12 +85,12 @@ server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
 }
 );
 
-server.get("/getDataandImagenModeloAsociadoPropiedad/:PropiedadId", async (req, res) => {
+server.get("/getDataandImagenModeloAsociadoPropiedad/:DesarrolloId", async (req, res) => {
   try {
-    const {PropiedadId} = req.params;
+    const {DesarrolloId} = req.params;
     const dataPropiedad = await ModeloAsociadoAlDesarrollo.findAll({
       where: {
-        PropiedadId
+        DesarrolloId
       },
       order: [
         ['precio', 'ASC'],
@@ -105,7 +105,7 @@ server.get("/getDataandImagenModeloAsociadoPropiedad/:PropiedadId", async (req, 
           ],
         },
         {
-          model: AmenidadesModelo, 
+          model: AmenidadesdelaPropiedad, 
           through: {
             attributes: []
           }
@@ -158,14 +158,14 @@ server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
           attributes: ['orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
         },
         {
-          model: AmenidadesModelo, 
+          model: AmenidadesdelaPropiedad, 
           through: {
             attributes: []
           }
         },
         {
           model: Desarrollo,
-          attributes: ['id','precioMin', 'precioMax', 'calle', 'numeroPropiedad','posicion'],
+          attributes: ['id','precioMin', 'precioMax', 'calle', 'numeroPropiedad','posicion', 'tipodeDesarrollo'],
           include: [{
               model: ImgDesarrollo,
               attributes: ['orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
@@ -242,7 +242,7 @@ server.get("/modelosFavoritos/:userId",  async (req, res) => {
               ],
             }, 
             {
-              model: AmenidadesModelo, 
+              model: AmenidadesdelaPropiedad, 
               through: {
                 attributes: []
               }
@@ -363,7 +363,7 @@ server.get("/getModeloAsociadoPropiedadbyOrg/:userId", async (req, res) => {
           ],
         }, 
         {
-          model: AmenidadesModelo, 
+          model: AmenidadesdelaPropiedad, 
           through: {
             attributes: []
           }

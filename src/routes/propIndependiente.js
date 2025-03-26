@@ -3,7 +3,7 @@ const express = require("express");
 const path = require('path');
 const public = path.join(__dirname,'../../uploads');
 
-const { PropiedadIndependiente, ImgPropiedadIndependiente, AmenidadesPropiedad, TipodePropiedad, 
+const { PropiedadIndependiente, ImgPropiedadIndependiente, AmenidadesdelaPropiedad, TipodePropiedad, 
   TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente
  } = require("../db");
 
@@ -24,7 +24,7 @@ server.get("/getPropiedadesIndependientes", async (req, res) => {
             order: [ ['orden','ASC'] ],
           },
           {
-            model: AmenidadesPropiedad,
+            model: AmenidadesdelaPropiedad,
             through: {
                 attributes: []
             }
@@ -47,17 +47,17 @@ server.get("/detallesPropIndependiente/:id", async (req, res) => {
   try {
     const {id} = req.params;
     const dataPropiedad = await PropiedadIndependiente.findOne({
-      where:{id:id},
-      order: [
+      where:{id},
+      /* order: [
         [ImgPropiedadIndependiente, 'orden','ASC']
-      ],
+      ], */
       include: [
         {
           model: ImgPropiedadIndependiente,
           attributes: ['orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
         },
         {
-          model: AmenidadesPropiedad,
+          model: AmenidadesdelaPropiedad,
           through: {
             attributes: []
           }
@@ -90,7 +90,7 @@ server.get("/detallesPropIndependiente/:id", async (req, res) => {
 /* server.get("/hardDelete", async (req,res) => {
   try {
     const prop = await PropiedadIndependiente.findOne({
-      where:{ref_id:"25b105e1-d7ee-4426-ba4d-5e113d53793c"}
+      where:{id:"25b105e1-d7ee-4426-ba4d-5e113d53793c"}
     })
     await prop.destroy();
     res.json("BORRADO")

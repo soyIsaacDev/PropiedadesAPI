@@ -1,4 +1,4 @@
-const {  amenidades_del_modelo, ModeloAsociadoAlDesarrollo, Desarrollo} = require("../db");
+const {  amenidades_de_los_modelos, ModeloAsociadoAlDesarrollo, Desarrollo} = require("../db");
 const { Op } = require("sequelize");
 
 const crearModeloAsociadoDesarrollo = async (req, res, next) => {
@@ -44,9 +44,9 @@ const crearModeloAsociadoDesarrollo = async (req, res, next) => {
       if(creado === true){
 
         for (let i = 0; i < amenidadesPropiedad.length; i++) {        
-          await amenidades_del_modelo.create({ 
+          await amenidades_de_los_modelos.create({ 
             ModeloAsociadoAlDesarrolloId:ModeloRelacionado.id, 
-            AmenidadesModeloId:amenidadesPropiedad[i] })
+            AmenidadesdelaPropiedadId:amenidadesPropiedad[i] })
         }
     
         // Agregar tipo de propiedad y operacion al Desarrollo
