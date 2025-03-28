@@ -326,15 +326,16 @@ server.get("/clienteIsaac", async (req, res) => {
 
     //cliente.OrganizacionId = "64dfee18-5047-4363-b329-34df1ed8633b";
     cliente.TipodeUsuarioId = "d339471e-ff43-48b5-b930-644767586ce8";
+    cliente.OrganizacionId ="b7b986c7-b2e9-45fa-8087-eda07c1b22ae";
     //cliente.autorizaciondePublicar = "Completa"
     await cliente.save();
 
     const org = await Organizacion.findOne({
       where: {
-        id:"b7b986c7-b2e9-45fa-8087-eda07c1b22ae"
+        id:"edbadc0e-1387-4291-a30e-a7ae3f260eae"
       }
     })
-    org.AutorizacionesXTipodeOrgId = "31b4efa7-1535-4422-bf87-0dcd4aab8ddc"
+    org.AutorizacionesXTipodeOrgId = "41a8c882-0d85-4c91-a17a-e94c42e2248a"
     await org.save();
 
     res.json(cliente);
