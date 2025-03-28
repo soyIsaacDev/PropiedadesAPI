@@ -2,7 +2,7 @@ const server = require("express").Router();
 const { Op } = require("sequelize");
 
 const { Desarrollo, desarrollos_favoritos, ImgDesarrollo, Cliente, modelos_favoritos, ModeloAsociadoAlDesarrollo,
-  ImgModeloAsociado, prop_independientes_favoritas,  } = require("../db");
+  ImgModeloAsociado, prop_independientes_favoritas, PropiedadIndependiente, ImgPropiedadIndependiente  } = require("../db");
 
 // TipodeProp:  1 = Desarrollo : 2 = ModeloAsociado
 server.post("/agregarFavorito",  async (req,res)=> {
@@ -158,65 +158,34 @@ server.get("/esfavorita/:PropiedadId/:ClienteId", async (req, res) => {
     }
 })
 
-server.get("/favoritos/:userId", async (req, res) => {
-    try {
-        let {userId} = req.params;
-
-        const propiedadesFavoritas = await Cliente.findOne({
-            where: {
-                userId
-              }, 
-              include: [
-                {
-                    model:Propiedad
-                },
-              ]
-        });
-
-        const FavoritasconImg = [];
-
-        for (let i = 0; i < propiedadesFavoritas.Propiedads.length; i++) {
-            const imgProp = await ImgDesarrollo.findAll({
-                where: {
-                    DesarrolloId:propiedadesFavoritas.Propiedads[i].id
-                },
-                attributes: ['img_name']
-            })
-            const Favoritas = {
-                id: propiedadesFavoritas.Propiedads[i].id,
-                nombreDesarrollo:propiedadesFavoritas.Propiedads[i].nombreDesarrollo,
-                precio: propiedadesFavoritas.Propiedads[i].precio,
-                recamaras: propiedadesFavoritas.Propiedads[i].recamaras,
-                baños: propiedadesFavoritas.Propiedads[i].baños,
-                favorita: 1,
-                ImgDesarrollos:imgProp
-            }
-            FavoritasconImg.push(Favoritas)
-        }
-        
-        res.json(FavoritasconImg);
-    } catch (e) {
-        res.send(e)
-    }
-})
-
 server.get("/desarrolloFav/:userId", async (req, res) => {
     try {
         let {userId} = req.params;
         if(userId === null){res.json([])}
-
-        const cliente = await Cliente.findOne({
-            where: {
-                userId
-              }
+        const desarrollosFavoritos = await Desarrollo.findAll({
+            where:{publicada:"Si"},
+            order: [
+              ['precioMin','DESC']
+            ],
+            include: [
+                {
+                    model: ImgDesarrollo,
+                    attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+                    separate:true,
+                    order: [
+                      ['orden','ASC']
+                    ],
+                },
+                {// El modelo Cliente da la relacion de desarrollos_favoritos
+                    model:Cliente,
+                    attributes: ["id", "userId"],
+                    required: true, // Mantiene propiedades sin clientes
+                    where: { userId } // Filtra solo si se pasa un userId, de lo contrario se da un UserId que no existe
+                },
+            ]
+            
         });
-        const propiedadFavorita = await desarrollos_favoritos.findAll({
-            where: {
-                ClienteId:cliente.id
-            },
-        });
-        console.log(propiedadFavorita)
-        propiedadFavorita? res.json(propiedadFavorita) : res.json([])        
+        desarrollosFavoritos? res.json(desarrollosFavoritos) : res.json([])        
     } catch (e) {
         res.send(e)
     }
@@ -227,18 +196,28 @@ server.get("/modelosFav/:userId", async (req, res) => {
         console.log("SOLICITANDO MODELOS FAV")
         let {userId} = req.params;
         if(userId === null){res.json([])}
-
-        const cliente = await Cliente.findOne({
-            where: {
-                userId
-              }
-        });
-        const modelosFavoritos = await modelos_favoritos.findAll({
-            where: {
-                ClienteId:cliente.id
-            },
-        });
-        res.send(modelosFavoritos)
+        const modelosFavoritos = await ModeloAsociadoAlDesarrollo.findAll({
+            order: [
+              ['precio"','ASC']
+            ],
+            include: [
+              {
+                model: ImgModeloAsociado,
+                attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+                separate:true,
+                order: [
+                  ['orden','ASC']
+                ],
+              }, 
+              {// El modelo Cliente da la relacion de desarrollos_favoritos
+                model:Cliente,
+                attributes: ["id", "userId"],
+                required: true, 
+                where: {userId}
+              },
+            ]
+          });
+        modelosFavoritos? res.json(modelosFavoritos) : res.json([]);
     } catch (e) {
         res.send(e)
     }
@@ -249,104 +228,106 @@ server.get("/independienteFav/:userId", async (req, res) => {
         let {userId} = req.params;
         if(userId === null){res.json([])}
 
-        const cliente = await Cliente.findOne({
-            where: {
-                userId
-              }
-        });
-        const independienteFavorita = await prop_independientes_favoritas.findAll({
-            where: {
-                ClienteId:cliente.id
-            },
-        });
-        res.send(independienteFavorita)
+        const propiedadesIndependientesFav = await PropiedadIndependiente.findAll({
+            order: [ ['precio"','ASC'] ],
+            include: [
+              {
+                model: ImgPropiedadIndependiente,
+                attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+                separate:true,
+                order: [
+                  ['orden','ASC']
+                ],
+              }, 
+              {// El modelo Cliente da la relacion de desarrollos_favoritos
+                model:Cliente,
+                attributes: ["id", "userId"],
+                required: true, 
+                where: {userId}
+              },
+            ]
+        })
+        propiedadesIndependientesFav? res.json(propiedadesIndependientesFav) : res.json([]);
     } catch (e) {
         res.send(e)
     }
 })
 
 server.get("/propiedadesconfavoritos/:userId",  async (req, res) => {
-    try {
-        let {userId} = req.params;
-  
-        const cliente = await Cliente.findOne({
-          where: {
-              userId
-            }
-        });
-  
-        const AllPropiedades = await Desarrollo.findAll({
-            include: [
-              {
-                model: ImgDesarrollo,
-                attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
-              }
-            ]
-        },);
-
-        
-        const AllModelos = await ModeloAsociadoAlDesarrollo.findAll({
+  try {
+      let {userId} = req.params;
+      const DesarrollosFav = await Desarrollo.findAll({
+          where:{publicada:"Si"},
           order: [
-            ['precio"','ASC']
+            ['precioMin','DESC']
           ],
           include: [
+              {
+                  model: ImgDesarrollo,
+                  attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+                  separate:true,
+                  order: [
+                    ['orden','ASC']
+                  ],
+              },
+              {// El modelo Cliente da la relacion de desarrollos_favoritos
+                  model:Cliente,
+                  attributes: ["id", "userId"],
+                  required: true, // Mantiene propiedades sin clientes
+                  where: { userId } // Filtra solo si se pasa un userId, de lo contrario se da un UserId que no existe
+              },
+          ]
+          
+      });
+
+      
+      const modelosFav = await ModeloAsociadoAlDesarrollo.findAll({
+        order: [
+          ['precio"','ASC']
+        ],
+        include: [
+          {
+            model: ImgModeloAsociado,
+            attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+            separate:true,
+            order: [
+              ['orden','ASC']
+            ],
+          }, 
+          {// El modelo Cliente da la relacion de desarrollos_favoritos
+            model:Cliente,
+            attributes: ["id", "userId"],
+            required: true, 
+            where: {userId}
+          },
+        ]
+      });
+      const propiedadesIndependientesFav = await PropiedadIndependiente.findAll({
+          order: [ ['precio"','ASC'] ],
+          include: [
             {
-              model: ImgModeloAsociado,
+              model: ImgPropiedadIndependiente,
               attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
               separate:true,
               order: [
                 ['orden','ASC']
               ],
             }, 
-          ]
-        },);
-  
-        const desarrollosFavoritos = await desarrollos_favoritos.findAll({
-            where: {
-                ClienteId:cliente.id
-              }
-        });
-
-        const modeloFavorito = await modelos_favoritos.findAll({
-            where: {
-                ClienteId:cliente.id
+            {// El modelo Cliente da la relacion de desarrollos_favoritos
+              model:Cliente,
+              attributes: ["id", "userId"],
+              required: true, 
+              where: {userId}
             },
-        });
-        
-        const AllPropandFav = [];
-        const AllPropCopy = JSON.parse(JSON.stringify(AllPropiedades));
-        const AllModelosCopy = JSON.parse(JSON.stringify(AllModelos));
-        //DesarrolloId
-
-        for (let i = 0; i < AllPropCopy.length; i++) {
-            for (let x = 0; x < desarrollosFavoritos.length; x++) {
-                if(desarrollosFavoritos[x].DesarrolloId === AllPropCopy[i].id){
-                  AllPropCopy[i].favorita=1;
-                  AllPropandFav.push(AllPropCopy[i]);
-                }
-            }
-            for (let z = 0; z < AllModelosCopy.length; z++) {
-                if(AllModelosCopy[z].DesarrolloId === AllPropCopy[i].id ){
-                    for (let y = 0; y < modeloFavorito.length; y++) {
-                        if(modeloFavorito[y].ModeloAsociadoAlDesarrolloId === AllModelosCopy[z].id){
-
-                            AllModelosCopy[z].favorita = 1;
-                            AllPropandFav.push(AllModelosCopy[z]);
-                        }
-                    }
-                }
-            }
-        }
-            
-        //res.json(AllPropandFav);
-    } catch (e) {
-        res.send(e)
-    }
-  });
-
-  
-
-
+          ]
+      })
+      const todasLasPropiedades = [...propiedadesIndependientesFav, ...DesarrollosFav, ...modelosFav]
+      res.json(todasLasPropiedades)
+  }
+  catch (e){
+      res.send(e)
+  }
+})
 
 
 module.exports = server;
