@@ -146,6 +146,7 @@ server.get("/getDataandImagenModeloAsociadoPropiedad/:DesarrolloId", async (req,
 server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
   try {
     const {id} = req.params;
+    const {userId} = req.query;
     console.log("Buscando Detalles" + id);
     const dataPropiedad = await ModeloAsociadoAlDesarrollo.findOne({
       where:{id:id},
@@ -200,7 +201,13 @@ server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
               model: Colonia
             },
           ],
-        }
+        },
+        {// El modelo Cliente da la relacion de desarrollos_favoritos
+          model:Cliente,
+          attributes: ["id", "userId"],
+          required: false, // Mantiene propiedades sin clientes
+          where: userId ? { userId } : {userId:"x000"} // Filtra solo si se pasa un userId, de lo contrario se da un UserId que no existe
+        },
       ]
     })
     dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontro la propiedad"});

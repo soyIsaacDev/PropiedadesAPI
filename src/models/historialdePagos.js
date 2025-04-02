@@ -17,6 +17,7 @@ module.exports = s => {
         },
         
     }, {
-    timestamps: true,
+        tableName: 'historial_de_pagos',
+        timestamps: true,
     });
 }

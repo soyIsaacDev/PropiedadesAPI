@@ -1,4 +1,5 @@
-const { HistorialdePagos, Cliente, Propiedad, Organizacion, AutorizacionesXTipodeOrg, PaquetedePago,  } = require("../db");
+const { HistorialdePagos, Cliente, Desarrollo, Organizacion, AutorizacionesXTipodeOrg, 
+  PaquetedePago, PropiedadIndependiente  } = require("../db");
 const servidorPago = require("express").Router();
 
 
@@ -63,15 +64,27 @@ const checkPublicacionesRestantesyAutxTipodeOrg = async (req, res, next)  => {
       where:{ id:orgId },
       include:  AutorizacionesXTipodeOrg
     })
-    
-    const cuentaProps = await Propiedad.count(
+     
+    const cuentaDesarrollos = await Desarrollo.count(
       {
         where:{ publicada:"Si" , OrganizacionId:orgId }, 
         attributes: ['publicada', 'TipoOperacionId', 'OrganizacionId'], 
         group:['publicada', 'TipoOperacionId', 'OrganizacionId'] 
       }
     );
+    
+    const cuentaPropsIndependientes = await PropiedadIndependiente.count(
+      {
+        where:{ /* publicada:"Si" , */ OrganizacionId:orgId }, 
+        attributes: ['publicada', 'TipoOperacionId', 'OrganizacionId'], 
+        group:['publicada', 'TipoOperacionId', 'OrganizacionId'] 
+      }
+    );    
 
+    let cuentaProps = undefined;
+    const tipodeOrganizacion = org.AutorizacionesXTipodeOrg.nombreTipoOrg;
+    tipodeOrganizacion === "TratoDirecto"? cuentaProps =cuentaPropsIndependientes  : cuentaProps = cuentaDesarrollos;
+    
     const publicacionesAutorizadas = {
       organizacion:orgId,
       venta:org.AutorizacionesXTipodeOrg.cantidadPropVenta,

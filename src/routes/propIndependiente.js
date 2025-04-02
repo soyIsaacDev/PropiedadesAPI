@@ -46,6 +46,7 @@ server.get("/getPropiedadesIndependientes", async (req, res) => {
 server.get("/detallesPropIndependiente/:id", async (req, res) => {
   try {
     const {id} = req.params;
+    const {userId} = req.query;
     const dataPropiedad = await PropiedadIndependiente.findOne({
       where:{id},
       /* order: [
@@ -79,6 +80,12 @@ server.get("/detallesPropIndependiente/:id", async (req, res) => {
         },
         {
           model: Colonia
+        },
+        {// El modelo Cliente da la relacion de desarrollos_favoritos
+          model:Cliente,
+          attributes: ["id", "userId"],
+          required: false, // Mantiene propiedades sin clientes
+          where: userId ? { userId } : {userId:"x000"} // Filtra solo si se pasa un userId, de lo contrario se da un UserId que no existe
         },
       ]
     })

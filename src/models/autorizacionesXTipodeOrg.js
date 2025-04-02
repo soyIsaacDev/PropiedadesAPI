@@ -57,6 +57,7 @@ module.exports = s => {
             allowNull:false,
         }  
     }, {
-    timestamps: false,
+        tableName: 'autorizaciones_por_tipos_de_organizacion',
+        timestamps: false,
     });
 }

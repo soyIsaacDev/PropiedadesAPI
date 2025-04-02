@@ -61,6 +61,7 @@ module.exports = s => {
             allowNull: true
         }, 
     }, {
-    timestamps: false,
+        tableName: 'clientes',
+        timestamps: false,
     });
 }
