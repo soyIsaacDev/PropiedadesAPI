@@ -57,6 +57,7 @@ module.exports = s => {
             type: DataTypes.DATEONLY,
         },
     }, {
-    timestamps: false,
+        tableName: 'paquetes_de_pago',
+        timestamps: false,
     });
 }

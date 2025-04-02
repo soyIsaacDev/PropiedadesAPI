@@ -16,6 +16,7 @@ module.exports = s => {
             unique: true 
         }        
     }, {
-    timestamps: false,
+        tableName: 'organizaciones',
+        timestamps: false,
     });
 }

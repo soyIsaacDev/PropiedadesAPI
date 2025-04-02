@@ -37,6 +37,7 @@ module.exports = s => {
             allowNull: false
         },
     }, {
-    timestamps: false,
+        tableName: 'tipos_de_usuario',
+        timestamps: false,
     });
 }

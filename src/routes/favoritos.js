@@ -161,7 +161,7 @@ server.get("/esfavorita/:PropiedadId/:ClienteId", async (req, res) => {
 server.get("/desarrolloFav/:userId", async (req, res) => {
     try {
         let {userId} = req.params;
-        if(userId === null){res.json([])}
+        if(userId === null){res.json("")}
         const desarrollosFavoritos = await Desarrollo.findAll({
             where:{publicada:"Si"},
             order: [
@@ -185,7 +185,7 @@ server.get("/desarrolloFav/:userId", async (req, res) => {
             ]
             
         });
-        desarrollosFavoritos? res.json(desarrollosFavoritos) : res.json([])        
+        desarrollosFavoritos? res.json(desarrollosFavoritos) : res.json("")        
     } catch (e) {
         res.send(e)
     }
@@ -195,7 +195,7 @@ server.get("/modelosFav/:userId", async (req, res) => {
     try {
         console.log("SOLICITANDO MODELOS FAV")
         let {userId} = req.params;
-        if(userId === null){res.json([])}
+        if(userId === null){res.json("")}
         const modelosFavoritos = await ModeloAsociadoAlDesarrollo.findAll({
             order: [
               ['precio"','ASC']
@@ -217,7 +217,7 @@ server.get("/modelosFav/:userId", async (req, res) => {
               },
             ]
           });
-        modelosFavoritos? res.json(modelosFavoritos) : res.json([]);
+        modelosFavoritos? res.json(modelosFavoritos) : res.json("");
     } catch (e) {
         res.send(e)
     }
@@ -226,7 +226,7 @@ server.get("/modelosFav/:userId", async (req, res) => {
 server.get("/independienteFav/:userId", async (req, res) => {
     try {
         let {userId} = req.params;
-        if(userId === null){res.json([])}
+        if(userId === null){res.json("")}
 
         const propiedadesIndependientesFav = await PropiedadIndependiente.findAll({
             order: [ ['precio"','ASC'] ],
@@ -247,7 +247,7 @@ server.get("/independienteFav/:userId", async (req, res) => {
               },
             ]
         })
-        propiedadesIndependientesFav? res.json(propiedadesIndependientesFav) : res.json([]);
+        propiedadesIndependientesFav? res.json(propiedadesIndependientesFav) : res.json("");
     } catch (e) {
         res.send(e)
     }
