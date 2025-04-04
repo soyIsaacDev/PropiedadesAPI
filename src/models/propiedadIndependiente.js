@@ -72,8 +72,9 @@ module.exports = s => {
             allowNull: true,
         },        
         publicada:{
-            type: DataTypes.ENUM("Si","No"),
-            allowNull: true
+            type:DataTypes.BOOLEAN,
+            allowNull:false,
+            defaultValue:false,
         },
         tratoDirecto:{
             type:DataTypes.BOOLEAN,

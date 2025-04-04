@@ -40,8 +40,9 @@ module.exports = s => {
             allowNull: true,
         },
         publicada:{
-            type: DataTypes.ENUM("Si","No"),
-            allowNull: false
+            type:DataTypes.BOOLEAN,
+            allowNull:false,
+            defaultValue:false,
         },
         tipodeDesarrollo:{
             type:DataTypes.ENUM("Desarrollo"),

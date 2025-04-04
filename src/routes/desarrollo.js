@@ -10,7 +10,7 @@ const { Op } = require('sequelize');
 var public = path.join(__dirname,'../../uploads');
 
 const { Desarrollo, ImgDesarrollo, AmenidadesDesarrollo, TipodePropiedad, TipoOperacion, Estado, Municipio, Ciudad, 
-  Colonia, Cliente, desarrollos_favoritos, amenidades_del_desarrollos, ModeloAsociadoAlDesarrollo, ImgModeloAsociado,
+  Colonia, Cliente, amenidades_del_desarrollos, ModeloAsociadoAlDesarrollo, ImgModeloAsociado,
   Organizacion, AutorizacionesXTipodeOrg,
 } = require("../db");
 
@@ -19,7 +19,7 @@ server.get("/getDataandImagenPropiedades",  async (req, res) => {
   try {
     let {userId} = req.query;
     const desarrollo = await Desarrollo.findAll({
-      where:{publicada:"Si"},
+      where:{publicada:true},
       order: [
         ['precioMin','DESC']
       ],
@@ -170,74 +170,6 @@ function isAuthenticated (req, res, next) {
   else next('route')
 }
 
-server.get("/propiedadesconfavoritos/:userId",  async (req, res) => {
-  try {
-      let {userId} = req.params;
-
-      const cliente = await Cliente.findOne({
-        where: {
-            userId
-          }
-      });
-
-      const AllPropiedades = await Desarrollo.findAll({
-          include: [
-            {
-              model: ImgDesarrollo,
-              attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
-            }
-          ]
-      },);
-      
-      const AllModelos = await ModeloAsociadoAlDesarrollo.findAll({
-        order: [
-          ['precio"','ASC']
-        ],
-        include: [
-          {
-            model: ImgModeloAsociado,
-            attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
-            separate:true,
-            order: [
-              ['orden','ASC']
-            ],
-          }, 
-        ]
-      },);
-
-      const Fav = await desarrollos_favoritos.findAll({
-          where: {
-              ClienteId:cliente.id
-            }
-      });
-      
-      const AllPropandFav = [];
-      const AllPropCopy = JSON.parse(JSON.stringify(AllPropiedades));
-      for (let i = 0; i < AllPropCopy.length; i++) {
-          
-          for (let x = 0; x < Fav.length; x++) {
-              if(Fav[x].PropiedadId === AllPropCopy[i].id){
-                AllPropCopy[i].favorita=1;
-                 /* const PropandFav = {
-                  id: AllPropiedades[i].id,
-                  nombreDesarrollo:AllPropiedades[i].nombreDesarrollo,
-                  precio: AllPropiedades[i].precio,
-                  recamaras: AllPropiedades[i].recamaras,
-                  baños: AllPropiedades[i].baños,
-                  favorita: 1,
-                  posicion:AllPropiedades[i].posicion,
-                  ImgDesarrollos: AllPropiedades[i].ImgDesarrollos,
-                  
-                }  */
-                AllPropandFav.push(AllPropCopy[i]);
-              }
-          }
-      }
-      res.json(AllPropCopy);
-  } catch (e) {
-      res.send(e)
-  }
-});
 
 server.get("/getAmenidadesDesarrolloSeleccionado/:id", async (req, res) => {
   try {
@@ -361,7 +293,7 @@ server.get("/cuentaxOrg", async (req, res) => {
   try {
 
      const dataPropiedad = await Desarrollo.findAll({
-      where:{publicada:"Si"},
+      where:{publicada:true},
       include: [
         {
           model: Organizacion,
@@ -461,6 +393,19 @@ server.get("/orgyTipo", async (req, res) => {
   }
 })
 
+server.get("/publicar/:desarrolloId", async (req,res) => {
+  try{
+    const { desarrolloId } = req.params;
+    const desarrollo = await Desarrollo.findByPk(desarrolloId);
+    desarrollo.publicada = !desarrollo.publicada;
+    await desarrollo.save();
+    
+    res.json(desarrollo)
+  } catch(error){
+    res.json(error)
+  }
+})
+
 server.get("/hardDelete/:Id", async (req,res) => {
   try {
     const {Id} = req.params
@@ -473,6 +418,7 @@ server.get("/hardDelete/:Id", async (req,res) => {
     res.json(error)
   }
 })
+
 
 // Para ver las imagenes
 server.use('/imagenes', express.static(public));
