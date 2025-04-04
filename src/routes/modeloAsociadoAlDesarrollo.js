@@ -49,7 +49,7 @@ server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
     let {userId} = req.query;
 
     const dataPropiedad = await ModeloAsociadoAlDesarrollo.findAll({
-      //where:{publicada:"Si"},
+      where:{publicada:true},
       order: [
         ['precio"','DESC']
       ],
@@ -90,7 +90,7 @@ server.get("/getDataandImagenModeloAsociadoPropiedad/:DesarrolloId", async (req,
     const {DesarrolloId} = req.params;
     const dataPropiedad = await ModeloAsociadoAlDesarrollo.findAll({
       where: {
-        DesarrolloId
+        DesarrolloId, publicada:true
       },
       order: [
         ['precio', 'ASC'],
@@ -235,7 +235,7 @@ server.get("/modelosFavoritos/:userId",  async (req, res) => {
       });
 
       const ModeloAsociado = await ModeloAsociadoAlDesarrollo.findAll({
-          //where:{publicada:"Si"},
+          where:{publicada:true},
           order: [
             ['precio"','DESC']
           ],
@@ -264,51 +264,6 @@ server.get("/modelosFavoritos/:userId",  async (req, res) => {
   }
   catch (error){
       res.json(error)
-  }
-})
-
-server.get("/propiedadesconfavoritos/:ClienteId", isAuthenticated, async (req, res) => {
-  try {
-      let {ClienteId} = req.params;
-
-      const AllPropiedades = await Desarrollo.findAll({
-          include: [
-            {
-              model: ImgDesarrollo,
-              attributes: ['img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
-            }
-          ]
-        },);
-
-      const Fav = await Favoritos.findAll({
-          where: {
-              ClienteId
-            }
-      });
-      
-      const AllPropandFav = [];
-      for (let i = 0; i < AllPropiedades.length; i++) {
-          const PropandFav = {
-              id: AllPropiedades[i].id,
-              nombreDesarrollo:AllPropiedades[i].nombreDesarrollo,
-              precio: AllPropiedades[i].precio,
-              recamaras: AllPropiedades[i].recamaras,
-              baños: AllPropiedades[i].baños,
-              favorita: 0,
-              posicion:AllPropiedades[i].posicion,
-              ImgDesarrollos: AllPropiedades[i].ImgDesarrollos,
-              
-          }
-          for (let x = 0; x < Fav.length; x++) {
-              if(Fav[x].PropiedadId === AllPropiedades[i].id){
-                  PropandFav.favorita= 1
-              }
-          }
-          AllPropandFav.push(PropandFav);
-      }
-      res.json(AllPropandFav);
-  } catch (e) {
-      res.send(e)
   }
 })
 
@@ -385,6 +340,19 @@ server.get("/getModeloAsociadoPropiedadbyOrg/:userId", async (req, res) => {
   } 
 }
 );
+
+server.get("/publicar/:modeloId", async (req,res) => {
+  try{
+    const { modeloId } = req.params;
+    const modelo = await ModeloAsociadoAlDesarrollo.findByPk(modeloId);
+    modelo.publicada = !modelo.publicada;
+    await modelo.save();
+    
+    res.json(modelo)
+  } catch(error){
+    res.json(error)
+  }
+})
 
 
 // Para ver las imagenes

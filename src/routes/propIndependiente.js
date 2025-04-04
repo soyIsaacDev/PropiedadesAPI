@@ -6,13 +6,14 @@ const public = path.join(__dirname,'../../uploads');
 const { PropiedadIndependiente, ImgPropiedadIndependiente, AmenidadesdelaPropiedad, TipodePropiedad, 
   TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente
  } = require("../db");
+const { Console } = require("console");
 
 server.get("/getPropiedadesIndependientes", async (req, res) => {
     try {
       let {userId} = req.query;
 
       const propiedadIndepeniente = await PropiedadIndependiente.findAll({
-        //where:{publicada:"Si"},
+        where:{publicada:true},
         order: [
           ['precio"','DESC']
         ],
@@ -91,6 +92,52 @@ server.get("/detallesPropIndependiente/:id", async (req, res) => {
     })
     dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontro la propiedad"});
   } catch (error) {
+    res.json(error)
+  }
+})
+
+server.get("/getPropIndbyOrg/:userId", async (req,res) => {
+  try {
+    const { userId } = req.params;
+    const cliente = await Cliente.findOne({ where:{userId} });
+    const dataIndependiente = await PropiedadIndependiente.findAll({
+      where:{ OrganizacionId:cliente.OrganizacionId },
+      order: [
+        ['precio"','ASC']
+      ],
+      include: [
+        {
+          model:ImgPropiedadIndependiente,
+          attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
+          separate:true,
+          order: [
+            ['orden','ASC']
+          ]
+        },
+        {
+          model:AmenidadesdelaPropiedad,
+          through: {
+            attributes: []
+          }
+        }
+      ]
+    })
+    dataIndependiente? res.json(dataIndependiente) : res.json({Mensaje:"No se encontraron datos de Propiedades Independientes"})
+  } catch (error) {
+    res.json(error)
+  }
+})
+
+server.get("/publicar/:propId", async (req,res) => {
+  try{
+    const { propId } = req.params;
+    const propiedad = await PropiedadIndependiente.findByPk(propId);
+    console.log(propiedad.calle)
+    propiedad.publicada = !propiedad.publicada;
+    await propiedad.save();
+    
+    res.json(propiedad)
+  } catch(error){
     res.json(error)
   }
 })
