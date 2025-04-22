@@ -85,6 +85,7 @@ server.get("/getDataandImagenPropiedades",  async (req, res) => {
 server.get("/getPropiedadNombre/:userId", async (req, res) => {
   try {
     const {userId} = req.params;
+    console.log("Get Nombre Prop " + userId)
     const cliente = await Cliente.findOne({
       where:{userId:userId}
     });

@@ -10,6 +10,7 @@ module.exports = s => {
             unique: true 
         }        
     }, {
-    timestamps: false,
+        tableName: 'estados',
+        timestamps: false,
     });
 }

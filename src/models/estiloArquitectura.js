@@ -10,6 +10,7 @@ module.exports = s => {
             unique: true 
         }        
     }, {
-    timestamps: false,
+        tableName: 'estilos_de_arquitectura',
+        timestamps: false,
     });
 }

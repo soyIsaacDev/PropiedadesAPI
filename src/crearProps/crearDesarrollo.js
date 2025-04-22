@@ -27,7 +27,7 @@ const crearDesarrollo = async (req, res, next) => {
           numeroPropiedad,
           ColoniumId:colonia,
           posicion,
-          publicada:"Si",
+          publicada:false,
           OrganizacionId:orgId,
         }
         

@@ -32,7 +32,8 @@ const crearModeloAsociadoDesarrollo = async (req, res, next) => {
           m2Terreno,
           m2Patios, 
           numeroInterior,
-          OrganizacionId:orgId
+          OrganizacionId:orgId,
+          publicada:false,
           /* añodeConstruccion
             municipio
             publicada

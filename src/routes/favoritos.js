@@ -44,57 +44,6 @@ server.post("/agregarFavorito",  async (req,res)=> {
     }
 })
 
-server.post("/agregarFavoritosMasivo",  async (req,res)=> {
-    try {
-        const { userId, PropiedadId, tipodeDesarrollo, favoritos} = req.body;
-        const cliente = await Cliente.findOne({
-            where: {
-                userId
-              }
-        });
-
-        const favoritosIndexados = {
-            '3kds': { refId: '3kds', propiedadId: 2, tipodeDesarrollo: 2 },
-            'xv52': { refId: 'xv52', propiedadId: 2, tipodeDesarrollo: 1 },
-            'abc12': { refId: 'abc12', propiedadId: 3, tipodeDesarrollo: 2 },
-          };
-          
-        for(let property in favoritos){
-
-        }
-
-        console.log("Cliente ID " + cliente.id + " Prop Id " + PropiedadId + " Tipo " + tipodeDesarrollo)
-        
-        if(tipodeDesarrollo==="Desarrollo"){
-            console.log("Crear desarrollo")
-            const desarrolloFavorito = await desarrollos_favoritos.create({
-                ClienteId:cliente.id,
-                DesarrolloId:PropiedadId
-            });
-            console.log(desarrolloFavorito)
-            res.json(desarrolloFavorito)
-        }
-        else if(tipodeDesarrollo==="Modelo"){
-            const modeloFavorito = await modelos_favoritos.create({
-                ClienteId:cliente.id,
-                ModeloAsociadoAlDesarrolloId:PropiedadId
-            });
-            res.json(modeloFavorito)
-        }
-        else if(tipodeDesarrollo==="Independiente"){
-            const independienteFavorita = await prop_independientes_favoritas.create({
-                ClienteId:cliente.id,
-                PropiedadIndependienteId:PropiedadId
-            });
-            res.json(independienteFavorita)
-        }
-        
-    } catch (e) {
-        res.send(e);
-    }
-})
-
-
 server.post("/eliminarFavorito", async(req, res) => {
     try {
         const { userId, PropiedadId, tipodeDesarrollo } = req.body;
@@ -163,7 +112,7 @@ server.get("/desarrolloFav/:userId", async (req, res) => {
         let {userId} = req.params;
         if(userId === null){res.json("")}
         const desarrollosFavoritos = await Desarrollo.findAll({
-            where:{publicada:"Si"},
+            where:{publicada:true},
             order: [
               ['precioMin','DESC']
             ],
@@ -197,6 +146,7 @@ server.get("/modelosFav/:userId", async (req, res) => {
         let {userId} = req.params;
         if(userId === null){res.json("")}
         const modelosFavoritos = await ModeloAsociadoAlDesarrollo.findAll({
+            where:{publicada:true},
             order: [
               ['precio"','ASC']
             ],
@@ -229,6 +179,7 @@ server.get("/independienteFav/:userId", async (req, res) => {
         if(userId === null){res.json("")}
 
         const propiedadesIndependientesFav = await PropiedadIndependiente.findAll({
+            where:{publicada:true},
             order: [ ['precio"','ASC'] ],
             include: [
               {
@@ -257,7 +208,7 @@ server.get("/propiedadesconfavoritos/:userId",  async (req, res) => {
   try {
       let {userId} = req.params;
       const DesarrollosFav = await Desarrollo.findAll({
-          where:{publicada:"Si"},
+          where:{publicada:true},
           order: [
             ['precioMin','DESC']
           ],
@@ -282,6 +233,7 @@ server.get("/propiedadesconfavoritos/:userId",  async (req, res) => {
 
       
       const modelosFav = await ModeloAsociadoAlDesarrollo.findAll({
+        where:{publicada:true},
         order: [
           ['precio"','ASC']
         ],
@@ -303,6 +255,7 @@ server.get("/propiedadesconfavoritos/:userId",  async (req, res) => {
         ]
       });
       const propiedadesIndependientesFav = await PropiedadIndependiente.findAll({
+        where:{publicada:true},
           order: [ ['precio"','ASC'] ],
           include: [
             {

@@ -10,6 +10,7 @@ module.exports = s => {
             unique: true 
         }        
     }, {
-    timestamps: false,
+        tableName: 'tipo_de_propiedades',
+        timestamps: false,
     });
 }

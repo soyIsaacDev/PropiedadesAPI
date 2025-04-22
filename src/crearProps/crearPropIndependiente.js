@@ -42,7 +42,7 @@ const crearPropIndependiente = async (req, res) => {
           m2Total, 
           añodeConstruccion,
           tratoDirecto,
-          //publicada,
+          publicada:false,
           TipoOperacionId:1, // venta
           TipodePropiedadId,  
           OrganizacionId:orgId,

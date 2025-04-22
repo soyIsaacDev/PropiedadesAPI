@@ -10,6 +10,7 @@ module.exports = s => {
             unique: true 
         }        
     }, {
-    timestamps: false,
+        tableName: 'tipo_de_operaciones',
+        timestamps: false,
     });
 }

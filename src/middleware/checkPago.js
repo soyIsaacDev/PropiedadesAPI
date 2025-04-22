@@ -67,7 +67,7 @@ const checkPublicacionesRestantesyAutxTipodeOrg = async (req, res, next)  => {
      
     const cuentaDesarrollos = await Desarrollo.count(
       {
-        where:{ publicada:"Si" , OrganizacionId:orgId }, 
+        where:{ publicada:true , OrganizacionId:orgId }, 
         attributes: ['publicada', 'TipoOperacionId', 'OrganizacionId'], 
         group:['publicada', 'TipoOperacionId', 'OrganizacionId'] 
       }
@@ -75,7 +75,7 @@ const checkPublicacionesRestantesyAutxTipodeOrg = async (req, res, next)  => {
     
     const cuentaPropsIndependientes = await PropiedadIndependiente.count(
       {
-        where:{ /* publicada:"Si" , */ OrganizacionId:orgId }, 
+        where:{ publicada:true , OrganizacionId:orgId }, 
         attributes: ['publicada', 'TipoOperacionId', 'OrganizacionId'], 
         group:['publicada', 'TipoOperacionId', 'OrganizacionId'] 
       }

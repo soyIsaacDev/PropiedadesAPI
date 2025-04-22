@@ -24,8 +24,8 @@
 
     const { index, clientes, imagen, desarrollo, dbconstants, apikeys, favoritos, modeloAsociadoAlDesarrollo,
        allPropiedades, bulk, tipoUsuario, cargaProp, addBucketCors, cargarPropMultiples, historialdePagos, 
-       autorizacionUsuario, pagodeServicio, propIndependiente,   
-       paquetesdePago} = require('./src/routes');
+       autorizacionUsuario, pagodeServicio, propIndependiente, paquetesdePago, editarPropiedades 
+    } = require('./src/routes');
 
     const { checkAutorizacion } = require("./src/middleware/checkAutorizacion.js")
     const { checkPagosActivos, checkPublicacionesRestantesyAutxTipodeOrg, servidorPago } = require("./src/middleware/checkPago");
@@ -75,7 +75,7 @@
     
     // uso de Multer para subir imagenes y datos en form-data
     const useMulter = (req, res, next) => {
-      
+      console.log("En Index UseMulter")
       multerUpload.single('imagenesfiles')(req, res, (err) => {
         if (err) {
           console.log("Error en multerUpload en Index "+err)
@@ -214,12 +214,15 @@ function checkIfSignedIn(req, res, next) {
     app.use("/propiedadesIndependientes", propIndependiente);
     app.use("/bulk", bulk);
     app.use("/tipodeUsuario", tipoUsuario);
+    
     // Eliminar checkCantProps? Parece que el modo correcto esta en checkPago
     app.use("/cargaProp", checkIfSignedIn, checkAutorizacion, cargaProp);
     app.use("/corsAuth", addBucketCors);
     // Carga propiedades 1 x 1 para cargar imagenes de grandes tamaños y no saturar Cors
     app.use("/cargarPropMultiples", useMulter, checkAutorizacion, checkPagosActivos, 
       checkPublicacionesRestantesyAutxTipodeOrg, cargarPropMultiples),
+    app.use("/editarPropiedad", useMulter, checkAutorizacion, checkPagosActivos, editarPropiedades ),
+    //app.use("/editarPropiedad", editarPropiedades);
     app.use("/checkautorizacion", autorizacionUsuario),
     app.use("/revisarPagos", pagodeServicio),
     app.use("/paquetesdePago", paquetesdePago),

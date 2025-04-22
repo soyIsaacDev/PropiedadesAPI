@@ -24,5 +24,6 @@ module.exports = {
     pagodeServicio:servidorPago,
     paquetesdePago:require("./paquetesdePago"),
     propIndependiente:require("./propIndependiente"),
+    editarPropiedades: require("./editarPropMultiples"),
     index: server,
   };

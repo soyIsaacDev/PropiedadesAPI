@@ -5,8 +5,7 @@ const DEVMODE = process.env.DEVELOPMENT;
 const crearTablaImg = async (req, res, next) => {
     try {
         // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
-        const bodyObj = req.body.data;
-        const parsedbodyObj = JSON.parse(bodyObj);
+        const parsedbodyObj = JSON.parse(req.body.data);
         const { tipodeDesarrollo, desarrolloId, modeloId, propIndependienteId } = parsedbodyObj
 
         

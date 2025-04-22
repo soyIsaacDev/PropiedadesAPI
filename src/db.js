@@ -216,8 +216,8 @@ Municipio.belongsTo(Estado);
 Municipio.hasMany(Ciudad);
 Ciudad.belongsTo(Municipio);
 
-Colonia.belongsToMany(Ciudad, { through: 'colonia_por_ciudad', timestamps: false, });
-Ciudad.belongsToMany(Colonia, { through: 'colonia_por_ciudad', timestamps: false, });
+Colonia.belongsToMany(Ciudad, { through: 'colonias_por_ciudad', timestamps: false, });
+Ciudad.belongsToMany(Colonia, { through: 'colonias_por_ciudad', timestamps: false, });
 
 module.exports = {
   ...sequelize.models,

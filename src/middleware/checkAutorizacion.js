@@ -81,7 +81,7 @@ const checkManejodeUsuarios = async (req, res, next) => {
 
 servidorAutorizacion.post("/revisarCaracteristicasUsuario", checkAutorizacion, async (req, res)=>{
  try {
-    console.log(req.auth)
+    console.log("Autorizacion del Usuario "+ req.auth)
     res.json({
         tipodeUsuario:req.tipodeUsuario, 
         manejaUsuarios:req.manejaUsuarios,
