@@ -1,3 +1,6 @@
+const fs = require("fs");
+const path = require('path');
+const carpeta = path.join(__dirname, '../../uploads')
 const {ImgDesarrollo, ImgModeloAsociado, ImgPropiedadIndependiente } = require("../db");
 const DEVMODE = process.env.DEVELOPMENT;
 
