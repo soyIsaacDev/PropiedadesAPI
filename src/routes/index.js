@@ -17,7 +17,6 @@ module.exports = {
     allPropiedades: require("./allPropiedades"),
     bulk:require("./bulk"),
     tipoUsuario:require("./tipodeUsuario"),
-    cargaProp:require("./cargaProp"),
     addBucketCors:require("./addBucketCors"),
     cargarPropMultiples:require("./cargarPropMultiples"),
     autorizacionUsuario:servidorAutorizacion,

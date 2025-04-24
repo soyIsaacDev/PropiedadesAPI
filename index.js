@@ -23,7 +23,7 @@
     }); */
 
     const { index, clientes, imagen, desarrollo, dbconstants, apikeys, favoritos, modeloAsociadoAlDesarrollo,
-       allPropiedades, bulk, tipoUsuario, cargaProp, addBucketCors, cargarPropMultiples, historialdePagos, 
+       allPropiedades, bulk, tipoUsuario, addBucketCors, cargarPropMultiples, historialdePagos, 
        autorizacionUsuario, pagodeServicio, propIndependiente, paquetesdePago, editarPropiedades 
     } = require('./src/routes');
 
@@ -216,7 +216,6 @@ function checkIfSignedIn(req, res, next) {
     app.use("/tipodeUsuario", tipoUsuario);
     
     // Eliminar checkCantProps? Parece que el modo correcto esta en checkPago
-    app.use("/cargaProp", checkIfSignedIn, checkAutorizacion, cargaProp);
     app.use("/corsAuth", addBucketCors);
     // Carga propiedades 1 x 1 para cargar imagenes de grandes tamaños y no saturar Cors
     app.use("/cargarPropMultiples", useMulter, checkAutorizacion, checkPagosActivos, 
