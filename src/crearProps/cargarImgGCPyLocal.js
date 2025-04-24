@@ -58,30 +58,19 @@ const cargarImagenGCPyLocal = async (req, res, next) => {
   
       const imgGde = await imgCambioTamaño(file, 704, 504, `Detalles_Img_Gde_${uniqueDateName}.webp`);      
       const uploadBig = await uploadFile(imgGde, tipodeDesarrollo);
+
+      const imagenChica = await imgCambioTamaño(file, 428, 242, `Detalles_Img_Chica_${uniqueDateName}.webp`);
+      const uploadImgDetChica = await uploadFile(imagenChica, tipodeDesarrollo);
     }
     else {
       // Cambia el tamaño y lo guarda en local
       //resizeImage(img_name, width, height, output_name)
       resizeImage(file.filename, uniqueDateName, 393, 388, "Thumbnail_WebP_" );
       resizeImage(file.filename, uniqueDateName, 704, 504, "Detalles_Img_Gde_" );
+      resizeImage(file.filename, uniqueDateName, 428, 242, "Detalles_Img_Chica_");
     }
 
     const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
-
-    // Si estan ordenadas al principio se cambia el tamaño a Chico
-    if( ordenData.length>0 && ordenData[0].orden === 1 || 
-        ordenData.length>0 && ordenData[0].orden === 2 || 
-        ordenData.length>0 && ordenData[0].orden === 3)
-    {
-      if(DEVMODE === "Production" ){
-        const imagenChica = await imgCambioTamaño(file, 428, 242, `Detalles_Img_Chica_${uniqueDateName}.webp`);
-        const uploadImgDetChica = await uploadFile(imagenChica, tipodeDesarrollo);
-      }
-      else{
-        resizeImage(file.filename, uniqueDateName, 428, 242, "Detalles_Img_Chica_");
-      }
-
-    }
 
     req.data = {file, ordenData, MOD_ASOC_BUCKET_GCLOUD_BUCKET, DESARROLLO_GCLOUD_BUCKET, uniqueDateName};
     next();

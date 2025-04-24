@@ -6,7 +6,7 @@ const crearTablaImg = async (req, res, next) => {
     try {
         // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
         const parsedbodyObj = JSON.parse(req.body.data);
-        const { id, tipodeDesarrollo, desarrolloId, modeloId, propIndependienteId } = parsedbodyObj
+        const { id, tipodeDesarrollo, desarrolloId, modeloId } = parsedbodyObj
 
         
         const {file, ordenData, MOD_ASOC_BUCKET_GCLOUD_BUCKET, DESARROLLO_GCLOUD_BUCKET, uniqueDateName} = req.data;
@@ -53,11 +53,11 @@ const crearTablaImg = async (req, res, next) => {
                 detalles_imgChica,        
             });
         }
-        else if (tipodeDesarrollo === 'PropiedadIndepente'){
+        else if (tipodeDesarrollo === 'PropiedadIndependiente'){
             const imagenPropiedadIndependiente = await ImgPropiedadIndependiente.create({
                 orden:ordenData[0].orden,
                 type: file.mimetype,
-                PropiedadIndependienteRefId: propIndependienteId,
+                PropiedadIndependienteId: id,
                 img_name: uniqueDateName,
                 detalles_imgGde,
                 thumbnail_img,
