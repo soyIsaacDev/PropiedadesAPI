@@ -1,26 +1,34 @@
 const { parse } = require("dotenv");
 const { Cliente, TipodeUsuario,  } = require("../db");
 const servidorAutorizacion = require("express").Router();
+const { Op } = require("sequelize");
 
 const checkAutorizacion = async (req, res, next)  => {
     try {
         let userId = "";
+        let email = "";
         
         const bodyObj = req.body.data;
         // Si los datos vienen de un formData
         if(bodyObj){
           const parsedbodyObj = JSON.parse(bodyObj);
-          userId = parsedbodyObj.userId
+          userId = parsedbodyObj.userId;
+          email = parsedbodyObj.email;
         }
         // los datos vienen en el body del request
         else{
           userId = req.body.userId;
+          email = req.body.email;
         }        
         
         console.log("REVISANDO AUTORIZACION "+userId)
-        const cliente = await Cliente.findOne({
-            where:{ userId:userId}
+        const cliente= await Cliente.findOne({
+          where:{[Op.or]:{
+            userId,
+            email
+          }},            
         });
+
         if(cliente === null) {
             res.json({mensaje:"El Cliente No Existe"});
             return;
@@ -31,7 +39,7 @@ const checkAutorizacion = async (req, res, next)  => {
                 id:cliente.TipodeUsuarioId
             }
         })
-        
+
         req.auth = cliente.autorizaciondePublicar;
         req.tipodeUsuario = tipodeUsuario.tipo;
         req.manejaUsuarios = tipodeUsuario.manejaUsuarios;

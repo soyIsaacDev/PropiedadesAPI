@@ -28,6 +28,8 @@ server.post("/nuevoCliente", async (req, res) => {
         }      
     });
 
+    console.log(cliente)
+
     if(tipoUsuario === "Desarrollador"){
       const tipodeOrganizacion = await AutorizacionesXTipodeOrg.findOne({
         where:{ nombreTipoOrg:"Desarrolladora" }
@@ -362,16 +364,20 @@ server.get("/asignarAgente/:userId/:OrganizacionId", async(req,res) =>{
         ['dia','DESC']
       ],
     });
-
     const hoy = new Date();
-    let fechaUltimoContacto = hoy;
-    agentesContactados.length>0? fechaUltimoContacto = new Date(agentesContactados[0].dia): "";
+    let fechaUltimoContacto = null;
+    const hoyString = hoy.toISOString().split('T')[0]; // "YYYY-MM-DD"
+    agentesContactados.length===0? fechaUltimoContacto = hoy : fechaUltimoContacto = new Date(agentesContactados[0].dia);
 
+    const fechaUltimoContactoString = fechaUltimoContacto.toISOString().split('T')[0];
+    
     let telAgenteAsignado = undefined;
     telAgenteAsignado = todosLosAgentes[0].telefono;
 
-    if(fechaUltimoContacto !== hoy && todosLosAgentes.length>1){      
-      const indiceEnArrayDeAgenteContactado = todosLosAgentes.findIndex(elemento => elemento.id === ultimoAgenteContactadoId);
+    if(fechaUltimoContactoString !== hoyString && todosLosAgentes.length>1){     
+      console.log("Las fechas son diferentes")
+      const indiceEnArrayDeAgenteContactado = todosLosAgentes.findIndex(elemento => elemento.id === agentesContactados[0].agenteId);
+      console.log(indiceEnArrayDeAgenteContactado)
       if(indiceEnArrayDeAgenteContactado < todosLosAgentes.length){
         telAgenteAsignado = todosLosAgentes[indiceEnArrayDeAgenteContactado+1].telefono;
         const agenteContactado = await UltimoContacto.create({
@@ -380,13 +386,13 @@ server.get("/asignarAgente/:userId/:OrganizacionId", async(req,res) =>{
           dia:hoy
         });
       }
-      else {
-        const agenteContactado = await UltimoContacto.create({
-          userId,
-          agenteId:todosLosAgentes[0].id,
-          dia:hoy
-        });
-      }
+    }
+    else if(agentesContactados.length === 0 && fechaUltimoContactoString === hoyString && userId ) {
+      const agenteContactado = await UltimoContacto.create({
+        userId,
+        agenteId:todosLosAgentes[0].id,
+        dia:hoy
+      });
     }
     res.json(telAgenteAsignado);
   } catch (error) {
