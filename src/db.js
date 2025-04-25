@@ -63,6 +63,7 @@ const modelPaquetedePago= require("./models/paquetedePago.js");
 const modelAutorizacionesXTipodeOrg = require("./models/autorizacionesXTipodeOrg.js");
 const modelPropiedadIndependiente = require("./models/propiedadIndependiente.js");
 const modelImgPropiedadIndependiente = require("./models/imgPropiedadIndependiente.js");
+const modelUltimoContacto = require("./models/ultimoContacto.js");
 
 
 modelOrganizacion(sequelize);
@@ -86,12 +87,13 @@ modelPaquetedePago(sequelize);
 modelAutorizacionesXTipodeOrg(sequelize);
 modelPropiedadIndependiente(sequelize);
 modelImgPropiedadIndependiente(sequelize);
-
+modelUltimoContacto(sequelize);
 
 let {Desarrollo, ImgDesarrollo, TipodePropiedad, AmenidadesDesarrollo, AmenidadesdelaPropiedad, 
   TipoOperacion, Estado , Municipio, Ciudad, Colonia, Cliente, ModeloAsociadoAlDesarrollo,
   ImgModeloAsociado, TipodeUsuario, EstiloArquitectura, HistorialdePagos, PaquetedePago, 
-  Organizacion, AutorizacionesXTipodeOrg, PropiedadIndependiente, ImgPropiedadIndependiente
+  Organizacion, AutorizacionesXTipodeOrg, PropiedadIndependiente, ImgPropiedadIndependiente,
+  UltimoContacto,
 } = sequelize.models;
 
 // Relaciones DB

@@ -2,7 +2,7 @@ const server = require("express").Router();
 var nodemailer = require('nodemailer');
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
-const { Cliente, TipodeUsuario, Organizacion, AutorizacionesXTipodeOrg } = require("../db");
+const { Cliente, TipodeUsuario, Organizacion, AutorizacionesXTipodeOrg, UltimoContacto } = require("../db");
 const { Op } = require("sequelize");
 
 const { checkManejodeUsuarios } = require("../middleware/checkAutorizacion");
@@ -296,6 +296,101 @@ server.post("/actualizarAgente", async (req, res) => {
     })
   } catch (error) {
     res.send(error)
+  }
+})
+
+server.get("/agentesPorOrg/:OrganizacionId", async(req,res) => {
+  try {
+    let {OrganizacionId} = req.params;
+    const cliente = await Cliente.findAll({
+      where:{OrganizacionId}
+    });
+    res.json(cliente)
+  } catch (error) {
+    res.json(error)
+  }
+})
+
+server.get("/ultimoAgenteContactado/:userId", async(req,res) => {
+  try {
+    let {userId} = req.params;
+    const agente = await UltimoContacto.findAll({
+      where:{userId}
+    });
+    const hoy = new Date();
+    const fechaUltimoContacto = new Date(agente.dia);
+    if(fechaUltimoContacto !== hoy && agente.userId !== userId){
+      res.json(agente)
+    }
+    else res.json("Mismo Agente")
+    
+  } catch (error) {
+    res.json(error)
+  }
+})
+
+server.get("/agregarUltimoAgenteContactado/:userId/:agenteId", async(req,res) => {
+  try {
+    let {userId} = req.params;
+    const hoy = new Date();
+    const agente = await UltimoContacto.create({
+      userId,
+      agenteId:"",
+      dia:""
+    });
+    if(""){
+      res.json(agente)
+    }
+    else res.json("Mismo Agente")
+    
+  } catch (error) {
+    res.json(error)
+  }
+})
+
+server.get("/asignarAgente/:userId/:OrganizacionId", async(req,res) =>{
+  try {
+    let {userId, OrganizacionId } = req.params;
+    // buscando todos los agentes que pertenecen a una organizacion
+    const todosLosAgentes = await Cliente.findAll({
+      where:{OrganizacionId}
+    });
+
+    const agentesContactados = await UltimoContacto.findAll({
+      where:{userId},
+      order: [
+        ['dia','DESC']
+      ],
+    });
+
+    const hoy = new Date();
+    let fechaUltimoContacto = hoy;
+    agentesContactados.length>0? fechaUltimoContacto = new Date(agentesContactados[0].dia): "";
+
+    let telAgenteAsignado = undefined;
+    telAgenteAsignado = todosLosAgentes[0].telefono;
+
+    if(fechaUltimoContacto !== hoy && todosLosAgentes.length>1){      
+      const indiceEnArrayDeAgenteContactado = todosLosAgentes.findIndex(elemento => elemento.id === ultimoAgenteContactadoId);
+      if(indiceEnArrayDeAgenteContactado < todosLosAgentes.length){
+        telAgenteAsignado = todosLosAgentes[indiceEnArrayDeAgenteContactado+1].telefono;
+        const agenteContactado = await UltimoContacto.create({
+          userId,
+          agenteId:todosLosAgentes[indiceEnArrayDeAgenteContactado+1].id,
+          dia:hoy
+        });
+      }
+      else {
+        const agenteContactado = await UltimoContacto.create({
+          userId,
+          agenteId:todosLosAgentes[0].id,
+          dia:hoy
+        });
+      }
+    }
+    res.json(telAgenteAsignado);
+  } catch (error) {
+    res.json(error);
   }
 })
 
