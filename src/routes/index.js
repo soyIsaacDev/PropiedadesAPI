@@ -24,5 +24,6 @@ module.exports = {
     paquetesdePago:require("./paquetesdePago"),
     propIndependiente:require("./propIndependiente"),
     editarPropiedades: require("./editarPropMultiples"),
+    borrarPropiedades:require("./borrarPropiedades"),
     index: server,
   };

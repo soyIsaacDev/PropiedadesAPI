@@ -24,7 +24,8 @@
 
     const { index, clientes, imagen, desarrollo, dbconstants, apikeys, favoritos, modeloAsociadoAlDesarrollo,
        allPropiedades, bulk, tipoUsuario, addBucketCors, cargarPropMultiples, historialdePagos, 
-       autorizacionUsuario, pagodeServicio, propIndependiente, paquetesdePago, editarPropiedades 
+       autorizacionUsuario, pagodeServicio, propIndependiente, paquetesdePago, editarPropiedades,
+       borrarPropiedades, 
     } = require('./src/routes');
 
     const { checkAutorizacion } = require("./src/middleware/checkAutorizacion.js")
@@ -225,7 +226,8 @@ function checkIfSignedIn(req, res, next) {
     app.use("/checkautorizacion", autorizacionUsuario),
     app.use("/revisarPagos", pagodeServicio),
     app.use("/paquetesdePago", paquetesdePago),
-    app.use("/checkpago", servidorPago)
+    app.use("/checkpago", servidorPago),
+    app.use("/borrarPropiedaes", borrarPropiedades),
     //app.use("/authCliente", authCliente);
 
     /* app.use("/propiedades", PropiedadRoute);

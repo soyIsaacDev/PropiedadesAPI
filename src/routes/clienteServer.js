@@ -375,9 +375,7 @@ server.get("/asignarAgente/:userId/:OrganizacionId", async(req,res) =>{
     telAgenteAsignado = todosLosAgentes[0].telefono;
 
     if(fechaUltimoContactoString !== hoyString && todosLosAgentes.length>1){     
-      console.log("Las fechas son diferentes")
       const indiceEnArrayDeAgenteContactado = todosLosAgentes.findIndex(elemento => elemento.id === agentesContactados[0].agenteId);
-      console.log(indiceEnArrayDeAgenteContactado)
       if(indiceEnArrayDeAgenteContactado < todosLosAgentes.length){
         telAgenteAsignado = todosLosAgentes[indiceEnArrayDeAgenteContactado+1].telefono;
         const agenteContactado = await UltimoContacto.create({
