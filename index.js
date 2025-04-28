@@ -227,7 +227,7 @@ function checkIfSignedIn(req, res, next) {
     app.use("/revisarPagos", pagodeServicio),
     app.use("/paquetesdePago", paquetesdePago),
     app.use("/checkpago", servidorPago),
-    app.use("/borrarPropiedaes", borrarPropiedades),
+    app.use("/borrarPropiedaes", checkAutorizacion, borrarPropiedades),
     //app.use("/authCliente", authCliente);
 
     /* app.use("/propiedades", PropiedadRoute);

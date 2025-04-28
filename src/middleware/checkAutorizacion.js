@@ -17,11 +17,12 @@ const checkAutorizacion = async (req, res, next)  => {
         }
         // los datos vienen en el body del request
         else{
-          userId = req.body.userId;
-          email = req.body.email;
+          console.log(req.body)
+          if(req.body.userId) userId = req.body.userId;
+          if(req.body.email) email = req.body.email;
         }        
         
-        console.log("REVISANDO AUTORIZACION "+userId)
+        console.log("REVISANDO AUTORIZACION "+userId + " email "+ email)
         const cliente= await Cliente.findOne({
           where:{[Op.or]:{
             userId,

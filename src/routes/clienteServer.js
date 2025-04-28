@@ -313,43 +313,6 @@ server.get("/agentesPorOrg/:OrganizacionId", async(req,res) => {
   }
 })
 
-server.get("/ultimoAgenteContactado/:userId", async(req,res) => {
-  try {
-    let {userId} = req.params;
-    const agente = await UltimoContacto.findAll({
-      where:{userId}
-    });
-    const hoy = new Date();
-    const fechaUltimoContacto = new Date(agente.dia);
-    if(fechaUltimoContacto !== hoy && agente.userId !== userId){
-      res.json(agente)
-    }
-    else res.json("Mismo Agente")
-    
-  } catch (error) {
-    res.json(error)
-  }
-})
-
-server.get("/agregarUltimoAgenteContactado/:userId/:agenteId", async(req,res) => {
-  try {
-    let {userId} = req.params;
-    const hoy = new Date();
-    const agente = await UltimoContacto.create({
-      userId,
-      agenteId:"",
-      dia:""
-    });
-    if(""){
-      res.json(agente)
-    }
-    else res.json("Mismo Agente")
-    
-  } catch (error) {
-    res.json(error)
-  }
-})
-
 server.get("/asignarAgente/:userId/:OrganizacionId", async(req,res) =>{
   try {
     let {userId, OrganizacionId } = req.params;
