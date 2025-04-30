@@ -12,12 +12,11 @@ const checkAutorizacion = async (req, res, next)  => {
         // Si los datos vienen de un formData
         if(bodyObj){
           const parsedbodyObj = JSON.parse(bodyObj);
-          userId = parsedbodyObj.userId;
-          email = parsedbodyObj.email;
+          if(parsedbodyObj.userId) userId = parsedbodyObj.userId;
+          if(parsedbodyObj.email) email = parsedbodyObj.email;
         }
         // los datos vienen en el body del request
         else{
-          console.log(req.body)
           if(req.body.userId) userId = req.body.userId;
           if(req.body.email) email = req.body.email;
         }        
