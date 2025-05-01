@@ -1,4 +1,4 @@
-const {  amenidades_de_las_prop_independientes, PropiedadIndependiente } = require("../db");
+const {  amenidades_de_las_prop_independientes, PropiedadIndependiente, VideoYoutube, Tour3D } = require("../db");
 const { Op } = require("sequelize");
 
 // Crear Relaciones en DB
@@ -14,7 +14,7 @@ const crearPropIndependiente = async (req, res) => {
       const { precio, calle, numeroPropiedad, numeroInterior, posicion, ciudad, estado, municipio, colonia,
         niveles, recamaras, baños, medio_baño, espaciosCochera, cocheraTechada,   
         m2Construccion, m2Terreno, m2Total, añodeConstruccion, 
-        TipoOperacionId, TipodePropiedadId, amenidadesPropiedad, tratoDirecto,
+        TipoOperacionId, TipodePropiedadId, amenidadesPropiedad, tratoDirecto, ytvideo, tour3D_URL,
         EstiloArquitecturaId,
       } = parsedbodyObj
 

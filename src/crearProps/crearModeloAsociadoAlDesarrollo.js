@@ -1,4 +1,4 @@
-const {  amenidades_de_los_modelos, ModeloAsociadoAlDesarrollo, Desarrollo} = require("../db");
+const {  amenidades_de_los_modelos, ModeloAsociadoAlDesarrollo, Desarrollo, VideoYoutube, Tour3D} = require("../db");
 const { Op } = require("sequelize");
 
 const crearModeloAsociadoDesarrollo = async (req, res, next) => {
@@ -9,7 +9,7 @@ const crearModeloAsociadoDesarrollo = async (req, res, next) => {
       const parsedbodyObj = JSON.parse(bodyObj);
       const { nombreModelo, nombreDesarrollo, precio, numeroInterior, posicion, ciudad, estado,
         niveles, recamaras, baños, medio_baño, espaciosCochera, cocheraTechada, m2Construccion, 
-        m2Terreno, m2Patios, tipodeOperacion, TipodePropiedadId, amenidadesPropiedad,
+        m2Terreno, m2Patios, tipodeOperacion, TipodePropiedadId, amenidadesPropiedad, ytvideo, tour3D_URL
       } = parsedbodyObj
 
       const [ModeloRelacionado, creado] = await ModeloAsociadoAlDesarrollo.findOrCreate({

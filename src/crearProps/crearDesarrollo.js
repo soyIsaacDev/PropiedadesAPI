@@ -1,4 +1,4 @@
-const {   Desarrollo, amenidades_de_los_desarrollos } = require("../db");
+const {   Desarrollo, amenidades_de_los_desarrollos, VideoYoutube, Tour3D } = require("../db");
 
 
 const crearDesarrollo = async (req, res, next) => {
@@ -8,7 +8,7 @@ const crearDesarrollo = async (req, res, next) => {
       const bodyObj = req.body.data;
       const parsedbodyObj = JSON.parse(bodyObj);
       const { nombreDesarrollo, calle, numeroPropiedad, posicion, ciudad, estado, municipio,
-        añodeConstruccion, amenidadesDesarrollo, EstiloArquitecturaId, colonia
+        añodeConstruccion, amenidadesDesarrollo, TipodePropiedadId, EstiloArquitecturaId, colonia, ytvideo, tour3D_URL, 
       } = parsedbodyObj
 
       const [DesarrolloCreado, creado] = await Desarrollo.findOrCreate({
@@ -19,8 +19,8 @@ const crearDesarrollo = async (req, res, next) => {
           CiudadId:ciudad,
         },
         defaults:{
-          //TipodePropiedadId,
-          //TipoOperacionId:tipodeOperacion,
+          TipodePropiedadId,
+          TipoOperacionId:1,
           EstiloArquitecturaId,
           añodeConstruccion,
           calle,
@@ -35,11 +35,25 @@ const crearDesarrollo = async (req, res, next) => {
 
       if(creado === true){
 
+        tour3D_URL && await Tour3D.create({
+          tourURL:tour3D_URL,
+          DesarrolloId:DesarrolloCreado.id
+        })
+
+        ytvideo.map(async (video) => {
+          await VideoYoutube.create({
+            videoURL:video,
+            DesarrolloId:DesarrolloCreado.id
+          })
+        })
+        
+
         for (let i = 0; i < amenidadesDesarrollo.length; i++) {        
           await amenidades_de_los_desarrollos.create({ 
             DesarrolloId:DesarrolloCreado.id, 
             AmenidadesDesarrolloId:amenidadesDesarrollo[i] })
         }
+
     
         // Se creo el DesarrolloCreado Exitosamente
         res.json({

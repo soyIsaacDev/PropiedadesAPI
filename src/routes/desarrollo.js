@@ -11,7 +11,7 @@ var public = path.join(__dirname,'../../uploads');
 
 const { Desarrollo, ImgDesarrollo, AmenidadesDesarrollo, TipodePropiedad, TipoOperacion, Estado, Municipio, Ciudad, 
   Colonia, Cliente, amenidades_del_desarrollos, ModeloAsociadoAlDesarrollo, ImgModeloAsociado,
-  Organizacion, AutorizacionesXTipodeOrg,
+  Organizacion, AutorizacionesXTipodeOrg, VideoYoutube, Tour3D,
 } = require("../db");
 
 // Se incluye el modelo Cliente el cual arroja datos de FAVORITOS
@@ -39,7 +39,13 @@ server.get("/getDataandImagenPropiedades",  async (req, res) => {
           order: [
             ['orden','ASC']
           ],
-        },       
+        }, 
+        {
+          model:VideoYoutube
+        },
+        {
+          model: Tour3D
+        },      
         {
           model: AmenidadesDesarrollo,
           through: {
@@ -125,6 +131,12 @@ server.get("/detallespropiedad/:id", async (req, res) => {
           model: ImgDesarrollo,
           attributes: ['id','orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
         },
+        {
+          model:VideoYoutube
+        },
+        {
+          model: Tour3D
+        }, 
         {
           model: AmenidadesDesarrollo,
           through: {

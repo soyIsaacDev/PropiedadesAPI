@@ -64,6 +64,8 @@ const modelAutorizacionesXTipodeOrg = require("./models/autorizacionesXTipodeOrg
 const modelPropiedadIndependiente = require("./models/propiedadIndependiente.js");
 const modelImgPropiedadIndependiente = require("./models/imgPropiedadIndependiente.js");
 const modelUltimoContacto = require("./models/ultimoContacto.js");
+const modeloVideoYoutube = require("./models/ytVideo.js");
+const modeloTour3D = require("./models/tour3D.js");
 
 
 modelOrganizacion(sequelize);
@@ -88,12 +90,14 @@ modelAutorizacionesXTipodeOrg(sequelize);
 modelPropiedadIndependiente(sequelize);
 modelImgPropiedadIndependiente(sequelize);
 modelUltimoContacto(sequelize);
+modeloVideoYoutube(sequelize);
+modeloTour3D(sequelize);
 
 let {Desarrollo, ImgDesarrollo, TipodePropiedad, AmenidadesDesarrollo, AmenidadesdelaPropiedad, 
   TipoOperacion, Estado , Municipio, Ciudad, Colonia, Cliente, ModeloAsociadoAlDesarrollo,
   ImgModeloAsociado, TipodeUsuario, EstiloArquitectura, HistorialdePagos, PaquetedePago, 
   Organizacion, AutorizacionesXTipodeOrg, PropiedadIndependiente, ImgPropiedadIndependiente,
-  UltimoContacto,
+  UltimoContacto, VideoYoutube, Tour3D,
 } = sequelize.models;
 
 // Relaciones DB
@@ -129,6 +133,12 @@ Desarrollo.belongsToMany(Cliente, { through: 'desarrollos_favoritos', timestamps
 EstiloArquitectura.hasMany(Desarrollo);
 Desarrollo.belongsTo(EstiloArquitectura);
 
+Desarrollo.hasMany(VideoYoutube);
+VideoYoutube.belongsTo(Desarrollo);
+
+Desarrollo.hasOne(Tour3D);
+Tour3D.belongsTo(Desarrollo);
+
 // Relaciones Modelo
 
 ModeloAsociadoAlDesarrollo.hasMany(ImgModeloAsociado);
@@ -148,6 +158,12 @@ ModeloAsociadoAlDesarrollo.belongsTo(Ciudad);
 
 Estado.hasMany(ModeloAsociadoAlDesarrollo);
 ModeloAsociadoAlDesarrollo.belongsTo(Estado);
+
+ModeloAsociadoAlDesarrollo.hasMany(VideoYoutube);
+VideoYoutube.belongsTo(ModeloAsociadoAlDesarrollo);
+
+ModeloAsociadoAlDesarrollo.hasOne(Tour3D);
+Tour3D.belongsTo(ModeloAsociadoAlDesarrollo);
 
 
 // Relaciones de Propiedad Independiente
@@ -184,6 +200,12 @@ PropiedadIndependiente.belongsTo(EstiloArquitectura);
 
 Organizacion.hasMany(PropiedadIndependiente);
 PropiedadIndependiente.belongsTo(Organizacion);
+
+PropiedadIndependiente.hasMany(VideoYoutube);
+VideoYoutube.belongsTo(PropiedadIndependiente);
+
+PropiedadIndependiente.hasOne(Tour3D);
+Tour3D.belongsTo(PropiedadIndependiente);
 
 // Organizacion
 
