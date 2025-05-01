@@ -46,7 +46,6 @@ const crearDesarrollo = async (req, res, next) => {
             DesarrolloId:DesarrolloCreado.id
           })
         })
-        
 
         for (let i = 0; i < amenidadesDesarrollo.length; i++) {        
           await amenidades_de_los_desarrollos.create({ 

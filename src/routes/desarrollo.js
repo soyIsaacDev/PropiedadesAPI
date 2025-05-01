@@ -39,12 +39,6 @@ server.get("/getDataandImagenPropiedades",  async (req, res) => {
           order: [
             ['orden','ASC']
           ],
-        }, 
-        {
-          model:VideoYoutube
-        },
-        {
-          model: Tour3D
         },      
         {
           model: AmenidadesDesarrollo,

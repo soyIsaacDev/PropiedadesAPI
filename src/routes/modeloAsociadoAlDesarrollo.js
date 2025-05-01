@@ -7,7 +7,7 @@ var public = path.join(__dirname,'../../uploads');
 
 const { Desarrollo, ImgDesarrollo, AmenidadesDesarrollo, AmenidadesdelaPropiedad, TipodePropiedad, 
   TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, Favoritos, ModeloAsociadoAlDesarrollo, 
-  ImgModeloAsociado, EstiloArquitectura  } = require("../db");
+  ImgModeloAsociado, EstiloArquitectura, VideoYoutube, Tour3D,  } = require("../db");
 
 const {literal} = require ('sequelize');
 
@@ -158,6 +158,12 @@ server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
           model: ImgModeloAsociado,
           attributes: ['orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
         },
+        {
+          model:VideoYoutube
+        },
+        {
+          model: Tour3D
+        }, 
         {
           model: AmenidadesdelaPropiedad, 
           through: {

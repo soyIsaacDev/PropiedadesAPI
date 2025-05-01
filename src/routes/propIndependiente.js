@@ -4,7 +4,7 @@ const path = require('path');
 const public = path.join(__dirname,'../../uploads');
 
 const { PropiedadIndependiente, ImgPropiedadIndependiente, AmenidadesdelaPropiedad, TipodePropiedad, 
-  TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente
+  TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, VideoYoutube, Tour3D,
  } = require("../db");
 const { Console } = require("console");
 
@@ -58,6 +58,12 @@ server.get("/detallesPropIndependiente/:id", async (req, res) => {
           model: ImgPropiedadIndependiente,
           attributes: ['orden','img_name','thumbnail_img','detalles_imgGde','detalles_imgChica'],
         },
+        {
+          model:VideoYoutube
+        },
+        {
+          model: Tour3D
+        }, 
         {
           model: AmenidadesdelaPropiedad,
           through: {

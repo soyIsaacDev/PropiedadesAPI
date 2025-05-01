@@ -44,6 +44,18 @@ const crearModeloAsociadoDesarrollo = async (req, res, next) => {
 
       if(creado === true){
 
+        tour3D_URL && await Tour3D.create({
+          tourURL:tour3D_URL,
+          DesarrolloId:DesarrolloCreado.id
+        })
+
+        ytvideo.map(async (video) => {
+          await VideoYoutube.create({
+            videoURL:video,
+            DesarrolloId:DesarrolloCreado.id
+          })
+        })
+
         for (let i = 0; i < amenidadesPropiedad.length; i++) {        
           await amenidades_de_los_modelos.create({ 
             ModeloAsociadoAlDesarrolloId:ModeloRelacionado.id, 

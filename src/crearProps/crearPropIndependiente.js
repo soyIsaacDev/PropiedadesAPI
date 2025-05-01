@@ -51,6 +51,18 @@ const crearPropIndependiente = async (req, res) => {
       })
 
       if(creado === true){
+        
+        tour3D_URL && await Tour3D.create({
+          tourURL:tour3D_URL,
+          DesarrolloId:DesarrolloCreado.id
+        })
+
+        ytvideo.map(async (video) => {
+          await VideoYoutube.create({
+            videoURL:video,
+            DesarrolloId:DesarrolloCreado.id
+          })
+        })
 
         for (let i = 0; i < amenidadesPropiedad.length; i++) { 
           await amenidades_de_las_prop_independientes.create({ 
