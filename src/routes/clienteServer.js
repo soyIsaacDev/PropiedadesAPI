@@ -159,12 +159,44 @@ const gmailPassword = process.env.GMAIL_PASSWORD;
 
 server.post("/agregarAgenteAdicional", checkManejodeUsuarios, async (req, res) => { 
   try {
-    const agentes = req.body; // se reciben los datos en un Array
-    const organizacionId = req.orgId; // se recibe de checkManejodeUsuarios
-    const agentePrincipal = req.agentePrincipal; // se recibe de checkManejodeUsuarios
+    const agentes = req.body;
+    const organizacionId = req.orgId;
+    const agentePrincipal = req.agentePrincipal;
 
-    // Prep para enviar correo
-    /* const oauth2Client = new OAuth2(
+    const userTipo = await TipodeUsuario.findOne({
+      where: { tipo: "AgentedeDesarrollo" }   
+    });
+
+    const resultados = await Promise.all(agentes.map(async agente => {   
+      const cliente = await Cliente.findOrCreate({
+        where: { email: agente.email },
+        defaults: {          
+          OrganizacionId: organizacionId,
+          TipodeUsuarioId: userTipo.id,
+          autorizaciondePublicar: agente.autorizaciondePublicar
+        }      
+      });
+
+      const correoEnviado = await enviarCorreo(agente.email, agentePrincipal);
+      return { email: agente.email, correoEnviado };
+    }));
+
+    // Todos los correos se enviaron
+    res.json({ 
+      codigo:1,
+      mensaje: "Proceso completado",
+      agentes: resultados 
+    });
+    
+  } catch (error) {
+    console.error("Error en agregarAgenteAdicional:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+const enviarCorreo = async (para, de)  => {
+  try {
+    const oauth2Client = new OAuth2(
       gmailClientId, // ClientID
       gmailClientSecret, // Client Secret
       gmailRedirectUrl // Redirect URL
@@ -172,8 +204,9 @@ server.post("/agregarAgenteAdicional", checkManejodeUsuarios, async (req, res) =
     oauth2Client.setCredentials({
       refresh_token: gmailRefreshToken
     });
-    const accessToken = oauth2Client.getAccessToken();
-    var transporter = nodemailer.createTransport({
+    const accessToken = await oauth2Client.getAccessToken();
+
+    const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         type: 'OAuth2',
@@ -184,59 +217,33 @@ server.post("/agregarAgenteAdicional", checkManejodeUsuarios, async (req, res) =
         refreshToken:gmailRefreshToken,
         accessToken:accessToken
       }
-    }); */
-
-    const userTipo = await TipodeUsuario.findOne({
-      where: {
-        tipo:"AgentedeDesarrollo"
-      }   
     });
+    
+    const mailOptions = {
+      from: 'isaacborbon@gmail.com',
+      to: para,
+      subject: `${de} te invita a unirte a su empresa en Inmozz`,
+      text: 'Unete a mi empresa en Inmozz dando click en el siguiente link http://localhost:3000/nuevousuario. No olvides utiliza este correo electronico para registrarte'
+    };
 
-    for (let i = 0; i < agentes.length; i++) {   
-      const cliente = await Cliente.findOrCreate({
-        where: {
-          email:agentes[i].email,
-        },
-        defaults: {          
-          OrganizacionId:organizacionId,
-          TipodeUsuarioId: userTipo.id,
-          autorizaciondePublicar:agentes[i].autorizaciondePublicar
-        }      
-      });
-      
-
-      /* const clienteAut = await Autorizacion.create({ 
-        niveldeAutorizacion:agentes[i].niveldeAutorizacion,
-        ClienteId:cliente[0].id
-      }) */
-
-      //Enviar correo de invitacion
-
-      /* var mailOptions = {
-        from: 'isaacborbon@gmail.com',
-        to: agentes[i].email,
-        subject: `${agentePrincipal} te invita a unirte a su empresa`,
-        text: 'Unete a mi empresa a Inmozz dando click en el siguiente link'
-      };
-      
+    return new Promise((resolve, reject) => {
       transporter.sendMail(mailOptions, function(error, info){
+        transporter.close();
         if (error) {
           console.log(error);
+          reject(error)
         } else {
-          console.log('Email sent: ' + info.response);
-          transporter.close();
+          console.log('Email sent: ' + info.response);          
+          resolve (info.response);
         }
-      }); */
+      });
 
-    }
-    
-    res.send(agentes);
-
-     //}
+    })
   } catch (error) {
-    res.send(error);
+    console.error("Error en enviarCorreo:", error);
+    res.json(error)
   }
-});
+}
 
 server.get("/enviarCorreoNuevoAgente", async (req, res) => { 
   try {
@@ -276,6 +283,7 @@ server.get("/enviarCorreoNuevoAgente", async (req, res) => {
       } else {
         console.log('Email sent: ' + info.response);
         transporter.close();
+        res.json("Correo Enviado" + info.response)
       }
     });
 

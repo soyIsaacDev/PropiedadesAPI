@@ -1,4 +1,4 @@
-const { Desarrollo, amenidades_de_los_desarrollos } = require("../db");
+const { Desarrollo, amenidades_de_los_desarrollos, VideoYoutube, Tour3D, } = require("../db");
 
 const editarDesarrollo = async (req, res, next) => {
   try {
@@ -7,28 +7,45 @@ const editarDesarrollo = async (req, res, next) => {
     const bodyObj = req.body.data;
     const parsedbodyObj = JSON.parse(bodyObj);
     const { id, nombreDesarrollo, calle, numeroPropiedad, posicion, ciudad, estado, municipio,
-      añodeConstruccion, amenidadesDesarrollo, EstiloArquitecturaId, colonia, quitarAmenidadesDesarrollo
+      añodeConstruccion, amenidadesDesarrollo, EstiloArquitecturaId, colonia, quitarAmenidadesDesarrollo,
+      ytvideo, tour3D_URL,
     } = parsedbodyObj
     
     const [actualizarDesarrollo] = await Desarrollo.update(
-        {
-          nombreDesarrollo,
-          EstadoId: estado,
-          MunicipioId: municipio,
-          CiudadId: ciudad,
-          EstiloArquitecturaId,
-          añodeConstruccion,
-          calle,
-          numeroPropiedad,
-          ColoniumId: colonia,
-          posicion
-        },
-        { where: { id } }
-      );
+      {
+        nombreDesarrollo,
+        EstadoId: estado,
+        MunicipioId: municipio,
+        CiudadId: ciudad,
+        EstiloArquitecturaId,
+        añodeConstruccion,
+        calle,
+        numeroPropiedad,
+        ColoniumId: colonia,
+        posicion
+      },
+      { where: { id } }
+    );
   
-      if (actualizarDesarrollo === 0) {
-        return res.status(404).json({ mensaje: "Desarrollo no encontrado" });
-      }
+    if (actualizarDesarrollo === 0) {
+      return res.status(404).json({ mensaje: "Desarrollo no encontrado" });
+    }
+
+    tour3D_URL && await Tour3D.findOrCreate({
+      where:{
+        tourURL:tour3D_URL,
+        DesarrolloId:id
+      },
+    })
+
+    ytvideo.map(async (video) => {
+      await VideoYoutube.findOrCreate({
+        where:{
+          videoURL:video,
+          DesarrolloId:id
+        }
+      })
+    })
 
     const addAmenidadesPromises = amenidadesDesarrollo.map(amenidadId => 
       amenidades_de_los_desarrollos.findOrCreate({
@@ -45,10 +62,7 @@ const editarDesarrollo = async (req, res, next) => {
 
     await Promise.all([...addAmenidadesPromises, ...removeAmenidadesPromises]);
     
-    
-
-    next()
-    
+    next();    
 
   } catch (error) {
     console.log("Error al editar el Desarrollo "+error);

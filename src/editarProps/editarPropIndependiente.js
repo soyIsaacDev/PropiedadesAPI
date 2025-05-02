@@ -1,4 +1,4 @@
-const {  amenidades_de_las_prop_independientes, PropiedadIndependiente } = require("../db");
+const {  amenidades_de_las_prop_independientes, PropiedadIndependiente, VideoYoutube, Tour3D, } = require("../db");
 
 
 const editarPropIndependiente = async (req, res, next) => {
@@ -10,7 +10,7 @@ const editarPropIndependiente = async (req, res, next) => {
       niveles, recamaras, baños, medio_baño, espaciosCochera, cocheraTechada,   
       m2Construccion, m2Terreno, m2Total, añodeConstruccion, 
       TipoOperacionId, TipodePropiedadId, amenidadesPropiedad, tratoDirecto,
-      EstiloArquitecturaId, quitarAmenidadesModelo
+      EstiloArquitecturaId, quitarAmenidadesModelo, ytvideo, tour3D_URL,
     } = parsedbodyObj
     const [actualizarPropiedadIndependiente] = await PropiedadIndependiente.update(
       {
@@ -28,26 +28,39 @@ const editarPropIndependiente = async (req, res, next) => {
         añodeConstruccion,
         tratoDirecto,
         publicada:false,
-        TipoOperacionId:1, // venta
+        TipoOperacionId:TipoOperacionId,
         TipodePropiedadId,  
         //EstiloArquitecturaId
+        EstadoId:estado,
+        MunicipioId:municipio,
+        CiudadId:ciudad,
+        ColoniumId:colonia,
+        calle,
+        numeroPropiedad,
+        numeroInterior,
         },
-        { 
-          where:{
-            EstadoId:estado,
-            MunicipioId:municipio,
-            CiudadId:ciudad,
-            ColoniumId:colonia,
-            calle,
-            numeroPropiedad,
-            numeroInterior,
-          }
-        }
+        { where: { id } }
     )
     console.log(actualizarPropiedadIndependiente)
     if (actualizarPropiedadIndependiente === 0) {
         return res.status(404).json({ mensaje: "Propiedad Independiente no encontrada" });
     }
+
+    tour3D_URL && await Tour3D.findOrCreate({
+      where:{
+        tourURL:tour3D_URL,
+        PropiedadIndependienteId:id
+      },
+    })
+
+    ytvideo.map(async (video) => {
+      await VideoYoutube.findOrCreate({
+        where:{
+          videoURL:video,
+          PropiedadIndependienteId:id
+        }
+      })
+    })
 
     const addAmenidadesPromises = amenidadesPropiedad.map(amenidadId => 
         amenidades_de_las_prop_independientes.findOrCreate({

@@ -1,4 +1,4 @@
-const {  amenidades_de_los_modelos, ModeloAsociadoAlDesarrollo, Desarrollo} = require("../db");
+const {  amenidades_de_los_modelos, ModeloAsociadoAlDesarrollo, Desarrollo, VideoYoutube, Tour3D,} = require("../db");
 
 const editarModelo = async (req, res, next) => {
   try {
@@ -6,10 +6,12 @@ const editarModelo = async (req, res, next) => {
     // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
     const bodyObj = req.body.data;
     const parsedbodyObj = JSON.parse(bodyObj);
-    const { nombreModelo, nombreDesarrollo, precio, numeroInterior, posicion, ciudad, estado,
+    const { modeloId, nombreModelo, desarrolloId, precio, numeroInterior, posicion, ciudad, estado,
       niveles, recamaras, baños, medio_baño, espaciosCochera, cocheraTechada, m2Construccion, 
-      m2Terreno, m2Patios, tipodeOperacion, TipodePropiedadId, amenidadesPropiedad, quitarAmenidadesModelo
+      m2Terreno, m2Patios, tipodeOperacion, TipodePropiedadId, amenidadesPropiedad, quitarAmenidadesModelo,
+      ytvideo, tour3D_URL,
     } = parsedbodyObj
+
     const [actualizarModelo] = await ModeloAsociadoAlDesarrollo.update(
       {
         posicion,
@@ -27,26 +29,39 @@ const editarModelo = async (req, res, next) => {
         publicada:false,
         /* añodeConstruccion
           municipio
-        */
+          */
+        nombreModelo,
+        DesarrolloId:desarrolloId,
+        CiudadId:ciudad,
+        EstadoId:estado,
       },
-      { 
-        where: {
-          nombreModelo,
-          DesarrolloId:parseInt(nombreDesarrollo),
-          CiudadId:ciudad,
-          EstadoId:estado,
-        }      
-      }
+      { where: { id:modeloId}  }
     )
 
     if (actualizarModelo === 0) {
         return res.status(404).json({ mensaje: "Modelo no encontrado" });
     }
 
+    tour3D_URL && await Tour3D.findOrCreate({
+      where:{
+        tourURL:tour3D_URL,
+        ModeloAsociadoAlDesarrolloId:modeloId
+      },
+    })
+
+    ytvideo.map(async (video) => {
+      await VideoYoutube.findOrCreate({
+        where:{
+          videoURL:video,
+          ModeloAsociadoAlDesarrolloId:modeloId
+        }
+      })
+    })
+
     // Agregar tipo de propiedad y operacion al Desarrollo
     // Modificar Precio Min y Max en Desarrollo
-    if(nombreDesarrollo){
-      const DesarrolloaCambiar = await Desarrollo.findByPk(parseInt(nombreDesarrollo));
+    if(desarrolloId){
+      const DesarrolloaCambiar = await Desarrollo.findByPk(desarrolloId);
 
       if(DesarrolloaCambiar.TipodePropiedadId === null){
         DesarrolloaCambiar.TipodePropiedadId = TipodePropiedadId;
@@ -73,14 +88,14 @@ const editarModelo = async (req, res, next) => {
 
     const addAmenidadesPromises = amenidadesPropiedad.map(amenidadId => 
         amenidades_de_los_modelos.findOrCreate({
-          where: { ModeloAsociadoAlDesarrolloId: id, AmenidadesdelaPropiedadId: amenidadId }
+          where: { ModeloAsociadoAlDesarrolloId: modeloId, AmenidadesdelaPropiedadId: amenidadId }
         })
     );
 
     // Borrando las amendidades que se quitaron
     const removeAmenidadesPromises = quitarAmenidadesModelo.map(amenidadId =>
         amenidades_de_los_modelos.destroy({
-          where: { ModeloAsociadoAlDesarrolloId: id, AmenidadesdelaPropiedadId: amenidadId }
+          where: { ModeloAsociadoAlDesarrolloId: modeloId, AmenidadesdelaPropiedadId: amenidadId }
         })
     );
 
