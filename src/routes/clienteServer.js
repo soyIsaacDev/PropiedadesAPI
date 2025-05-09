@@ -328,6 +328,10 @@ server.get("/asignarAgente/:userId/:OrganizacionId", async(req,res) =>{
     const todosLosAgentes = await Cliente.findAll({
       where:{OrganizacionId}
     });
+      // Hay un error
+      if(todosLosAgentes.length===0){
+        res.json("ERROR No hay agentes en esta organizacion")
+      }
 
     const agentesContactados = await UltimoContacto.findAll({
       where:{userId},
@@ -335,6 +339,8 @@ server.get("/asignarAgente/:userId/:OrganizacionId", async(req,res) =>{
         ['dia','DESC']
       ],
     });
+
+    // Comparacion de fechas
     const hoy = new Date();
     let fechaUltimoContacto = null;
     const hoyString = hoy.toISOString().split('T')[0]; // "YYYY-MM-DD"
@@ -342,27 +348,32 @@ server.get("/asignarAgente/:userId/:OrganizacionId", async(req,res) =>{
 
     const fechaUltimoContactoString = fechaUltimoContacto.toISOString().split('T')[0];
     
+    const primerAgenteId = todosLosAgentes[0].id;
     let telAgenteAsignado = undefined;
-    telAgenteAsignado = todosLosAgentes[0].telefono;
+    telAgenteAsignado = todosLosAgentes[0].telefono; // Agente asignado por Default
 
-    if(fechaUltimoContactoString !== hoyString && todosLosAgentes.length>1){     
-      const indiceEnArrayDeAgenteContactado = todosLosAgentes.findIndex(elemento => elemento.id === agentesContactados[0].agenteId);
-      if(indiceEnArrayDeAgenteContactado < todosLosAgentes.length){
-        telAgenteAsignado = todosLosAgentes[indiceEnArrayDeAgenteContactado+1].telefono;
-        const agenteContactado = await UltimoContacto.create({
-          userId,
-          agenteId:todosLosAgentes[indiceEnArrayDeAgenteContactado+1].id,
-          dia:hoy
-        });
-      }
-    }
-    else if(agentesContactados.length === 0 && fechaUltimoContactoString === hoyString && userId ) {
-      const agenteContactado = await UltimoContacto.create({
+    async function crearUltimoContacto( agenteId, fecha) {
+      await UltimoContacto.create({
         userId,
-        agenteId:todosLosAgentes[0].id,
-        dia:hoy
+        agenteId,
+        dia:fecha
       });
     }
+
+    if(fechaUltimoContactoString !== hoyString){     
+      const indiceEnArrayDeAgenteContactado = todosLosAgentes.findIndex(elemento => elemento.id === agentesContactados[0].agenteId);
+      if(indiceEnArrayDeAgenteContactado < todosLosAgentes.length-1){
+        telAgenteAsignado = todosLosAgentes[indiceEnArrayDeAgenteContactado+1].telefono;
+        crearUltimoContacto(todosLosAgentes[indiceEnArrayDeAgenteContactado+1].id, hoy);
+      }
+      else {
+        crearUltimoContacto(primerAgenteId, hoy);
+      }
+    }
+    else if(agentesContactados.length === 0 ) {
+      crearUltimoContacto(primerAgenteId, hoy);
+    }
+
     res.json(telAgenteAsignado);
   } catch (error) {
     res.json(error);

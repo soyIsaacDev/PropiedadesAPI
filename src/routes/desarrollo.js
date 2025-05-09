@@ -18,6 +18,7 @@ const { Desarrollo, ImgDesarrollo, AmenidadesDesarrollo, TipodePropiedad, TipoOp
 server.get("/getDataandImagenPropiedades",  async (req, res) => {
   try {
     let {userId} = req.query;
+    console.log("user Id en getDataandImagenPropiedades " + userId)
     const desarrollo = await Desarrollo.findAll({
       where:{publicada:true},
       order: [
@@ -39,7 +40,13 @@ server.get("/getDataandImagenPropiedades",  async (req, res) => {
           order: [
             ['orden','ASC']
           ],
-        },      
+        },
+        {
+          model:VideoYoutube
+        },
+        {
+          model: Tour3D
+        },       
         {
           model: AmenidadesDesarrollo,
           through: {

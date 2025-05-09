@@ -63,6 +63,12 @@ server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
           ],
         }, 
         {
+          model:VideoYoutube
+        },
+        {
+          model: Tour3D
+        },
+        {
           model: AmenidadesdelaPropiedad, 
           through: {
             attributes: []
