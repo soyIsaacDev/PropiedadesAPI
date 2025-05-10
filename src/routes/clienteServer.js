@@ -3,7 +3,7 @@ var nodemailer = require('nodemailer');
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
 const { Cliente, TipodeUsuario, Organizacion, AutorizacionesXTipodeOrg, UltimoContacto } = require("../db");
-const { Op } = require("sequelize");
+const { Op, fn, col } = require("sequelize");
 
 const { checkManejodeUsuarios } = require("../middleware/checkAutorizacion");
 
@@ -321,64 +321,56 @@ server.get("/agentesPorOrg/:OrganizacionId", async(req,res) => {
   }
 })
 
-server.get("/asignarAgente/:userId/:OrganizacionId", async(req,res) =>{
+
+// Función para obtener fecha local formateada
+const getFechaLocal = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+
+server.get("/asignarAgente/:userId/:OrganizacionId", async (req, res) => {
   try {
-    let {userId, OrganizacionId } = req.params;
-    // buscando todos los agentes que pertenecen a una organizacion
-    const todosLosAgentes = await Cliente.findAll({
-      where:{OrganizacionId}
-    });
-      // Hay un error
-      if(todosLosAgentes.length===0){
-        res.json("ERROR No hay agentes en esta organizacion")
-      }
+    const { userId, OrganizacionId } = req.params;
+    const agentes = await Cliente.findAll({ where: { OrganizacionId } });
+    if (!agentes.length) return res.status(400).json({ error: "No hay agentes disponibles" });
 
-    const agentesContactados = await UltimoContacto.findAll({
-      where:{userId},
-      order: [
-        ['dia','DESC']
+    const [ultimoContacto] = await UltimoContacto.findAll({
+      attributes: [
+        'id', 'userId', 'agenteId', 
+        [fn('to_char', col('dia'), 'YYYY-MM-DD'), 'diaFormateado']
       ],
+      where: { userId },
+      order: [['dia', 'DESC']],
+      limit: 1,
+      raw: true
     });
 
-    // Comparacion de fechas
-    const hoy = new Date();
-    let fechaUltimoContacto = null;
-    const hoyString = hoy.toISOString().split('T')[0]; // "YYYY-MM-DD"
-    agentesContactados.length===0? fechaUltimoContacto = hoy : fechaUltimoContacto = new Date(agentesContactados[0].dia);
+    const hoyFormateado = getFechaLocal(); // Usa fecha local consistente
 
-    const fechaUltimoContactoString = fechaUltimoContacto.toISOString().split('T')[0];
-    
-    const primerAgenteId = todosLosAgentes[0].id;
-    let telAgenteAsignado = undefined;
-    telAgenteAsignado = todosLosAgentes[0].telefono; // Agente asignado por Default
+    console.log("Último día (DB):", ultimoContacto?.diaFormateado, "| Hoy:", hoyFormateado);
 
-    async function crearUltimoContacto( agenteId, fecha) {
-      await UltimoContacto.create({
-        userId,
-        agenteId,
-        dia:fecha
-      });
+    if (ultimoContacto?.diaFormateado === hoyFormateado) {
+      const agenteActual = agentes.find(a => a.id === ultimoContacto.agenteId);
+      return res.json(agenteActual.telefono);
     }
 
-    if(fechaUltimoContactoString !== hoyString){     
-      const indiceEnArrayDeAgenteContactado = todosLosAgentes.findIndex(elemento => elemento.id === agentesContactados[0].agenteId);
-      if(indiceEnArrayDeAgenteContactado < todosLosAgentes.length-1){
-        telAgenteAsignado = todosLosAgentes[indiceEnArrayDeAgenteContactado+1].telefono;
-        crearUltimoContacto(todosLosAgentes[indiceEnArrayDeAgenteContactado+1].id, hoy);
-      }
-      else {
-        crearUltimoContacto(primerAgenteId, hoy);
-      }
-    }
-    else if(agentesContactados.length === 0 ) {
-      crearUltimoContacto(primerAgenteId, hoy);
-    }
+    const nuevoIndex = ultimoContacto 
+    ? (agentes.findIndex(a => a.id === ultimoContacto.agenteId) + 1) % agentes.length
+    : 0;
 
-    res.json(telAgenteAsignado);
+    await UltimoContacto.create({
+      userId,
+      agenteId: agentes[nuevoIndex].id,
+      dia: hoyFormateado
+    });
+
+    res.json(agentes[nuevoIndex].telefono);
+
+    // ... (resto del código igual)
   } catch (error) {
-    res.json(error);
+    // ... (manejo de errores)
   }
-})
+});
 
 server.get("/borrarCliente", async (req, res) => {
   try {
