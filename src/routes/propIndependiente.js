@@ -25,10 +25,34 @@ server.get("/getPropiedadesIndependientes", async (req, res) => {
             order: [ ['orden','ASC'] ],
           },
           {
+            model:VideoYoutube
+          },
+          {
+            model: Tour3D
+          }, 
+          {
             model: AmenidadesdelaPropiedad,
             through: {
                 attributes: []
             }
+          },
+          {
+            model: TipodePropiedad
+          },
+          {
+            model: TipoOperacion
+          },
+          {
+            model: Ciudad
+          },
+          {
+            model: Municipio
+          },
+          {
+            model: Estado
+          },
+          {
+            model: Colonia
           },
           { // El modelo Cliente da la relacion de Favoritos
             model:Cliente,

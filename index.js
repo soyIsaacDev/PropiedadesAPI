@@ -37,7 +37,9 @@
     if(DEVMODE === "build"){
         corsOptions = {
             origin: [ 'http://localhost:3000', 'http://192.168.1.13:3000', 'http://192.168.100.2:3000', 
-              'http://192.168.100.2:8081', 'http://localhost:8081', 'https://localhost:8081', 'http://192.168.18.3:8081'],
+              'http://192.168.100.2:8081', 'http://localhost:8081', 'https://localhost:8081', 'http://192.168.18.3:8081',
+              'http://192.168.1.9:8081',
+            ],
             //importante: No dejar la ruta de origen con un "/" al final
             optionsSuccessStatus: 200,
             credentials: true 
