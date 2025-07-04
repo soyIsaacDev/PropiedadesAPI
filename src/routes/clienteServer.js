@@ -157,6 +157,18 @@ const gmailRedirectUrl = process.env.GMAIL_REDIRECT_URL;
 const gmailRefreshToken = process.env.GMAIL_REFRESH_TOKEN;
 const gmailPassword = process.env.GMAIL_PASSWORD;
 
+server.get("/gmailCheck", async(req,res) => {
+  try {
+    console.log("En Revisar Gmail")
+    console.log(gmailClientId)
+    console.log(gmailClientSecret)
+    res.json("Revision OK")
+    
+  } catch (error) {
+    res.send(error)
+  }
+})
+
 server.post("/agregarAgenteAdicional", checkManejodeUsuarios, async (req, res) => { 
   try {
     const agentes = req.body;
@@ -223,7 +235,7 @@ const enviarCorreo = async (para, de)  => {
       from: 'isaacborbon@gmail.com',
       to: para,
       subject: `${de} te invita a unirte a su empresa en Inmozz`,
-      text: 'Unete a mi empresa en Inmozz dando click en el siguiente link http://localhost:3000/nuevousuario. No olvides utiliza este correo electronico para registrarte'
+      text: 'Unete a mi empresa en Inmozz dando click en el siguiente link http://localhost:3000/iniciarsesion. No olvides utilizar este correo electronico para registrarte'
     };
 
     return new Promise((resolve, reject) => {
@@ -374,14 +386,15 @@ server.get("/asignarAgente/:userId/:OrganizacionId", async (req, res) => {
 
 server.get("/borrarCliente", async (req, res) => {
   try {
+    
     const cliente = await Cliente.destroy({
       where:{
-        id:"7b0cb44a-c7af-4b1c-a7e4-f7b4943f1f68"
+        id:"f7c32397-f4c7-425b-82f6-d2e5d731bc49"
       }
     });
-    const orgDest = await Organizacion.destroy({
+    /* const orgDest = await Organizacion.destroy({
       where:{id:"64e97a09-8c0f-409a-aca4-3694f93c98df"}
-    })
+    }) */
 
     cliente? res.json(cliente) : res.json({mensaje:"El Cliente No Existe"});
   } catch (error) {

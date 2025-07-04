@@ -13,7 +13,7 @@ const crearPropIndependiente = async (req, res) => {
       const parsedbodyObj = JSON.parse(bodyObj);
       const { precio, calle, numeroPropiedad, numeroInterior, posicion, ciudad, estado, municipio, colonia,
         niveles, recamaras, baños, medio_baño, espaciosCochera, cocheraTechada,   
-        m2Construccion, m2Terreno, m2Total, añodeConstruccion, 
+        m2Construccion, m2Terreno, /* m2Total, */ añodeConstruccion, 
         TipoOperacionId, TipodePropiedadId, amenidadesPropiedad, tratoDirecto, ytvideo, tour3D_URL,
         EstiloArquitecturaId,
       } = parsedbodyObj
@@ -39,7 +39,7 @@ const crearPropIndependiente = async (req, res) => {
           cocheraTechada,
           m2Construccion,
           m2Terreno,
-          m2Total, 
+          //m2Total, 
           añodeConstruccion,
           tratoDirecto,
           publicada:false,

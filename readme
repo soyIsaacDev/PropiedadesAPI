@@ -1,8 +1,3 @@
-To use this template
-
-Add variabls to .env file 
-and
-Add /*.env to gitIgnore
 
 Modifique estructura tipo de Usuario
     borrar la relacion tipodeUsuario - Cliente por un momento
@@ -26,11 +21,21 @@ Produccion
 Revisar si envia correos al momento de registrar Agentes o es necesario cambiar la credenciales de OAuth a App Publicada en Google Cloud
     https://medium.com/@nickroach_50526/sending-emails-with-node-js-using-smtp-gmail-and-oauth2-316fe9c790a1
 
+    https://www.vanguardbytes.com/how-to-send-emails-with-node-js-using-smtp-gmail-and-oauth2
+    - crear contraseña para aplicacion
+        https://myaccount.google.com/apppasswords 
 
-Borrar Propiedades 
-Publicar una propiedad (Publico o en Stand By)
 
-Cambiar la autorizacion de tipo de operacion y cantidades a Organizacion?
-Puede ser por tipo de Organizacion y ahi autorizar cantidades y tipos
+- Borrar Agentes en Front End
 
-Agregar video y Matterport en Detalles de Propiedad
+- Agregar Filtros
+    Mascotas
+        - Ninguna
+        - Perros Chicos
+        - Perros Grandes
+        - Gatos
+    Amueblado
+        - Equipado
+        - Semi-Amueblado
+        - Amueblado
+    

@@ -17,13 +17,18 @@ const { Desarrollo, ImgDesarrollo, AmenidadesDesarrollo, TipodePropiedad, TipoOp
 // Se incluye el modelo Cliente el cual arroja datos de FAVORITOS
 server.get("/getDataandImagenPropiedades",  async (req, res) => {
   try {
-    let {userId} = req.query;
-    console.log("user Id en getDataandImagenPropiedades " + userId)
-    const desarrollo = await Desarrollo.findAll({
-      where:{publicada:true},
+    const { userId, page = 1, pageSize = 10 } = req.query;
+    const offset = (page - 1) * pageSize;
+    
+    console.log(`user Id en getDataandImagenPropiedades: ${userId}, Page: ${page}, PageSize: ${pageSize}`);
+    
+    const { count, rows: desarrollos } = await Desarrollo.findAndCountAll({
+      where: { publicada: true },
       order: [
-        ['precioMin','DESC']
+        ['precioMin', 'DESC']
       ],
+      limit: parseInt(pageSize),
+      offset: parseInt(offset),
       include: [
         {
           model: Organizacion,
@@ -77,17 +82,33 @@ server.get("/getDataandImagenPropiedades",  async (req, res) => {
           required: false, // Mantiene propiedades sin clientes
           where: userId ? { userId } : {userId:"x000"} // Filtra solo si se pasa un userId, de lo contrario se da un UserId que no existe
         },
-        
       ]
     });
-    userId? console.log("Get Data Propiedad " + JSON.stringify(userId)):console.log("Get data Propiedad")
-    res.json(desarrollo)
+    const totalPages = Math.ceil(count / pageSize);
+    
+    const response = {
+      data: desarrollos,
+      pagination: {
+        totalItems: count,
+        totalPages: totalPages,
+        currentPage: parseInt(page),
+        pageSize: parseInt(pageSize),
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1
+      }
+    };
+
+    console.log(`Get Data Propiedades - Total: ${count}, Page: ${page} of ${totalPages}`);
+    res.json(response);
   }
-  catch(error){
-    console.log(error)
-      res.json(error)
+  catch(error) {
+    console.error('Error en getDataandImagenPropiedades:', error);
+    res.status(500).json({ 
+      error: 'Error al obtener las propiedades',
+      details: error.message 
+    });
   }
-})
+});
 
 server.get("/getPropiedadNombre/:userId", async (req, res) => {
   try {
