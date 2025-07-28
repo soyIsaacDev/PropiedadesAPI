@@ -1,7 +1,7 @@
 const server = require("express").Router();
 const express = require("express");
 const path = require('path');
-
+const { Op } = require('sequelize');
 
 var public = path.join(__dirname,'../../uploads');
 
@@ -9,7 +9,7 @@ const { Desarrollo, ImgDesarrollo, AmenidadesDesarrollo, AmenidadesdelaPropiedad
   TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, Favoritos, ModeloAsociadoAlDesarrollo, 
   ImgModeloAsociado, EstiloArquitectura, VideoYoutube, Tour3D,  } = require("../db");
 
-const {literal} = require ('sequelize');
+const { literal } = require('sequelize');
 
 /* server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
   try {
@@ -46,10 +46,25 @@ const {literal} = require ('sequelize');
 
 server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
   try {
-    let {userId} = req.query;
+    const { userId, neLat, neLng, swLat, swLng } = req.query;
+    
+    // Construir el objeto where inicial
+    const whereClause = {
+      publicada: true
+    };
+    
+    // Agregar filtro de límites del mapa si se proporcionan
+    if (neLat && neLng && swLat && swLng) {
+      whereClause.posicion = {
+        [Op.and]: [
+          { lat: { [Op.between]: [parseFloat(swLat), parseFloat(neLat)] } },
+          { lng: { [Op.between]: [parseFloat(swLng), parseFloat(neLng)] } }
+        ]
+      };
+    }
 
     const dataPropiedad = await ModeloAsociadoAlDesarrollo.findAll({
-      where:{publicada:true},
+      where: whereClause,
       order: [
         ['precio"','DESC']
       ],

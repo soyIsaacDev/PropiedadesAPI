@@ -2,6 +2,7 @@ const server = require("express").Router();
 const express = require("express");
 const path = require('path');
 const public = path.join(__dirname,'../../uploads');
+const { Op } = require('sequelize');
 
 const { PropiedadIndependiente, ImgPropiedadIndependiente, AmenidadesdelaPropiedad, TipodePropiedad, 
   TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, VideoYoutube, Tour3D,
@@ -10,12 +11,27 @@ const { Console } = require("console");
 
 server.get("/getPropiedadesIndependientes", async (req, res) => {
     try {
-      let {userId} = req.query;
+      const { userId, neLat, neLng, swLat, swLng } = req.query;
+      
+      // Construir el objeto where inicial
+      const whereClause = {
+        publicada: true
+      };
+      
+      // Agregar filtro de límites del mapa si se proporcionan
+      if (neLat && neLng && swLat && swLng) {
+        whereClause.posicion = {
+          [Op.and]: [
+            { lat: { [Op.between]: [parseFloat(swLat), parseFloat(neLat)] } },
+            { lng: { [Op.between]: [parseFloat(swLng), parseFloat(neLng)] } }
+          ]
+        };
+      }
 
-      const propiedadIndepeniente = await PropiedadIndependiente.findAll({
-        where:{publicada:true},
+      const propiedadIndependiente = await PropiedadIndependiente.findAll({
+        where: whereClause,
         order: [
-          ['precio"','DESC']
+          ['precio','DESC']
         ],
         include: [
           {
@@ -62,7 +78,7 @@ server.get("/getPropiedadesIndependientes", async (req, res) => {
           },
         ]
       })
-      propiedadIndepeniente? res.json(propiedadIndepeniente) : res.json({Mensaje:"No se encontraron datos de propiedades"});
+      propiedadIndependiente? res.json(propiedadIndependiente) : res.json({Mensaje:"No se encontraron datos de propiedades"});
     } catch (error) {
         res.json(error)
     }

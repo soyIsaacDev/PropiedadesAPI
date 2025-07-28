@@ -49,7 +49,7 @@ server.post("/nuevoCliente", async (req, res) => {
       cliente[0].autorizaciondePublicar = "Completa";
     }
     
-    if(tipoUsuario === "DueñodePropiedad") {
+    if(tipoUsuario === "DueñoTratoDirecto") {
       
       const tipodeOrganizacion = await AutorizacionesXTipodeOrg.findOne({
         where:{ nombreTipoOrg:"TratoDirecto" }
@@ -60,7 +60,7 @@ server.post("/nuevoCliente", async (req, res) => {
       });
       const userTipo = await TipodeUsuario.findOne({
         where: {
-          tipo:"DueñodePropiedad"
+          tipo:"DueñoTratoDirecto"
         }   
       });
       cliente[0].OrganizacionId = org.id;

@@ -25,5 +25,6 @@ module.exports = {
     propIndependiente:require("./propIndependiente"),
     editarPropiedades: require("./editarPropMultiples"),
     borrarPropiedades:require("./borrarPropiedades"),
+    aliados:require("./aliado"),
     index: server,
   };

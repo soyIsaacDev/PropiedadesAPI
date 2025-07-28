@@ -19,7 +19,9 @@ module.exports = s => {
                 "DueñodePropiedad",
                 "Arquitecto",
                 "Constructor",
-                "ClienteFinal"
+                "ClienteFinal",
+                "ClientePropietario",
+                "DueñoTratoDirecto",
             ),
             allowNull: false
         },

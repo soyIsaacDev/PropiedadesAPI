@@ -1,34 +1,42 @@
 const server = require("express").Router();
 const express = require("express");
 const path = require('path');
-const {literal} = require ('sequelize');
-const { sequelize } = require("sequelize");
-const { QueryTypes } = require('sequelize');
-const { db } = require("../db");
 const { Op } = require('sequelize');
 
 var public = path.join(__dirname,'../../uploads');
 
 const { Desarrollo, ImgDesarrollo, AmenidadesDesarrollo, TipodePropiedad, TipoOperacion, Estado, Municipio, Ciudad, 
-  Colonia, Cliente, amenidades_del_desarrollos, ModeloAsociadoAlDesarrollo, ImgModeloAsociado,
-  Organizacion, AutorizacionesXTipodeOrg, VideoYoutube, Tour3D,
+  Colonia, Cliente, amenidades_del_desarrollos, Organizacion, AutorizacionesXTipodeOrg, VideoYoutube, Tour3D,
 } = require("../db");
 
 // Se incluye el modelo Cliente el cual arroja datos de FAVORITOS
 server.get("/getDataandImagenPropiedades",  async (req, res) => {
   try {
-    const { userId, page = 1, pageSize = 10 } = req.query;
-    const offset = (page - 1) * pageSize;
+    const { userId, page, pageSize, neLat, neLng, swLat, swLng } = req.query;
     
-    console.log(`user Id en getDataandImagenPropiedades: ${userId}, Page: ${page}, PageSize: ${pageSize}`);
+    console.log(`user Id en getDataandImagenPropiedades: ${userId}, Page: ${page || 'No especificada'}, PageSize: ${pageSize || 'No especificada'}`);
     
-    const { count, rows: desarrollos } = await Desarrollo.findAndCountAll({
-      where: { publicada: true },
+    // Construir el objeto where inicial
+    const whereClause = {
+      publicada: true
+    };
+    
+    // Agregar filtro de límites del mapa si se proporcionan
+    if (neLat && neLng && swLat && swLng) {
+      whereClause.posicion = {
+        [Op.and]: [
+          { lat: { [Op.between]: [parseFloat(swLat), parseFloat(neLat)] } },
+          { lng: { [Op.between]: [parseFloat(swLng), parseFloat(neLng)] } }
+        ]
+      };
+    }
+    
+    // Configuración base de la consulta
+    const queryOptions = {
+      where: whereClause,
       order: [
         ['precioMin', 'DESC']
       ],
-      limit: parseInt(pageSize),
-      offset: parseInt(offset),
       include: [
         {
           model: Organizacion,
@@ -76,30 +84,43 @@ server.get("/getDataandImagenPropiedades",  async (req, res) => {
         {
           model: Colonia
         },
-        {// El modelo Cliente da la relacion de desarrollos_favoritos
+        // El modelo Cliente da la relacion de desarrollos_favoritos
+        {
           model:Cliente,
           attributes: ["id", "userId"],
           required: false, // Mantiene propiedades sin clientes
           where: userId ? { userId } : {userId:"x000"} // Filtra solo si se pasa un userId, de lo contrario se da un UserId que no existe
         },
       ]
-    });
-    const totalPages = Math.ceil(count / pageSize);
-    
-    const response = {
-      data: desarrollos,
-      pagination: {
-        totalItems: count,
-        totalPages: totalPages,
-        currentPage: parseInt(page),
-        pageSize: parseInt(pageSize),
-        hasNextPage: page < totalPages,
-        hasPreviousPage: page > 1
-      }
     };
 
-    console.log(`Get Data Propiedades - Total: ${count}, Page: ${page} of ${totalPages}`);
-    res.json(response);
+    // Aplicar paginación solo si se proporcionan page y pageSize
+    if (page && pageSize) {
+      const offset = (parseInt(page) - 1) * parseInt(pageSize);
+      queryOptions.limit = parseInt(pageSize);
+      queryOptions.offset = offset;
+
+      const { count, rows: desarrollos } = await Desarrollo.findAndCountAll(queryOptions);
+      const totalPages = Math.ceil(count / pageSize);
+      
+      const response = {
+        data: desarrollos,
+        pagination: {
+          totalItems: count,
+          totalPages: totalPages,
+          currentPage: parseInt(page),
+          pageSize: parseInt(pageSize),
+          hasNextPage: page < totalPages,
+          hasPreviousPage: page > 1
+        }
+      };
+      return res.status(200).json(response);
+    } else {
+      // Si no hay paginación, devolver todos los registros
+      const desarrollos = await Desarrollo.findAll(queryOptions);
+      return res.status(200).json({ total: desarrollos.length, desarrollos });
+    }
+    
   }
   catch(error) {
     console.error('Error en getDataandImagenPropiedades:', error);

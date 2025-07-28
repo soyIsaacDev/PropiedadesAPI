@@ -25,7 +25,7 @@
     const { index, clientes, imagen, desarrollo, dbconstants, apikeys, favoritos, modeloAsociadoAlDesarrollo,
        allPropiedades, bulk, tipoUsuario, addBucketCors, cargarPropMultiples, historialdePagos, 
        autorizacionUsuario, pagodeServicio, propIndependiente, paquetesdePago, editarPropiedades,
-       borrarPropiedades, 
+       borrarPropiedades, aliados,
     } = require('./src/routes');
 
     const { checkAutorizacion } = require("./src/middleware/checkAutorizacion.js")
@@ -146,7 +146,7 @@ admin.initializeApp({
 
 function getIdToken(req) {
   // Parse the injected ID token from the request header.
-  //console.log("Req Headers " + JSON.stringify(req.headers))
+  console.log("Req Headers " + JSON.stringify(req.headers))
   const authorizationHeader = req.headers.authorization || '';
   const components = authorizationHeader.split(' ');
   return components.length > 1 ? components[1] : '';
@@ -160,6 +160,7 @@ function getIdToken(req) {
       else next('route')
     } */
 function checkIfSignedIn(req, res, next) {
+  // Se pasa el token de Firebase a travez del header de las consultas a la api
   console.log("Check if Signed In");
   const idToken = getIdToken(req);
   console.log("ID TOKEN " + idToken + " Lenght " + idToken.length)
@@ -230,6 +231,7 @@ function checkIfSignedIn(req, res, next) {
     app.use("/paquetesdePago", paquetesdePago),
     app.use("/checkpago", servidorPago),
     app.use("/borrarPropiedaes", checkAutorizacion, borrarPropiedades),
+    app.use("/aliados", checkIfSignedIn, aliados),
     //app.use("/authCliente", authCliente);
 
     /* app.use("/propiedades", PropiedadRoute);
