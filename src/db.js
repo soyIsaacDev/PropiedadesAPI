@@ -256,6 +256,9 @@ Ciudad.belongsToMany(Colonia, { through: 'colonias_por_ciudad', timestamps: fals
 Ciudad.hasMany(Aliado);
 Aliado.belongsTo(Ciudad);
 
+Aliado.belongsToMany(Colonia, { through: 'colonias_por_aliado', timestamps: false, });
+Colonia.belongsToMany(Aliado, { through: 'colonias_por_aliado', timestamps: false, });
+
 // Asignacion de Propiedad
 AsignaciondePropiedad.belongsTo(Aliado, { foreignKey: 'aliadoId' });
 AsignaciondePropiedad.belongsTo(Cliente, { foreignKey: 'clienteId' });

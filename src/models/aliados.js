@@ -60,7 +60,7 @@ module.exports = s => {
             type: DataTypes.ENUM(
                 "AtencionAClientes",
                 "Coordinador",
-                "Captador",                
+                "Principal",                
                 "Creditos",
                 "Legal",                
             ),

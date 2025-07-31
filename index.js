@@ -25,11 +25,12 @@
     const { index, clientes, imagen, desarrollo, dbconstants, apikeys, favoritos, modeloAsociadoAlDesarrollo,
        allPropiedades, bulk, tipoUsuario, addBucketCors, cargarPropMultiples, historialdePagos, 
        autorizacionUsuario, pagodeServicio, propIndependiente, paquetesdePago, editarPropiedades,
-       borrarPropiedades, aliados,
+       borrarPropiedades, aliados, cargarPropCii,
     } = require('./src/routes');
 
     const { checkAutorizacion } = require("./src/middleware/checkAutorizacion.js")
     const { checkPagosActivos, checkPublicacionesRestantesyAutxTipodeOrg, servidorPago } = require("./src/middleware/checkPago");
+    const { checkAliado } = require("./src/middleware/checkAliado.js");
     
     const DEVMODE = process.env.DEVELOPMENT;
     var corsOptions= undefined;
@@ -218,8 +219,6 @@ function checkIfSignedIn(req, res, next) {
     app.use("/propiedadesIndependientes", propIndependiente);
     app.use("/bulk", bulk);
     app.use("/tipodeUsuario", tipoUsuario);
-    
-    // Eliminar checkCantProps? Parece que el modo correcto esta en checkPago
     app.use("/corsAuth", addBucketCors);
     // Carga propiedades 1 x 1 para cargar imagenes de grandes tamaños y no saturar Cors
     app.use("/cargarPropMultiples", useMulter, checkAutorizacion, checkPagosActivos, 
@@ -232,6 +231,7 @@ function checkIfSignedIn(req, res, next) {
     app.use("/checkpago", servidorPago),
     app.use("/borrarPropiedaes", checkAutorizacion, borrarPropiedades),
     app.use("/aliados", checkIfSignedIn, aliados),
+    app.use("/cargarPropCii", useMulter, checkAliado, cargarPropCii),
     //app.use("/authCliente", authCliente);
 
     /* app.use("/propiedades", PropiedadRoute);

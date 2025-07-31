@@ -5,7 +5,7 @@ const public = path.join(__dirname,'../../uploads');
 const { Op } = require('sequelize');
 
 const { PropiedadIndependiente, ImgPropiedadIndependiente, AmenidadesdelaPropiedad, TipodePropiedad, 
-  TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, VideoYoutube, Tour3D,
+  TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, VideoYoutube, Tour3D, Aliado
  } = require("../db");
 const { Console } = require("console");
 
@@ -173,6 +173,72 @@ server.get("/getPropIndbyOrg/:userId", async (req,res) => {
     res.json(error)
   }
 })
+
+/* server.get("/getPropAsignar", async (req,res) => {
+  try {
+    const { propiedadId, userId } = req.query;
+    let whereConditions = [];
+
+    // Si solo se proporciona propiedadId, buscar directamente por ese ID
+    if (propiedadId && (!userId || userId === '')) {
+      const propiedad = await PropiedadIndependiente.findByPk(propiedadId);
+      return propiedad ? res.json([propiedad]) : res.status(404).json({ mensaje: "Propiedad no encontrada" });
+    }
+    
+    // Si se proporciona userId, buscar propiedades según las colonias asignadas al aliado
+    if (userId) {
+      const aliado = await Aliado.findOne({
+        where: { userId },
+        include: [{
+          model: Colonia,
+          through: { attributes: [] }
+        }]
+      });
+
+      // Verificar si el aliado existe
+      if (!aliado) {
+        return res.status(404).json({ mensaje: "El aliado no existe" });
+      }
+
+      // Verificar si el aliado tiene colonias asignadas
+      if (!aliado.Colonia || aliado.Colonia.length === 0) {
+        return res.status(404).json({ mensaje: "El aliado no tiene colonias asignadas" });
+      }
+
+      // Obtener los IDs de las colonias asignadas al aliado
+      const coloniasIds = aliado.Colonia.map(colonia => colonia.id);
+      
+      // Agregar condición de búsqueda por colonias
+      whereConditions.push({
+        [Op.and]: [
+          { CiudadId: aliado.CiudadId },
+          { ColoniaId: { [Op.in]: coloniasIds } }
+        ]
+      });
+    }
+
+    // Si se proporciona tanto userId como propiedadId, buscar por propiedadId o por colonias del aliado
+    if (propiedadId && userId) {
+      whereConditions.push({ id: propiedadId });
+    }
+
+    // Buscar propiedades
+    const dataPropiedad = await PropiedadIndependiente.findAll({
+      where: whereConditions.length > 1 ? { [Op.or]: whereConditions } : whereConditions[0] || {},
+    });
+    
+    // Manejar diferentes casos con switch
+    switch (true) {
+      case !dataPropiedad || dataPropiedad.length === 0:
+        return res.status(404).json({ mensaje: "No se encontraron propiedades en las colonias asignadas al aliado" });
+      default:
+        return res.status(200).json(dataPropiedad);
+    }
+  } catch (error) {
+    console.error('Error en getPropAsignar:', error);
+    res.status(500).json({ mensaje: "Error interno del servidor", error: error.message });
+  }
+}); */
 
 server.get("/publicar/:propId", async (req,res) => {
   try{

@@ -88,18 +88,34 @@ server.get("/clientes", async (req,res)=> {
   }
 });
 
-server.get("/buscarCliente/:userId", async (req, res) => {
+server.get("/buscarCliente", async (req, res) => {
   try {
-    let {userId} = req.params;
-    const cliente= await Cliente.findOne({
-      where:{userId}
+    console.log("EN BuscarCliente")
+    let {userId, email} = req.query;
+    console.log("BUscando cliente " + userId + " Email " + email)
+
+    // Construir condiciones válidas
+    const condiciones = [];
+    if (userId) condiciones.push({ userId });
+    if (email) condiciones.push({ email });
+
+    if (condiciones.length === 0) {
+      return res.status(400).json({ mensaje: "Debes proporcionar userId o email" });
+    }
+
+    const cliente = await Cliente.findOne({
+      where: {
+        [Op.or]: condiciones
+      }
     });
 
-    cliente? res.json(cliente) : res.json({mensaje:"El Cliente No Existe"});
+    console.log("Cliente Encontrado " +cliente)
+    cliente? res.status(200).json(cliente) : res.status(400).json({mensaje:"El Cliente No Existe"});
   } catch (error) {
     res.send(error);
   }
 });
+
 
 server.post("/mostrarTour", async (req, res) => {
   try {

@@ -23,7 +23,16 @@ User.sync({ alter: true }) - This checks what is the current state of the table 
     console.log("Server is listening on port " + port);
   });
 }); */
-//db.sync({ alter: true });
+
+// Sincronización manual de la base de datos (comentada por ahora)
+/* db.sync({ alter: true })
+  .then(() => {
+    console.log('Base de datos sincronizada');
+  })
+  .catch(err => {
+    console.error('Error al sincronizar la base de datos:', err);
+  }); */
+
 app.listen(port, function () {
   console.log("Server is listening on port " + port);
 });

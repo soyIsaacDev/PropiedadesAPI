@@ -3,18 +3,13 @@ const { Aliado, TipodeUsuario, AsignaciondePropiedad, UltimoContacto, Cliente } 
 const { Op } = require("sequelize");
 const { enviarCorreo } = require("../middleware/menejoCorreo");
 
-server.post("/nuevoAliado", async (req, res) => { 
+server.post("/registrarAliado", async (req, res) => { 
   try {
     const { userId, nombre, apellidoPaterno, apellidoMaterno, email, telefono, sexo, dia_de_nacimiento, mes_de_nacimiento,
       año_de_nacimiento,  } = req.body;
     
-    //Validar que el email este autorizado
-
-    const aliado = await Aliado.findOrCreate({
-        where: {
-            email          
-        },
-        defaults: {
+    const [aliado] = await Aliado.update(
+        {
           userId,
           nombre,
           apellidoPaterno, 
@@ -24,16 +19,22 @@ server.post("/nuevoAliado", async (req, res) => {
           dia_de_nacimiento,
           mes_de_nacimiento,
           año_de_nacimiento,
+        },
+        { 
+          where: {
+            email          
+          }
         }      
-    });
+    );
 
-    console.log(aliado)
-
-    await aliado[0].save();
-
-    res.json(aliado);
+    if(aliado === 0){
+      return res.status(404).json({ mensaje: "Aliado no encontrado" });
+    }
+    else {
+      res.status(200).json({codigo:1, mensaje:"Aliado actualizado"});
+    }    
   } catch (error) {
-    res.send(error);
+    res.status(400).send(error);
   }
 });
 
@@ -56,7 +57,23 @@ server.get("/buscarAliado/:userId", async (req, res) => {
       where:{userId}
     });
 
-    aliado? res.json(aliado) : res.json({mensaje:"El Aliado No Existe"});
+    aliado? res.status(200).json(aliado) : res.status(400).json({mensaje:"El Aliado No Existe"});
+  } catch (error) {
+    res.send(error);
+  }
+});
+
+server.get("/buscarAliadoxEmail/:email", async (req, res) => {
+  try {
+    console.log("BUSCANDO ALIADO X EMAIL")
+    let { email } = req.params;
+    console.log(email)
+    const aliado = await Aliado.findOne({
+      where:{email}
+    });
+    console.log(aliado.tipodeAliado)
+
+    aliado? res.status(200).json(aliado) : res.status(400).json({mensaje:"El Aliado No Existe"});
   } catch (error) {
     res.send(error);
   }
@@ -134,11 +151,16 @@ server.post("/actualizarAutorizacionAliado", async (req, res) => {
   try {
     const { email, autorizaciondePublicar} = req.body;
     const aliado = await Aliado.findOne({
-      where:{email}
+      where:{ email }
     });
     await aliado.update({
       autorizaciondePublicar
     })
+    res.status(201).json({ 
+        codigo:1,
+        mensaje: "Aliados actualizado exitosamente",
+        aliado:aliado
+    });  
   } catch (error) {
     res.send(error)
   }
