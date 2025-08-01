@@ -174,7 +174,7 @@ server.get("/getPropIndbyOrg/:userId", async (req,res) => {
   }
 })
 
-/* server.get("/getPropAsignar", async (req,res) => {
+server.get("/getPropAsignar", async (req,res) => {
   try {
     const { propiedadId, userId } = req.query;
     let whereConditions = [];
@@ -238,7 +238,7 @@ server.get("/getPropIndbyOrg/:userId", async (req,res) => {
     console.error('Error en getPropAsignar:', error);
     res.status(500).json({ mensaje: "Error interno del servidor", error: error.message });
   }
-}); */
+});
 
 server.get("/publicar/:propId", async (req,res) => {
   try{

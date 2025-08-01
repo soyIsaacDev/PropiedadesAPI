@@ -57,31 +57,9 @@ server.post("/agregarColonia", async (req, res) => {
   }
 });
 
-server.get("/getColonias/:CiudadId", async (req, res) => { 
+server.get("/getColoniasByCiudadId/:CiudadId", async (req, res) => { 
   try {
     const { CiudadId } = req.params
-    const TodaslasCiudades = await Ciudad.findOne({
-      where:{id:CiudadId},
-      include: [
-        {
-          model: Colonia,
-          through: {
-            attributes: []
-          }
-        }
-      ]
-    });
-    console.log(TodaslasCiudades)
-    res.status(200).json(TodaslasCiudades)
-  } catch (e) {
-    res.send(e)
-  }
-})
-
-server.get("/getColoniasByCiudad/:CiudadId", async (req, res) => { 
-  try {
-    const { CiudadId } = req.params
-    console.log("Buscando colonias por ciudadId " +CiudadId)
     const ColoniasxCiudad = await Ciudad.findOne({
       where:{id:CiudadId},
       include: [
@@ -98,6 +76,47 @@ server.get("/getColoniasByCiudad/:CiudadId", async (req, res) => {
     res.status(200).json(Colonias)
   } catch (e) {
     res.send(e)
+  }
+})
+
+server.get("/getColoniasByCiudadNombre/:CiudadNombre", async (req, res) => { 
+  try {
+    const { CiudadNombre } = req.params
+    const capitalize = (str) => 
+      str.toLowerCase().replace(/(^|\s)\S/g, l => l.toUpperCase());
+    const ciudadMinusculas = capitalize(CiudadNombre);
+    const ColoniasxCiudad = await Ciudad.findOne({
+      where:{ciudad:ciudadMinusculas},
+      include: [
+        {
+          model: Colonia,
+          through: {
+            attributes: []
+          }
+        }
+      ]
+    });
+    const Colonias = ColoniasxCiudad.Colonia;
+    Colonias? res.status(200).json(Colonias) : res.status(400).json({mensaje:"No se encontraron colonias para la ciudad"})
+  } catch (e) {
+    res.send(e)
+  }
+})
+
+server.get("/getCiudadId/:CiudadNombre", async (req, res) => { 
+  try {
+    const { CiudadNombre } = req.params
+    const capitalize = (str) => 
+      str.toLowerCase().replace(/(^|\s)\S/g, l => l.toUpperCase());
+    const ciudadMinusculas = capitalize(CiudadNombre);
+    const CiudadBusqueda = await Ciudad.findOne({
+      where:{ciudad:ciudadMinusculas},
+      
+    });
+    const CiudadId = CiudadBusqueda.id;
+    CiudadId? res.status(200).json(CiudadId) : res.status(400).json({mensaje:"No se encontro la ciudad"})
+  } catch (e) {
+    res.send(e);
   }
 })
 

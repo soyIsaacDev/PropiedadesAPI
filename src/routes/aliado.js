@@ -1,6 +1,6 @@
 const server = require("express").Router();
-const { Aliado, TipodeUsuario, AsignaciondePropiedad, UltimoContacto, Cliente } = require("../db");
-const { Op } = require("sequelize");
+const { db, Aliado, TipodeUsuario, AsignaciondePropiedad, UltimoContacto, Cliente, Colonia } = require("../db");
+const { Op, Sequelize } = require("sequelize");
 const { enviarCorreo } = require("../middleware/menejoCorreo");
 
 server.post("/registrarAliado", async (req, res) => { 
@@ -96,56 +96,134 @@ server.post("/mostrarTour", async (req, res) => {
 
 server.post("/autorizarAliados", async (req, res) => { 
   try {
-    console.log("Autorizando Aliados")
+    console.log("Autorizando Aliados");
     const aliados = req.body;
-
-    console.log(aliados)
+    console.log(aliados);
 
     const userId_Autorizacion = aliados.aliadoPrincipal.userId;
     const email_Autorizacion = aliados.aliadoPrincipal.email;
+    
     const aliadoPrincipal = await Cliente.findOne({
-        where:{[Op.and]:{
-        userId:userId_Autorizacion,
-        email:email_Autorizacion
-      }},
+      where: {
+        [Op.and]: {
+          userId: userId_Autorizacion,
+          email: email_Autorizacion
+        }
+      }
     });
     
-    // Esta autorizado a agregar Aliados si es el aliadoPrincipal id
-    if(aliadoPrincipal.id  === "b6ac3295-3742-496e-905f-e7a826e42028" ){
-        const userTipo = await TipodeUsuario.findOne({
-          where: { tipo: "AgentedeDesarrollo" }   
-        });
-    
-        const aliadosAutorizados = await Promise.all(aliados?.aliados?.map(async aliado => {   
-          console.log(aliado)
-          const aliadoCreado = await Aliado.findOrCreate({
-            where: { email: aliado.email },
-            defaults: {          
+    if(aliadoPrincipal && aliadoPrincipal.id === "b6ac3295-3742-496e-905f-e7a826e42028") {
+      const userTipo = await TipodeUsuario.findOne({
+        where: { tipo: "AgentedeDesarrollo" }   
+      });
+  
+      const aliadosAutorizados = await Promise.all(aliados?.aliados?.map(async aliado => { 
+        
+        // Iniciar una transacción para este aliado
+        const transaction = await db.transaction();
+        
+        try {
+          console.log("Procesando aliado:", aliado.email);
+          
+          // 1. Crear o encontrar el aliado
+          let aliadoCreado, created;
+          try {
+            const result = await Aliado.findOrCreate({
+              where: { email: aliado.email },
+              defaults: {          
+                tipodeAliado: aliado.tipodeAliado,
+                autorizaciondePublicar: aliado.autorizaciondePublicar,
+                TipodeUsuarioId: userTipo.id,
+                CiudadId: aliado.ciudadId
+              },
+              include: [
+                {
+                  model: Colonia,
+                  through: { attributes: [] } // No necesitamos los atributos de la tabla de unión
+                }
+              ],
+              transaction: transaction
+            });
+            [aliadoCreado, created] = result;
+          } catch (error) {
+            console.error("Error en findOrCreate:", error);
+            throw error;
+          }
+
+          // 2. Si el aliado ya existía, actualizarlo
+          if (!created) {
+            console.log("Actualizando aliado:", aliado.email, "en Ciudad " + aliado.ciudadId);
+            await aliadoCreado.update({
               tipodeAliado: aliado.tipodeAliado,
               autorizaciondePublicar: aliado.autorizaciondePublicar,
               TipodeUsuarioId: userTipo.id,
-              CiudadId:1
-            }      
-          });
-    
+              CiudadId: aliado.ciudadId
+            }, { transaction: transaction });
+          }
+          console.log("Procesando colonias:", aliado.colonias, "Array Colonias", aliado.colonias.length) ;  
+          // 3. Manejo de Colonias (para nuevos y existentes)
+          if (aliado.colonias && aliado.colonias.length > 0) {
+            console.log(`\n===== GESTIONANDO COLONIAS PARA ${aliadoCreado.id} =====`);
+
+            // Paso A: Eliminar todas las asociaciones existentes para empezar de cero.
+            console.log('[DEBUG] Eliminando asociaciones de colonias existentes...');
+            await db.models.colonias_por_aliado.destroy({
+              where: { AliadoId: aliadoCreado.id },
+              transaction: transaction
+            });
+            console.log('[DEBUG] Asociaciones anteriores eliminadas.');
+
+            // Paso B: Crear las nuevas asociaciones a partir de la lista única.
+            const coloniasUnicas = [...new Set(aliado.colonias.map(Number))];
+            console.log(`[DEBUG] Creando ${coloniasUnicas.length} nuevas asociaciones...`);
+            const coloniasParaAsociar = coloniasUnicas.map(id => ({
+              AliadoId: aliadoCreado.id,
+              ColoniumId: id
+            }));
+            
+            await db.models.colonias_por_aliado.bulkCreate(coloniasParaAsociar, { transaction });
+            console.log('[INFO] Nuevas asociaciones de colonias creadas exitosamente.');
+          }
+  
+          // 4. Enviar correo
           const correoEnviado = await enviarCorreo(aliado.email, aliadoPrincipal.nombre);
-          return { email: aliado.email, correoEnviado };
-        }));
-    
-        // Todos los correos se enviaron
-        res.status(201).json({ 
-          codigo:1,
-          mensaje: "Aliados autorizados exitosamente",
-          aliados: aliadosAutorizados 
-        });        
+          // Hacer commit de la transacción
+          await transaction.commit();
+          // Devolver las colonias que acabamos de asociar
+          return { 
+            email: aliado.email, 
+            correoEnviado: true, 
+            aliadoId: aliadoCreado.id, 
+            coloniasAsociadas: aliado.colonias // Usar las colonias del input ya que son las mismas que acabamos de asociar
+          };
+        } catch (error) {
+          // Si algo falla, hacer rollback de la transacción
+          await transaction.rollback();
+          console.error("Error en transacción:", error);
+          throw error;
+        }
+      }));
+  
+      res.status(201).json({ 
+        codigo: 1,
+        mensaje: "Aliados autorizados exitosamente",
+        aliados: aliadosAutorizados 
+      });        
+    } else { 
+      res.status(401).json({ 
+        codigo: 0,
+        mensaje: "No estás autorizado para realizar esta acción"
+      });
     }    
-    else { res.status(401).json("No estas autorizado")}    
   } catch (error) {
-    console.error("Error en agregarAgenteAdicional:", error);
-    res.status(500).json({ error: error.message });
+    console.error("Error en autorizarAliados:", error);
+    res.status(500).json({ 
+      codigo: 0,
+      mensaje: "Error al autorizar aliados",
+      error: error.message 
+    });
   }
 });
-
 
 server.post("/actualizarAutorizacionAliado", async (req, res) => {
   try {
