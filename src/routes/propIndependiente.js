@@ -7,7 +7,9 @@ const { Op } = require('sequelize');
 const { PropiedadIndependiente, ImgPropiedadIndependiente, AmenidadesdelaPropiedad, TipodePropiedad, 
   TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, VideoYoutube, Tour3D, Aliado
  } = require("../db");
-const { Console } = require("console");
+
+const capitalize = (str) => 
+  str.toLowerCase().replace(/(^|\s)\S/g, l => l.toUpperCase());
 
 server.get("/getPropiedadesIndependientes", async (req, res) => {
     try {
@@ -174,7 +176,35 @@ server.get("/getPropIndbyOrg/:userId", async (req,res) => {
   }
 })
 
-server.get("/getPropAsignar", async (req,res) => {
+server.get("/getPropPorColoniayCiudad", async (req,res) => {
+  try {
+    const { colonia, ciudad } = req.query;
+    
+    const coloniaCapitalized = capitalize(colonia);
+    const ciudadCapitalized = capitalize(ciudad);
+
+    const coloniaBuscada = await Colonia.findOne({ where:{colonia:coloniaCapitalized} });
+    const ciudadBuscada = await Ciudad.findOne({ where:{ciudad:ciudadCapitalized} });
+    console.log("Buscando Propiedades en colonia",colonia, "id", coloniaBuscada.id, "ciudad", ciudad, "id", ciudadBuscada.id)
+    const dataPropiedad = await PropiedadIndependiente.findAll({
+      where:{ 
+        [Op.and]: [
+          {ColoniumId:coloniaBuscada.id},
+          {CiudadId:ciudadBuscada.id}
+        ]
+      },
+      attributes: ['id', 'numeroPropiedad', 'calle', 'CiudadId', 'ColoniumId', 'precio'],
+      order: [
+        ['precio','ASC']
+      ],
+    })
+    dataPropiedad? res.status(200).json(dataPropiedad) : res.status(404).json({Mensaje:"No se encontraron datos de Propiedades Independientes"})
+  } catch (error) {
+    res.json(error)
+  }
+})
+
+server.get("/buscarPropiedadesPorIdoRelacionesAliado", async (req,res) => {
   try {
     const { propiedadId, userId } = req.query;
     let whereConditions = [];
@@ -239,6 +269,8 @@ server.get("/getPropAsignar", async (req,res) => {
     res.status(500).json({ mensaje: "Error interno del servidor", error: error.message });
   }
 });
+
+
 
 server.get("/publicar/:propId", async (req,res) => {
   try{

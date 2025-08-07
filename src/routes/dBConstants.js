@@ -82,6 +82,7 @@ server.get("/getColoniasByCiudadId/:CiudadId", async (req, res) => {
 server.get("/getColoniasByCiudadNombre/:CiudadNombre", async (req, res) => { 
   try {
     const { CiudadNombre } = req.params
+    console.log("Buscando colonias de " + CiudadNombre)
     const capitalize = (str) => 
       str.toLowerCase().replace(/(^|\s)\S/g, l => l.toUpperCase());
     const ciudadMinusculas = capitalize(CiudadNombre);

@@ -1,5 +1,5 @@
 const server = require("express").Router();
-const { db, Aliado, TipodeUsuario, AsignaciondePropiedad, UltimoContacto, Cliente, Colonia } = require("../db");
+const { db, Aliado, TipodeUsuario, AsignaciondePropiedad, UltimoContacto, Cliente, PropiedadIndependiente, Colonia, Ciudad, Estado } = require("../db");
 const { Op, Sequelize } = require("sequelize");
 const { enviarCorreo } = require("../middleware/menejoCorreo");
 
@@ -69,9 +69,10 @@ server.get("/buscarAliadoxEmail/:email", async (req, res) => {
     let { email } = req.params;
     console.log(email)
     const aliado = await Aliado.findOne({
-      where:{email}
+      where:{email},
+      attributes: ['id', 'userId', 'nombre',  'email', 'telefono']
     });
-    console.log(aliado.tipodeAliado)
+    console.log(aliado.nombre)
 
     aliado? res.status(200).json(aliado) : res.status(400).json({mensaje:"El Aliado No Existe"});
   } catch (error) {
@@ -94,6 +95,7 @@ server.post("/mostrarTour", async (req, res) => {
   }
 })
 
+// Autoriza Aliados por mi usuario y asigno colonias autorizadas (Las colonias donde dara servicio)
 server.post("/autorizarAliados", async (req, res) => { 
   try {
     console.log("Autorizando Aliados");
@@ -259,6 +261,88 @@ server.post("/asignarAliado", async (req, res) => {
     } catch (error) {
         res.send(error)
     }
+})
+
+server.post("/actualizarAsignacion", async (req, res) => {
+  try {
+    console.log("Actualizando asignación");
+    
+    const { id, aliadoId, clienteId, propiedadId, tipoDeAutorizacion, clientePrincipal, rolDelAliado } = req.body;
+    
+    if (!id) {
+      return res.status(400).json({ error: "Se requiere el ID de la asignación para actualizar" });
+    }
+    
+    const [updatedCount] = await AsignaciondePropiedad.update(
+      {
+        aliadoId, 
+        clienteId,
+        propiedadId,
+        tipoDeAutorizacion,
+        clientePrincipal,
+        rolDelAliado
+      },
+      {
+        where: { id }
+      }
+    );
+    
+    if (updatedCount === 0) {
+      return res.status(404).json({ error: "Asignación no encontrada" });
+    }
+    
+    res.status(201).json({ success: true, updated: updatedCount });
+  } catch (error) {
+    console.error("Error al actualizar asignación:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
+
+server.get("/getPropiedadesAsignadas/:userId", async (req,res) => {
+  try {
+    const { userId } = req.params;
+    const aliado = await Aliado.findOne({
+      where:{userId}
+    });
+    if(!aliado){
+      console.log("El Aliado No Existe")
+      return res.status(404).json({ Mensaje: "El Aliado No Existe" });
+    }
+
+    console.log("Buscando propiedades asignadas para "+aliado.id)
+    
+    const propiedadAsignada = await AsignaciondePropiedad.findAll({
+      where:{aliadoId:aliado.id},
+      include:[
+        {
+        model:PropiedadIndependiente,
+        attributes: [ 'numeroPropiedad', 'calle', 'precio'],
+        include:[
+          {
+            model:Colonia,
+            attributes: [ 'colonia']
+          },
+          {
+            model:Ciudad,
+            attributes: [ 'ciudad']
+          },
+          {
+            model:Estado,
+            attributes: [ 'estado']
+          },
+        ],
+        },
+        {
+          model:Cliente,
+          attributes: [ 'nombre', 'email']
+        },
+      ]
+    })
+    
+    propiedadAsignada? res.status(200).json(propiedadAsignada) : res.status(404).json({Mensaje:"No se encontraron propiedades asignadas"})
+  } catch (error) {
+    res.status(500).json(error)
+  }
 })
 
 // Función para obtener fecha local formateada
