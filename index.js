@@ -5,9 +5,9 @@
     const app = express();
     const cors = require('cors');
     const multer = require('multer');
+    const session = require('express-session');
     /* var passport = require('passport');
-    var Sequelize = require("sequelize");
-    const session = require('express-session'); */
+    var Sequelize = require("sequelize"); */
     
     /* const { ImagenRoute } = require('./src/routes/imgPropiedad');
     const { PropiedadRoute } = require('./src/routes/propiedad');
@@ -25,7 +25,7 @@
     const { index, clientes, imagen, desarrollo, dbconstants, apikeys, favoritos, modeloAsociadoAlDesarrollo,
        allPropiedades, bulk, tipoUsuario, addBucketCors, cargarPropMultiples, historialdePagos, 
        autorizacionUsuario, pagodeServicio, propIndependiente, paquetesdePago, editarPropiedades,
-       borrarPropiedades, aliados, cargarPropCii,
+       borrarPropiedades, aliados, cargarPropCii, calendarRoutes,
     } = require('./src/routes');
 
     const { checkAutorizacion } = require("./src/middleware/checkAutorizacion.js")
@@ -103,6 +103,18 @@
     //   nos permite montar middlewares a la ruta especificada  
     //                                  si no se espcifican rutas se montara el middleware en toda la aplicacion
     
+    // Session configuration
+    app.use(session({
+      secret: process.env.SESSION_SECRET || 'your-secret-key',
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      }
+    }));
+
     app.use(cors(corsOptions))
     app.use(express.json({limit: '200000000' })); //  -->  habilitamos objetos json con el metodo express.json   
     app.use(express.urlencoded({ limit: '200000000', extended: true }));
@@ -232,6 +244,7 @@ function checkIfSignedIn(req, res, next) {
     app.use("/borrarPropiedaes", checkAutorizacion, borrarPropiedades),
     app.use("/aliados", checkIfSignedIn, aliados),
     app.use("/cargarPropCii", useMulter, checkAliado, cargarPropCii),
+    app.use("/calendar", calendarRoutes),
     //app.use("/authCliente", authCliente);
 
     /* app.use("/propiedades", PropiedadRoute);

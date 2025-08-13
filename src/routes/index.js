@@ -27,5 +27,6 @@ module.exports = {
     borrarPropiedades:require("./borrarPropiedades"),
     aliados:require("./aliado"),
     cargarPropCii:require("./cargarPropCii"),
+    calendarRoutes: require('./calendarRoutes'),
     index: server,
   };

@@ -80,6 +80,19 @@ server.get("/buscarAliadoxEmail/:email", async (req, res) => {
   }
 });
 
+server.get("/buscarAliadoxPropId/:propiedadId", async (req, res) => {
+  try {
+    let {propiedadId} = req.params;
+    const aliado = await AsignaciondePropiedad.findOne({
+      where:{propiedadId:propiedadId},
+    });
+
+    aliado? res.status(200).json(aliado) : res.status(400).json({mensaje:"Esta propiedad no tiene Aliado Asignado"});
+  } catch (error) {
+    res.send(error);
+  }
+})
+
 server.post("/mostrarTour", async (req, res) => {
   try {
     let {userId, mostrarTour} = req.body;
