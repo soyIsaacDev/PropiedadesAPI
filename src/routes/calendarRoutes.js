@@ -21,4 +21,12 @@ router.post('/events', checkIfSignedIn, calendarController.createEvent);
 // Crear una invitación de calendario
 router.post('/invites', checkIfSignedIn, calendarController.createInvite);
 
+// --- Rutas para Horarios de Citas ---
+
+// Obtener horarios disponibles
+router.post('/appointment-slots', checkIfSignedIn, calendarController.getAppointmentSlots);
+
+// Reservar una cita
+router.post('/book-appointment', checkIfSignedIn, calendarController.bookAppointment);
+
 module.exports = router;

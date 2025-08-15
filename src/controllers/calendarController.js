@@ -1,10 +1,14 @@
 const { google } = require('googleapis');
 const { OAuth2 } = google.auth;
-const { Cliente } = require('../db');
+const { Cliente, Aliado, AsignaciondePropiedad, } = require('../db');
+const { Op} = require("sequelize");
+
+// PENDIENTE -> Guardar refresh_token de cada aliadode forma segura para obtener tokens
 
 // Scopes específicos para Google Calendar
 const SCOPES = [
-  'https://www.googleapis.com/auth/calendar.events' // Solo permite manejar eventos, no la configuración del calendario
+  'https://www.googleapis.com/auth/calendar.events', // Solo permite manejar eventos, no la configuración del calendario
+  'https://www.googleapis.com/auth/calendar.readonly', // Solo permite leer eventos
 ];
 
 // Función para obtener el cliente OAuth2
@@ -163,16 +167,15 @@ exports.createEvent = async (req, res) => {
 // Ejemplo: [{email: 'usuario@ejemplo.com', name: 'Nombre Usuario'}]
 exports.createInvite = async (req, res) => {
   try {
-    const { direccionPropiedad, ubicacion, clienteId, start, end, summary, description, attendees } = req.body;
+    const { direccionPropiedad, ubicacion, clienteId, start, end, summary, description} = req.body;
     const { tokens } = req.session;
-    console.log(ubicacion);
     if (!tokens) {
       return res.status(401).json({ error: 'No autenticado' });
     }
 
-    if (!attendees || !Array.isArray(attendees) || attendees.length === 0) {
+    /* if (!attendees || !Array.isArray(attendees) || attendees.length === 0) {
       return res.status(400).json({ error: 'Se requiere al menos un asistente' });
-    }
+    } */
 
     const cliente = await Cliente.findOne({
       where: { userId: clienteId }
@@ -181,6 +184,8 @@ exports.createInvite = async (req, res) => {
     if (!cliente) {
       return res.status(404).json({ error: 'Cliente no encontrado' });
     }
+
+    const attendees = [{email: cliente.email, name: cliente.nombre}];
     
     const oauth2Client = getOAuth2Client();
     oauth2Client.setCredentials(tokens);
@@ -295,6 +300,152 @@ exports.createInvite = async (req, res) => {
       error: errorMessage,
       details: errorDetails,
       code: error.code
+    });
+  }
+};
+
+// --- Endpoints para Horarios de Citas (Appointment Schedules) ---
+
+/**
+ * Consulta los horarios disponibles en un calendario dentro de un rango de fechas.
+ * Utiliza freebusy.query para encontrar los huecos entre eventos ocupados.
+ * Body: { calendarId: string, start: ISOString, end: ISOString }
+ */
+exports.getAppointmentSlots = async (req, res) => {
+  try {
+    const { tokens } = req.session;
+    console.log("Token actual:", tokens.scope);
+    if (!tokens) {
+      return res.status(401).json({ error: 'No autenticado' });
+    }
+
+    const { propiedadId, /* calendarId = 'primary', */ start, end } = req.body;
+    if (!propiedadId || !start || !end) {
+      return res.status(400).json({ error: 'Faltan parámetros: propiedadId, start y end son requeridos.' });
+    }
+
+    const aliado = await AsignaciondePropiedad.findOne({
+      where:{[Op.and]:{propiedadId, rolDelAliado:"Principal"}} 
+    });
+    const aliadoAsignado = await Aliado.findOne({
+      where:{id:aliado?.aliadoId}
+    })
+
+    /* const calendarId = aliadoAsignado?.calendarId; */
+    const calendarId = '1004482635540-vcre8m147qv03sm0mmg06k06dj0l3jq1.apps.googleusercontent.com'
+
+    const oauth2Client = getOAuth2Client();
+    oauth2Client.setCredentials(tokens);
+    const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+    const response = await calendar.freebusy.query({
+      resource: {
+        timeMin: start,
+        timeMax: end,
+        items: [{ id: calendarId }],
+      },
+    });
+    const busySlots = response.data.calendars[calendarId].busy;
+    
+    
+    // Nota: La API devuelve los bloques OCUPADOS. 
+    // Para obtener los bloques LIBRES, necesitaríamos implementar una lógica 
+    // que calcule los huecos entre estos bloques ocupados, considerando los horarios laborales.
+    // Por ahora, devolvemos los bloques ocupados para diagnóstico.
+
+    res.status(200).json({
+      message: 'Consulta de horarios ocupados exitosa. Se requiere procesamiento para obtener los huecos libres.',
+      busy: busySlots,
+    });
+
+  } catch (error) {
+    console.error('Error al obtener horarios disponibles:', error.message);
+    console.error('Detalles del error:', error.response?.data || 'No hay detalles adicionales');
+    
+    let errorMessage = 'Error al consultar la disponibilidad del calendario';
+    if (error.code === 403) {
+      errorMessage = 'Permisos insuficientes. La aplicación necesita acceso de lectura al calendario.';
+    } else if (error.code === 404) {
+      errorMessage = 'Calendario no encontrado. Verifica el ID del calendario.';
+    }
+    
+    res.status(error.code || 500).json({ 
+      error: errorMessage,
+      details: error.response?.data?.error?.message || error.message 
+    });
+  }
+};
+
+/**
+ * Reserva una cita creando un evento en un horario disponible.
+ * Body: { calendarId, start, end, summary, description, location, clientEmail, clientName }
+ */
+exports.bookAppointment = async (req, res) => {
+  try {
+    const { tokens } = req.session;
+    if (!tokens) {
+      return res.status(401).json({ error: 'No autenticado' });
+    }
+    /* const { direccionPropiedad, ubicacion, clienteId, start, end, summary, description} = req.body; */
+    const { start, end, summary, description, ubicacion, direccionPropiedad, clienteId } = req.body;
+    if (!clienteId || !start || !end || !ubicacion) {
+      return res.status(400).json({ error: 'Faltan parámetros esenciales para la reserva.' });
+    }
+
+    //const calendarId = '1004482635540-vcre8m147qv03sm0mmg06k06dj0l3jq1.apps.googleusercontent.com'
+    const calendarId = 'primary';
+
+    const cliente = await Cliente.findOne({
+      where: { userId: clienteId }
+    });
+    // Formatear la ubicación con coordenadas
+    const formattedLocation = ubicacion && typeof ubicacion === 'object' 
+      ? `${ubicacion.lat}, ${ubicacion.lng}`  // Formato para Google Maps
+      : ubicacion || direccionPropiedad;      // Usar ubicación o dirección como respaldo
+
+    const oauth2Client = getOAuth2Client();
+    oauth2Client.setCredentials(tokens);
+    const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+
+    // El email del organizador (dueño del token de autenticación)
+    const organizerEmail = tokens.email || process.env.CALENDAR_EMAIL || "isaacborbon@gmail.com";
+
+    const event = {
+      summary: summary || `Recorrido con ${cliente.nombre || cliente.email}`,
+      description: description || `Recorrido con ${cliente.nombre} celular ${cliente.telefono} en ${direccionPropiedad}`,
+      location: formattedLocation,
+      start: { dateTime: start, timeZone: 'America/Mexico_City' },
+      end: { dateTime: end, timeZone: 'America/Mexico_City' },
+      attendees: [
+        { email: organizerEmail, organizer: true, responseStatus: 'accepted' },
+        { email: cliente.email, displayName: cliente.nombre || '', responseStatus: 'needsAction' }
+      ],
+      reminders: {
+        useDefault: false,
+        overrides: [
+          { method: 'popup', minutes: 60 },       // Notificación pop-up 1 hora antes
+          { method: 'popup', minutes: 24 * 60 }  // Notificación pop-up 1 día antes
+        ]
+      },
+      sendUpdates: 'all',
+      sendNotifications: true
+    };
+
+    const response = await calendar.events.insert({
+      calendarId: calendarId, // Usamos el ID del calendario del agente
+      resource: event,
+      sendNotifications: true,
+    });
+
+    res.status(200).json({
+      message: 'Cita reservada exitosamente.',
+      event: response.data
+    });
+
+  } catch (error) {
+    console.error('Error al reservar la cita:', error);
+    res.status(500).json({ 
+      error: 'Error al reservar la cita',
+      details: error.message 
     });
   }
 };

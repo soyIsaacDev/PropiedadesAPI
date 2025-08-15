@@ -6,6 +6,8 @@
     const cors = require('cors');
     const multer = require('multer');
     const session = require('express-session');
+    const validateAppRequest = require("./src/middleware/validateAppRequest");
+    const limiter = require("./src/middleware/rateLimiter");
     /* var passport = require('passport');
     var Sequelize = require("sequelize"); */
     
@@ -32,6 +34,7 @@
     const { checkPagosActivos, checkPublicacionesRestantesyAutxTipodeOrg, servidorPago } = require("./src/middleware/checkPago");
     const { checkAliado } = require("./src/middleware/checkAliado.js");
     
+    
     const DEVMODE = process.env.DEVELOPMENT;
     var corsOptions= undefined;
 
@@ -53,6 +56,8 @@
             optionsSuccessStatus: 200,
             credentials: true 
         };
+        app.use(validateAppRequest);
+        app.use(limiter);
     }
 
     const path = require('path')
@@ -118,6 +123,7 @@
     app.use(cors(corsOptions))
     app.use(express.json({limit: '200000000' })); //  -->  habilitamos objetos json con el metodo express.json   
     app.use(express.urlencoded({ limit: '200000000', extended: true }));
+    
     
     app.use(express.static('public')) // --> habilitamos archivos estaticos con el middleware express.static
         //para crear un prefijo en la ruta 
