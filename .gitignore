@@ -10,3 +10,7 @@ npm-debug.log
 .pruebas-91a5d-firebase-adminsdk-pgcw7-03b1af47fc.json
 .uploadMulipleGCP copy.js
 .env
+
+# Certificados
+/cert
+/cert_propiedades_result

@@ -56,7 +56,7 @@ server.get("/getTodasLasPropiedades", async (req, res) => {
       //console.log("FIN ")
       console.log("FINAL        "+allPropiedades) 
       
-      allPropiedades? res.json(allPropiedades) : res.json({Mensaje:"No se encontraron datos de propiedades"});
+      allPropiedades? res.status(200).json(allPropiedades) : res.json({Mensaje:"No se encontraron datos de propiedades"});
     } catch (e) {
       res.send(e);
     } 
@@ -114,7 +114,7 @@ server.get("/getTodasLasPropiedadesconIncludes", async (req, res) => {
       ]
     },);      
     
-    dataDesarrollo? res.json(dataDesarrollo) : res.json({Mensaje:"No se encontraron datos de propiedades"});
+    dataDesarrollo? res.status(200).json(dataDesarrollo) : res.status(404).json({Mensaje:"No se encontraron datos de propiedades"});
   } catch (e) {
     res.send(e);
   } 

@@ -33,6 +33,6 @@ User.sync({ alter: true }) - This checks what is the current state of the table 
     console.error('Error al sincronizar la base de datos:', err);
   }); */
 
-app.listen(port, function () {
+/* app.listen(port, function () {
   console.log("Server is listening on port " + port);
-});
+}); */

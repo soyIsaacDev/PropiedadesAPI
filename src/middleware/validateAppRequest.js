@@ -6,6 +6,14 @@
 function validateAppRequest(req, res, next) {
   // Lista de dominios permitidos (los mismos que en tu configuración CORS)
   const allowedDomains = [
+    'http://localhost:3000',
+    'https://localhost:3000',
+    'http://127.0.0.1:3000',
+    'https://127.0.0.1:3000',
+    'http://localhost:8081',
+    'https://localhost:8081',
+    'http://127.0.0.1:8081',
+    'https://127.0.0.1:8081',
     'https://inmozz.com', 
     'https://www.inmozz.com', 
     'https://m3inmuebles.com'
