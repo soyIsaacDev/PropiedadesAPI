@@ -285,6 +285,16 @@ server.get("/publicar/:propId", async (req,res) => {
     res.json(error)
   }
 })
+
+server.get("/buscarPropiedadxId/:propiedadId", async (req,res) => {
+  try {
+    const {propiedadId} = req.params;
+    const propiedad = await PropiedadIndependiente.findByPk(propiedadId);
+    propiedad? res.status(200).json(propiedad) : res.status(404).json({Mensaje:"No se encontro la propiedad"})
+  } catch (error) {
+    res.status(500).json({Mensaje:"Error al buscar la propiedad", error})
+  }
+})
 /* server.get("/hardDelete", async (req,res) => {
   try {
     const prop = await PropiedadIndependiente.findOne({

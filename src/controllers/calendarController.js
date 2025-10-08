@@ -1,7 +1,7 @@
 const { google } = require('googleapis');
 const { OAuth2 } = google.auth;
 const { Cliente, Aliado, AsignaciondePropiedad, } = require('../db');
-const { Op} = require("sequelize");
+const { Op } = require("sequelize");
 
 // PENDIENTE -> Guardar refresh_token de cada aliadode forma segura para obtener tokens
 
@@ -48,6 +48,7 @@ exports.getAuthUrl = (req, res) => {
 
 // Manejar el callback de autenticación
 exports.handleCallback = async (req, res) => {
+  console.log("MANEJANDO CALLBACK EN PROPIEDADES API")
   const { code } = req.query;
   
   if (!code) {
@@ -359,18 +360,35 @@ exports.getAppointmentSlots = async (req, res) => {
 
   } catch (error) {
     console.error('Error al obtener horarios disponibles:', error.message);
-    console.error('Detalles del error:', error.response?.data || 'No hay detalles adicionales');
     
+    let statusCode = 500;
     let errorMessage = 'Error al consultar la disponibilidad del calendario';
-    if (error.code === 403) {
-      errorMessage = 'Permisos insuficientes. La aplicación necesita acceso de lectura al calendario.';
-    } else if (error.code === 404) {
+    let errorDetails = error.message;
+    
+    // Manejo específico de errores de red
+    if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED' || error.code === 'ETIMEDOUT') {
+      statusCode = 503; // Service Unavailable
+      errorMessage = 'No se pudo conectar al servicio de calendario. Por favor verifica tu conexión a internet.';
+      errorDetails = 'Error de conexión: ' + error.message;
+    } 
+    // Manejo de errores de autenticación/autorización
+    else if (error.code === 401 || error.code === 403) {
+      statusCode = error.code;
+      errorMessage = 'Error de autenticación. Por favor inicia sesión nuevamente.';
+    } 
+    // Manejo de recurso no encontrado
+    else if (error.code === 404) {
+      statusCode = 404;
       errorMessage = 'Calendario no encontrado. Verifica el ID del calendario.';
     }
     
-    res.status(error.code || 500).json({ 
+    console.error(`Detalles del error (${statusCode}):`, errorDetails);
+    
+    res.status(statusCode).json({ 
+      success: false,
       error: errorMessage,
-      details: error.response?.data?.error?.message || error.message 
+      details: error.response?.data?.error?.message || errorDetails,
+      code: error.code
     });
   }
 };

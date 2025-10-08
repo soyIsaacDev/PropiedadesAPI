@@ -1,215 +1,109 @@
 // Configuración del servidor con autenticación mutua
 const express = require('express');
 const app = express();
-const http = require('http');
-const https = require('https');
-const crypto = require('crypto');
-const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 const multer = require('multer');
 const session = require('express-session');
-const validateAppRequest = require("./src/middleware/validateAppRequest");
-const limiter = require("./src/middleware/rateLimiter");
 
-// Configuración de entorno
-//const isProduction = process.env.NODE_ENV === 'production';
-const isProduction = true
-const PORT = process.env.PORT || 8080;
-    /* var passport = require('passport');
-    var Sequelize = require("sequelize"); */
-    
-    /* const { ImagenRoute } = require('./src/routes/imgPropiedad');
-    const { PropiedadRoute } = require('./src/routes/propiedad');
-    const { ApikeysRoute } = require('./src/routes/Apikeys');
-    const { DBConstantsRoute } = require('./src/routes/dBConstants');
-    const { authClienteRoute } = require('./src/routes/authCliente'); */
+const { index, clientes, imagen, desarrollo, dbconstants, apikeys, favoritos, modeloAsociadoAlDesarrollo,
+  allPropiedades, bulk, tipoUsuario, addBucketCors, cargarPropMultiples, historialdePagos,
+  autorizacionUsuario, pagodeServicio, propIndependiente, paquetesdePago, editarPropiedades,
+  borrarPropiedades, aliados, cargarPropCii, calendarRoutes,
+} = require('./src/routes');
 
+const { checkAutorizacion } = require("./src/middleware/checkAutorizacion.js")
+const { checkPagosActivos, checkPublicacionesRestantesyAutxTipodeOrg, servidorPago } = require("./src/middleware/checkPago");
+const { checkAliado } = require("./src/middleware/checkAliado.js");
 
-    //var SequelizeStore = require("connect-session-sequelize")(session.Store);
-    /* var sequelize = new Sequelize("database", "username", "password", {
-        dialect: "sqlite",
-        storage: "./session.sqlite",
-    }); */
+const isProduction = process.env.NODE_ENV === 'Production';
 
-    const { index, clientes, imagen, desarrollo, dbconstants, apikeys, favoritos, modeloAsociadoAlDesarrollo,
-       allPropiedades, bulk, tipoUsuario, addBucketCors, cargarPropMultiples, historialdePagos, 
-       autorizacionUsuario, pagodeServicio, propIndependiente, paquetesdePago, editarPropiedades,
-       borrarPropiedades, aliados, cargarPropCii, calendarRoutes,
-    } = require('./src/routes');
-
-    const { checkAutorizacion } = require("./src/middleware/checkAutorizacion.js")
-    const { checkPagosActivos, checkPublicacionesRestantesyAutxTipodeOrg, servidorPago } = require("./src/middleware/checkPago");
-    const { checkAliado } = require("./src/middleware/checkAliado.js");
-    
-    
-// Configuración CORS
-const DEVMODE = process.env.DEVELOPMENT;
 let corsOptions = {
-    origin: [
-        'http://localhost:3000',
-        'https://localhost:3000', // Added HTTPS for local development
-        'http://192.168.1.13:3000', 
-        'http://192.168.100.2:3000',
-        'http://192.168.100.2:8081', 
-        'http://localhost:8081', 
-        'https://localhost:8081',
-        'http://192.168.18.3:8081',
-        'http://192.168.1.9:8081',
-        'https://inmozz.com', 
-        'https://www.inmozz.com', 
-        'https://m3inmuebles.com'
-    ],
-    optionsSuccessStatus: 200,
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
+  origin: [
+    'http://localhost:3000',
+    'https://localhost:3000',
+    'http://192.168.1.13:3000',
+    'http://192.168.100.2:3000',
+    'http://192.168.100.52:3000',
+    'http://192.168.100.2:8081',
+    'http://localhost:8081',
+    'https://localhost:8081',
+    'http://192.168.18.3:8081',
+    'http://192.168.1.9:8081',
+    'http://192.168.1.9:8082',
+    'http://192.168.1.9:8080',
+    'http://192.168.18.7:8081',
+    'https://inmozz.com',
+    'https://www.inmozz.com',
+    'https://m3inmuebles.com'
+  ],
+  optionsSuccessStatus: 200,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
 };
 
-// Middleware de autenticación mutua para producción
-if (isProduction) {
-    // Configuración de certificados
-    const certsPath = path.join(__dirname, './cert');
-    
-    const httpsOptions = {
-        key: fs.readFileSync(path.join(certsPath, 'server.key')),
-        cert: fs.readFileSync(path.join(certsPath, 'server.crt')),
-        ca: fs.readFileSync(path.join(certsPath, 'ca.crt')),
-        requestCert: true,
-        rejectUnauthorized: true,
-        minVersion: 'TLSv1.2',     // Versión mínima de TLS
-        ciphers: [                // Cifrados fuertes
-            'TLS_AES_256_GCM_SHA384',
-            'TLS_CHACHA20_POLY1305_SHA256',
-            'TLS_AES_128_GCM_SHA256'
-        ].join(':'),
-    };
-
-    // Middleware para verificar certificado del cliente
-    app.use((req, res, next) => {
-        if (!req.client.authorized) {
-            console.error('Cliente no autenticado');
-            return res.status(401).json({ 
-                success: false,
-                message: 'Acceso no autorizado: Certificado de cliente inválido o no proporcionado' 
-            });
-        }
-        
-        // Registrar información del certificado para depuración
-        const cert = req.socket.getPeerCertificate();
-        if (cert && cert.raw) {
-          const certFingerprint = crypto.createHash('sha256')
-              .update(cert.raw)
-              .digest('hex')
-              .toLowerCase();
-          console.log("Fingerprint del certificado",certFingerprint)
-          console.log("Fingerprint autorizado",process.env.ALLOWED_CERT_FINGERPRINT)
-          const expectedFingerprint = process.env.ALLOWED_CERT_FINGERPRINT
-              .toLowerCase()
-              .replace(/:/g, '')
-              .trim();
-          
-          if (certFingerprint !== expectedFingerprint) {
-              console.error('Fingerprint del certificado no coincide');
-              return res.status(403).json({ 
-                  success: false,
-                  message: 'Acceso denegado: Certificado no autorizado' 
-              });
-          }
-          
-          console.log('Cliente autenticado:', cert.subject?.O || 'Sin organización');
-      }
-        
-        next();
-    });
-
-    // Crear servidor HTTPS
-    const httpsServer = https.createServer(httpsOptions, app);
-    
-    // Iniciar servidor HTTPS
-    httpsServer.listen(PORT, () => {
-        console.log(`Servidor HTTPS escuchando en el puerto ${PORT}`);
-    });
-    
-    // Redirección HTTP a HTTPS (opcional)
-    if (process.env.REDIRECT_HTTP === 'true') {
-        const httpApp = express();
-        httpApp.use((req, res) => {
-            res.redirect(`https://${req.headers.host}${req.url}`);
-        });
-        httpApp.listen(80);
-    }
-    app.use(validateAppRequest);
-    app.use(limiter);
-} else {
-    // Configuración para desarrollo (HTTP normal)
-    app.listen(PORT, () => {
-        console.log(`Servidor HTTP en desarrollo en el puerto ${PORT}`);
-    });
-}
-
-// Middleware comunes para ambos entornos
 app.use(cors(corsOptions));
 
 
-    const carpeta = path.join(__dirname, './uploads')
+const carpeta = path.join(__dirname, './uploads')
 
-    const storage = multer.diskStorage({
-      destination: (req, file, cb) => {
-        cb(null, carpeta);
-      },
-      filename: (req, file, cb) => {
-        // usando codificacion UTF8
-        file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8');
-        cb(null, Date.now() + '_' + file.originalname);
-      }
-    });
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, carpeta);
+  },
+  filename: (req, file, cb) => {
+    // usando codificacion UTF8
+    file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8');
+    cb(null, Date.now() + '_' + file.originalname);
+  }
+});
 
-    const multerUpload = multer({
-      storage: storage,
-      limits: {
-        fileSize: 31 * 1024 * 1024, // no larger than 31mb
-        fieldSize: 31 * 1024 * 1024 
+const multerUpload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 31 * 1024 * 1024, // no larger than 31mb
+    fieldSize: 31 * 1024 * 1024
+  }
+})
+
+// uso de Multer para subir imagenes y datos en form-data
+const useMulter = (req, res, next) => {
+  console.log("En Index UseMulter")
+  multerUpload.single('imagenesfiles')(req, res, (err) => {
+    if (err) {
+      console.log("Error en multerUpload en Index " + err)
+      const respuestaError = {
+        codigo: 0,
+        Mensaje: `Error al intentar crear la imagen`,
+        Error: err.message
       }
-    })
-    
-    // uso de Multer para subir imagenes y datos en form-data
-    const useMulter = (req, res, next) => {
-      console.log("En Index UseMulter")
-      multerUpload.single('imagenesfiles')(req, res, (err) => {
-        if (err) {
-          console.log("Error en multerUpload en Index "+err)
-          const respuestaError = {
-            codigo:0, 
-            Mensaje:`Error al intentar crear la imagen`,
-            Error:err.message
-          }
-          return res.status(400).json(respuestaError);
-        }
-        else next()
-      })
+      return res.status(400).json(respuestaError);
     }
-    /* app.METHOD(PATH, HANDLER)
-    app es una instancia de express.
-    METHOD es un método de solicitud HTTP.
-    PATH es una vía de acceso en el servidor.
-    HANDLER es la función que se ejecuta cuando se correlaciona la ruta. */
+    else next()
+  })
+}
+/* app.METHOD(PATH, HANDLER)
+app es una instancia de express.
+METHOD es un método de solicitud HTTP.
+PATH es una vía de acceso en el servidor.
+HANDLER es la función que se ejecuta cuando se correlaciona la ruta. */
 
-    // app.use([path,] callback [, callback...])    --> http://expressjs.com/es/api.html#app.use
-    //   nos permite montar middlewares a la ruta especificada  
-    //                                  si no se espcifican rutas se montara el middleware en toda la aplicacion
-    
-    // Session configuration
-    app.use(session({
-      secret: process.env.SESSION_SECRET || 'your-secret-key',
-      resave: false,
-      saveUninitialized: false,
-      cookie: {
-        secure: process.env.NODE_ENV === 'production',
-        httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
-      }
-    }));
+// app.use([path,] callback [, callback...])    --> http://expressjs.com/es/api.html#app.use
+//   nos permite montar middlewares a la ruta especificada  
+//                                  si no se espcifican rutas se montara el middleware en toda la aplicacion
+
+// Session configuration
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
 
 // Middleware para procesar JSON y formularios
 app.use(express.json({ limit: '200MB' }));
@@ -218,32 +112,16 @@ app.use(express.urlencoded({ limit: '200MB', extended: true }));
 // Archivos estáticos
 app.use(express.static('public'));
 app.use("/assets", express.static(path.join(__dirname, "public")));
-    //El único parámetro que recibe static es el nombre del directorio donde están los archivos estáticos, en nuestro ejemplo están en /public.
-    
-    /* var myStore = new SequelizeStore({
-        db: sequelize,
-    });
 
-    app.use(
-        session({
-            secret: "secretomexa",
-            //store: myStore,
-            cookie: { maxAge: 600000 },
-            resave: false, // we support the touch method so per the express-session docs this should be set to false
-            saveUninitialized: false,
-            proxy: true, // if you do SSL outside of node.
-        })
-    ); */
+app.get("/", (req, res) => {
+  res.send("Hola, el servidor esta activo");
+});
 
-    app.get("/", (req,res) => {
-        res.send("Hola, el servidor esta activo");
-    });
-   
-    
 
-    //habilitamos todos los metodos HTTP en la ruta
 
-    // Firebase Server side code.
+//habilitamos todos los metodos HTTP en la ruta
+
+// Firebase Server side code.
 const admin = require('firebase-admin');
 //const Firebase_Service_Account = process.env.FIREBASE_SERVICE_ACCOUNT;
 const FirebaseConfig = require('./pruebas-91a5d-firebase-adminsdk-pgcw7-03b1af47fc.js')
@@ -260,7 +138,7 @@ function getIdToken(req) {
   const components = authorizationHeader.split(' ');
   return components.length > 1 ? components[1] : '';
 }
- 
+
 /* function isAuthenticated (req, res, next) {
       console.log("77 En IS AUTH " +req.session.passport)
       if (req.session.passport.user) {
@@ -275,7 +153,7 @@ function checkIfSignedIn(req, res, next) {
   console.log("ID TOKEN " + idToken + " Lenght " + idToken.length)
   // Verify the ID token using the Firebase Admin SDK.
   // User already logged in. Redirect to profile page.
-  if(idToken.length > 10){
+  if (idToken.length > 10) {
     console.log("REVISANDO EL TOKEN")
     admin.auth().verifyIdToken(idToken).then((decodedClaims) => {
       // User is authenticated, user claims can be retrieved from
@@ -287,11 +165,18 @@ function checkIfSignedIn(req, res, next) {
     }).catch((error) => {
       console.log("Error de Authenticacion " + error)
       res.json({
-        codigo:0, 
-        Mensaje:"Error de Authenticacion, por favor recarga la pagina",
-        Error:error
+        codigo: 0,
+        Mensaje: "Error de Authenticacion, por favor recarga la pagina",
+        Error: error
       });
-      //next();
+    });
+  }
+  else {
+    console.log("USUARIO NO AUTENTICADO, no proporciono token")
+    res.json({
+      codigo: 0,
+      Mensaje: "Error de Authenticacion, por favor loggeate en la aplicacion",
+      Error: "No autenticado"
     });
   }
 }
@@ -314,45 +199,44 @@ function checkIfSignedIn(req, res, next) {
   }
 } */
 
-    //app.use("/", authCliente);
-    
-    app.use("/clientes", clientes); // Autorizacion para agregar usuarios revisada a nivel ruta
-    app.use("/desarrollos", desarrollo);
-    app.use("/imagenpropiedad", imagen);
-    app.use("/Apikeys", apikeys );
-    app.use("/dbConstants", dbconstants);
-    app.use("/favoritos", favoritos);
-    app.use("/modeloAsociadoPropiedad", modeloAsociadoAlDesarrollo);
-    app.use("/allProp", /* checkIfSignedIn, */ allPropiedades);
-    app.use("/propiedadesIndependientes", propIndependiente);
-    app.use("/bulk", bulk);
-    app.use("/tipodeUsuario", tipoUsuario);
-    app.use("/corsAuth", addBucketCors);
-    // Carga propiedades 1 x 1 para cargar imagenes de grandes tamaños y no saturar Cors
-    app.use("/cargarPropMultiples", useMulter, checkAutorizacion, checkPagosActivos, 
-      checkPublicacionesRestantesyAutxTipodeOrg, cargarPropMultiples),
-    app.use("/editarPropiedad", useMulter, checkAutorizacion, checkPagosActivos, editarPropiedades ),
-    //app.use("/editarPropiedad", editarPropiedades);
-    app.use("/checkautorizacion", autorizacionUsuario),
-    app.use("/revisarPagos", pagodeServicio),
-    app.use("/paquetesdePago", paquetesdePago),
-    app.use("/checkpago", servidorPago),
-    app.use("/borrarPropiedaes", checkAutorizacion, borrarPropiedades),
-    app.use("/aliados", checkIfSignedIn, aliados),
-    app.use("/cargarPropCii", useMulter, checkAliado, cargarPropCii),
-    app.use("/calendar", calendarRoutes),
-    //app.use("/authCliente", authCliente);
+//app.use("/", authCliente);
 
-    /* app.use("/propiedades", PropiedadRoute);
-    app.use("/imagenpropiedad", ImagenRoute);
-    app.use("/Apikeys", ApikeysRoute );
-    app.use("/dbConstants", DBConstantsRoute); */
+app.use("/clientes", clientes); // Autorizacion para agregar usuarios revisada a nivel ruta
+app.use("/desarrollos", desarrollo);
+app.use("/imagenpropiedad", imagen);
+app.use("/Apikeys", apikeys);
+app.use("/dbConstants", dbconstants);
+app.use("/favoritos", favoritos);
+app.use("/modeloAsociadoPropiedad", modeloAsociadoAlDesarrollo);
+app.use("/allProp", /* checkIfSignedIn, */ allPropiedades);
+app.use("/propiedadesIndependientes", propIndependiente);
+app.use("/bulk", bulk);
+app.use("/tipodeUsuario", tipoUsuario);
+app.use("/corsAuth", addBucketCors);
+// Carga propiedades 1 x 1 para cargar imagenes de grandes tamaños y no saturar Cors
+app.use("/cargarPropMultiples", useMulter, checkAutorizacion, checkPagosActivos,
+  checkPublicacionesRestantesyAutxTipodeOrg, cargarPropMultiples),
+  app.use("/editarPropiedad", useMulter, checkAutorizacion, checkPagosActivos, editarPropiedades),
+  //app.use("/editarPropiedad", editarPropiedades);
+  app.use("/checkautorizacion", autorizacionUsuario),
+  app.use("/revisarPagos", pagodeServicio),
+  app.use("/paquetesdePago", paquetesdePago),
+  app.use("/checkpago", servidorPago),
+  app.use("/borrarPropiedaes", checkAutorizacion, borrarPropiedades),
+  app.use("/aliados", checkIfSignedIn, aliados),
+  app.use("/cargarPropCii", useMulter, checkAliado, cargarPropCii),
+  app.use("/calendar", calendarRoutes),
+  //app.use("/authCliente", authCliente);
 
-    //Error handling middleware
-    app.use(function (err, req, res, next) {
-        console.error(err);
-        res.status(err.status || 500).send(err.message);
-    });
-    
-    module.exports = app;
-    
+  /* app.use("/propiedades", PropiedadRoute);
+  app.use("/imagenpropiedad", ImagenRoute);
+  app.use("/Apikeys", ApikeysRoute );
+  app.use("/dbConstants", DBConstantsRoute); */
+
+  //Error handling middleware
+  app.use(function (err, req, res, next) {
+    console.error(err);
+    res.status(err.status || 500).send(err.message);
+  });
+
+module.exports = app;

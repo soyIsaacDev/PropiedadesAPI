@@ -56,7 +56,7 @@ server.get("/buscarAliado/:userId", async (req, res) => {
     const aliado= await Aliado.findOne({
       where:{userId}
     });
-
+    console.log("Buscando Aliado X UserId",aliado)
     aliado? res.status(200).json(aliado) : res.status(400).json({mensaje:"El Aliado No Existe"});
   } catch (error) {
     res.send(error);

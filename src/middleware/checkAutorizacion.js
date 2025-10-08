@@ -5,6 +5,7 @@ const { Op } = require("sequelize");
 
 const checkAutorizacion = async (req, res, next)  => {
     try {
+      console.log("Revisando autorizacion")
         let userId = "";
         let email = "";
         
@@ -14,6 +15,7 @@ const checkAutorizacion = async (req, res, next)  => {
           const parsedbodyObj = JSON.parse(bodyObj);
           if(parsedbodyObj.userId) userId = parsedbodyObj.userId;
           if(parsedbodyObj.email) email = parsedbodyObj.email;
+          console.log("Revisando autorizacion userId", userId, "email", email)
         }
         // los datos vienen en el body del request
         else{

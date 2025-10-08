@@ -2,7 +2,7 @@ const server = require("express").Router();
 var nodemailer = require('nodemailer');
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
-const { Cliente, TipodeUsuario, Organizacion, AutorizacionesXTipodeOrg, UltimoContacto } = require("../db");
+const { Cliente, TipodeUsuario, Organizacion, AutorizacionesXTipodeOrg, UltimoContacto, AsignaciondePropiedad, PropiedadIndependiente, Colonia, Ciudad, Estado } = require("../db");
 const { Op, fn, col } = require("sequelize");
 
 const { checkManejodeUsuarios } = require("../middleware/checkAutorizacion");
@@ -445,5 +445,52 @@ server.get("/clienteIsaac", async (req, res) => {
     res.send(error);
   }
 });
+
+server.get("/getPropiedadesAsignadas/:userId", async (req,res) => {
+  try {
+    const { userId } = req.params;
+    const cliente = await Cliente.findOne({
+      where:{userId}
+    });
+    if(!cliente){
+      console.log("El Cliente No Existe")
+      return res.status(404).json({ Mensaje: "El Cliente No Existe" });
+    }
+
+    console.log("Buscando propiedades asignadas para "+cliente.id)
+    
+    const propiedadAsignada = await AsignaciondePropiedad.findAll({
+      where:{clienteId:cliente.id},
+      include:[
+        {
+        model:PropiedadIndependiente,
+        attributes: [ 'numeroPropiedad', 'calle', 'precio'],
+        include:[
+          {
+            model:Colonia,
+            attributes: [ 'colonia']
+          },
+          {
+            model:Ciudad,
+            attributes: [ 'ciudad']
+          },
+          {
+            model:Estado,
+            attributes: [ 'estado']
+          },
+        ],
+        },
+        {
+          model:Cliente,
+          attributes: [ 'nombre', 'email']
+        },
+      ]
+    })
+    
+    propiedadAsignada? res.status(200).json(propiedadAsignada) : res.status(404).json({Mensaje:"No se encontraron propiedades asignadas"})
+  } catch (error) {
+    res.status(500).json(error)
+  }
+})
 
 module.exports = server;
