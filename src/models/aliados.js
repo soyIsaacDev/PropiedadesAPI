@@ -78,7 +78,7 @@ module.exports = s => {
         OrganizacionId:{
             type: DataTypes.UUID,
             allowNull: false,
-            defaultValue:"b7b986c7-b2e9-45fa-8087-eda07c1b22ae"
+            //defaultValue:"b7b986c7-b2e9-45fa-8087-eda07c1b22ae"
         }
     }, {
         tableName: 'aliados',

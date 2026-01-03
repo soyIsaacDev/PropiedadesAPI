@@ -9,9 +9,9 @@ const PORT = process.env.PORT || 8080;
 const isProduction = process.env.NODE_ENV === 'Production';
 
 
-//sequelize model synchronization
+// Documentacion de sequelize model synchronization
 // model.sync(options)
-//is an async function that returns a promise
+// is an async function that returns a promise
 
 /* User.sync() - This creates the table if it doesn't exist (and does nothing if it already exists)
 User.sync({ force: true }) - This creates the table, dropping it first if it already existed
@@ -28,14 +28,20 @@ User.sync({ alter: true }) - This checks what is the current state of the table 
   });
 }); */
 
+
+
+
 // Sincronización manual de la base de datos (comentada por ahora)
-/* db.sync({ alter: true })
+
+db.sync({ alter: true })
   .then(() => {
     console.log('Base de datos sincronizada');
   })
   .catch(err => {
     console.error('Error al sincronizar la base de datos:', err);
-  }); */
+  });
+
+
 
 
 // Middleware de autenticación mutua para producción

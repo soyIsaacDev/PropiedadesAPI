@@ -1,36 +1,44 @@
 'use strict';
 const sharp = require('sharp');
 const config = require('../../configCloudBucket');
-// Load the module for Cloud Storage
-const {Storage} = require('@google-cloud/storage');
-// Get the GCLOUD_BUCKET environment variable
-// Recall that earlier you exported the bucket name into an
-// environment variable.
-// The config module provides access to this environment
-// variable so you can use it in code
-const MOD_ASOC_BUCKET_GCLOUD_BUCKET = config.get('GCLOUD_MOD_ASOC_BUCKET');
-const DESARROLLO_GCLOUD_BUCKET = config.get('GCLOUD_BUCKET');
+const path = require('path');
+const fs = require('fs');
+const carpeta = path.join(__dirname, '../../uploads');
 
-// Create the storage client
-// The Storage(...) factory function accepts an options
-// object which is used to specify which project's Cloud
-// Storage buckets should be used via the projectId
-// property.
-// The projectId is retrieved from the config module.
-// This module retrieves the project ID from the
-// GCLOUD_PROJECT environment variable.
-const storage = new Storage({
-  projectId: config.get('GCLOUD_PROJECT')
-});
-// Get a reference to the Cloud Storage bucket
-const modeloBucket = storage.bucket(MOD_ASOC_BUCKET_GCLOUD_BUCKET);
-const desarrolloBucket = storage.bucket(DESARROLLO_GCLOUD_BUCKET);
+// Asegurarse de que el directorio de uploads exista
+if (!fs.existsSync(carpeta)) {
+  fs.mkdirSync(carpeta, { recursive: true });
+}
 
-const path = require('path')
-const carpeta = path.join(__dirname, '../../uploads')
+// Variables para el almacenamiento
+let storage = null;
+let modeloBucket = null;
+let desarrolloBucket = null;
+
+// Configurar Google Cloud Storage solo en producción
+if (process.env.NODE_ENV === 'production') {
+  const { Storage } = require('@google-cloud/storage');
+  
+  // Verificar que las variables de configuración estén presentes
+  if (!config.nconf.get('GCLOUD_PROJECT') || !config.nconf.get('GCLOUD_MOD_ASOC_BUCKET') || !config.nconf.get('GCLOUD_BUCKET')) {
+    throw new Error('Las variables de configuración de Google Cloud Storage son requeridas en producción');
+  }
+
+  // Configurar el cliente de almacenamiento
+  storage = new Storage({
+    projectId: config.nconf.get('GCLOUD_PROJECT')
+  });
+  
+  // Configurar los buckets
+  modeloBucket = storage.bucket(config.nconf.get('GCLOUD_MOD_ASOC_BUCKET'));
+  desarrolloBucket = storage.bucket(config.nconf.get('GCLOUD_BUCKET'));
+
+  console.log('Configuración de Google Cloud Storage inicializada en modo producción');
+} else {
+  console.log('Modo desarrollo: Usando almacenamiento local en', carpeta);
+}
 
 const DEVMODE = process.env.DEVELOPMENT;
-
 
 const cargarImagenGCPyLocal = async (req, res, next) => {
   try {

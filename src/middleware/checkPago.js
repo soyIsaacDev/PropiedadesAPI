@@ -6,6 +6,7 @@ const servidorPago = require("express").Router();
 const checkPagosActivos = async function (req, res, next) {
   try {
     const userId = req.body.userId;
+    console.log("Check Pagos Activos userId:", userId);
     
     let orgId = req.orgId;
 
@@ -13,7 +14,17 @@ const checkPagosActivos = async function (req, res, next) {
       const cliente = await Cliente.findOne({
         where:{ userId },
       })
+
+      if (!cliente) {
+        console.log('Cliente no encontrado para userId:', userId);
+        return res.status(400).json({ error: 'Cliente no encontrado' });
+      }
+      console.log('Cliente encontrado:', cliente);
       orgId = cliente.OrganizacionId;
+      if (!orgId) {
+        console.log('No se pudo determinar la organización');
+        return res.status(400).json({ error: 'No se pudo determinar la organización' });
+      }
     }
     // Paso la orgId segun de donde venga sin depender de la que esta previamente
     req.orgId = orgId;
@@ -27,8 +38,10 @@ const checkPagosActivos = async function (req, res, next) {
         ],
         include:  PaquetedePago
     })
-    console.log(historialdePagos[0].fechaFin)
-    if(historialdePagos.length>0){
+    
+    console.log("Historial de pagos:", historialdePagos);
+    
+    if(historialdePagos && historialdePagos.length>0){
       const paquetesActivos = [];
       for (let i = 0; i < historialdePagos.length; i++) {
         const fechasHistorial = new Date(historialdePagos[i].fechaFin);
@@ -129,10 +142,22 @@ const checkPublicacionesRestantesyAutxTipodeOrg = async (req, res, next)  => {
   }
 }
 
-servidorPago.use(checkPagosActivos, checkPublicacionesRestantesyAutxTipodeOrg);
-
-servidorPago.post("/revisarPago",  async (req, res)=>{
+//servidorPago.use(checkPagosActivos, checkPublicacionesRestantesyAutxTipodeOrg);
+servidorPago.get("/verificarPago", (req, res) => {
+  res.json({ mensaje: "Servicio de verificación de pago activo" });
+});
+servidorPago.post("/revisarPago",  async (req, res, next)=>{
+  console.log("Iniciando petición a /revisarPago", { 
+      body: req.body,
+      headers: req.headers 
+    });
+    next();
+  },
+  checkPagosActivos, 
+  checkPublicacionesRestantesyAutxTipodeOrg,
+  (req, res) => {
   try {
+    console.log("Procesando /revisarPago después de middlewares");
     const publicacionesRestantes = req.publicaciones;
     const tipodeOrg = req.TipodeOrg;
     //console.log(publicacionesRestantes)

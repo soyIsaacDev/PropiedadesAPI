@@ -427,7 +427,7 @@ server.get("/clienteIsaac", async (req, res) => {
     });
 
     //cliente.OrganizacionId = "64dfee18-5047-4363-b329-34df1ed8633b";
-    cliente.TipodeUsuarioId = "d339471e-ff43-48b5-b930-644767586ce8";
+    cliente.TipodeUsuarioId = "1b3a1965-2ec7-453d-aaad-b66fef25079a";
     cliente.OrganizacionId ="b7b986c7-b2e9-45fa-8087-eda07c1b22ae";
     //cliente.autorizaciondePublicar = "Completa"
     await cliente.save();

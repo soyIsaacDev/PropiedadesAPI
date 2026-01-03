@@ -1,14 +1,15 @@
 const fs = require("fs");
 const path = require('path');
-const carpeta = path.join(__dirname, '../../uploads')
-const {ImgDesarrollo, ImgModeloAsociado, ImgPropiedadIndependiente } = require("../db");
-
-// Cloud Storage 
+const { ImgDesarrollo, ImgModeloAsociado, ImgPropiedadIndependiente } = require("../db");
 const config = require('../../configCloudBucket');
-const MOD_ASOC_BUCKET_GCLOUD_BUCKET = config.get('GCLOUD_MOD_ASOC_BUCKET');
-const DESARROLLO_GCLOUD_BUCKET = config.get('GCLOUD_BUCKET');
 
-const DEVMODE = process.env.DEVELOPMENT;
+// Configuración
+const carpeta = path.join(__dirname, '../../uploads');
+const DEVMODE = process.env.NODE_ENV === 'production' ? 'Production' : 'Development';
+
+// Obtener configuraciones de los buckets (solo se usarán en producción)
+const MOD_ASOC_BUCKET_GCLOUD_BUCKET = config.nconf.get('GCLOUD_MOD_ASOC_BUCKET') || '';
+const DESARROLLO_GCLOUD_BUCKET = config.nconf.get('GCLOUD_BUCKET') || '';
 
 const editarTablaImg = async (req, res, next) => {
   try {

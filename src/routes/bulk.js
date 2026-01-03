@@ -1,5 +1,5 @@
 const server = require("express").Router();
-const { Propiedad, Estado, Municipio, Ciudad, Colonia, AmenidadesPropiedad, AmenidadesDesarrollo,
+const { Propiedad, Estado, Municipio, Ciudad, Colonia, AmenidadesdelaPropiedad, AmenidadesDesarrollo,
     TipoOperacion, TipodePropiedad, ImgPropiedad, ModeloAsociadoPropiedad, ImgModeloAsociado, 
     ColoniaCiudad, AmenidadesDesarrolloPropiedad, AmenidadesModeloAmenidad, EstiloArquitectura,
     Organizacion, AutorizacionesXTipodeOrg, TipodeUsuario, HistorialdePagos, PaquetedePago, PaquetePagoPorOrg } = require("../db");
@@ -62,44 +62,106 @@ server.get("/bulk", async (req,res)=> {
             )  
         }
         
-        const AmenidadPropiedad = await AmenidadesPropiedad.bulkCreate([
-            { nombreAmenidad:"Terraza" },
-            { nombreAmenidad:"Roof Garden" },
-            { nombreAmenidad:"Biblioteca" },
-            { nombreAmenidad:"Alberca" },
-            { nombreAmenidad:"Gimnasio" },
-            { nombreAmenidad:"Sala de Juegos" },
-            { nombreAmenidad:"Lavanderia" },
-            { nombreAmenidad:"Doble Lavamanos" },
-            { nombreAmenidad:"Walk in Closet" },
-            { nombreAmenidad:"Estancia" },
-            { nombreAmenidad:"Cuarto de Servicio" },
-            { nombreAmenidad:"Cuarto de Servicio con Baño" },
-            { nombreAmenidad:"Balcon" },
+        const AmenidadPropiedad = await AmenidadesdelaPropiedad.bulkCreate([
+            { nombreAmenidad: "Acceso Controlado", icon: "mdi-gate", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Alberca", icon: "mdi-pool", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Alberca para Niños", icon: "mdi-pool", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Andador de Jogging", icon: "mdi-run", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Area de Fitness", icon: "mdi-dumbbell", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Area de Juegos", icon: "mdi-gamepad-variant", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Áreas Verdes", icon: "mdi-leaf", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Asadores", icon: "mdi-grill", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Bar", icon: "mdi-glass-cocktail", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Cancha de Basquetbol", icon: "mdi-basketball", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Cancha de Futbol", icon: "mdi-soccer", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Cancha de Paddel", icon: "mdi-tennis", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Cancha de Tennis", icon: "mdi-tennis", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Cancha de Voleibol", icon: "mdi-volleyball", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Carril de Nado", icon: "mdi-swim", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Cine", icon: "mdi-movie", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Cuarto de Huéspedes", icon: "mdi-bed", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Elevador", icon: "mdi-elevator", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Espacio para Eventos", icon: "mdi-party-popper", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Estacionamiento de Visitas", icon: "mdi-parking", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Estacionamiento para Bicicletas", icon: "mdi-bike", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Estacionamiento Techado", icon: "mdi-garage", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Fire Pit", icon: "mdi-fire", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Gimnasio", icon: "mdi-dumbbell", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Jacuzzi", icon: "mdi-hot-tub", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Jardin", icon: "mdi-flower", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Juegos Infantiles", icon: "mdi-castle", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Lavandería", icon: "mdi-washing-machine", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Ludoteca", icon: "mdi-teddy-bear", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Mirador", icon: "mdi-binoculars", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Pool Bar", icon: "mdi-pool", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Restaurante", icon: "mdi-silverware-fork-knife", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Roof Garden", icon: "mdi-roofing", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Ruta de Bicicleta", icon: "mdi-bike", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Sala de Billar", icon: "mdi-billiards", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Sala de Juegos", icon: "mdi-cards-playing", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Salon de Fiestas", icon: "mdi-party-popper", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Sala de TV", icon: "mdi-television", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Salón de Usos Múltiples", icon: "mdi-chair-rolling", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Sauna", icon: "mdi-sauna", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Seguridad", icon: "mdi-shield-check", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Seguridad 24/7", icon: "mdi-shield-lock", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Sistema Contra Incendios", icon: "mdi-fire-extinguisher", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Spa", icon: "mdi-spa", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "VideoVigilancia", icon: "mdi-cctv", libreria: "MaterialDesignIcons" }
         ])
         
         const AmenidadDesarrolloCreado = await AmenidadesDesarrollo.bulkCreate([
-            { nombreAmenidad:"Roof Garden" },
-            { nombreAmenidad:"Alberca" },
-            { nombreAmenidad:"Gimnasio" },
-            { nombreAmenidad:"Sala de Juegos" },
-            { nombreAmenidad:"Ludoteca" },
-            { nombreAmenidad:"Cancha de Tennis" },
-            { nombreAmenidad:"Cancha de Paddel" },
-            { nombreAmenidad:"Cancha de Futbol" },
-            { nombreAmenidad:"Cancha de Basquetbol" },
-            { nombreAmenidad:"Asadores" },
-            { nombreAmenidad:"Coworking" },
-            { nombreAmenidad:"Fire Pit" },
-            { nombreAmenidad:"Area de Fitness" },
-            { nombreAmenidad:"Jardin" },
-            { nombreAmenidad:"Coffee Station" },
-            { nombreAmenidad:"Salon de TV" },
-            { nombreAmenidad:"Pet Park" },
-            { nombreAmenidad:"Carril de Nado" },
-            { nombreAmenidad:"Jacuzzi" },
-            { nombreAmenidad:"Andador de Jogging" },
-            { nombreAmenidad:"Area de Juegos" },
+            { nombreAmenidad: "Acceso Controlado", icon: "mdi-gate", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Alberca", icon: "mdi-pool", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Alberca para Niños", icon: "mdi-pool", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Andador de Jogging", icon: "mdi-run", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Area de Fitness", icon: "mdi-dumbbell", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Area de Juegos", icon: "mdi-gamepad-variant", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Áreas Verdes", icon: "mdi-leaf", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Asadores", icon: "mdi-grill", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Bar", icon: "mdi-glass-cocktail", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Business Center", icon: "mdi-briefcase", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Cancha de Basquetbol", icon: "mdi-basketball", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Cancha de Futbol", icon: "mdi-soccer", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Cancha de Paddel", icon: "mdi-tennis", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Cancha de Tennis", icon: "mdi-tennis", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Cancha de Voleibol", icon: "mdi-volleyball", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Carril de Nado", icon: "mdi-swim", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Casa Club", icon: "mdi-home", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Cine", icon: "mdi-movie", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Coffee Station", icon: "mdi-coffee", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Coworking", icon: "mdi-desktop-mac", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Cuarto de Huéspedes", icon: "mdi-bed", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Elevador", icon: "mdi-elevator", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Espacio para Eventos", icon: "mdi-party-popper", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Estacionamiento de Visitas", icon: "mdi-parking", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Estacionamiento para Bicicletas", icon: "mdi-bike", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Estacionamiento Techado", icon: "mdi-garage", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Fire Pit", icon: "mdi-fire", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Gimnasio", icon: "mdi-dumbbell", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Jacuzzi", icon: "mdi-hot-tub", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Jardin", icon: "mdi-flower", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Juegos Infantiles", icon: "mdi-castle", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Lavandería Comunitaria", icon: "mdi-washing-machine", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Ludoteca", icon: "mdi-teddy-bear", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Mirador", icon: "mdi-binoculars", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Pet Park", icon: "mdi-paw", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Piñatero", icon: "mdi-party-popper", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Pool Bar", icon: "mdi-pool", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Recepción", icon: "mdi-desk", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Restaurante", icon: "mdi-silverware-fork-knife", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Roof Garden", icon: "mdi-roofing", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Ruta de Bicicleta", icon: "mdi-bike", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Sala de Billar", icon: "mdi-billiards", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Sala de Juegos", icon: "mdi-cards-playing", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Salón de Fiestas", icon: "mdi-party-popper", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Sala de TV", icon: "mdi-television", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Salón de Usos Múltiples", icon: "mdi-chair-rolling", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Sauna", icon: "mdi-sauna", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Seguridad 24/7", icon: "mdi-shield-lock", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Sistema Contra Incendios", icon: "mdi-fire-extinguisher", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "Spa", icon: "mdi-spa", libreria: "MaterialDesignIcons" },
+            { nombreAmenidad: "VideoVigilancia", icon: "mdi-cctv", libreria: "MaterialDesignIcons" },
         ])
         
         const TipodeOpCreada = await TipoOperacion.bulkCreate(
@@ -126,6 +188,45 @@ server.get("/bulk", async (req,res)=> {
                 {nombreEstilo:"Barroco"},
             ]
         );
+
+        const tiposdeOrg = await AutorizacionesXTipodeOrg.bulkCreate([
+            {
+                nombreTipoOrg:"Desarrolladora",
+                tipodeOperacionAut:"Venta",
+                tipodeDesarrolloAut:"Desarrollo",
+                tiempodeConstruccionAut:"Nuevo",
+                cantidadPropVenta:100,
+                cantidadPropRenta:0,
+                cantidadPropPreVenta:0,
+            }, 
+            {
+                nombreTipoOrg:"TratoDirecto",
+                tipodeOperacionAut:"VentaoRenta",
+                tipodeDesarrolloAut:"PropiedadIndependiente",
+                tiempodeConstruccionAut:"ConUso",
+                cantidadPropVenta:1,
+                cantidadPropRenta:1,
+                cantidadPropPreVenta:0,
+            },
+            {
+                nombreTipoOrg:"DireccionTotal",
+                tipodeOperacionAut:"Todas",
+                tipodeDesarrolloAut:"Todos",
+                tiempodeConstruccionAut:"Todas",
+                cantidadPropVenta:90000,
+                cantidadPropRenta:90000,
+                cantidadPropPreVenta:90000,
+            },
+            {
+                nombreTipoOrg:"General",
+                tipodeOperacionAut:"NoAutorizado",
+                tipodeDesarrolloAut:"NoAutorizado",
+                tiempodeConstruccionAut:"NoAutorizado",
+                cantidadPropVenta:0,
+                cantidadPropRenta:0,
+                cantidadPropPreVenta:0,
+            },
+        ])
 
           console.log("Creando Bulk")
           
@@ -2818,53 +2919,6 @@ server.get("/bulk", async (req,res)=> {
     }
 })
 
-server.get("/nuevoTipoOrg", async (req, res) => { 
-  try {
-    const tiposdeOrg = await AutorizacionesXTipodeOrg.bulkCreate([
-      {
-        nombreTipoOrg:"Desarrolladora",
-        tipodeOperacionAut:"Venta",
-        tipodeDesarrolloAut:"Desarrollo",
-        tiempodeConstruccionAut:"Nuevo",
-        cantidadPropVenta:100,
-        cantidadPropRenta:0,
-        cantidadPropPreVenta:0,
-      }, 
-      {
-        nombreTipoOrg:"TratoDirecto",
-        tipodeOperacionAut:"VentaoRenta",
-        tipodeDesarrolloAut:"Modelo",
-        tiempodeConstruccionAut:"ConUso",
-        cantidadPropVenta:1,
-        cantidadPropRenta:1,
-        cantidadPropPreVenta:0,
-      },
-      {
-        nombreTipoOrg:"DireccionTotal",
-        tipodeOperacionAut:"Todas",
-        tipodeDesarrolloAut:"Todos",
-        tiempodeConstruccionAut:"Todas",
-        cantidadPropVenta:90000,
-        cantidadPropRenta:90000,
-        cantidadPropPreVenta:90000,
-      },
-      {
-        nombreTipoOrg:"General",
-        tipodeOperacionAut:"NoAutorizado",
-        tipodeOperacionAut:"NoAutorizado",
-        tipodeDesarrolloAut:"NoAutorizado",
-        tiempodeConstruccionAut:"NoAutorizado",
-        cantidadPropVenta:0,
-        cantidadPropRenta:0,
-        cantidadPropPreVenta:0,
-      },
-    ])
-    res.send(tiposdeOrg)
-  } catch (error) {
-    res.send(error)
-  }
-})
-
 /* server.get("/actualizarOrg/:nombre/:orgTId", async (req, res) => { 
     try {
         const {nombre, orgTId} = req.params;
@@ -3022,7 +3076,7 @@ server.get("/crearAutorizacionXTipodeOrg", async (req, res) => {
     }
 })
 
-server.get("/actualizarTipoOrg", async (req, res) => { 
+/* server.get("/actualizarTipoOrg", async (req, res) => { 
     try {
         console.log("Actualizando Tipo Org")
         const tipoOrg = {
@@ -3047,7 +3101,7 @@ server.get("/actualizarTipoOrg", async (req, res) => {
     } catch (error) {
         res.send
     }
-})
+}) */
 
 server.get("/crearPaquetePago", async (req, res) => {
   try {
@@ -3080,7 +3134,7 @@ server.get("/crearPaquetePago", async (req, res) => {
       },
     ])
 
-    const paquetesxOrg = await PaquetePagoPorOrg.bulkCreate([
+    /* const paquetesxOrg = await PaquetePagoPorOrg.bulkCreate([
         { // Direccion
             AutorizacionesXTipodeOrgId:"41a8c882-0d85-4c91-a17a-e94c42e2248a",
             PaquetedePagoId:paquetesCreados[0].id
@@ -3093,7 +3147,7 @@ server.get("/crearPaquetePago", async (req, res) => {
             AutorizacionesXTipodeOrgId:"22a44bfc-ce80-4803-bc7e-cda92be7448a",
             PaquetedePagoId:paquetesCreados[2].id
         },
-    ]);
+    ]); */
 
     const pagar = await HistorialdePagos.bulkCreate([
         {   // Inmozz

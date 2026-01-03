@@ -1,6 +1,23 @@
 const https = require('https');
+const http = require('http');
 const crypto = require('crypto');
 const { httpsOptions } = require('../config/certificates');
+
+// Verificar si tenemos todos los certificados necesarios
+const hasValidCerts = httpsOptions.key && httpsOptions.cert && httpsOptions.ca;
+
+// Si no hay certificados válidos, usar HTTP en desarrollo
+if (process.env.NODE_ENV !== 'production' && !hasValidCerts) {
+  console.warn('⚠️  No se encontraron certificados HTTPS válidos. Usando HTTP en modo desarrollo.');
+  
+  return {
+    createServer: (app, port) => {
+      return http.createServer(app).listen(port, () => {
+        console.log(`Servidor HTTP (sin HTTPS) escuchando en el puerto ${port}`);
+      });
+    }
+  };
+}
 
 /**
  * Crea y configura un servidor HTTPS con autenticación mutua

@@ -42,6 +42,8 @@ const checkAutorizacion = async (req, res, next)  => {
             }
         })
 
+        console.log("Tipo de usuario en Auth", tipodeUsuario)
+
         req.auth = cliente.autorizaciondePublicar;
         req.tipodeUsuario = tipodeUsuario.tipo;
         req.manejaUsuarios = tipodeUsuario.manejaUsuarios;
@@ -58,7 +60,7 @@ const checkAutorizacion = async (req, res, next)  => {
         }
     } catch (e) {
         console.log("Error en checkAutorizacion"+e);
-        res.send("Error en checkAutorizacion"+e)
+        res.status(500).send("Error en checkAutorizacion"+e)
     }
 }
 

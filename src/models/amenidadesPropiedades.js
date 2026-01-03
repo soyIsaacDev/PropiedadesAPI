@@ -8,7 +8,16 @@ module.exports = s => {
             type: DataTypes.STRING,
             allowNull: true,
             unique: true 
-        }        
+        },
+        icon: {
+            type: DataTypes.STRING,
+            allowNull: true
+        }, 
+        libreria: {
+            type: DataTypes.STRING,
+            allowNull: true
+        }
+        //tipodeAmenidiad 
     }, {
         tableName: 'amenidades_propiedades',
     timestamps: false,

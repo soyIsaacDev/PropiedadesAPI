@@ -68,7 +68,7 @@ const modeloVideoYoutube = require("./models/ytVideo.js");
 const modeloTour3D = require("./models/tour3D.js");
 const modeloAliado = require("./models/aliados.js");
 const modeloAsignacionProp = require("./models/asignacionPropiedad.js"); 
-
+const modeloColoniasPorCiudad = require("./models/coloniasPorCiudad.js");
 
 modelOrganizacion(sequelize);
 modelDesarrollo(sequelize);
@@ -96,12 +96,13 @@ modeloVideoYoutube(sequelize);
 modeloTour3D(sequelize);
 modeloAliado(sequelize);
 modeloAsignacionProp(sequelize);
+modeloColoniasPorCiudad(sequelize);
 
 let {Desarrollo, ImgDesarrollo, TipodePropiedad, AmenidadesDesarrollo, AmenidadesdelaPropiedad, 
   TipoOperacion, Estado , Municipio, Ciudad, Colonia, Cliente, ModeloAsociadoAlDesarrollo,
   ImgModeloAsociado, TipodeUsuario, EstiloArquitectura, HistorialdePagos, PaquetedePago, 
   Organizacion, AutorizacionesXTipodeOrg, PropiedadIndependiente, ImgPropiedadIndependiente,
-  UltimoContacto, VideoYoutube, Tour3D, Aliado, AsignaciondePropiedad,
+  UltimoContacto, VideoYoutube, Tour3D, Aliado, AsignaciondePropiedad, ColoniasPorCiudad,
 } = sequelize.models;
 
 // Relaciones DB
@@ -250,13 +251,31 @@ Municipio.belongsTo(Estado);
 Municipio.hasMany(Ciudad);
 Ciudad.belongsTo(Municipio);
 
-Colonia.belongsToMany(Ciudad, { through: 'colonias_por_ciudad', timestamps: false, });
-Ciudad.belongsToMany(Colonia, { through: 'colonias_por_ciudad', timestamps: false, });
+// Relación muchos a muchos entre Colonia y Ciudad
+Colonia.belongsToMany(Ciudad, {
+  through: {
+    model: 'colonias_por_ciudad',
+    unique: false  // Deshabilitar restricción única
+  },
+  timestamps: false,
+  foreignKey: 'ColoniumId',
+  otherKey: 'CiudadId'
+});
+
+Ciudad.belongsToMany(Colonia, {
+  through: {
+    model: 'colonias_por_ciudad',
+    unique: false  // Deshabilitar restricción única
+  },
+  timestamps: false,
+  foreignKey: 'CiudadId',
+  otherKey: 'ColoniumId'
+});
 
 Ciudad.hasMany(Aliado);
 Aliado.belongsTo(Ciudad);
 
-Aliado.belongsToMany(Colonia, { through: 'colonias_por_aliado', timestamps: false, });
+Aliado.belongsToMany(Colonia, { through: 'colonias_por_aliado', timestamps: false });
 Colonia.belongsToMany(Aliado, { through: 'colonias_por_aliado', timestamps: false, });
 
 // Asignacion de Propiedad
