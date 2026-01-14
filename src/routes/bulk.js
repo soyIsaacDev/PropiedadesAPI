@@ -2937,7 +2937,7 @@ server.get("/nuevoTipodeUsuario", async (req, res) => {
     //const tiposdeUsuario = await TipodeUsuario.create(
     const tiposdeUsuario = await TipodeUsuario.bulkCreate([
       {
-        tipo:"DueñoIsaacBoMiquirray",
+        tipo:"IsaDueñoBorMiquirrayDueño",
         giro:"Todos", 
         manejaUsuarios:"Si",
         tipodeOperacionAut:"Todas",
@@ -3014,7 +3014,7 @@ server.get("/nuevoTipodeUsuario", async (req, res) => {
         cantidadPropPreVenta:0,
       },
       {
-        tipo:"DueñodePropiedad",
+        tipo:"DueñoTratoDirecto",
         giro:"Todos",
         manejaUsuarios:"No",
         tipodeOperacionAut:"VentayRenta",
@@ -3104,6 +3104,7 @@ server.get("/crearAutorizacionXTipodeOrg", async (req, res) => {
 }) */
 
 server.get("/crearPaquetePago", async (req, res) => {
+    //Actualizar la org Id para aplicar el paquete
   try {
     const paquetesCreados = await PaquetedePago.bulkCreate([
       {          
@@ -3153,15 +3154,15 @@ server.get("/crearPaquetePago", async (req, res) => {
         {   // Inmozz
             fechaInicio:"2025-02-01",
             fechaFin:"2200-01-01",
-            OrganizacionId:"b7b986c7-b2e9-45fa-8087-eda07c1b22ae",
+            OrganizacionId:"11183905-3109-46be-9901-2e1b88592745",
             PaquetedePagoId:paquetesCreados[0].id,          
         },
-        {   // General 
+        /* {   // General 
             fechaInicio:"2025-02-01",
             fechaFin:"2025-05-31",
             OrganizacionId:"6521961c-1a27-4cec-956a-e0891faa577f",
             PaquetedePagoId:paquetesCreados[1].id,          
-        },
+        }, */
     ])
 
     res.json(paquetesCreados);

@@ -13,11 +13,11 @@ const checkAliado = async (req, res, next)  => {
     })
 
     if(aliado === null ){
-        res.status(401).json({mensaje:"El Aliado no existe"});
+        res.status(404).json({Mensaje:"El Aliado no existe"});
         return;
     }
     if(aliado.autorizaciondePublicar === "Ninguna"){
-      res.status(401).json({Mensaje:"El Aliado no esta autorizado"});
+      res.status(404).json({Mensaje:"El Aliado no esta autorizado"});
     }
     else {
       req.aliado = aliado;

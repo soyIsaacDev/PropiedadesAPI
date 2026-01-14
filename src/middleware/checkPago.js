@@ -19,7 +19,7 @@ const checkPagosActivos = async function (req, res, next) {
         console.log('Cliente no encontrado para userId:', userId);
         return res.status(400).json({ error: 'Cliente no encontrado' });
       }
-      console.log('Cliente encontrado:', cliente);
+      //console.log('Cliente encontrado:', cliente);
       orgId = cliente.OrganizacionId;
       if (!orgId) {
         console.log('No se pudo determinar la organización');
@@ -39,7 +39,7 @@ const checkPagosActivos = async function (req, res, next) {
         include:  PaquetedePago
     })
     
-    console.log("Historial de pagos:", historialdePagos);
+    //console.log("Historial de pagos:", historialdePagos);
     
     if(historialdePagos && historialdePagos.length>0){
       const paquetesActivos = [];
@@ -49,11 +49,10 @@ const checkPagosActivos = async function (req, res, next) {
         
         if(hoy < fechasHistorial){
           // Si esta activo el paquete
-          const historialActivo = {...historialdePagos[i].PaquetedePago.dataValues, orgId:historialdePagos[i].OrganizacionId }
+          const historialActivo = {...historialdePagos[i].PaquetedePagoId.dataValues, orgId:historialdePagos[i].OrganizacionId }
           paquetesActivos.push(historialActivo);
         }
       }
-      
       if(paquetesActivos && paquetesActivos.length>0){
         
         //req.paquetesActivos = paquetesActivos;
@@ -78,6 +77,7 @@ const checkPublicacionesRestantesyAutxTipodeOrg = async (req, res, next)  => {
       include:  AutorizacionesXTipodeOrg
     })
      
+    //console.log("Publicaciones Restantes", org.AutorizacionesXTipodeOrg)
     const cuentaDesarrollos = await Desarrollo.count(
       {
         where:{ publicada:true , OrganizacionId:orgId }, 
@@ -146,6 +146,7 @@ const checkPublicacionesRestantesyAutxTipodeOrg = async (req, res, next)  => {
 servidorPago.get("/verificarPago", (req, res) => {
   res.json({ mensaje: "Servicio de verificación de pago activo" });
 });
+
 servidorPago.post("/revisarPago",  async (req, res, next)=>{
   console.log("Iniciando petición a /revisarPago", { 
       body: req.body,

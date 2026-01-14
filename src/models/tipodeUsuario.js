@@ -12,7 +12,7 @@ module.exports = s => {
         },
         tipo:{
             type: DataTypes.ENUM(
-                "DueñoIsaacBoMiquirray",
+                "IsaDueñoBorMiquirrayDueño",
                 "Desarrollador",
                 "AgentedeDesarrollo",
                 "Agente",

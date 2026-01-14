@@ -5,10 +5,9 @@ server.get("/usuarioPrincipal", async (req,res)=> {
   try{
     const userPrincipal = await TipodeUsuario.findOne({ 
       where: { 
-        userId:"n7v1k7heCzbhiiZ1hUtJpmea8Hv1" 
+        tipo:"IsaDueñoBorMiquirrayDueño" 
       } 
     })
-    userPrincipal.tipo="DueñoIsaacBM";
     await userPrincipal.save();
     const cliente = await Cliente.findOne({
       where: { 

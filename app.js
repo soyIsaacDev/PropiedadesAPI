@@ -33,13 +33,13 @@ User.sync({ alter: true }) - This checks what is the current state of the table 
 
 // Sincronización manual de la base de datos (comentada por ahora)
 
-db.sync({ alter: true })
+/* db.sync({ alter: true })
   .then(() => {
     console.log('Base de datos sincronizada');
   })
   .catch(err => {
     console.error('Error al sincronizar la base de datos:', err);
-  });
+  }); */
 
 
 

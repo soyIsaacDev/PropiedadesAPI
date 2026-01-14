@@ -124,7 +124,7 @@ app.get("/", (req, res) => {
 // Firebase Server side code.
 const admin = require('firebase-admin');
 //const Firebase_Service_Account = process.env.FIREBASE_SERVICE_ACCOUNT;
-const FirebaseConfig = require('./pruebas-91a5d-firebase-adminsdk-pgcw7-03b1af47fc.js')
+const FirebaseConfig = require('./firebaseConfig.js')
 
 // The Firebase Admin SDK is used here to verify the ID token.
 admin.initializeApp({
