@@ -26,7 +26,16 @@ if (process.env.NODE_ENV !== 'production' && !hasValidCerts) {
  * @returns {Object} - Instancia del servidor HTTPS
  */
 function createHttpsServer(app, port) {
-    // Middleware de verificación de certificado
+    // En desarrollo, no requerir certificados de cliente para evitar problemas de CORS
+    if (process.env.NODE_ENV !== 'production') {
+        console.log('Modo desarrollo: HTTPS sin autenticación de cliente');
+        return https.createServer(httpsOptions, app)
+            .listen(port, () => {
+                console.log(`Servidor HTTPS (desarrollo) escuchando en el puerto ${port}`);
+            });
+    }
+
+    // Middleware de verificación de certificado (solo en producción)
     app.use((req, res, next) => {
         if (!req.client.authorized) {
             console.error('Cliente no autenticado en Servidor HTTPS');

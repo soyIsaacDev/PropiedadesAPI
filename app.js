@@ -7,7 +7,7 @@ const limiter = require("./src/middleware/rateLimiter");
 
 const PORT = process.env.PORT || 8080;
 const isProduction = process.env.NODE_ENV === 'Production';
-
+console.log("App en modo:", isProduction );
 
 // Documentacion de sequelize model synchronization
 // model.sync(options)
@@ -39,7 +39,7 @@ User.sync({ alter: true }) - This checks what is the current state of the table 
   })
   .catch(err => {
     console.error('Error al sincronizar la base de datos:', err);
-  }); */
+  });  */
 
 
 

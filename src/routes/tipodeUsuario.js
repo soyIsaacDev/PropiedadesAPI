@@ -11,7 +11,7 @@ server.get("/usuarioPrincipal", async (req,res)=> {
     await userPrincipal.save();
     const cliente = await Cliente.findOne({
       where: { 
-        userId:"n7v1k7heCzbhiiZ1hUtJpmea8Hv1" 
+        userId:"A7Kp7IQfvxY1RrRrRFW8bifbADD2" 
       } 
     })
    cliente.TipodeUsuarioId = userPrincipal.id;

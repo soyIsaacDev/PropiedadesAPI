@@ -24,7 +24,7 @@ server.get("/bulk", async (req,res)=> {
         });
         
         
-        const ColoniaCreada = await Colonia.bulkCreate([
+        /* const ColoniaCreada = await Colonia.bulkCreate([
             {colonia:"Las Quintas"},
             {colonia:"Santa Fe"},
             {colonia:"Los Lagos"},
@@ -48,7 +48,7 @@ server.get("/bulk", async (req,res)=> {
             {colonia:"Montebello"},
             {colonia:"Real de Castilla"},
             {colonia:"Altozano"},
-        ]);
+        ]); */
         
           // agregando relaciones entre ellos
         MunicipioCreado.EstadoId = EstadoCreado.id; 
@@ -56,11 +56,11 @@ server.get("/bulk", async (req,res)=> {
         CiudadCreada.MunicipioId= await MunicipioCreado.id
         await CiudadCreada.save();
         
-        for (let i = 0; i < ColoniaCreada.length; i++) {
+        /* for (let i = 0; i < ColoniaCreada.length; i++) {
             await ColoniaCiudad.create(
                 {ColoniumId:ColoniaCreada[i].id, CiudadId:CiudadCreada.id}
             )  
-        }
+        } */
         
         const AmenidadPropiedad = await AmenidadesdelaPropiedad.bulkCreate([
             { nombreAmenidad: "Acceso Controlado", icon: "mdi-gate", libreria: "MaterialDesignIcons" },
@@ -3104,7 +3104,6 @@ server.get("/crearAutorizacionXTipodeOrg", async (req, res) => {
 }) */
 
 server.get("/crearPaquetePago", async (req, res) => {
-    //Actualizar la org Id para aplicar el paquete
   try {
     const paquetesCreados = await PaquetedePago.bulkCreate([
       {          
@@ -3150,23 +3149,46 @@ server.get("/crearPaquetePago", async (req, res) => {
         },
     ]); */
 
+
+    res.json(paquetesCreados);
+
+  } catch (error) {
+    res.json(error)
+  }
+})
+
+    //Actualizar la org Id para aplicar el paquete
+server.get("/pagar", async (req, res) => {
+  try {
     const pagar = await HistorialdePagos.bulkCreate([
         {   // Inmozz
             fechaInicio:"2025-02-01",
             fechaFin:"2200-01-01",
-            OrganizacionId:"11183905-3109-46be-9901-2e1b88592745",
-            PaquetedePagoId:paquetesCreados[0].id,          
+            OrganizacionId:"4df64930-eced-4964-9e0b-5b1606449ea2",
+            PaquetedePagoId:1,          
         },
         /* {   // General 
             fechaInicio:"2025-02-01",
             fechaFin:"2025-05-31",
             OrganizacionId:"6521961c-1a27-4cec-956a-e0891faa577f",
-            PaquetedePagoId:paquetesCreados[1].id,          
-        }, */
+            PaquetedePagoId:3,          
+        },  */
     ])
 
-    res.json(paquetesCreados);
+    res.json(pagar);
 
+  } catch (error) {
+    res.json(error)
+  }
+})
+
+//Actualizar la org Id y la autorizacionpara aplicar la autorizacion
+server.get("/cambiarAutorizacion", async (req, res) => {
+  try {
+    const org = await Organizacion.findByPk("4df64930-eced-4964-9e0b-5b1606449ea2");
+    org.AutorizacionId = "c5a66490-14f8-4e6e-9af2-7dc93c0d9cb4";
+    await org.save();
+    res.json(org);
   } catch (error) {
     res.json(error)
   }

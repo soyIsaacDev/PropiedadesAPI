@@ -25,6 +25,8 @@ let corsOptions = {
     'http://192.168.1.13:3000',
     'http://192.168.100.2:3000',
     'http://192.168.100.52:3000',
+    'http://localhost:8080',
+    'https://localhost:8080',
     'http://192.168.100.2:8081',
     'http://localhost:8081',
     'https://localhost:8081',
@@ -39,11 +41,15 @@ let corsOptions = {
   ],
   optionsSuccessStatus: 200,
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin', 'Access-Control-Request-Method', 'Access-Control-Request-Headers'],
+  exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar']
 };
 
 app.use(cors(corsOptions));
+
+// Handle preflight requests explicitly
+app.options('*', cors(corsOptions));
 
 
 const carpeta = path.join(__dirname, './uploads')
