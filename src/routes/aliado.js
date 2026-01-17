@@ -127,7 +127,7 @@ server.post("/autorizarAliados", async (req, res) => {
       }
     });
     
-    if(aliadoPrincipal && aliadoPrincipal.id === "b6ac3295-3742-496e-905f-e7a826e42028") {
+    if(aliadoPrincipal && aliadoPrincipal.id === "fbfb7620-a65e-4967-bf63-98f441fecb96") {
       const userTipo = await TipodeUsuario.findOne({
         where: { tipo: "AgentedeDesarrollo" }   
       });
@@ -201,7 +201,7 @@ server.post("/autorizarAliados", async (req, res) => {
           }
   
           // 4. Enviar correo
-          const correoEnviado = await enviarCorreo(aliado.email, aliadoPrincipal.nombre);
+          //const correoEnviado = await enviarCorreo(aliado.email, aliadoPrincipal.nombre);
           // Hacer commit de la transacción
           await transaction.commit();
           // Devolver las colonias que acabamos de asociar

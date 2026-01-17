@@ -3164,7 +3164,7 @@ server.get("/pagar", async (req, res) => {
         {   // Inmozz
             fechaInicio:"2025-02-01",
             fechaFin:"2200-01-01",
-            OrganizacionId:"4df64930-eced-4964-9e0b-5b1606449ea2",
+            OrganizacionId:"b1548035-bf52-4063-9328-91dbaee6e3a6",
             PaquetedePagoId:1,          
         },
         /* {   // General 

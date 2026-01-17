@@ -80,7 +80,7 @@ const cargarImagenGCPyLocal = async (req, res, next) => {
 
     const ordenData = ordenImagen.filter((imagen)=>imagen.img_name === file.originalname);
 
-    req.data = {file, ordenData, MOD_ASOC_BUCKET_GCLOUD_BUCKET, DESARROLLO_GCLOUD_BUCKET, uniqueDateName};
+    req.data = {file, ordenData, modeloBucket, desarrolloBucket, uniqueDateName};
     next();
     
   } catch (e) {

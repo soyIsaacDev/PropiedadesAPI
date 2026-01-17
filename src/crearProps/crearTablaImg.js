@@ -9,7 +9,7 @@ const crearTablaImg = async (req, res, next) => {
         const { id, tipodeDesarrollo, desarrolloId, modeloId, PropiedadIndependienteId } = parsedbodyObj
         console.log("Tipo de Desarrrollo " + tipodeDesarrollo)
         
-        const {file, ordenData, MOD_ASOC_BUCKET_GCLOUD_BUCKET, DESARROLLO_GCLOUD_BUCKET, uniqueDateName} = req.data;
+        const {file, ordenData, modeloBucket, desarrolloBucket, uniqueDateName} = req.data;
         
         let detalles_imgGde = undefined;
         let thumbnail_img = undefined;
@@ -17,8 +17,8 @@ const crearTablaImg = async (req, res, next) => {
         let BucketConfig = undefined;
 
         if(DEVMODE === "Production" ){
-            if(tipodeDesarrollo=== "Desarrollo") BucketConfig = DESARROLLO_GCLOUD_BUCKET;
-            else BucketConfig = MOD_ASOC_BUCKET_GCLOUD_BUCKET;
+            if(tipodeDesarrollo=== "Desarrollo") BucketConfig = desarrolloBucket;
+            else BucketConfig = modeloBucket;
             // Agregro al file los nombres segun tamaño
             detalles_imgGde = `https://storage.googleapis.com/${BucketConfig}/Detalles_Img_Gde_${uniqueDateName}.webp`;
             thumbnail_img = `https://storage.googleapis.com/${BucketConfig}/Thumbnail_WebP_${uniqueDateName}.webp`;
