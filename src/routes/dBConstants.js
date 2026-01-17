@@ -72,7 +72,6 @@ server.get("/getColoniasByCiudadId/:CiudadId", async (req, res) => {
       ]
     });
     const Colonias = ColoniasxCiudad.Colonia;
-    console.log(Colonias)
     res.status(200).json(Colonias)
   } catch (e) {
     res.send(e)

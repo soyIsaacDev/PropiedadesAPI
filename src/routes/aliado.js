@@ -1,5 +1,5 @@
 const server = require("express").Router();
-const { db, Aliado, TipodeUsuario, AsignaciondePropiedad, UltimoContacto, Cliente, PropiedadIndependiente, Colonia, Ciudad, Estado } = require("../db");
+const { db, Aliado, TipodeUsuario, AsignaciondePropiedad, UltimoContacto, Cliente, PropiedadIndependiente, Colonia, Ciudad, Estado, ImgPropiedadIndependiente } = require("../db");
 const { Op, Sequelize } = require("sequelize");
 const { enviarCorreo } = require("../middleware/menejoCorreo");
 
@@ -342,6 +342,10 @@ server.get("/getPropiedadesAsignadas/:userId", async (req,res) => {
           {
             model:Estado,
             attributes: [ 'estado']
+          },
+          {
+            model:ImgPropiedadIndependiente,
+            attributes: ['id','orden','img_name','thumbnail_img'],
           },
         ],
         },
