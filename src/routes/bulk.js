@@ -2945,6 +2945,16 @@ server.get("/nuevoTipodeUsuario", async (req, res) => {
         cantidadPropRenta:90000,
         cantidadPropPreVenta:90000,
       }, 
+      {
+        tipo:"Aliado",
+        giro:"Todos", 
+        manejaUsuarios:"No",
+      },
+      {
+        tipo:"ClientePropietario",
+        giro:"Todos", 
+        manejaUsuarios:"No",
+      },
        {
         tipo:"Desarrollador",
         giro:"Habitacional", 

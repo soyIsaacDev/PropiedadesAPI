@@ -7,7 +7,7 @@ const gmailClientId = process.env.GMAIL_CLIENT_ID;
 const gmailClientSecret = process.env.GMAIL_CLIENT_SECRET;
 const gmailRedirectUrl = process.env.GMAIL_REDIRECT_URL;
 const gmailRefreshToken = process.env.GMAIL_REFRESH_TOKEN;
-const gmailPassword = process.env.GMAIL_PASSWORD;
+//const gmailPassword = process.env.GMAIL_PASSWORD;
 
 
 const gmailCheck = async(req,res) => {
@@ -42,7 +42,7 @@ const enviarCorreo = async (para, de)  => {
       auth: {
         type: 'OAuth2',
         user:'isaacborbon@gmail.com',
-        pass:gmailPassword,
+        //pass:gmailPassword,
         clientId:gmailClientId,
         clientSecret:gmailClientSecret,
         refreshToken:gmailRefreshToken,
@@ -53,8 +53,8 @@ const enviarCorreo = async (para, de)  => {
     const mailOptions = {
       from: 'isaacborbon@gmail.com',
       to: para,
-      subject: `${de} te invita a unirte a su empresa en Inmozz`,
-      text: 'Unete a mi empresa en Inmozz dando click en el siguiente link http://localhost:3000/iniciarsesion. No olvides utilizar este correo electronico para registrarte'
+      subject: `${de} te invita a unirte a su empresa en Levinchi`,
+      text: 'Unete a mi empresa en Levinchi dando click en el siguiente link http://localhost:3000/iniciarsesion. No olvides utilizar este correo electronico para registrarte'
     };
 
     return new Promise((resolve, reject) => {

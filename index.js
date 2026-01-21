@@ -15,7 +15,6 @@ const { index, clientes, imagen, desarrollo, dbconstants, apikeys, favoritos, mo
 const { checkAutorizacion } = require("./src/middleware/checkAutorizacion.js")
 const { checkPagosActivos, checkPublicacionesRestantesyAutxTipodeOrg, servidorPago } = require("./src/middleware/checkPago");
 const { checkAliado } = require("./src/middleware/checkAliado.js");
-
 const isProduction = process.env.NODE_ENV === 'Production';
 
 let corsOptions = {

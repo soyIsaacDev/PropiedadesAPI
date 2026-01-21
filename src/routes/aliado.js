@@ -8,7 +8,7 @@ server.post("/registrarAliado", async (req, res) => {
     const { userId, nombre, apellidoPaterno, apellidoMaterno, email, telefono, sexo, dia_de_nacimiento, mes_de_nacimiento,
       año_de_nacimiento,  } = req.body;
     
-    const [aliado] = await Aliado.update(
+    const [aliado, updatedInfo] = await Aliado.update(
         {
           userId,
           nombre,
@@ -23,15 +23,15 @@ server.post("/registrarAliado", async (req, res) => {
         { 
           where: {
             email          
-          }
+          },
+          returning: true,
         }      
     );
-
     if(aliado === 0){
       return res.status(404).json({ mensaje: "Aliado no encontrado" });
     }
     else {
-      res.status(200).json({codigo:1, mensaje:"Aliado actualizado"});
+      res.status(200).json({codigo:1, mensaje:"Aliado actualizado", updatedInfo: updatedInfo[0]});
     }    
   } catch (error) {
     res.status(400).send(error);
@@ -108,7 +108,8 @@ server.post("/mostrarTour", async (req, res) => {
   }
 })
 
-// Autoriza Aliados por mi usuario y asigno colonias autorizadas (Las colonias donde dara servicio)
+// Crear Aliados por mi usuario y asigno colonias autorizadas (Las colonias donde dara servicio)
+// Envia correo de invitacion para registrar aliado
 server.post("/autorizarAliados", async (req, res) => { 
   try {
     console.log("Autorizando Aliados");
@@ -129,7 +130,7 @@ server.post("/autorizarAliados", async (req, res) => {
     
     if(aliadoPrincipal && aliadoPrincipal.id === "fbfb7620-a65e-4967-bf63-98f441fecb96") {
       const userTipo = await TipodeUsuario.findOne({
-        where: { tipo: "AgentedeDesarrollo" }   
+        where: { tipo: "Aliado" }   
       });
   
       const aliadosAutorizados = await Promise.all(aliados?.aliados?.map(async aliado => { 
@@ -201,7 +202,7 @@ server.post("/autorizarAliados", async (req, res) => {
           }
   
           // 4. Enviar correo
-          //const correoEnviado = await enviarCorreo(aliado.email, aliadoPrincipal.nombre);
+          const correoEnviado = await enviarCorreo(aliado.email, aliadoPrincipal.nombre);
           // Hacer commit de la transacción
           await transaction.commit();
           // Devolver las colonias que acabamos de asociar

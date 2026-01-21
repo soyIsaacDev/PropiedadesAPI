@@ -1,5 +1,5 @@
 const { parse } = require("dotenv");
-const { Cliente, TipodeUsuario,  } = require("../db");
+const { Cliente, TipodeUsuario, Aliado} = require("../db");
 const servidorAutorizacion = require("express").Router();
 const { Op } = require("sequelize");
 
@@ -31,11 +31,41 @@ const checkAutorizacion = async (req, res, next)  => {
           }},            
         });
 
-        if(cliente === null) {
+        const aliado = await Aliado.findOne({
+          where:{userId}
+        });
+
+        if(cliente === null && aliado === null) {
             res.json({mensaje:"El Cliente No Existe"});
             return;
         }
-        
+        // Si es aliado
+        if(aliado){
+          const tipodeUsuario = await TipodeUsuario.findOne({
+              where:{
+                  id:aliado.TipodeUsuarioId
+              }
+          })
+
+          console.log("Tipo de usuario en Auth", tipodeUsuario)
+
+          req.auth = aliado.autorizaciondePublicar;
+          req.tipodeUsuario = tipodeUsuario.tipo;
+          req.manejaUsuarios = tipodeUsuario.manejaUsuarios;
+          req.orgId = aliado.OrganizacionId
+
+          if(aliado.autorizaciondePublicar !== "Ninguna") next()
+          else {
+              console.log("EL USUARIO NO ESTA AUTORIZADO")
+              res.json({
+                  tipodeUsuario:req.tipodeUsuario, 
+                  manejaUsuarios:req.manejaUsuarios,
+                  autorizaciondePublicar:req.auth
+              })
+          }
+        } 
+        // Si es cliente
+        else if(cliente){
         const tipodeUsuario = await TipodeUsuario.findOne({
             where:{
                 id:cliente.TipodeUsuarioId
@@ -58,6 +88,7 @@ const checkAutorizacion = async (req, res, next)  => {
                 autorizaciondePublicar:req.auth
             })
         }
+      }
     } catch (e) {
         console.log("Error en checkAutorizacion"+e);
         res.status(500).send("Error en checkAutorizacion"+e)

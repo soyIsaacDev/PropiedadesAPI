@@ -13,10 +13,9 @@ module.exports = s => {
         tipo:{
             type: DataTypes.ENUM(
                 "IsaDueñoBorMiquirrayDueño",
+                "Aliado",
                 "Desarrollador",
                 "AgentedeDesarrollo",
-                "Agente",
-                "DueñodePropiedad",
                 "Arquitecto",
                 "Constructor",
                 "ClienteFinal",
