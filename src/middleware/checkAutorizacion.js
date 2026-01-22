@@ -39,47 +39,41 @@ const checkAutorizacion = async (req, res, next)  => {
             res.json({mensaje:"El Cliente No Existe"});
             return;
         }
+        
+        let tipodeUsuario = null;
         // Si es aliado
         if(aliado){
-          const tipodeUsuario = await TipodeUsuario.findOne({
+          tipodeUsuario = await TipodeUsuario.findOne({
               where:{
                   id:aliado.TipodeUsuarioId
               }
           })
 
-          console.log("Tipo de usuario en Auth", tipodeUsuario)
+          console.log("Tipo de usuario en Auth", tipodeUsuario.tipo)
 
-          req.auth = aliado.autorizaciondePublicar;
-          req.tipodeUsuario = tipodeUsuario.tipo;
-          req.manejaUsuarios = tipodeUsuario.manejaUsuarios;
-          req.orgId = aliado.OrganizacionId
-
-          if(aliado.autorizaciondePublicar !== "Ninguna") next()
-          else {
-              console.log("EL USUARIO NO ESTA AUTORIZADO")
-              res.json({
-                  tipodeUsuario:req.tipodeUsuario, 
-                  manejaUsuarios:req.manejaUsuarios,
-                  autorizaciondePublicar:req.auth
-              })
-          }
         } 
         // Si es cliente
         else if(cliente){
-        const tipodeUsuario = await TipodeUsuario.findOne({
-            where:{
-                id:cliente.TipodeUsuarioId
-            }
-        })
+          const tipodeUsuario = await TipodeUsuario.findOne({
+              where:{
+                  id:cliente.TipodeUsuarioId
+              }
+          })
+        }
+        // La autorizacion de publicar depende primero del tipo de usuario
+        // Si el tipo de usuario permite publicar, entonces se verifica la autorizacion a nivel indivudual
+        if(tipodeUsuario.autorizaciondePublicar === false){
+          req.auth = "Ninguna";
+        }
+        else {
+          req.auth = aliado? aliado.autorizaciondePublicar : cliente.autorizaciondePublicar;
+        }
 
-        console.log("Tipo de usuario en Auth", tipodeUsuario)
-
-        req.auth = cliente.autorizaciondePublicar;
         req.tipodeUsuario = tipodeUsuario.tipo;
         req.manejaUsuarios = tipodeUsuario.manejaUsuarios;
-        req.orgId = cliente.OrganizacionId
+        req.orgId = aliado? aliado.OrganizacionId : cliente.OrganizacionId;
 
-        if(cliente.autorizaciondePublicar !== "Ninguna") next()
+        if(tipodeUsuario.autorizaciondePublicar === true && (aliado? aliado.autorizaciondePublicar : cliente.autorizaciondePublicar) !== "Ninguna") next()
         else {
             console.log("EL USUARIO NO ESTA AUTORIZADO")
             res.json({
@@ -88,7 +82,8 @@ const checkAutorizacion = async (req, res, next)  => {
                 autorizaciondePublicar:req.auth
             })
         }
-      }
+       
+      
     } catch (e) {
         console.log("Error en checkAutorizacion"+e);
         res.status(500).send("Error en checkAutorizacion"+e)

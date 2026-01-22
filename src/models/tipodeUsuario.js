@@ -37,6 +37,11 @@ module.exports = s => {
             type: DataTypes.ENUM("Si","No"),
             allowNull: false
         },
+        autorizaciondePublicar:{
+            type:DataTypes.BOOLEAN,
+            allowNull:false,
+            defaultValue:false,
+        }, 
     }, {
         tableName: 'tipo_de_usuarios',
         timestamps: false,
