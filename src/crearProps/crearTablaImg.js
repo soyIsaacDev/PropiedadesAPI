@@ -42,7 +42,7 @@ const crearTablaImg = async (req, res, next) => {
             });
         }
 
-        else if(tipodeDesarrollo === 'Modelo'){
+        else if(tipodeDesarrollo === 'ModeloRelacionado'){
             const imagenModeloAsociado = await ImgModeloAsociado.create({
                 orden:ordenData[0].orden,
                 type: file.mimetype,

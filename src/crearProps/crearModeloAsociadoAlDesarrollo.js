@@ -15,7 +15,7 @@ const crearModeloAsociadoDesarrollo = async (req, res, next) => {
       const [ModeloRelacionado, creado] = await ModeloAsociadoAlDesarrollo.findOrCreate({
         where:{
           nombreModelo,
-          DesarrolloId:parseInt(nombreDesarrollo),
+          DesarrolloId:nombreDesarrollo,
           CiudadId:ciudad,
           EstadoId:estado,
         },
@@ -65,7 +65,7 @@ const crearModeloAsociadoDesarrollo = async (req, res, next) => {
         // Agregar tipo de propiedad y operacion al Desarrollo
         // Modificar Precio Min y Max en Desarrollo
         if(nombreDesarrollo){
-          const DesarrolloaCambiar = await Desarrollo.findByPk(parseInt(nombreDesarrollo));
+          const DesarrolloaCambiar = await Desarrollo.findByPk(nombreDesarrollo);
   
           if(DesarrolloaCambiar.TipodePropiedadId === null){
             DesarrolloaCambiar.TipodePropiedadId = TipodePropiedadId;

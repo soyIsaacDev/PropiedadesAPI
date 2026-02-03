@@ -1,6 +1,7 @@
 const {DataTypes} = require ('sequelize');
 // Aqui se confirma que la propiedad esta lista para publicarse
 // El aliado principal debe confirmarse?
+// NO ESTA LIGADA A BASE DE DATOS
 module.exports = s => {
     s.define(
         "ConfirmaciondePropiedadAliado", 

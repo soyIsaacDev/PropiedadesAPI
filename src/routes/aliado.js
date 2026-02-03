@@ -330,7 +330,7 @@ server.get("/getPropiedadesAsignadas/:userId", async (req,res) => {
       include:[
         {
         model:PropiedadIndependiente,
-        attributes: [ 'numeroPropiedad', 'calle', 'precio'],
+        attributes: [ 'id', 'numeroPropiedad', 'calle', 'precio'],
         include:[
           {
             model:Colonia,

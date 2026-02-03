@@ -462,7 +462,7 @@ server.get("/publicar/:desarrolloId", async (req,res) => {
   }
 })
 
-server.get("/hardDelete/:Id", async (req,res) => {
+/* server.get("/hardDelete/:Id", async (req,res) => {
   try {
     const {Id} = req.params
     const prop = await Desarrollo.findOne({
@@ -473,7 +473,7 @@ server.get("/hardDelete/:Id", async (req,res) => {
   } catch (error) {
     res.json(error)
   }
-})
+}) */
 
 
 // Para ver las imagenes

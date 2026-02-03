@@ -3,6 +3,9 @@ const { Cliente, TipodeUsuario, Aliado} = require("../db");
 const servidorAutorizacion = require("express").Router();
 const { Op } = require("sequelize");
 
+// Revision de autorizaciones del usuario
+// Se revisa primero a nivel Tipo de usuario
+// Si el tipo de usuario permite publicar, entonces se verifica la autorizacion a nivel indivudual
 const checkAutorizacion = async (req, res, next)  => {
     try {
       console.log("Revisando autorizacion")
