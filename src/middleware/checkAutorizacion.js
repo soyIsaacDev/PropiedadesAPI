@@ -57,7 +57,7 @@ const checkAutorizacion = async (req, res, next)  => {
         } 
         // Si es cliente
         else if(cliente){
-          const tipodeUsuario = await TipodeUsuario.findOne({
+          tipodeUsuario = await TipodeUsuario.findOne({
               where:{
                   id:cliente.TipodeUsuarioId
               }
@@ -79,7 +79,7 @@ const checkAutorizacion = async (req, res, next)  => {
         if(tipodeUsuario.autorizaciondePublicar === true && (aliado? aliado.autorizaciondePublicar : cliente.autorizaciondePublicar) !== "Ninguna") next()
         else {
             console.log("EL USUARIO NO ESTA AUTORIZADO")
-            res.json({
+            res.status(200).json({
                 tipodeUsuario:req.tipodeUsuario, 
                 manejaUsuarios:req.manejaUsuarios,
                 autorizaciondePublicar:req.auth
@@ -88,8 +88,12 @@ const checkAutorizacion = async (req, res, next)  => {
        
       
     } catch (e) {
-        console.log("Error en checkAutorizacion"+e);
-        res.status(500).send("Error en checkAutorizacion"+e)
+        console.log("Error en checkAutorizacion "+e);
+        res.status(500).json({
+          success: false,
+          error: "Error interno al revisar la autorizacion",
+          message: "Error al procesar la solicitud"
+        });
     }
 }
 

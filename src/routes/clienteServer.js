@@ -6,6 +6,7 @@ const { Cliente, TipodeUsuario, Organizacion, AutorizacionesXTipodeOrg, UltimoCo
 const { Op, fn, col } = require("sequelize");
 
 const { checkManejodeUsuarios } = require("../middleware/checkAutorizacion");
+const { crearPago } = require("../middleware/checkPago");
 
 server.post("/nuevoCliente", async (req, res) => { 
   try {
@@ -28,8 +29,6 @@ server.post("/nuevoCliente", async (req, res) => {
         }      
     });
 
-    console.log(cliente)
-
     if(tipoUsuario === "Desarrollador"){
       const tipodeOrganizacion = await AutorizacionesXTipodeOrg.findOne({
         where:{ nombreTipoOrg:"Desarrolladora" }
@@ -47,6 +46,14 @@ server.post("/nuevoCliente", async (req, res) => {
       cliente[0].OrganizacionId = org.id;
       cliente[0].TipodeUsuarioId= userTipo.id;
       cliente[0].autorizaciondePublicar = "Completa";
+
+      // Crear pago para activar las publicaciones de la organizacion
+      try {
+        const resultadoPago = await crearPago(org.id, 24, 2);
+      } catch (pagoError) {
+        console.error("Error al crear pago:", pagoError);
+        // Continúa aunque el pago falle, o maneja el error según necesites
+      }
     }
     
     if(tipoUsuario === "DueñoTratoDirecto") {
@@ -66,6 +73,14 @@ server.post("/nuevoCliente", async (req, res) => {
       cliente[0].OrganizacionId = org.id;
       cliente[0].TipodeUsuarioId= userTipo.id;
       cliente[0].autorizaciondePublicar = "Completa";
+      
+      // Crear pago para activar las publicaciones de la organizacion
+      try {
+        const resultadoPago = await crearPago(org.id, 24, 3);
+      } catch (pagoError) {
+        console.error("Error al crear pago:", pagoError);
+        // Continúa aunque el pago falle, o maneja el error según necesites
+      }
     }
    
     await cliente[0].save();

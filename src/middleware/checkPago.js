@@ -142,6 +142,85 @@ const checkPublicacionesRestantesyAutxTipodeOrg = async (req, res, next)  => {
   }
 }
 
+const crearPago = async (orgId, mesesPagados, idPaquetedePagoAComprar) => {
+    try {
+    /* Validaciones a hacer:
+            Revisamos si ya se encuentra pagado el mismo paquete en el periodo actual
+            Revisando si el paquete de pago existe
+            Revisamos si el paquete aun se encuentra activo
+    */
+    
+    const historial = await HistorialdePagos.findAll({
+      where: {
+        OrganizacionId: orgId,
+      },
+      order: [["fechaFin", "DESC"]],
+    });
+
+    const validacion = {
+      orgActiva: "La organizacion no existe",
+      paqueteExistente: "No existe ese paquete de pagos",
+      paqueteActivo: "El paquete se encuentra inactivo",
+    };
+    const hoy = new Date();
+    // Revisamos si ya se encuentra pagado el mismo paquete en el periodo actual
+    for (let i = 0; i < historial.length; i++) {
+      let fechaFinHistorial = new Date(historial[i].fechaFin);
+      let hoy = new Date();
+      if (
+        hoy < fechaFinHistorial &&
+        historial[i].PaquetedePagoId === idPaquetedePagoAComprar
+      ) {
+        return "Tienes un paquete del mismo tipo ya pagado";
+      } else {
+        validacion.pagoPrevio = 1;
+      }
+    }
+    let fechaFindePago = new Date();
+    fechaFindePago.setMonth(fechaFindePago.getMonth() + mesesPagados);
+
+    const organizacion = await Organizacion.findOne({
+      where: { id: orgId },
+      include: AutorizacionesXTipodeOrg,
+    });
+    const paquetedePago = await PaquetedePago.findOne({
+      where: { id: idPaquetedePagoAComprar }
+    });
+    //VALIDACIONES
+    if (organizacion) validacion.orgActiva = 1;
+    // Revisando si el paquete de pago existe
+    if (paquetedePago) validacion.paqueteExistente = 1;
+    // Revisamos si el paquete aun se encuentra activo
+    if (new Date(paquetedePago.fechaFinOferta) >= fechaFindePago)
+      validacion.paqueteActivo = 1;
+    //}
+    else if (new Date(paquetedePago.fechaFinOferta) < fechaFindePago) {
+      fechaFindePago = new Date(paquetedePago.fechaFinOferta);
+      validacion.paqueteActivo = 1;
+    }
+
+    // Todas las validaciones son correctas
+    if (
+      validacion.orgActiva === 1 &&
+      validacion.paqueteExistente === 1 &&
+      validacion.paqueteActivo === 1
+    ) {
+      console.log("Validaciones Correctas");
+      const nuevoPago = await HistorialdePagos.create({
+        fechaInicio: hoy,
+        fechaFin: fechaFindePago,
+        OrganizacionId: orgId,
+        PaquetedePagoId: idPaquetedePagoAComprar,
+      });
+      return nuevoPago;
+    } else {
+      return validacion;
+    }
+  } catch (e) {
+    throw e;
+  }
+}
+
 //servidorPago.use(checkPagosActivos, checkPublicacionesRestantesyAutxTipodeOrg);
 servidorPago.get("/verificarPago", (req, res) => {
   res.json({ mensaje: "Servicio de verificación de pago activo" });
@@ -169,4 +248,6 @@ servidorPago.post("/revisarPago",  async (req, res, next)=>{
 })
 
 
-module.exports = { checkPagosActivos, checkPublicacionesRestantesyAutxTipodeOrg, servidorPago };
+
+
+module.exports = { checkPagosActivos, checkPublicacionesRestantesyAutxTipodeOrg, crearPago, servidorPago };
