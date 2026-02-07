@@ -265,8 +265,8 @@ const enviarCorreo = async (para, de)  => {
     const mailOptions = {
       from: 'isaacborbon@gmail.com',
       to: para,
-      subject: `${de} te invita a unirte a su empresa en Inmozz`,
-      text: 'Unete a mi empresa en Inmozz dando click en el siguiente link http://localhost:3000/iniciarsesion. No olvides utilizar este correo electronico para registrarte'
+      subject: `${de} te invita a unirte a su empresa en Levinchi`,
+      text: 'Unete a mi empresa en Levinchi dando click en el siguiente link http://localhost:3000/nuevousuario. No olvides utilizar esta cuenta de correo electronico para registrarte'
     };
 
     return new Promise((resolve, reject) => {
@@ -347,8 +347,9 @@ server.post("/actualizarAgente", async (req, res) => {
       nombre,
       telefono
     })
+    res.status(200).json({ message: "Agente actualizado correctamente" })
   } catch (error) {
-    res.send(error)
+    res.status(500).json({ error: error.message })
   }
 })
 
