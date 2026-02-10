@@ -84,6 +84,10 @@ module.exports = s => {
         tipodeDesarrollo:{
             type:DataTypes.ENUM("Independiente"),
             defaultValue:"Independiente"
+        },
+        amueblado:{
+            type:DataTypes.ENUM("Si", "No", "Semi"),
+            defaultValue:"No"
         }
     }, 
     {

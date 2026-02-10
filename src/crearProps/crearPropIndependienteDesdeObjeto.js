@@ -3,6 +3,7 @@ const {
   PropiedadIndependiente,
   VideoYoutube,
   Tour3D,
+  equipamiento_de_las_prop_independientes,
 } = require("../db");
 
 const crearPropIndependienteDesdeObjeto = async (propData = {}) => {
@@ -33,7 +34,8 @@ const crearPropIndependienteDesdeObjeto = async (propData = {}) => {
       ytvideo = [],
       tour3D_URL,
       //EstiloArquitecturaId,
-      OrganizacionId
+      OrganizacionId,
+      equipamiento = [],
     } = propData;
 
     const [PropiedadIndependienteCreada, creado] =
@@ -65,6 +67,7 @@ const crearPropIndependienteDesdeObjeto = async (propData = {}) => {
           TipodePropiedadId,
           OrganizacionId,
           //EstiloArquitecturaId,
+          equipamiento,
         },
       });
 
@@ -87,6 +90,13 @@ const crearPropIndependienteDesdeObjeto = async (propData = {}) => {
         await amenidades_de_las_prop_independientes.create({
           PropiedadIndependienteId: PropiedadIndependienteCreada.id,
           AmenidadesdelaPropiedadId: amenidadId,
+        });
+      }
+
+      for (const equipamientoId of equipamiento) {
+        await equipamiento_de_las_prop_independientes.create({
+          PropiedadIndependienteId: PropiedadIndependienteCreada.id,
+          EquipamientoId: equipamientoId,
         });
       }
 

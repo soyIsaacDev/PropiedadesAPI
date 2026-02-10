@@ -1,4 +1,4 @@
-const {  amenidades_de_los_modelos, ModeloAsociadoAlDesarrollo, Desarrollo, VideoYoutube, Tour3D,} = require("../db");
+const {  amenidades_de_los_modelos, ModeloAsociadoAlDesarrollo, Desarrollo, VideoYoutube, Tour3D, equipamiento_de_los_modelos} = require("../db");
 
 const editarModelo = async (req, res, next) => {
   try {
@@ -9,6 +9,7 @@ const editarModelo = async (req, res, next) => {
     const { modeloId, nombreModelo, desarrolloId, precio, numeroInterior, posicion, ciudad, estado,
       niveles, recamaras, baños, medio_baño, espaciosCochera, cocheraTechada, m2Construccion, 
       m2Terreno, m2Patios, tipodeOperacion, TipodePropiedadId, amenidadesPropiedad, quitarAmenidadesModelo,
+      equipamiento, quitarEquipamiento,
       ytvideo, tour3D_URL,
     } = parsedbodyObj
 
@@ -99,7 +100,22 @@ const editarModelo = async (req, res, next) => {
         })
     );
 
-    await Promise.all([...addAmenidadesPromises, ...removeAmenidadesPromises]);
+    const addEquipamientoPromises = equipamiento.map(equipamientoId => 
+        equipamiento_de_los_modelos.findOrCreate({
+          where: { ModeloAsociadoAlDesarrolloId: modeloId, EquipamientoId: equipamientoId }
+        })
+    );
+
+    // Borrando los equipamientos que se quitaron
+    const removeEquipamientoPromises = quitarEquipamiento.map(equipamientoId =>
+        equipamiento_de_los_modelos.destroy({
+          where: { ModeloAsociadoAlDesarrolloId: modeloId, EquipamientoId: equipamientoId }
+        })
+    );
+
+    await Promise.all([...addAmenidadesPromises, ...removeAmenidadesPromises, ...addEquipamientoPromises, ...removeEquipamientoPromises]);
+
+    console.log("Modelo editado correctamente pasando a next");
 
     next();
         

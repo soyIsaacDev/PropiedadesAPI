@@ -69,6 +69,7 @@ const modeloTour3D = require("./models/tour3D.js");
 const modeloAliado = require("./models/aliados.js");
 const modeloAsignacionProp = require("./models/asignacionPropiedad.js"); 
 const modeloColoniasPorCiudad = require("./models/coloniasPorCiudad.js");
+const modeloEquipamiento = require("./models/equipamiento.js");
 
 modelOrganizacion(sequelize);
 modelDesarrollo(sequelize);
@@ -97,12 +98,14 @@ modeloTour3D(sequelize);
 modeloAliado(sequelize);
 modeloAsignacionProp(sequelize);
 modeloColoniasPorCiudad(sequelize);
+modeloEquipamiento(sequelize);
 
 let {Desarrollo, ImgDesarrollo, TipodePropiedad, AmenidadesDesarrollo, AmenidadesdelaPropiedad, 
   TipoOperacion, Estado , Municipio, Ciudad, Colonia, Cliente, ModeloAsociadoAlDesarrollo,
   ImgModeloAsociado, TipodeUsuario, EstiloArquitectura, HistorialdePagos, PaquetedePago, 
   Organizacion, AutorizacionesXTipodeOrg, PropiedadIndependiente, ImgPropiedadIndependiente,
   UltimoContacto, VideoYoutube, Tour3D, Aliado, AsignaciondePropiedad, ColoniasPorCiudad,
+  Equipamiento,
 } = sequelize.models;
 
 // Relaciones DB
@@ -152,6 +155,9 @@ ImgModeloAsociado.belongsTo(ModeloAsociadoAlDesarrollo);
 ModeloAsociadoAlDesarrollo.belongsToMany(AmenidadesdelaPropiedad, { through: 'amenidades_de_los_modelos', timestamps: false, });
 AmenidadesdelaPropiedad.belongsToMany(ModeloAsociadoAlDesarrollo, { through: 'amenidades_de_los_modelos', timestamps: false, });
 
+ModeloAsociadoAlDesarrollo.belongsToMany(Equipamiento, { through: 'equipamiento_de_los_modelos', timestamps: false, });
+Equipamiento.belongsToMany(ModeloAsociadoAlDesarrollo, { through: 'equipamiento_de_los_modelos', timestamps: false, });
+
 Cliente.belongsToMany(ModeloAsociadoAlDesarrollo, { through: 'modelos_favoritos', timestamps: false, });
 ModeloAsociadoAlDesarrollo.belongsToMany(Cliente, { through: 'modelos_favoritos', timestamps: false, });
 
@@ -181,6 +187,9 @@ TipodePropiedad.hasMany(PropiedadIndependiente);
 
 PropiedadIndependiente.belongsToMany(AmenidadesdelaPropiedad, { through: 'amenidades_de_las_prop_independientes', timestamps: false, });
 AmenidadesdelaPropiedad.belongsToMany(PropiedadIndependiente, { through: 'amenidades_de_las_prop_independientes', timestamps: false, });
+
+PropiedadIndependiente.belongsToMany(Equipamiento, { through: 'equipamiento_de_las_prop_independientes', timestamps: false, });
+Equipamiento.belongsToMany(PropiedadIndependiente, { through: 'equipamiento_de_las_prop_independientes', timestamps: false, });
 
 TipoOperacion.hasMany(PropiedadIndependiente);
 PropiedadIndependiente.belongsTo(TipoOperacion);

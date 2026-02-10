@@ -1,4 +1,4 @@
-const {  amenidades_de_los_modelos, ModeloAsociadoAlDesarrollo, Desarrollo, VideoYoutube, Tour3D} = require("../db");
+const {  amenidades_de_los_modelos, ModeloAsociadoAlDesarrollo, Desarrollo, VideoYoutube, Tour3D, equipamiento_de_los_modelos} = require("../db");
 const { Op } = require("sequelize");
 
 const crearModeloAsociadoDesarrollo = async (req, res, next) => {
@@ -9,7 +9,8 @@ const crearModeloAsociadoDesarrollo = async (req, res, next) => {
       const parsedbodyObj = JSON.parse(bodyObj);
       const { nombreModelo, nombreDesarrollo, precio, numeroInterior, posicion, ciudad, estado,
         niveles, recamaras, baños, medio_baño, espaciosCochera, cocheraTechada, m2Construccion, 
-        m2Terreno, m2Patios, tipodeOperacion, TipodePropiedadId, amenidadesPropiedad, ytvideo, tour3D_URL
+        m2Terreno, m2Patios, tipodeOperacion, TipodePropiedadId, amenidadesPropiedad, ytvideo, tour3D_URL,
+        equipamiento
       } = parsedbodyObj
 
       const [ModeloRelacionado, creado] = await ModeloAsociadoAlDesarrollo.findOrCreate({
@@ -38,6 +39,7 @@ const crearModeloAsociadoDesarrollo = async (req, res, next) => {
             municipio
             publicada
           */
+         equipamiento,
         }
         
       });
@@ -45,21 +47,23 @@ const crearModeloAsociadoDesarrollo = async (req, res, next) => {
       if(creado === true){
 
         tour3D_URL && await Tour3D.create({
-          tourURL:tour3D_URL,
-          DesarrolloId:DesarrolloCreado.id
+            tourURL:tour3D_URL,
+            DesarrolloId:nombreDesarrollo
         })
 
-        ytvideo.map(async (video) => {
-          await VideoYoutube.create({
-            videoURL:video,
-            DesarrolloId:DesarrolloCreado.id
-          })
-        })
+        if(ytvideo && ytvideo.length > 0) {
+          await Promise.all(ytvideo.map(async (video) => {
+            await VideoYoutube.create({
+              videoURL:video,
+              DesarrolloId:nombreDesarrollo
+            })
+          }))
+        }       
 
         for (let i = 0; i < amenidadesPropiedad.length; i++) {        
           await amenidades_de_los_modelos.create({ 
             ModeloAsociadoAlDesarrolloId:ModeloRelacionado.id, 
-            AmenidadesdelaPropiedadId:amenidadesPropiedad[i] })
+            AmenidadesdelaPropiedadId:amenidadesPropiedad[i] });
         }
     
         // Agregar tipo de propiedad y operacion al Desarrollo
@@ -97,16 +101,15 @@ const crearModeloAsociadoDesarrollo = async (req, res, next) => {
           });
 
         }
-        else{
-          // Ya existia el ModeloRelacionado
-          console.log("El modeloRelacionado ya existe " + creado)
-          res.json({
-            codigo:0, 
-            Mensaje:`El Modelo `+ ModeloRelacionado.nombreModelo + " ya existe",
-            Error:"Modelo Existente"
-          });
-        }
-        
+      }
+      else{
+        // Ya existia el ModeloRelacionado
+        console.log("El modeloRelacionado ya existe " + creado)
+        res.json({
+          codigo:0, 
+          Mensaje:`El Modelo `+ ModeloRelacionado.nombreModelo + " ya existe",
+          Error:"Modelo Existente"
+        });
       }
 
     } catch (error) {

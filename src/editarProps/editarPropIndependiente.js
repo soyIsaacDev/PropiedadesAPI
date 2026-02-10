@@ -1,4 +1,4 @@
-const {  amenidades_de_las_prop_independientes, PropiedadIndependiente, VideoYoutube, Tour3D, } = require("../db");
+const {  amenidades_de_las_prop_independientes, PropiedadIndependiente, VideoYoutube, Tour3D, equipamiento_de_las_prop_independientes } = require("../db");
 
 
 const editarPropIndependiente = async (req, res, next) => {
@@ -10,7 +10,7 @@ const editarPropIndependiente = async (req, res, next) => {
       niveles, recamaras, baños, medio_baño, espaciosCochera, cocheraTechada,   
       m2Construccion, m2Terreno, m2Total, añodeConstruccion, 
       TipoOperacionId, TipodePropiedadId, amenidadesPropiedad, tratoDirecto,
-      EstiloArquitecturaId, quitarAmenidadesModelo, ytvideo, tour3D_URL,
+      EstiloArquitecturaId, quitarAmenidadesModelo, ytvideo, tour3D_URL,  equipamiento, quitarEquipamiento
     } = parsedbodyObj
     const [actualizarPropiedadIndependiente] = await PropiedadIndependiente.update(
       {
@@ -75,7 +75,20 @@ const editarPropIndependiente = async (req, res, next) => {
         })
     );
 
-    await Promise.all([...addAmenidadesPromises, ...removeAmenidadesPromises]);
+    const addEquipamientoPromises = equipamiento.map(equipamientoId => 
+        equipamiento_de_las_prop_independientes.findOrCreate({
+          where: { PropiedadIndependienteId: id, EquipamientoId: equipamientoId }
+        })
+    );
+
+    // Borrando los equipamientos que se quitaron
+    const removeEquipamientoPromises = quitarEquipamiento.map(equipamientoId =>
+        equipamiento_de_las_prop_independientes.destroy({
+          where: { PropiedadIndependienteId: id, EquipamientoId: equipamientoId }
+        })
+    );
+
+    await Promise.all([...addAmenidadesPromises, ...removeAmenidadesPromises, ...addEquipamientoPromises, ...removeEquipamientoPromises]);
 
     next();
 

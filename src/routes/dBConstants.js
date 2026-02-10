@@ -1,7 +1,7 @@
 const server = require("express").Router();
 
 const { Estado , Municipio, Ciudad, Colonia, ColoniaCiudad, AmenidadesDesarrollo, 
-  AmenidadesdelaPropiedad, TipoOperacion, TipodePropiedad, EstiloArquitectura } = require("../db");
+  AmenidadesdelaPropiedad, TipoOperacion, TipodePropiedad, EstiloArquitectura, Equipamiento } = require("../db");
 
 server.post("/agregarEntidadGeografica", async (req, res) => { 
   try {
@@ -214,6 +214,19 @@ server.get("/getAmenidadesdelaPropiedad", async (req, res) => {
     res.json(AmenidadesdelaPropiedadFind);
   } catch (e) {
     res.send(e);
+  }
+})
+//getEquipamiento
+server.get("/getEquipamiento", async (req, res) => { 
+  try {
+    const EquipamientoFind = await Equipamiento.findAll({
+      order: [
+        ['nombre', 'ASC'],
+      ]
+    });
+    res.status(200).json(EquipamientoFind);
+  } catch (e) {
+    res.status(500).json({e});
   }
 })
 

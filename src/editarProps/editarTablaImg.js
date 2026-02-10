@@ -5,7 +5,7 @@ const config = require('../../configCloudBucket');
 
 // Configuración
 const carpeta = path.join(__dirname, '../../uploads');
-const DEVMODE = process.env.NODE_ENV === 'production' ? 'Production' : 'Development';
+const DEVMODE = process.env.NODE_ENV === 'production' ? 'Production' : 'build';
 
 // Obtener configuraciones de los buckets (solo se usarán en producción)
 const MOD_ASOC_BUCKET_GCLOUD_BUCKET = config.nconf.get('GCLOUD_MOD_ASOC_BUCKET') || '';
