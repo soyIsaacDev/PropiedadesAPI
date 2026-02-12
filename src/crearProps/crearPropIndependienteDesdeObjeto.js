@@ -4,6 +4,7 @@ const {
   VideoYoutube,
   Tour3D,
   equipamiento_de_las_prop_independientes,
+  Mascotas,
 } = require("../db");
 
 const crearPropIndependienteDesdeObjeto = async (propData = {}) => {
@@ -35,8 +36,13 @@ const crearPropIndependienteDesdeObjeto = async (propData = {}) => {
       tour3D_URL,
       //EstiloArquitecturaId,
       OrganizacionId,
+      amueblado,
       equipamiento = [],
+      mascotaPermitida,
+      mascotas = [],
     } = propData;
+
+    console.log("mascotaPermitida", mascotaPermitida);
 
     const [PropiedadIndependienteCreada, creado] =
       await PropiedadIndependiente.findOrCreate({
@@ -66,8 +72,9 @@ const crearPropIndependienteDesdeObjeto = async (propData = {}) => {
           TipoOperacionId,
           TipodePropiedadId,
           OrganizacionId,
+          amueblado,
+          mascotas: mascotaPermitida !== undefined ? mascotaPermitida : false,
           //EstiloArquitecturaId,
-          equipamiento,
         },
       });
 
@@ -98,6 +105,23 @@ const crearPropIndependienteDesdeObjeto = async (propData = {}) => {
           PropiedadIndependienteId: PropiedadIndependienteCreada.id,
           EquipamientoId: equipamientoId,
         });
+      }
+      // Relacion tipo de mascotas permitidas
+      for (const mascotaId of mascotas) {
+        const mascota = await Mascotas.findOne({
+          where: {
+            id: mascotaId,
+          },
+        });
+        if (!mascota) {
+          return {
+            codigo: 0,
+            Mensaje: `La mascota con id ${mascotaId} no existe`,
+            Error: "Mascota no encontrada",
+          };
+        }
+        mascota.PropiedadIndependienteId = PropiedadIndependienteCreada.id;
+        await mascota.save();
       }
 
       return {

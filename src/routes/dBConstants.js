@@ -1,7 +1,9 @@
 const server = require("express").Router();
 
 const { Estado , Municipio, Ciudad, Colonia, ColoniaCiudad, AmenidadesDesarrollo, 
-  AmenidadesdelaPropiedad, TipoOperacion, TipodePropiedad, EstiloArquitectura, Equipamiento } = require("../db");
+  AmenidadesdelaPropiedad, TipoOperacion, TipodePropiedad, EstiloArquitectura, Equipamiento, 
+  Mascotas,
+ } = require("../db");
 
 server.post("/agregarEntidadGeografica", async (req, res) => { 
   try {
@@ -279,6 +281,15 @@ server.get("/getEstiloArquitectura", async (req, res) => {
   try {      
     const EstiloArq = await EstiloArquitectura.findAll();
     res.json(EstiloArq);
+  } catch (error) {
+    res.send(error);
+  }
+});
+
+server.get("/getMascotas", async (req, res) => { 
+  try {      
+    const MascotasPermitidas = await Mascotas.findAll();
+    res.json(MascotasPermitidas);
   } catch (error) {
     res.send(error);
   }

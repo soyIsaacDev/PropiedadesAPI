@@ -88,7 +88,6 @@ server.get("/getPropiedadesIndependientes", async (req, res) => {
 
 server.get("/detallesPropIndependiente/:id", async (req, res) => {
   try {
-    console.log("Iniciando petición a /detallesPropIndependiente/:id")
     const {id} = req.params;
     const {userId} = req.query;
     const dataPropiedad = await PropiedadIndependiente.findOne({
@@ -139,7 +138,6 @@ server.get("/detallesPropIndependiente/:id", async (req, res) => {
         },
       ]
     })
-    console.log("Data Propiedad",dataPropiedad)
     dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontro la propiedad"});
   } catch (error) {
     res.json(error)

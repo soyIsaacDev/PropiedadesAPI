@@ -50,14 +50,16 @@ const editarModelo = async (req, res, next) => {
       },
     })
 
-    ytvideo.map(async (video) => {
-      await VideoYoutube.findOrCreate({
-        where:{
-          videoURL:video,
-          ModeloAsociadoAlDesarrolloId:modeloId
-        }
+    if (ytvideo && Array.isArray(ytvideo)) {
+      ytvideo.map(async (video) => {
+        await VideoYoutube.findOrCreate({
+          where:{
+            videoURL:video,
+            ModeloAsociadoAlDesarrolloId:modeloId
+          }
+        })
       })
-    })
+    }
 
     // Agregar tipo de propiedad y operacion al Desarrollo
     // Modificar Precio Min y Max en Desarrollo
@@ -87,31 +89,31 @@ const editarModelo = async (req, res, next) => {
       }
     }
 
-    const addAmenidadesPromises = amenidadesPropiedad.map(amenidadId => 
+    const addAmenidadesPromises = (amenidadesPropiedad && Array.isArray(amenidadesPropiedad)) ? amenidadesPropiedad.map(amenidadId => 
         amenidades_de_los_modelos.findOrCreate({
           where: { ModeloAsociadoAlDesarrolloId: modeloId, AmenidadesdelaPropiedadId: amenidadId }
         })
-    );
+    ) : [];
 
     // Borrando las amendidades que se quitaron
-    const removeAmenidadesPromises = quitarAmenidadesModelo.map(amenidadId =>
+    const removeAmenidadesPromises = (quitarAmenidadesModelo && Array.isArray(quitarAmenidadesModelo)) ? quitarAmenidadesModelo.map(amenidadId =>
         amenidades_de_los_modelos.destroy({
           where: { ModeloAsociadoAlDesarrolloId: modeloId, AmenidadesdelaPropiedadId: amenidadId }
         })
-    );
+    ) : [];
 
-    const addEquipamientoPromises = equipamiento.map(equipamientoId => 
+    const addEquipamientoPromises = (equipamiento && Array.isArray(equipamiento)) ? equipamiento.map(equipamientoId => 
         equipamiento_de_los_modelos.findOrCreate({
           where: { ModeloAsociadoAlDesarrolloId: modeloId, EquipamientoId: equipamientoId }
         })
-    );
+    ) : [];
 
     // Borrando los equipamientos que se quitaron
-    const removeEquipamientoPromises = quitarEquipamiento.map(equipamientoId =>
+    const removeEquipamientoPromises = (quitarEquipamiento && Array.isArray(quitarEquipamiento)) ? quitarEquipamiento.map(equipamientoId =>
         equipamiento_de_los_modelos.destroy({
           where: { ModeloAsociadoAlDesarrolloId: modeloId, EquipamientoId: equipamientoId }
         })
-    );
+    ) : [];
 
     await Promise.all([...addAmenidadesPromises, ...removeAmenidadesPromises, ...addEquipamientoPromises, ...removeEquipamientoPromises]);
 

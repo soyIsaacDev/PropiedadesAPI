@@ -2,7 +2,7 @@ const { crearPropIndependienteDesdeObjeto } = require("./crearPropIndependienteD
 const { AsignaciondePropiedad } = require("../db");
 
 
-const crearPropCii = async (req, res) => {
+const crearPropiedadInternaIndependiente = async (req, res) => {
     try {
 
       const aliado = req.aliado;      
@@ -54,5 +54,5 @@ const crearPropCii = async (req, res) => {
   };
 
   module.exports = {
-    crearPropCii
+    crearPropiedadInternaIndependiente
   };

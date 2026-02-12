@@ -70,6 +70,7 @@ const modeloAliado = require("./models/aliados.js");
 const modeloAsignacionProp = require("./models/asignacionPropiedad.js"); 
 const modeloColoniasPorCiudad = require("./models/coloniasPorCiudad.js");
 const modeloEquipamiento = require("./models/equipamiento.js");
+const modeloMascotas = require("./models/mascotas.js");
 
 modelOrganizacion(sequelize);
 modelDesarrollo(sequelize);
@@ -99,13 +100,14 @@ modeloAliado(sequelize);
 modeloAsignacionProp(sequelize);
 modeloColoniasPorCiudad(sequelize);
 modeloEquipamiento(sequelize);
+modeloMascotas(sequelize);
 
 let {Desarrollo, ImgDesarrollo, TipodePropiedad, AmenidadesDesarrollo, AmenidadesdelaPropiedad, 
   TipoOperacion, Estado , Municipio, Ciudad, Colonia, Cliente, ModeloAsociadoAlDesarrollo,
   ImgModeloAsociado, TipodeUsuario, EstiloArquitectura, HistorialdePagos, PaquetedePago, 
   Organizacion, AutorizacionesXTipodeOrg, PropiedadIndependiente, ImgPropiedadIndependiente,
   UltimoContacto, VideoYoutube, Tour3D, Aliado, AsignaciondePropiedad, ColoniasPorCiudad,
-  Equipamiento,
+  Equipamiento, Mascotas
 } = sequelize.models;
 
 // Relaciones DB
@@ -220,6 +222,12 @@ VideoYoutube.belongsTo(PropiedadIndependiente);
 
 PropiedadIndependiente.hasOne(Tour3D);
 Tour3D.belongsTo(PropiedadIndependiente);
+
+/* PropiedadIndependiente.belongsToMany(Mascotas, { through: 'mascotas_de_las_prop_independientes', timestamps: false, });
+Mascotas.belongsToMany(PropiedadIndependiente, { through: 'mascotas_de_las_prop_independientes', timestamps: false, }); */
+
+PropiedadIndependiente.hasMany(Mascotas);
+Mascotas.belongsTo(PropiedadIndependiente);
 
 // Organizacion
 

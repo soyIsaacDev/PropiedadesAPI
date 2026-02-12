@@ -86,9 +86,13 @@ module.exports = s => {
             defaultValue:"Independiente"
         },
         amueblado:{
-            type:DataTypes.ENUM("Si", "No", "Semi"),
+            type:DataTypes.ENUM("Si", "No", "Semiamueblado"),
             defaultValue:"No"
-        }
+        },    
+        mascotas:{
+            type:DataTypes.BOOLEAN,
+            defaultValue:false
+        }    
     }, 
     {
         tableName: 'propiedades_independientes',

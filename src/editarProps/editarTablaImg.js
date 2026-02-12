@@ -23,6 +23,12 @@ const editarTablaImg = async (req, res, next) => {
         if(tipodeDesarrollo === 'Desarrollo') imagenPropiedad = await ImgDesarrollo.findByPk(ordenImagen[i].id);
         else if(tipodeDesarrollo === 'Modelo') imagenPropiedad = await ImgModeloAsociado.findByPk(ordenImagen[i].id);
         else if (tipodeDesarrollo === 'PropiedadIndependiente')  imagenPropiedad = await ImgPropiedadIndependiente.findByPk(ordenImagen[i].id);
+        
+        if (!imagenPropiedad) {
+          console.log("No se encontró la imagen con ID: " + ordenImagen[i].id);
+          continue;
+        }
+        
         if(ordenImagen[i].editar===1){ // 1 = editar
           console.log("Orden Id "+ordenImagen[i].id +  " Editar "+ ordenImagen[i].editar+  " Orden Editado " +JSON.stringify(imagenPropiedad))
           imagenPropiedad.orden= ordenImagen[i].orden
@@ -72,7 +78,10 @@ const editarTablaImg = async (req, res, next) => {
         else if(tipodeDesarrollo === 'Modelo') imagenPropiedad = await ImgModeloAsociado.findByPk(ordenImagen[i].id);
         else if (tipodeDesarrollo === 'PropiedadIndependiente')  imagenPropiedad = await ImgPropiedadIndependiente.findByPk(ordenImagen[i].id);
         
-        console.log("Imagen Propiedad " + imagenPropiedad)
+        if (!imagenPropiedad) {
+          console.log("No se encontró la imagen con ID: " + ordenImagen[i].id);
+          continue;
+        }
 
         if(ordenImagen[i].editar===1){ // 1 = editar
           console.log("Orden Id "+ordenImagen[i].id +  " Editar "+ ordenImagen[i].editar+  " Orden Editado " +JSON.stringify(imagenPropiedad))

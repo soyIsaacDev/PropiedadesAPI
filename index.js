@@ -9,7 +9,7 @@ const session = require('express-session');
 const { index, clientes, imagen, desarrollo, dbconstants, apikeys, favoritos, modeloAsociadoAlDesarrollo,
   allPropiedades, bulk, tipoUsuario, addBucketCors, cargarPropMultiples, historialdePagos,
   autorizacionUsuario, pagodeServicio, propIndependiente, paquetesdePago, editarPropiedades,
-  borrarPropiedades, aliados, cargarPropCii, calendarRoutes,
+  borrarPropiedades, aliados, crearPropiedadInternaIndependiente, calendarRoutes,
 } = require('./src/routes');
 
 const { checkAutorizacion } = require("./src/middleware/checkAutorizacion.js")
@@ -229,7 +229,7 @@ app.use("/cargarPropMultiples", useMulter, checkAutorizacion, checkPagosActivos,
   app.use("/checkpago", servidorPago),
   app.use("/borrarPropiedaes", checkAutorizacion, borrarPropiedades),
   app.use("/aliados", checkIfSignedIn, aliados),
-  app.use("/cargarPropCii", useMulter, checkAliado, cargarPropCii),
+  app.use("/crearPropiedad-Interna-Independiente", useMulter, checkAliado, crearPropiedadInternaIndependiente),
   app.use("/calendar", calendarRoutes),
   //app.use("/authCliente", authCliente);
 

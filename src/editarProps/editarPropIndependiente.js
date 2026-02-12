@@ -53,40 +53,42 @@ const editarPropIndependiente = async (req, res, next) => {
       },
     })
 
-    ytvideo.map(async (video) => {
-      await VideoYoutube.findOrCreate({
-        where:{
-          videoURL:video,
-          PropiedadIndependienteId:id
-        }
+    if (ytvideo && Array.isArray(ytvideo)) {
+      ytvideo.map(async (video) => {
+        await VideoYoutube.findOrCreate({
+          where:{
+            videoURL:video,
+            PropiedadIndependienteId:id
+          }
+        })
       })
-    })
+    }
 
-    const addAmenidadesPromises = amenidadesPropiedad.map(amenidadId => 
+    const addAmenidadesPromises = (amenidadesPropiedad && Array.isArray(amenidadesPropiedad)) ? amenidadesPropiedad.map(amenidadId => 
         amenidades_de_las_prop_independientes.findOrCreate({
           where: { PropiedadIndependienteId: id, AmenidadesdelaPropiedadId: amenidadId }
         })
-    );
+    ) : [];
 
     // Borrando las amendidades que se quitaron
-    const removeAmenidadesPromises = quitarAmenidadesModelo.map(amenidadId =>
+    const removeAmenidadesPromises = (quitarAmenidadesModelo && Array.isArray(quitarAmenidadesModelo)) ? quitarAmenidadesModelo.map(amenidadId =>
         amenidades_de_las_prop_independientes.destroy({
           where: { PropiedadIndependienteId: id, AmenidadesdelaPropiedadId: amenidadId }
         })
-    );
+    ) : [];
 
-    const addEquipamientoPromises = equipamiento.map(equipamientoId => 
+    const addEquipamientoPromises = (equipamiento && Array.isArray(equipamiento)) ? equipamiento.map(equipamientoId => 
         equipamiento_de_las_prop_independientes.findOrCreate({
           where: { PropiedadIndependienteId: id, EquipamientoId: equipamientoId }
         })
-    );
+    ) : [];
 
     // Borrando los equipamientos que se quitaron
-    const removeEquipamientoPromises = quitarEquipamiento.map(equipamientoId =>
+    const removeEquipamientoPromises = (quitarEquipamiento && Array.isArray(quitarEquipamiento)) ? quitarEquipamiento.map(equipamientoId =>
         equipamiento_de_las_prop_independientes.destroy({
           where: { PropiedadIndependienteId: id, EquipamientoId: equipamientoId }
         })
-    );
+    ) : [];
 
     await Promise.all([...addAmenidadesPromises, ...removeAmenidadesPromises, ...addEquipamientoPromises, ...removeEquipamientoPromises]);
 
