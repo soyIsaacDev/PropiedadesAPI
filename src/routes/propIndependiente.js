@@ -5,7 +5,8 @@ const public = path.join(__dirname,'../../uploads');
 const { Op } = require('sequelize');
 
 const { PropiedadIndependiente, ImgPropiedadIndependiente, AmenidadesdelaPropiedad, TipodePropiedad, 
-  TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, VideoYoutube, Tour3D, Aliado
+  TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, VideoYoutube, Tour3D, Aliado, Equipamiento,
+  Mascotas
  } = require("../db");
 
 const capitalize = (str) => 
@@ -72,6 +73,12 @@ server.get("/getPropiedadesIndependientes", async (req, res) => {
           {
             model: Colonia
           },
+          {
+            model: Mascotas
+          },
+          {
+            model: Equipamiento
+          },
           { // El modelo Cliente da la relacion de Favoritos
             model:Cliente,
             attributes: ["id", "userId"],
@@ -130,6 +137,12 @@ server.get("/detallesPropIndependiente/:id", async (req, res) => {
         {
           model: Colonia
         },
+        {
+          model: Mascotas
+        },
+        {
+          model: Equipamiento
+        },
         {// El modelo Cliente da la relacion de desarrollos_favoritos
           model:Cliente,
           attributes: ["id", "userId"],
@@ -167,6 +180,12 @@ server.get("/getPropIndbyOrg/:userId", async (req,res) => {
           through: {
             attributes: []
           }
+        },
+        {
+          model: Mascotas
+        },
+        {
+          model: Equipamiento
         }
       ]
     })

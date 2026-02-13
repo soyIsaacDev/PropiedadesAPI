@@ -27,6 +27,7 @@ const crearPropIndependienteDesdeObjeto = async (propData = {}) => {
       cocheraTechada,
       m2Construccion,
       m2Terreno,
+      m2Patios,
       añodeConstruccion,
       TipoOperacionId,
       TipodePropiedadId,
@@ -66,6 +67,7 @@ const crearPropIndependienteDesdeObjeto = async (propData = {}) => {
           cocheraTechada,
           m2Construccion,
           m2Terreno,
+          m2Patios,
           añodeConstruccion,
           tratoDirecto,
           publicada: false,
@@ -127,7 +129,7 @@ const crearPropIndependienteDesdeObjeto = async (propData = {}) => {
       return {
         codigo: 1,
         Mensaje: `Se cargaron los datos de la propiedad Independiente`,
-        PropiedadIndependienteId: PropiedadIndependienteCreada.id,
+        propiedadIndependienteId: PropiedadIndependienteCreada.id,
       };
     } else {
       return {

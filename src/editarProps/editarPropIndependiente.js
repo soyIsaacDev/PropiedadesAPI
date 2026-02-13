@@ -1,4 +1,4 @@
-const {  amenidades_de_las_prop_independientes, PropiedadIndependiente, VideoYoutube, Tour3D, equipamiento_de_las_prop_independientes } = require("../db");
+const {  amenidades_de_las_prop_independientes, PropiedadIndependiente, VideoYoutube, Tour3D, equipamiento_de_las_prop_independientes, Mascotas } = require("../db");
 
 
 const editarPropIndependiente = async (req, res, next) => {
@@ -6,12 +6,15 @@ const editarPropIndependiente = async (req, res, next) => {
     // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
     const bodyObj = req.body.data;
     const parsedbodyObj = JSON.parse(bodyObj);
-    const { id, precio, calle, numeroPropiedad, numeroInterior, posicion, ciudad, estado, municipio, colonia,
+    const { propiedadIndependienteId, precio, calle, numeroPropiedad, numeroInterior, posicion, ciudad, estado, municipio, colonia,
       niveles, recamaras, baños, medio_baño, espaciosCochera, cocheraTechada,   
-      m2Construccion, m2Terreno, m2Total, añodeConstruccion, 
+      m2Construccion, m2Terreno, m2Patios, añodeConstruccion, 
       TipoOperacionId, TipodePropiedadId, amenidadesPropiedad, tratoDirecto,
-      EstiloArquitecturaId, quitarAmenidadesModelo, ytvideo, tour3D_URL,  equipamiento, quitarEquipamiento
+      EstiloArquitecturaId, quitarAmenidadesModelo, ytvideo, tour3D_URL,  amueblado, equipamiento, quitarEquipamiento,
+      mascotaPermitida, mascotas, quitarMascotas, 
     } = parsedbodyObj
+    console.log("Tipo de OperacionId:", TipoOperacionId)
+
     const [actualizarPropiedadIndependiente] = await PropiedadIndependiente.update(
       {
         precio,          
@@ -24,7 +27,7 @@ const editarPropIndependiente = async (req, res, next) => {
         cocheraTechada,
         m2Construccion,
         m2Terreno,
-        m2Total, 
+        m2Patios, 
         añodeConstruccion,
         tratoDirecto,
         publicada:false,
@@ -38,8 +41,11 @@ const editarPropIndependiente = async (req, res, next) => {
         calle,
         numeroPropiedad,
         numeroInterior,
+        amueblado,
+        mascotaPermitida:mascotaPermitida,
+        mascotas: mascotaPermitida !== undefined ? mascotaPermitida : false,
         },
-        { where: { id } }
+        { where: { id: propiedadIndependienteId } }
     )
     console.log(actualizarPropiedadIndependiente)
     if (actualizarPropiedadIndependiente === 0) {
@@ -49,7 +55,7 @@ const editarPropIndependiente = async (req, res, next) => {
     tour3D_URL && await Tour3D.findOrCreate({
       where:{
         tourURL:tour3D_URL,
-        PropiedadIndependienteId:id
+        PropiedadIndependienteId:propiedadIndependienteId
       },
     })
 
@@ -58,39 +64,54 @@ const editarPropIndependiente = async (req, res, next) => {
         await VideoYoutube.findOrCreate({
           where:{
             videoURL:video,
-            PropiedadIndependienteId:id
+            PropiedadIndependienteId:propiedadIndependienteId
           }
         })
       })
     }
+    
 
     const addAmenidadesPromises = (amenidadesPropiedad && Array.isArray(amenidadesPropiedad)) ? amenidadesPropiedad.map(amenidadId => 
         amenidades_de_las_prop_independientes.findOrCreate({
-          where: { PropiedadIndependienteId: id, AmenidadesdelaPropiedadId: amenidadId }
+          where: { PropiedadIndependienteId: propiedadIndependienteId, AmenidadesdelaPropiedadId: amenidadId }
         })
     ) : [];
 
     // Borrando las amendidades que se quitaron
     const removeAmenidadesPromises = (quitarAmenidadesModelo && Array.isArray(quitarAmenidadesModelo)) ? quitarAmenidadesModelo.map(amenidadId =>
         amenidades_de_las_prop_independientes.destroy({
-          where: { PropiedadIndependienteId: id, AmenidadesdelaPropiedadId: amenidadId }
+          where: { PropiedadIndependienteId: propiedadIndependienteId, AmenidadesdelaPropiedadId: amenidadId }
         })
     ) : [];
 
     const addEquipamientoPromises = (equipamiento && Array.isArray(equipamiento)) ? equipamiento.map(equipamientoId => 
         equipamiento_de_las_prop_independientes.findOrCreate({
-          where: { PropiedadIndependienteId: id, EquipamientoId: equipamientoId }
+          where: { PropiedadIndependienteId: propiedadIndependienteId, EquipamientoId: equipamientoId }
         })
     ) : [];
 
     // Borrando los equipamientos que se quitaron
     const removeEquipamientoPromises = (quitarEquipamiento && Array.isArray(quitarEquipamiento)) ? quitarEquipamiento.map(equipamientoId =>
         equipamiento_de_las_prop_independientes.destroy({
-          where: { PropiedadIndependienteId: id, EquipamientoId: equipamientoId }
+          where: { PropiedadIndependienteId: propiedadIndependienteId, EquipamientoId: equipamientoId }
         })
     ) : [];
 
-    await Promise.all([...addAmenidadesPromises, ...removeAmenidadesPromises, ...addEquipamientoPromises, ...removeEquipamientoPromises]);
+    const addMascotasPromises = (mascotas && Array.isArray(mascotas)) ? mascotas.map(mascotaId => 
+        Mascotas.update(
+          { PropiedadIndependienteId: propiedadIndependienteId },
+          { where: { id: mascotaId } }
+        )
+    ) : [];
+
+    const removeMascotasPromises = (quitarMascotas && Array.isArray(quitarMascotas)) ? quitarMascotas.map(mascotaId =>
+        Mascotas.update(
+          { PropiedadIndependienteId: null },
+          { where: { id: mascotaId, PropiedadIndependienteId: propiedadIndependienteId } }
+        )
+    ) : [];
+
+    await Promise.all([...addMascotasPromises, ...removeMascotasPromises, ...addAmenidadesPromises, ...removeAmenidadesPromises, ...addEquipamientoPromises, ...removeEquipamientoPromises]);
 
     next();
 

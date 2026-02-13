@@ -7,7 +7,7 @@ var public = path.join(__dirname,'../../uploads');
 
 const { Desarrollo, ImgDesarrollo, AmenidadesDesarrollo, AmenidadesdelaPropiedad, TipodePropiedad, 
   TipoOperacion, Estado, Municipio, Ciudad, Colonia, Cliente, Favoritos, ModeloAsociadoAlDesarrollo, 
-  ImgModeloAsociado, EstiloArquitectura, VideoYoutube, Tour3D,  } = require("../db");
+  ImgModeloAsociado, EstiloArquitectura, VideoYoutube, Tour3D, Equipamiento } = require("../db");
 
 const { literal } = require('sequelize');
 
@@ -192,6 +192,9 @@ server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
           }
         },
         {
+          model: Equipamiento
+        },
+        {
           model: Desarrollo,
           attributes: ['id','precioMin', 'precioMax', 'calle', 'numeroPropiedad','posicion', 'tipodeDesarrollo'],
           include: [{
@@ -282,6 +285,9 @@ server.get("/modelosFavoritos/:userId",  async (req, res) => {
               }
             },
             {
+              model: Equipamiento
+            },
+            {
               model:Cliente,
               attributes: ['id'],
             }
@@ -356,6 +362,9 @@ server.get("/getModeloAsociadoPropiedadbyOrg/:userId", async (req, res) => {
           through: {
             attributes: []
           }
+        },
+        {
+          model: Equipamiento
         },
       ]
     },);

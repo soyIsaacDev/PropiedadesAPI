@@ -6,7 +6,7 @@ const crearTablaImg = async (req, res, next) => {
     try {
         // Se obtienen los datos de la form que estan en un objeto FormData y se pasan a JSON
         const parsedbodyObj = JSON.parse(req.body.data);
-        const { id, tipodeDesarrollo, desarrolloId, modeloId } = parsedbodyObj
+        const { id, tipodeDesarrollo, desarrolloId, modeloId, propiedadIndependienteId } = parsedbodyObj
         console.log("Tipo de Desarrrollo " + tipodeDesarrollo)
         
         const {file, ordenData, modeloBucket, desarrolloBucket, uniqueDateName} = req.data;
@@ -54,11 +54,11 @@ const crearTablaImg = async (req, res, next) => {
             });
         }
         else if (tipodeDesarrollo === 'PropiedadIndependiente'){
-            console.log("Creando Tabla Img Independiente " + id)
+            console.log("Creando Tabla Img Independiente " + propiedadIndependienteId)
             const imagenPropiedadIndependiente = await ImgPropiedadIndependiente.create({
                 orden:ordenData[0].orden,
                 type: file.mimetype,
-                PropiedadIndependienteId:id,
+                PropiedadIndependienteId:propiedadIndependienteId,
                 img_name: uniqueDateName,
                 detalles_imgGde,
                 thumbnail_img,

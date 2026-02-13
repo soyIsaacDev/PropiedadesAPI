@@ -113,7 +113,7 @@ let {Desarrollo, ImgDesarrollo, TipodePropiedad, AmenidadesDesarrollo, Amenidade
 // Relaciones DB
 
 // Relaciones Desarrollo
-Desarrollo.hasMany(ImgDesarrollo);
+Desarrollo.hasMany(ImgDesarrollo, { onDelete: 'CASCADE' });
 ImgDesarrollo.belongsTo(Desarrollo);
 
 Desarrollo.belongsTo(TipodePropiedad);
@@ -143,15 +143,15 @@ Desarrollo.belongsToMany(Cliente, { through: 'desarrollos_favoritos', timestamps
 EstiloArquitectura.hasMany(Desarrollo);
 Desarrollo.belongsTo(EstiloArquitectura);
 
-Desarrollo.hasMany(VideoYoutube);
+Desarrollo.hasMany(VideoYoutube, { onDelete: 'CASCADE' });
 VideoYoutube.belongsTo(Desarrollo);
 
-Desarrollo.hasOne(Tour3D);
+Desarrollo.hasOne(Tour3D, { onDelete: 'CASCADE' });
 Tour3D.belongsTo(Desarrollo);
 
 // Relaciones Modelo
 
-ModeloAsociadoAlDesarrollo.hasMany(ImgModeloAsociado);
+ModeloAsociadoAlDesarrollo.hasMany(ImgModeloAsociado, { onDelete: 'CASCADE' });
 ImgModeloAsociado.belongsTo(ModeloAsociadoAlDesarrollo);
 
 ModeloAsociadoAlDesarrollo.belongsToMany(AmenidadesdelaPropiedad, { through: 'amenidades_de_los_modelos', timestamps: false, });
@@ -163,7 +163,7 @@ Equipamiento.belongsToMany(ModeloAsociadoAlDesarrollo, { through: 'equipamiento_
 Cliente.belongsToMany(ModeloAsociadoAlDesarrollo, { through: 'modelos_favoritos', timestamps: false, });
 ModeloAsociadoAlDesarrollo.belongsToMany(Cliente, { through: 'modelos_favoritos', timestamps: false, });
 
-Desarrollo.hasMany(ModeloAsociadoAlDesarrollo);
+Desarrollo.hasMany(ModeloAsociadoAlDesarrollo, { onDelete: 'CASCADE' });
 ModeloAsociadoAlDesarrollo.belongsTo(Desarrollo);
 
 Ciudad.hasMany(ModeloAsociadoAlDesarrollo);
@@ -172,16 +172,16 @@ ModeloAsociadoAlDesarrollo.belongsTo(Ciudad);
 Estado.hasMany(ModeloAsociadoAlDesarrollo);
 ModeloAsociadoAlDesarrollo.belongsTo(Estado);
 
-ModeloAsociadoAlDesarrollo.hasMany(VideoYoutube);
+ModeloAsociadoAlDesarrollo.hasMany(VideoYoutube, { onDelete: 'CASCADE' });
 VideoYoutube.belongsTo(ModeloAsociadoAlDesarrollo);
 
-ModeloAsociadoAlDesarrollo.hasOne(Tour3D);
+ModeloAsociadoAlDesarrollo.hasOne(Tour3D, { onDelete: 'CASCADE' });
 Tour3D.belongsTo(ModeloAsociadoAlDesarrollo);
 
 
 // Relaciones de Propiedad Independiente
 
-PropiedadIndependiente.hasMany(ImgPropiedadIndependiente);
+PropiedadIndependiente.hasMany(ImgPropiedadIndependiente, { onDelete: 'CASCADE' });
 ImgPropiedadIndependiente.belongsTo(PropiedadIndependiente);
 
 PropiedadIndependiente.belongsTo(TipodePropiedad);
@@ -217,16 +217,16 @@ PropiedadIndependiente.belongsTo(EstiloArquitectura);
 Organizacion.hasMany(PropiedadIndependiente);
 PropiedadIndependiente.belongsTo(Organizacion);
 
-PropiedadIndependiente.hasMany(VideoYoutube);
+PropiedadIndependiente.hasMany(VideoYoutube, { onDelete: 'CASCADE' });
 VideoYoutube.belongsTo(PropiedadIndependiente);
 
-PropiedadIndependiente.hasOne(Tour3D);
+PropiedadIndependiente.hasOne(Tour3D, { onDelete: 'CASCADE' });
 Tour3D.belongsTo(PropiedadIndependiente);
 
 /* PropiedadIndependiente.belongsToMany(Mascotas, { through: 'mascotas_de_las_prop_independientes', timestamps: false, });
 Mascotas.belongsToMany(PropiedadIndependiente, { through: 'mascotas_de_las_prop_independientes', timestamps: false, }); */
 
-PropiedadIndependiente.hasMany(Mascotas);
+PropiedadIndependiente.hasMany(Mascotas, { onDelete: 'CASCADE' });
 Mascotas.belongsTo(PropiedadIndependiente);
 
 // Organizacion
@@ -302,7 +302,7 @@ AsignaciondePropiedad.belongsTo(PropiedadIndependiente, { foreignKey: 'propiedad
 
 Aliado.hasMany(AsignaciondePropiedad, { foreignKey: 'aliadoId' });
 Cliente.hasMany(AsignaciondePropiedad, { foreignKey: 'clienteId' });
-PropiedadIndependiente.hasMany(AsignaciondePropiedad, { foreignKey: 'propiedadId' });
+PropiedadIndependiente.hasMany(AsignaciondePropiedad, { foreignKey: 'propiedadId', onDelete: 'CASCADE' });
 
 /* AutorizacionesXTipodeOrg.belongsToMany(PaquetedePago, { through: 'PaquetePagoPorOrg' });
 PaquetedePago.belongsToMany(AutorizacionesXTipodeOrg, { through: 'PaquetePagoPorOrg' }); */
