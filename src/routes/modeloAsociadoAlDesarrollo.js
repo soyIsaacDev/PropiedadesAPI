@@ -89,6 +89,9 @@ server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
             attributes: []
           }
         },
+        {
+          model: Equipamiento
+        },
         { // El modelo Cliente da la relacion de Favoritos
           model:Cliente,
           attributes: ["id", "userId"],
@@ -130,6 +133,9 @@ server.get("/getDataandImagenModeloAsociadoPropiedad/:DesarrolloId", async (req,
           through: {
             attributes: []
           }
+        },
+        {
+          model: Equipamiento
         },
       ], 
       

@@ -39,10 +39,12 @@ const crearModeloAsociadoDesarrollo = async (req, res, next) => {
             municipio
             publicada
           */
-         equipamiento,
         }
         
       });
+
+      console.log("ModeloRelacionado.id:", ModeloRelacionado.id);
+      console.log("creado:", creado);
 
       if(creado === true){
 
@@ -61,9 +63,35 @@ const crearModeloAsociadoDesarrollo = async (req, res, next) => {
         }       
 
         for (let i = 0; i < amenidadesPropiedad.length; i++) {        
-          await amenidades_de_los_modelos.create({ 
-            ModeloAsociadoAlDesarrolloId:ModeloRelacionado.id, 
-            AmenidadesdelaPropiedadId:amenidadesPropiedad[i] });
+          const [amenidadRel, creada] = await amenidades_de_los_modelos.findOrCreate({ 
+            where: {
+              ModeloAsociadoAlDesarrolloId: ModeloRelacionado.id, 
+              AmenidadesdelaPropiedadId: amenidadesPropiedad[i]
+            },
+            defaults: {
+              ModeloAsociadoAlDesarrolloId: ModeloRelacionado.id, 
+              AmenidadesdelaPropiedadId: amenidadesPropiedad[i]
+            }
+          });
+          if(!creada) {
+            console.log(`Amenidad ${amenidadesPropiedad[i]} ya existía para el modelo ${ModeloRelacionado.id}`);
+          }
+        }
+
+        for (const equipamientoId of equipamiento) {
+          const [equipRel, creada] = await equipamiento_de_los_modelos.findOrCreate({
+            where: {
+              ModeloAsociadoAlDesarrolloId: ModeloRelacionado.id,
+              EquipamientoId: equipamientoId,
+            },
+            defaults: {
+              ModeloAsociadoAlDesarrolloId: ModeloRelacionado.id,
+              EquipamientoId: equipamientoId,
+            }
+          });
+          if(!creada) {
+            console.log(`Equipamiento ${equipamientoId} ya existía para el modelo ${ModeloRelacionado.id}`);
+          }
         }
     
         // Agregar tipo de propiedad y operacion al Desarrollo

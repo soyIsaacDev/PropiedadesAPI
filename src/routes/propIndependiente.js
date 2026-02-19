@@ -77,7 +77,10 @@ server.get("/getPropiedadesIndependientes", async (req, res) => {
             model: Mascotas
           },
           {
-            model: Equipamiento
+            model: Equipamiento,
+            through: {
+              attributes: [] // No incluir atributos de la tabla intermedia
+            }
           },
           { // El modelo Cliente da la relacion de Favoritos
             model:Cliente,

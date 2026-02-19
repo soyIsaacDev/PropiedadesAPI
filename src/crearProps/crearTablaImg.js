@@ -31,31 +31,52 @@ const crearTablaImg = async (req, res, next) => {
         }
 
         if(tipodeDesarrollo === 'Desarrollo'){
-            const imagenDesarrollo = await ImgDesarrollo.create({
-                orden:ordenData[0].orden,
-                type: file.mimetype,
-                DesarrolloId: desarrolloId,
-                img_name: uniqueDateName,
-                detalles_imgGde,
-                thumbnail_img,
-                detalles_imgChica,        
-            });
+            try {
+                const imagenDesarrollo = await ImgDesarrollo.create({
+                    orden:ordenData[0].orden,
+                    type: file.mimetype,
+                    DesarrolloId: desarrolloId,
+                    img_name: uniqueDateName,
+                    detalles_imgGde,
+                    thumbnail_img,
+                    detalles_imgChica,        
+                });
+                
+            } catch (error) {
+                const respuestaError = {
+                codigo:0, 
+                Mensaje:`Error al crear la tabla de la imagen catch`,
+                Error:error
+            }
+            return res.status(400).json(respuestaError);
+            }
         }
 
-        else if(tipodeDesarrollo === 'Modelo'){
-            const imagenModeloAsociado = await ImgModeloAsociado.create({
-                orden:ordenData[0].orden,
-                type: file.mimetype,
-                ModeloAsociadoAlDesarrolloId: modeloId,
-                img_name: uniqueDateName,
-                detalles_imgGde,
-                thumbnail_img,
-                detalles_imgChica,        
-            });
+        else if(tipodeDesarrollo === 'ModeloRelacionado'){
+            try {
+                const imagenModeloAsociado = await ImgModeloAsociado.create({
+                    orden:ordenData[0].orden,
+                    type: file.mimetype,
+                    ModeloAsociadoAlDesarrolloId: modeloId,
+                    img_name: uniqueDateName,
+                    detalles_imgGde,
+                    thumbnail_img,
+                    detalles_imgChica,        
+                });
+            } catch (error) {
+                const respuestaError = {
+                    codigo:0, 
+                    Mensaje:`Error al crear la tabla de la imagen catch`,
+                    Error:error
+                }
+                return res.status(400).json(respuestaError);
+            }
+            
         }
         else if (tipodeDesarrollo === 'PropiedadIndependiente'){
             console.log("Creando Tabla Img Independiente " + propiedadIndependienteId)
-            const imagenPropiedadIndependiente = await ImgPropiedadIndependiente.create({
+            try {
+                const imagenPropiedadIndependiente = await ImgPropiedadIndependiente.create({
                 orden:ordenData[0].orden,
                 type: file.mimetype,
                 PropiedadIndependienteId:propiedadIndependienteId,
@@ -65,6 +86,14 @@ const crearTablaImg = async (req, res, next) => {
                 detalles_imgChica,
             });
             console.log("Nombre Imagen " + imagenPropiedadIndependiente.img_name)
+            } catch (error) {
+                const respuestaError = {
+                    codigo:0, 
+                    Mensaje:`Error al crear la tabla de la imagen catch`,
+                    Error:error
+                }
+                return res.status(400).json(respuestaError);
+            }
         }
     
         console.log("Termino de Cargar la imagen");
