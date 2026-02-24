@@ -1,4 +1,5 @@
 const {  amenidades_de_los_modelos, ModeloAsociadoAlDesarrollo, Desarrollo, VideoYoutube, Tour3D, equipamiento_de_los_modelos} = require("../db");
+const formatPrecio = require("../utils/formatPrecio");
 
 const editarModelo = async (req, res, next) => {
   try {
@@ -13,10 +14,12 @@ const editarModelo = async (req, res, next) => {
       ytvideo, tour3D_URL,
     } = parsedbodyObj
 
+    const precioFormateado = formatPrecio(precio)
+
     const [actualizarModelo] = await ModeloAsociadoAlDesarrollo.update(
       {
         posicion,
-        precio,
+        precio:precioFormateado,
         niveles,
         recamaras, 
         baños,
@@ -75,16 +78,16 @@ const editarModelo = async (req, res, next) => {
         await DesarrolloaCambiar.save();
       }
       if(DesarrolloaCambiar.precioMin === null && DesarrolloaCambiar.precioMax === null){
-        DesarrolloaCambiar.precioMin = precio;
-        DesarrolloaCambiar.precioMax = precio;
+        DesarrolloaCambiar.precioMin = precioFormateado;
+        DesarrolloaCambiar.precioMax = precioFormateado;
         await DesarrolloaCambiar.save();
       }
-      else if(precio < DesarrolloaCambiar.precioMin){
-        DesarrolloaCambiar.precioMin = precio;
+      else if(precioFormateado < DesarrolloaCambiar.precioMin){
+        DesarrolloaCambiar.precioMin = precioFormateado;
         await DesarrolloaCambiar.save();
       }
-      else if(precio > DesarrolloaCambiar.precioMax){
-        DesarrolloaCambiar.precioMax = precio;
+      else if(precioFormateado > DesarrolloaCambiar.precioMax){
+        DesarrolloaCambiar.precioMax = precioFormateado;
         await DesarrolloaCambiar.save();
       }
     }

@@ -6,6 +6,7 @@ const {
   equipamiento_de_las_prop_independientes,
   Mascotas,
 } = require("../db");
+const formatPrecio = require("../utils/formatPrecio.js");
 
 const crearPropIndependienteDesdeObjeto = async (propData = {}) => {
   try {
@@ -44,15 +45,6 @@ const crearPropIndependienteDesdeObjeto = async (propData = {}) => {
     } = propData;
 
     console.log("mascotaPermitida", mascotaPermitida);
-    let precioFormateado = '';
-    if (precio !== '') {
-      precioFormateado = TipoOperacionId === 1? 
-        // Se divide el precio entre 1000000 para que quede en millones
-        parseInt((precio / 1000000))
-        : 
-        // Se divide el precio entre 1000 para que quede en miles
-        parseInt((precio / 1000));
-    }
 
     const [PropiedadIndependienteCreada, creado] =
       await PropiedadIndependiente.findOrCreate({
@@ -66,7 +58,7 @@ const crearPropIndependienteDesdeObjeto = async (propData = {}) => {
           numeroInterior,
         },
         defaults: {
-          precio: precioFormateado  ,
+          precio: formatPrecio(precio, TipoOperacionId),
           posicion,
           niveles,
           recamaras,

@@ -1,5 +1,6 @@
 const {  amenidades_de_los_modelos, ModeloAsociadoAlDesarrollo, Desarrollo, VideoYoutube, Tour3D, equipamiento_de_los_modelos} = require("../db");
 const { Op } = require("sequelize");
+const formatPrecio = require("../utils/formatPrecio.js");
 
 const crearModeloAsociadoDesarrollo = async (req, res, next) => {
     try {
@@ -13,6 +14,8 @@ const crearModeloAsociadoDesarrollo = async (req, res, next) => {
         equipamiento
       } = parsedbodyObj
 
+      const precioFormateado = formatPrecio(precio)
+
       const [ModeloRelacionado, creado] = await ModeloAsociadoAlDesarrollo.findOrCreate({
         where:{
           nombreModelo,
@@ -22,7 +25,7 @@ const crearModeloAsociadoDesarrollo = async (req, res, next) => {
         },
         defaults:{
           posicion,
-          precio,
+          precio: precioFormateado,
           niveles,
           recamaras, 
           baños,
@@ -108,16 +111,16 @@ const crearModeloAsociadoDesarrollo = async (req, res, next) => {
             await DesarrolloaCambiar.save();
           }
           if(DesarrolloaCambiar.precioMin === null && DesarrolloaCambiar.precioMax === null){
-            DesarrolloaCambiar.precioMin = precio;
-            DesarrolloaCambiar.precioMax = precio;
+            DesarrolloaCambiar.precioMin = precioFormateado;
+            DesarrolloaCambiar.precioMax = precioFormateado;
             await DesarrolloaCambiar.save();
           }
-          else if(precio < DesarrolloaCambiar.precioMin){
-            DesarrolloaCambiar.precioMin = precio;
+          else if(precioFormateado < DesarrolloaCambiar.precioMin){
+            DesarrolloaCambiar.precioMin = precioFormateado;
             await DesarrolloaCambiar.save();
           }
-          else if(precio > DesarrolloaCambiar.precioMax){
-            DesarrolloaCambiar.precioMax = precio;
+          else if(precioFormateado > DesarrolloaCambiar.precioMax){
+            DesarrolloaCambiar.precioMax = precioFormateado;
             await DesarrolloaCambiar.save();
           }
 

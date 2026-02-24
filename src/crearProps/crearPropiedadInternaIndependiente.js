@@ -24,11 +24,11 @@ const crearPropiedadInternaIndependiente = async (req, res) => {
       // Se creo la propiedad 
       if( propiedadIndependiente.codigo === 1){
         //const {  clienteId } = req.body;
-        console.log(propiedadIndependiente.PropiedadIndependienteId)
+        console.log("Propiedad Interna Independiente Creada con id:",propiedadIndependiente.propiedadIndependienteId)
         const propiedadAsignada = await AsignaciondePropiedad.create({
             aliadoId:aliado.id, 
             //clienteId,
-            propiedadId: propiedadIndependiente.PropiedadIndependienteId,
+            propiedadId: propiedadIndependiente.propiedadIndependienteId,
             tipoDeAutorizacion:"Completa",
             clientePrincipal:true,
             rolDelAliado:"Principal"

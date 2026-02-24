@@ -210,7 +210,7 @@ server.get("/getAmenidadesdelaPropiedad", async (req, res) => {
   try {
     const AmenidadesdelaPropiedadFind = await AmenidadesdelaPropiedad.findAll({
       order: [
-        ['nombreAmenidad', 'ASC'],
+        ['nombre', 'ASC'],
       ]
     });
     res.json(AmenidadesdelaPropiedadFind);

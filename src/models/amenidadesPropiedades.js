@@ -4,7 +4,7 @@ module.exports = s => {
     s.define(
         "AmenidadesdelaPropiedad", 
     {
-        nombreAmenidad:{
+        nombre:{
             type: DataTypes.STRING,
             allowNull: true,
             unique: true 

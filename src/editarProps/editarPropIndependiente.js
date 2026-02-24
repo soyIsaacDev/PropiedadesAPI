@@ -1,4 +1,5 @@
 const {  amenidades_de_las_prop_independientes, PropiedadIndependiente, VideoYoutube, Tour3D, equipamiento_de_las_prop_independientes, Mascotas } = require("../db");
+const formatPrecio = require("../utils/formatPrecio.js");
 
 
 const editarPropIndependiente = async (req, res, next) => {
@@ -17,7 +18,7 @@ const editarPropIndependiente = async (req, res, next) => {
 
     const [actualizarPropiedadIndependiente] = await PropiedadIndependiente.update(
       {
-        precio,          
+        precio: formatPrecio(precio, TipoOperacionId),          
         posicion,
         niveles,
         recamaras, 
