@@ -223,11 +223,11 @@ VideoYoutube.belongsTo(PropiedadIndependiente);
 PropiedadIndependiente.hasOne(Tour3D, { onDelete: 'CASCADE' });
 Tour3D.belongsTo(PropiedadIndependiente);
 
-/* PropiedadIndependiente.belongsToMany(Mascotas, { through: 'mascotas_de_las_prop_independientes', timestamps: false, });
-Mascotas.belongsToMany(PropiedadIndependiente, { through: 'mascotas_de_las_prop_independientes', timestamps: false, }); */
+PropiedadIndependiente.belongsToMany(Mascotas, { through: 'mascotas_de_las_prop_independientes', timestamps: false, });
+Mascotas.belongsToMany(PropiedadIndependiente, { through: 'mascotas_de_las_prop_independientes', timestamps: false, });
 
-PropiedadIndependiente.hasMany(Mascotas, { onDelete: 'CASCADE' });
-Mascotas.belongsTo(PropiedadIndependiente);
+/* PropiedadIndependiente.hasMany(Mascotas, { onDelete: 'CASCADE' });
+Mascotas.belongsTo(PropiedadIndependiente); */
 
 // Organizacion
 

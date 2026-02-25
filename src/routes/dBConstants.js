@@ -197,7 +197,7 @@ server.get("/getAmenidadesDesarrollo", async (req, res) => {
   try {
     const AmenidadesDesarrolloFind = await AmenidadesDesarrollo.findAll({
       order: [
-        ['nombreAmenidad', 'ASC'],
+        ['nombre', 'ASC'],
       ]
     });
     res.json(AmenidadesDesarrolloFind);

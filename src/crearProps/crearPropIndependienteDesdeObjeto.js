@@ -5,6 +5,7 @@ const {
   Tour3D,
   equipamiento_de_las_prop_independientes,
   Mascotas,
+  mascotas_de_las_prop_independientes,
 } = require("../db");
 const formatPrecio = require("../utils/formatPrecio.js");
 
@@ -44,7 +45,6 @@ const crearPropIndependienteDesdeObjeto = async (propData = {}) => {
       mascotas = [],
     } = propData;
 
-    console.log("mascotaPermitida", mascotaPermitida);
 
     const [PropiedadIndependienteCreada, creado] =
       await PropiedadIndependiente.findOrCreate({
@@ -123,8 +123,10 @@ const crearPropIndependienteDesdeObjeto = async (propData = {}) => {
             Error: "Mascota no encontrada",
           };
         }
-        mascota.PropiedadIndependienteId = PropiedadIndependienteCreada.id;
-        await mascota.save();
+        await mascotas_de_las_prop_independientes.create({
+          PropiedadIndependienteId: PropiedadIndependienteCreada.id,
+          MascotaId: mascotaId,
+        });
       }
 
       return {
