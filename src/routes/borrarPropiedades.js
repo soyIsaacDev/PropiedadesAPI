@@ -61,11 +61,10 @@ server.post("/hardDeleteDesarrollo", autorizadoABorrar, async (req,res) => {
       if (transaction) await transaction.rollback();
       throw error;
     }
-    
-    res.json("BORRADO")
+    res.json({codigo:1, mensaje:"Desarrollo Borrado Exitosamente"})
   } catch (error) {
-    console.error("Error al borrar desarrollo:", error)
-    res.status(500).json({error: error.message})
+    console.error("Error al eliminar desarrollo:", error)
+    res.status(500).json({codigo:0, mensaje: "Error al eliminar desarrollo", error: error.message})
   }
 })
 
@@ -122,11 +121,10 @@ server.post("/hardDeleteModeloRelacionado", autorizadoABorrar, async (req,res) =
       if (transaction) await transaction.rollback();
       throw error;
     }
-    
-    res.json("BORRADO")
+    res.json({codigo:1, mensaje:"Modelo Borrado Exitosamente"})
   } catch (error) {
-    console.error("Error al borrar modelo:", error)
-    res.status(500).json({error: error.message})
+    console.error("Error al eliminar modelo:", error)
+    res.status(500).json({codigo:0, mensaje: "Error al eliminar modelo", error: error.message})
   }
 })
 
@@ -194,11 +192,10 @@ server.post("/hardDeletePropiedadIndependiente", autorizadoABorrar, async (req,r
         if (transaction) await transaction.rollback();
         throw error;
       }
-      
-      res.json("BORRADO")
+      res.json({codigo:1, mensaje:"Propiedad Independiente Borrada Exitosamente"})
     } catch (error) {
-      console.error("Error al borrar propiedad:", error)
-      res.status(500).json({error: error.message})
+      console.error("Error al eliminar propiedad:", error)
+      res.status(500).json({codigo:0, mensaje: "Error al eliminar propiedad", error: error.message})
     }
   })
 

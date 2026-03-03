@@ -213,7 +213,7 @@ server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
             }, 
             {
               model: AmenidadesDesarrollo,
-              attributes: ['nombreAmenidad']
+              attributes: ['nombre']
             },
             {
               model: TipodePropiedad
@@ -246,8 +246,10 @@ server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
         },
       ]
     })
+    console.log("Data Modelo Asociado Al Desarrollo:", JSON.stringify(dataPropiedad, null, 2));
     dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontro la propiedad"});
   } catch (e) {
+    console.error("Error en getModeloAsociadoAlDesarrollo:", e);
     res.send(e);
   }
 })
