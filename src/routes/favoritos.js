@@ -13,7 +13,10 @@ server.post("/agregarFavorito",  async (req,res)=> {
                 userId
               }
         });
-        console.log("Cliente ID " + cliente.id + " Prop Id " + PropiedadId + " Tipo " + tipodeDesarrollo)
+        
+        if (!cliente) {
+            return res.status(404).json({Mensaje:"Cliente no encontrado"});
+        }
         
         if(tipodeDesarrollo==="Desarrollo"){
             console.log("Crear desarrollo")
@@ -22,25 +25,25 @@ server.post("/agregarFavorito",  async (req,res)=> {
                 DesarrolloId:PropiedadId
             });
             console.log(desarrolloFavorito)
-            res.json(desarrolloFavorito)
+            res.status(201).json(desarrolloFavorito)
         }
         else if(tipodeDesarrollo==="Modelo"){
             const modeloFavorito = await modelos_favoritos.create({
                 ClienteId:cliente.id,
                 ModeloAsociadoAlDesarrolloId:PropiedadId
             });
-            res.json(modeloFavorito)
+            res.status(201).json(modeloFavorito)
         }
         else if(tipodeDesarrollo==="Independiente"){
             const independienteFavorita = await prop_independientes_favoritas.create({
                 ClienteId:cliente.id,
                 PropiedadIndependienteId:PropiedadId
             });
-            res.json(independienteFavorita)
+            res.status(201).json(independienteFavorita)
         }
         
     } catch (e) {
-        res.send(e);
+        res.status(500).json(e);
     }
 })
 
@@ -52,7 +55,11 @@ server.post("/eliminarFavorito", async(req, res) => {
                 userId
               }
         });
+        if (!cliente) {
+            return res.status(404).json({Mensaje:"Cliente no encontrado"});
+        }
         
+        let favoritoEliminado;
         switch (tipodeDesarrollo) {
             case "Desarrollo":
                 const eliminarDesarrolloFavorito = await desarrollos_favoritos.findOne({
@@ -60,6 +67,9 @@ server.post("/eliminarFavorito", async(req, res) => {
                         [Op.and]:[{"DesarrolloId":PropiedadId}, {"ClienteId":cliente.id}]
                     }
                 })
+                if (!eliminarDesarrolloFavorito) {
+                    return res.status(404).json({Mensaje:"Favorito no encontrado"});
+                }
                 await eliminarDesarrolloFavorito.destroy();
                 favoritoEliminado = eliminarDesarrolloFavorito;
                 break;
@@ -69,6 +79,9 @@ server.post("/eliminarFavorito", async(req, res) => {
                         [Op.and]:[{"ModeloAsociadoAlDesarrolloId":PropiedadId}, {"ClienteId":cliente.id}]
                     }
                 })
+                if (!eliminarModeloFavorito) {
+                    return res.status(404).json({Mensaje:"Favorito no encontrado"});
+                }
                 await eliminarModeloFavorito.destroy();
                 favoritoEliminado = eliminarModeloFavorito;
                 break;
@@ -78,6 +91,9 @@ server.post("/eliminarFavorito", async(req, res) => {
                         [Op.and]:[{"PropiedadIndependienteId":PropiedadId}, {"ClienteId":cliente.id}]
                     }
                 })
+                if (!eliminarIndependienteFavorito) {
+                    return res.status(404).json({Mensaje:"Favorito no encontrado"});
+                }
                 await eliminarIndependienteFavorito.destroy();
                 favoritoEliminado = eliminarIndependienteFavorito;
                 break;
@@ -85,9 +101,9 @@ server.post("/eliminarFavorito", async(req, res) => {
                 break;
         }
 
-        res.json(favoritoEliminado);
+        res.status(200).json(favoritoEliminado);
     } catch (e) {
-        res.send(e);
+        res.status(500).json(e);
     }
 })
 
@@ -101,16 +117,16 @@ server.get("/esfavorita/:PropiedadId/:ClienteId", async (req, res) => {
         });
         const esfavorita = {favorita : 0};
         propiedadFavorita? esfavorita.favorita = 1 : esfavorita.favorita = 0
-        res.send(esfavorita)
+        res.status(200).json(esfavorita)
     } catch (e) {
-        res.send(e)
+        res.status(500).json(e);
     }
 })
 
 server.get("/desarrolloFav/:userId", async (req, res) => {
     try {
         let {userId} = req.params;
-        if(userId === null){res.json("")}
+        if(userId === null){return res.status(400).json({Mensaje:"UserId no puede ser null"})}
         const desarrollosFavoritos = await Desarrollo.findAll({
             where:{publicada:true},
             order: [
@@ -134,9 +150,9 @@ server.get("/desarrolloFav/:userId", async (req, res) => {
             ]
             
         });
-        desarrollosFavoritos? res.json(desarrollosFavoritos) : res.json("")        
+        desarrollosFavoritos? res.status(200).json(desarrollosFavoritos) : res.status(404).json({Mensaje:"No se encontraron desarrollos favoritos"});
     } catch (e) {
-        res.send(e)
+        res.status(500).json(e);
     }
 })
 
@@ -144,7 +160,7 @@ server.get("/modelosFav/:userId", async (req, res) => {
     try {
         console.log("SOLICITANDO MODELOS FAV")
         let {userId} = req.params;
-        if(userId === null){res.json("")}
+        if(userId === null){return res.status(400).json({Mensaje:"UserId no puede ser null"})}
         const modelosFavoritos = await ModeloAsociadoAlDesarrollo.findAll({
             where:{publicada:true},
             order: [
@@ -167,16 +183,16 @@ server.get("/modelosFav/:userId", async (req, res) => {
               },
             ]
           });
-        modelosFavoritos? res.json(modelosFavoritos) : res.json("");
+        modelosFavoritos? res.status(200).json(modelosFavoritos) : res.status(404).json({Mensaje:"No se encontraron modelos favoritos"});
     } catch (e) {
-        res.send(e)
+        res.status(500).json(e);
     }
 })
 
 server.get("/independienteFav/:userId", async (req, res) => {
     try {
         let {userId} = req.params;
-        if(userId === null){res.json("")}
+        if(userId === null){return res.status(400).json({Mensaje:"UserId no puede ser null"})}
 
         const propiedadesIndependientesFav = await PropiedadIndependiente.findAll({
             where:{publicada:true},
@@ -198,15 +214,16 @@ server.get("/independienteFav/:userId", async (req, res) => {
               },
             ]
         })
-        propiedadesIndependientesFav? res.json(propiedadesIndependientesFav) : res.json("");
+        propiedadesIndependientesFav? res.status(200).json(propiedadesIndependientesFav) : res.status(404).json({Mensaje:"No se encontraron propiedades independientes favoritas"});
     } catch (e) {
-        res.send(e)
+        res.status(500).json(e);
     }
 })
 
 server.get("/propiedadesconfavoritos/:userId",  async (req, res) => {
   try {
       let {userId} = req.params;
+      if(userId === null){return res.status(400).json({Mensaje:"UserId no puede ser null"})}
       const DesarrollosFav = await Desarrollo.findAll({
           where:{publicada:true},
           order: [
@@ -275,7 +292,7 @@ server.get("/propiedadesconfavoritos/:userId",  async (req, res) => {
           ]
       })
       const todasLasPropiedades = [...propiedadesIndependientesFav, ...DesarrollosFav, ...modelosFav]
-      res.json(todasLasPropiedades)
+      res.status(200).json(todasLasPropiedades)
   }
   catch (e){
       res.send(e)

@@ -279,7 +279,11 @@ server.get("/modelosFavoritos/:userId",  async (req, res) => {
           }
       });
 
-      const ModeloAsociado = await ModeloAsociadoAlDesarrollo.findAll({
+      if (!cliente) {
+      return res.status(404).json({Mensaje:"Cliente no encontrado"});
+    }
+
+    const ModeloAsociado = await ModeloAsociadoAlDesarrollo.findAll({
           where:{publicada:true},
           order: [
             ['precio"','DESC']
@@ -347,6 +351,10 @@ server.get("/actualizar/:propId/:orgId", async (req, res) =>{
     const propiedad = await ModeloAsociadoAlDesarrollo.findOne({
       where:{id:propId},
     })
+    if (!propiedad) {
+      return res.status(404).json({Mensaje:"Propiedad no encontrada"});
+    }
+    
     await propiedad.update({OrganizacionId:orgId})
     res.status(200).json(propiedad)
   } catch (error) {
@@ -358,6 +366,11 @@ server.get("/getModeloAsociadoPropiedadbyOrg/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
     const cliente = await Cliente.findOne({ where:{userId} });
+    
+    if (!cliente) {
+      return res.status(404).json({Mensaje:"Cliente no encontrado"});
+    }
+    
     const dataPropiedad = await ModeloAsociadoAlDesarrollo.findAll({
       where:{ OrganizacionId:cliente.OrganizacionId },
       order: [
@@ -396,6 +409,11 @@ server.get("/publicar/:modeloId", async (req,res) => {
   try{
     const { modeloId } = req.params;
     const modelo = await ModeloAsociadoAlDesarrollo.findByPk(modeloId);
+    
+    if (!modelo) {
+      return res.status(404).json({Mensaje:"Modelo no encontrado"});
+    }
+    
     modelo.publicada = !modelo.publicada;
     await modelo.save();
     
