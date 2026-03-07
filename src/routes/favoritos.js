@@ -19,12 +19,10 @@ server.post("/agregarFavorito",  async (req,res)=> {
         }
         
         if(tipodeDesarrollo==="Desarrollo"){
-            console.log("Crear desarrollo")
             const desarrolloFavorito = await desarrollos_favoritos.create({
                 ClienteId:cliente.id,
                 DesarrolloId:PropiedadId
             });
-            console.log(desarrolloFavorito)
             res.status(201).json(desarrolloFavorito)
         }
         else if(tipodeDesarrollo==="Modelo"){
@@ -158,7 +156,6 @@ server.get("/desarrolloFav/:userId", async (req, res) => {
 
 server.get("/modelosFav/:userId", async (req, res) => {
     try {
-        console.log("SOLICITANDO MODELOS FAV")
         let {userId} = req.params;
         if(userId === null){return res.status(400).json({Mensaje:"UserId no puede ser null"})}
         const modelosFavoritos = await ModeloAsociadoAlDesarrollo.findAll({
