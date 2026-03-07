@@ -36,10 +36,10 @@ const { literal } = require('sequelize');
       ]
     },);
     
-    dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontraron datos de propiedades"});
+    dataPropiedad? res.status(200).json(dataPropiedad) : res.status(404).json({Mensaje:"No se encontraron datos de propiedades"});
     
   } catch (e) {
-    res.send(e);
+    res.status(500).json(e);
   } 
 }
 ); */
@@ -101,10 +101,10 @@ server.get("/getAllDataandImagenModeloAsociadoPropiedad", async (req, res) => {
       ]
     },);
     
-    dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontraron datos de propiedades"});
+    dataPropiedad? res.status(200).json(dataPropiedad) : res.status(404).json({Mensaje:"No se encontraron datos de propiedades"});
     
   } catch (e) {
-    res.send(e);
+    res.status(500).json(e);
   } 
 }
 );
@@ -141,10 +141,10 @@ server.get("/getDataandImagenModeloAsociadoPropiedad/:DesarrolloId", async (req,
       
     },);
     
-    dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontraron datos de propiedades"});
+    dataPropiedad? res.status(200).json(dataPropiedad) : res.status(404).json({Mensaje:"No se encontraron datos de propiedades"});
     
   } catch (e) {
-    res.send(e);
+    res.status(500).json(e);
   } 
 });
 
@@ -163,16 +163,19 @@ server.get("/getDataandImagenModeloAsociadoPropiedad/:DesarrolloId", async (req,
       ]
     },);
     
-    dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontraron datos de propiedades"});
+    dataPropiedad? res.status(200).json(dataPropiedad) : res.status(404).json({Mensaje:"No se encontraron datos de propiedades"});
     
   } catch (e) {
-    res.send(e);
+    res.status(500).json(e);
   } 
 }); */
 
 server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
   try {
     const {id} = req.params;
+    if (!id || id === undefined || id === "undefined") {
+      return res.status(400).json({Mensaje:"El parámetro id del Modelo es requerido"});
+    }
     const {userId} = req.query;
     console.log("Buscando Detalles" + id);
     const dataPropiedad = await ModeloAsociadoAlDesarrollo.findOne({
@@ -242,15 +245,19 @@ server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
           model:Cliente,
           attributes: ["id", "userId"],
           required: false, // Mantiene propiedades sin clientes
-          where: userId ? { userId } : {userId:"x000"} // Filtra solo si se pasa un userId, de lo contrario se da un UserId que no existe
+          where: userId ? userId !== undefined? { userId } : {userId:"x000"} : {userId:"x000"} // Filtra solo si se pasa un userId, de lo contrario se da un UserId que no existe
         },
       ]
     })
     console.log("Data Modelo Asociado Al Desarrollo:", JSON.stringify(dataPropiedad, null, 2));
-    dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontro la propiedad"});
+    if(dataPropiedad) {
+      res.status(200).json(dataPropiedad);
+    } else {
+      res.status(404).json({Mensaje:"No se encontro la propiedad"});
+    }
   } catch (e) {
     console.error("Error en getModeloAsociadoAlDesarrollo:", e);
-    res.send(e);
+    res.status(500).json(e);
   }
 })
 
@@ -301,10 +308,10 @@ server.get("/modelosFavoritos/:userId",  async (req, res) => {
             }
           ]
       });
-      res.json(ModeloAsociado)
+      res.status(200).json(ModeloAsociado)
   }
   catch (error){
-      res.json(error)
+      res.status(500).json(error)
   }
 })
 
@@ -315,9 +322,9 @@ server.get("/seedRefId", async (req, res) => {
       Modelo[i].ref_id = literal('uuid_generate_v4()'); 
       await Modelo[i].save();
     }
-    res.json(Modelo)
+    res.status(200).json(Modelo)
   } catch (e) {
-    res.send(e)
+    res.status(500).json(e)
   }
 });
 
@@ -341,9 +348,9 @@ server.get("/actualizar/:propId/:orgId", async (req, res) =>{
       where:{id:propId},
     })
     await propiedad.update({OrganizacionId:orgId})
-    res.send(propiedad)
+    res.status(200).json(propiedad)
   } catch (error) {
-    res.send(error)
+    res.status(500).json(error)
   }
 })
 
@@ -377,10 +384,10 @@ server.get("/getModeloAsociadoPropiedadbyOrg/:userId", async (req, res) => {
       ]
     },);
     
-    dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontraron datos de propiedades"});
+    dataPropiedad? res.status(200).json(dataPropiedad) : res.status(404).json({Mensaje:"No se encontraron datos de propiedades"});
     
   } catch (e) {
-    res.send(e);
+    res.status(500).json(e);
   } 
 }
 );
@@ -392,9 +399,9 @@ server.get("/publicar/:modeloId", async (req,res) => {
     modelo.publicada = !modelo.publicada;
     await modelo.save();
     
-    res.json(modelo)
+    res.status(200).json(modelo)
   } catch(error){
-    res.json(error)
+    res.status(500).json(error)
   }
 })
 

@@ -90,15 +90,18 @@ server.get("/getPropiedadesIndependientes", async (req, res) => {
           },
         ]
       })
-      propiedadIndependiente? res.json(propiedadIndependiente) : res.json({Mensaje:"No se encontraron datos de propiedades"});
+      propiedadIndependiente? res.status(200).json(propiedadIndependiente) : res.status(404).json({Mensaje:"No se encontraron datos de propiedades"});
     } catch (error) {
-        res.json(error)
+        res.status(500).json(error)
     }
 })
 
 server.get("/detallesPropIndependiente/:id", async (req, res) => {
   try {
     const {id} = req.params;
+    if (!id || id === undefined || id === "undefined") {
+      return res.status(400).json({Mensaje:"El parámetro id de la Propiedad Independiente es requerido"});
+    }
     const {userId} = req.query;
     const dataPropiedad = await PropiedadIndependiente.findOne({
       where:{id},
@@ -150,13 +153,13 @@ server.get("/detallesPropIndependiente/:id", async (req, res) => {
           model:Cliente,
           attributes: ["id", "userId"],
           required: false, // Mantiene propiedades sin clientes
-          where: userId ? { userId } : {userId:"x000"} // Filtra solo si se pasa un userId, de lo contrario se da un UserId que no existe
+          where: userId && userId !== undefined? { userId } : {userId:"x000"} // Filtra solo si se pasa un userId, de lo contrario se da un UserId que no existe
         },
       ]
     })
-    dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontro la propiedad"});
+    dataPropiedad? res.status(200).json(dataPropiedad) : res.status(404).json({Mensaje:"No se encontro la propiedad"});
   } catch (error) {
-    res.json(error)
+    res.status(500).json(error)
   }
 })
 
@@ -192,9 +195,9 @@ server.get("/getPropIndbyOrg/:userId", async (req,res) => {
         }
       ]
     })
-    dataIndependiente? res.json(dataIndependiente) : res.json({Mensaje:"No se encontraron datos de Propiedades Independientes"})
+    dataIndependiente? res.status(200).json(dataIndependiente) : res.status(404).json({Mensaje:"No se encontraron datos de Propiedades Independientes"})
   } catch (error) {
-    res.json(error)
+    res.status(500).json(error)
   }
 })
 
@@ -222,7 +225,7 @@ server.get("/getPropPorColoniayCiudad", async (req,res) => {
     })
     dataPropiedad? res.status(200).json(dataPropiedad) : res.status(404).json({Mensaje:"No se encontraron datos de Propiedades Independientes"})
   } catch (error) {
-    res.json(error)
+    res.status(500).json(error)
   }
 })
 
@@ -302,9 +305,9 @@ server.get("/publicar/:propId", async (req,res) => {
     propiedad.publicada = !propiedad.publicada;
     await propiedad.save();
     
-    res.json(propiedad)
+    res.status(200).json(propiedad)
   } catch(error){
-    res.json(error)
+    res.status(500).json(error)
   }
 })
 
@@ -325,7 +328,7 @@ server.get("/buscarPropiedadxId/:propiedadId", async (req,res) => {
     await prop.destroy();
     res.json("BORRADO")
   } catch (error) {
-    res.json(error)
+    res.status(500).json(error)
   }
 }) */
 

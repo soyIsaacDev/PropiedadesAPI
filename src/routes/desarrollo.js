@@ -143,10 +143,10 @@ server.get("/getPropiedadNombre/:userId", async (req, res) => {
       attributes: ['id', 'nombreDesarrollo', 'posicion', 'TipodePropiedadId'],
       
     });
-    dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontraron datos de propiedades"});
+    dataPropiedad? res.status(200).json(dataPropiedad) : res.status(404).json({Mensaje:"No se encontraron datos de propiedades"});
     
   } catch (e) {
-    res.send(e);
+    res.status(500).json(e);
   } 
 }
 );
@@ -163,6 +163,11 @@ server.get("/detallespropiedad/:id", async (req, res) => {
   try {
     const {id} = req.params;
     const {userId} = req.query;
+    
+    if (!id || id === undefined || id === "undefined") {
+      return res.status(400).json({Mensaje:"El parámetro id del Desarrollo es requerido"});
+    }
+    
     console.log("Buscando Detalles" + id);
     const dataPropiedad = await Desarrollo.findOne({
       where:{id:id},
@@ -208,13 +213,13 @@ server.get("/detallespropiedad/:id", async (req, res) => {
           model:Cliente,
           attributes: ["id", "userId"],
           required: false, // Mantiene propiedades sin clientes
-          where: userId ? { userId } : {userId:"x000"} // Filtra solo si se pasa un userId, de lo contrario se da un UserId que no existe
+          where: userId ? userId !== undefined? { userId } : {userId:"x000"} : {userId:"x000"} // Filtra solo si se pasa un userId, de lo contrario se da un UserId que no existe
         },
       ]
     })
-    dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontro la propiedad"});
+    dataPropiedad? res.status(200).json(dataPropiedad) : res.status(404).json({Mensaje:"No se encontro la propiedad"});
   } catch (e) {
-    res.send(e);
+    res.status(500).json(e);
   }
 });
 
@@ -247,9 +252,9 @@ server.get("/getAmenidadesDesarrolloSeleccionado/:id", async (req, res) => {
         
       ]
     }) */
-    amenidades? res.json(amenidades) : res.json({Mensaje:"No se encontro la propiedad"});
+    amenidades? res.status(200).json(amenidades) : res.status(404).json({Mensaje:"No se encontro la propiedad"});
   } catch (e) {
-    res.send(e);
+    res.status(500).json(e);
   }
 })
 
@@ -260,9 +265,9 @@ server.get("/seedRefId", async (req, res) => {
       Desarrollo[i].ref_id = literal('uuid_generate_v4()'); 
       await Desarrollo[i].save();
     }
-    res.json(Desarrollo)
+    res.status(200).json(Desarrollo)
   } catch (e) {
-    res.send(e)
+    res.status(500).json(e)
   }
 });
 
@@ -275,9 +280,9 @@ server.get("/actualizar/:propId/:orgId", async (req, res) =>{
     /* propiedad.OrganizacionId="e29c1eae-6bc4-4e18-9799-995e8ab00994"
     await propiedad.save(); */
     await propiedad.update({OrganizacionId:orgId})
-    res.send(propiedad)
+    res.status(200).json(propiedad)
   } catch (error) {
-    res.send(error)
+    res.status(500).json(error)
   }
 })
 
@@ -287,9 +292,9 @@ server.get("/actualizarPublicacion", async (req, res) =>{
     for (let i = 0; i < propiedad.length; i++) {
       await propiedad[i].update({publicada:"Si"})
     }
-    res.send(propiedad)
+    res.status(200).json(propiedad)
   } catch (error) {
-    res.send(error)
+    res.status(500).json(error)
   }
 })
 
@@ -338,10 +343,10 @@ server.get("/getPropOrganizacion/:userId", async (req, res) => {
       ]
     },);
     
-    dataPropiedad? res.json(dataPropiedad) : res.json({Mensaje:"No se encontraron datos de propiedades"});
+    dataPropiedad? res.status(200).json(dataPropiedad) : res.status(404).json({Mensaje:"No se encontraron datos de propiedades"});
     
   } catch (e) {
-    res.send(e);
+    res.status(500).json(e);
   } 
 });
 
@@ -429,10 +434,10 @@ server.get("/cuentaxOrg", async (req, res) => {
         
       }
     } */
-    res.send(dataPropiedad )
+    res.status(200).json(dataPropiedad )
   }
   catch(error){
-    res.send(error)
+    res.status(500).json(error)
   }
 })
 
@@ -442,10 +447,10 @@ server.get("/orgyTipo", async (req, res) => {
       include:  AutorizacionesXTipodeOrg
     })
     
-    res.send(org)
+    res.status(200).json(org)
   }
   catch(error){
-    res.send(error)
+    res.status(500).json(error)
   }
 })
 
@@ -456,9 +461,9 @@ server.get("/publicar/:desarrolloId", async (req,res) => {
     desarrollo.publicada = !desarrollo.publicada;
     await desarrollo.save();
     
-    res.json(desarrollo)
+    res.status(200).json(desarrollo)
   } catch(error){
-    res.json(error)
+    res.status(500).json(error)
   }
 })
 
