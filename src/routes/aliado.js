@@ -150,7 +150,8 @@ server.post("/autorizarAliados", async (req, res) => {
                 tipodeAliado: aliado.tipodeAliado,
                 autorizaciondePublicar: aliado.autorizaciondePublicar,
                 TipodeUsuarioId: userTipo.id,
-                CiudadId: aliado.ciudadId
+                CiudadId: aliado.ciudadId, 
+                OrganizacionId: aliadoPrincipal.OrganizacionId
               },
               include: [
                 {
@@ -173,7 +174,8 @@ server.post("/autorizarAliados", async (req, res) => {
               tipodeAliado: aliado.tipodeAliado,
               autorizaciondePublicar: aliado.autorizaciondePublicar,
               TipodeUsuarioId: userTipo.id,
-              CiudadId: aliado.ciudadId
+              CiudadId: aliado.ciudadId,
+              OrganizacionId: aliadoPrincipal.OrganizacionId
             }, { transaction: transaction });
           }
           console.log("Procesando colonias:", aliado.colonias, "Array Colonias", aliado.colonias.length) ;  
@@ -202,7 +204,7 @@ server.post("/autorizarAliados", async (req, res) => {
           }
   
           // 4. Enviar correo
-          const correoEnviado = await enviarCorreo(aliado.email, aliadoPrincipal.nombre);
+          const correoEnviado = await enviarCorreo(aliado.email, aliadoPrincipal.nombre, "http://localhost:3000/registrarAliado");
           // Hacer commit de la transacción
           await transaction.commit();
           // Devolver las colonias que acabamos de asociar

@@ -249,11 +249,10 @@ server.get("/detallesModeloAsociadoPropiedad/:id", async (req, res) => {
         },
       ]
     })
-    console.log("Data Modelo Asociado Al Desarrollo:", JSON.stringify(dataPropiedad, null, 2));
     if(dataPropiedad) {
       res.status(200).json(dataPropiedad);
     } else {
-      res.status(404).json({Mensaje:"No se encontro la propiedad"});
+      res.status(404).json({Mensaje:"No se encontro el modelo asociado al desarrollo"});
     }
   } catch (e) {
     console.error("Error en getModeloAsociadoAlDesarrollo:", e);

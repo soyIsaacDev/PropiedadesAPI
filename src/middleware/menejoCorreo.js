@@ -25,7 +25,7 @@ const gmailCheck = async(req,res) => {
     res.send(error)
   }
 }
-const enviarCorreo = async (para, de)  => {
+const enviarCorreo = async (para, de, link)  => {
   try {
     const oauth2Client = new OAuth2(
       gmailClientId, // ClientID
@@ -49,12 +49,14 @@ const enviarCorreo = async (para, de)  => {
         accessToken:accessToken
       }
     });
+
+    let linkFinal = link || "http://localhost:3000/iniciarsesion";
     
     const mailOptions = {
       from: 'isaacborbon@gmail.com',
       to: para,
       subject: `${de} te invita a unirte a su empresa en Levinchi`,
-      text: 'Unete a mi empresa en Levinchi dando click en el siguiente link http://localhost:3000/iniciarsesion. No olvides utilizar este correo electronico para registrarte'
+      text: `Unete a mi empresa en Levinchi dando click en el siguiente link ${linkFinal}. No olvides utilizar este correo electronico para registrarte`
     };
 
     return new Promise((resolve, reject) => {

@@ -168,7 +168,7 @@ server.get("/detallespropiedad/:id", async (req, res) => {
       return res.status(400).json({Mensaje:"El parámetro id del Desarrollo es requerido"});
     }
     
-    console.log("Buscando Detalles" + id);
+    console.log("Buscando Detalles Desarrollo" + id);
     const dataPropiedad = await Desarrollo.findOne({
       where:{id:id},
       order: [
@@ -217,7 +217,7 @@ server.get("/detallespropiedad/:id", async (req, res) => {
         },
       ]
     })
-    dataPropiedad? res.status(200).json(dataPropiedad) : res.status(404).json({Mensaje:"No se encontro la propiedad"});
+    dataPropiedad? res.status(200).json(dataPropiedad) : res.status(404).json({Mensaje:"No se encontro el desarrollo"});
   } catch (e) {
     res.status(500).json(e);
   }
@@ -252,7 +252,7 @@ server.get("/getAmenidadesDesarrolloSeleccionado/:id", async (req, res) => {
         
       ]
     }) */
-    amenidades? res.status(200).json(amenidades) : res.status(404).json({Mensaje:"No se encontro la propiedad"});
+    amenidades? res.status(200).json(amenidades) : res.status(404).json({Mensaje:"No se encontraron amenidades para el desarrollo"});
   } catch (e) {
     res.status(500).json(e);
   }

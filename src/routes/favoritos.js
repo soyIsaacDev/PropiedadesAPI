@@ -13,7 +13,7 @@ server.post("/agregarFavorito",  async (req,res)=> {
                 userId
               }
         });
-        
+        console.log("Agregando favorito para usuario: " + JSON.stringify(cliente));
         if (!cliente) {
             return res.status(404).json({Mensaje:"Cliente no encontrado"});
         }
@@ -30,17 +30,21 @@ server.post("/agregarFavorito",  async (req,res)=> {
                 ClienteId:cliente.id,
                 ModeloAsociadoAlDesarrolloId:PropiedadId
             });
+            console.log("Modelo favorito creado: " + modeloFavorito);
             res.status(201).json(modeloFavorito)
         }
         else if(tipodeDesarrollo==="Independiente"){
+            console.log("Creando favorito para propiedad independiente: " + PropiedadId);
             const independienteFavorita = await prop_independientes_favoritas.create({
                 ClienteId:cliente.id,
                 PropiedadIndependienteId:PropiedadId
             });
+            console.log("Independiente favorita creada: " + independienteFavorita);
             res.status(201).json(independienteFavorita)
         }
         
     } catch (e) {
+        console.error("Error al agregar favorito:", e);
         res.status(500).json(e);
     }
 })

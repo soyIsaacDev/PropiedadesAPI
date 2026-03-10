@@ -1,4 +1,4 @@
-const { HistorialdePagos, Cliente, Desarrollo, Organizacion, AutorizacionesXTipodeOrg, 
+const { HistorialdePagos, Cliente, Aliado,Desarrollo, Organizacion, AutorizacionesXTipodeOrg, 
   PaquetedePago, PropiedadIndependiente  } = require("../db");
 const servidorPago = require("express").Router();
 
@@ -11,19 +11,26 @@ const checkPagosActivos = async function (req, res, next) {
     let orgId = req.orgId;
 
     if(userId){
-      const cliente = await Cliente.findOne({
-        where:{ userId },
-      })
+      try {
+        const cliente = await Cliente.findOne({
+          where:{ userId },
+        }) || await Aliado.findOne({
+          where:{ userId },
+        });
 
-      if (!cliente) {
-        console.log('Cliente no encontrado para userId:', userId);
-        return res.status(400).json({ error: 'Cliente no encontrado' });
-      }
-      //console.log('Cliente encontrado:', cliente);
-      orgId = cliente.OrganizacionId;
-      if (!orgId) {
-        console.log('No se pudo determinar la organización');
-        return res.status(400).json({ error: 'No se pudo determinar la organización' });
+        if (!cliente) {
+          console.log('Cliente no encontrado para userId:', userId);
+          return res.status(400).json({ error: 'Cliente no encontrado' });
+        }
+        
+        orgId = cliente.OrganizacionId;
+        if (!orgId) {
+          console.log('No se pudo determinar la organización');
+          return res.status(400).json({ error: 'No se pudo determinar la organización' });
+        }
+      } catch (error) {
+        console.error('Error buscando cliente:', error);
+        return res.status(500).json({ error: 'Error interno del servidor' });
       }
     }
     // Paso la orgId segun de donde venga sin depender de la que esta previamente
