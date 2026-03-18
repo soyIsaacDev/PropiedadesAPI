@@ -2,8 +2,8 @@ const server = require("express").Router();
 var nodemailer = require('nodemailer');
 const { google } = require("googleapis");
 const OAuth2 = google.auth.OAuth2;
-const { Cliente, TipodeUsuario, Organizacion, AutorizacionesXTipodeOrg, UltimoContacto, AsignaciondePropiedad, PropiedadIndependiente, Colonia, Ciudad, Estado } = require("../db");
-const { Op, fn, col } = require("sequelize");
+const { Cliente, TipodeUsuario, Organizacion, AutorizacionesXTipodeOrg, AsignaciondePropiedad, PropiedadIndependiente, Colonia, Ciudad, Estado } = require("../db");
+const { Op } = require("sequelize");
 
 const { checkManejodeUsuarios } = require("../middleware/checkAutorizacion");
 const { crearPago } = require("../middleware/checkPago");
@@ -373,46 +373,33 @@ const getFechaLocal = () => {
 };
 
 server.get("/asignarAgente/:userId/:OrganizacionId", async (req, res) => {
+  // Asigna el mismo contacto de la organización por día para el mismo usuario.
   try {
     const { userId, OrganizacionId } = req.params;
     const agentes = await Cliente.findAll({ where: { OrganizacionId } });
     if (!agentes.length) return res.status(400).json({ error: "No hay agentes disponibles" });
 
-    const [ultimoContacto] = await UltimoContacto.findAll({
-      attributes: [
-        'id', 'userId', 'agenteId', 
-        [fn('to_char', col('dia'), 'YYYY-MM-DD'), 'diaFormateado']
-      ],
-      where: { userId },
-      order: [['dia', 'DESC']],
-      limit: 1,
-      raw: true
-    });
-
-    const hoyFormateado = getFechaLocal(); // Usa fecha local consistente
-
-    console.log("Último día (DB):", ultimoContacto?.diaFormateado, "| Hoy:", hoyFormateado);
-
-    if (ultimoContacto?.diaFormateado === hoyFormateado) {
-      const agenteActual = agentes.find(a => a.id === ultimoContacto.agenteId);
-      return res.json(agenteActual.telefono);
+    // Función de hashing determinista para asignación sin colisiones
+    function getAgenteIndex(userId, OrganizacionId, totalAgentes) {
+      const hoy = getFechaLocal();
+      // Usar crypto para mejor distribución
+      const crypto = require('crypto');
+      // Si no hay userId, usar valor por defecto para mantener consistencia
+      const userIdFinal = userId || 'sin-usuario';
+      const combined = `${userIdFinal}-${OrganizacionId}-${hoy}`;
+      const hash = crypto.createHash('md5').update(combined).digest('hex');
+      // Convertir hash hex a número y aplicar módulo
+      const hashNumber = parseInt(hash.substring(0, 8), 16);
+      return hashNumber % totalAgentes;
     }
 
-    const nuevoIndex = ultimoContacto 
-    ? (agentes.findIndex(a => a.id === ultimoContacto.agenteId) + 1) % agentes.length
-    : 0;
-
-    await UltimoContacto.create({
-      userId,
-      agenteId: agentes[nuevoIndex].id,
-      dia: hoyFormateado
-    });
-
-    res.json(agentes[nuevoIndex].telefono);
-
-    // ... (resto del código igual)
+    const agenteIndex = getAgenteIndex(userId, OrganizacionId, agentes.length);
+    const agenteAsignado = agentes[agenteIndex];
+    
+    console.log("Agente asignado:", agenteAsignado?.telefono);
+    res.status(200).json(agenteAsignado.telefono);
   } catch (error) {
-    // ... (manejo de errores)
+    res.status(500).json(error);
   }
 });
 

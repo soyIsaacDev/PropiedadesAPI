@@ -228,7 +228,7 @@ app.use("/cargarPropMultiples", useMulter, checkAutorizacion, checkPagosActivos,
   app.use("/paquetesdePago", paquetesdePago),
   app.use("/checkpago", servidorPago),
   app.use("/borrarPropiedaes", checkAutorizacion, borrarPropiedades),
-  app.use("/aliados", checkIfSignedIn, aliados),
+  app.use("/aliados", aliados),
   app.use("/crearPropiedad-Interna-Independiente", useMulter, checkAliado, crearPropiedadInternaIndependiente),
   app.use("/calendar", calendarRoutes),
   //app.use("/authCliente", authCliente);

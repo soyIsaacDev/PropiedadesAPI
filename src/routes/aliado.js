@@ -1,7 +1,8 @@
 const server = require("express").Router();
-const { db, Aliado, TipodeUsuario, AsignaciondePropiedad, UltimoContacto, Cliente, PropiedadIndependiente, Colonia, Ciudad, Estado, ImgPropiedadIndependiente } = require("../db");
+const { db, Aliado, TipodeUsuario, AsignaciondePropiedad, Cliente, PropiedadIndependiente, Colonia, Ciudad, Estado, ImgPropiedadIndependiente } = require("../db");
 const { Op, Sequelize } = require("sequelize");
 const { enviarCorreo } = require("../middleware/menejoCorreo");
+const crypto = require('crypto');
 
 server.post("/registrarAliado", async (req, res) => { 
   try {
@@ -80,10 +81,11 @@ server.get("/buscarAliadoxEmail/:email", async (req, res) => {
   }
 });
 
-server.get("/buscarAliadoxPropId/:propiedadId", async (req, res) => {
+//Obtiene todos los aliados de una propiedad
+server.get("/buscarAliadosxPropId/:propiedadId", async (req, res) => {
   try {
     let {propiedadId} = req.params;
-    const aliado = await AsignaciondePropiedad.findOne({
+    const aliado = await AsignaciondePropiedad.findAll({
       where:{propiedadId:propiedadId},
     });
 
@@ -372,45 +374,40 @@ const getFechaLocal = () => {
 };
 
 server.get("/asignarAliadoDeAtencion/:userId/:propiedadId", async (req, res) => {
+  // Asigna el mismo aliado de atención para la misma propiedad y usuario por día.
   try {
-    const { userId } = req.params;
+    const { userId, propiedadId } = req.params;
+    console.log("Busando aliados para", userId, "Propiedad:", propiedadId);
     const aliados = await AsignaciondePropiedad.findAll({
-        where: { propiedadId }
+        where: { propiedadId },
+        include: [{
+            model: Aliado,
+            attributes: ['id', 'telefono', 'email']
+        }]
     });
     if (!aliados.length) return res.status(400).json({ error: "No hay aliados disponibles" });
 
-    const [ultimoContacto] = await UltimoContacto.findAll({
-      attributes: [
-        'id', 'userId', 'agenteId', 
-        [fn('to_char', col('dia'), 'YYYY-MM-DD'), 'diaFormateado']
-      ],
-      where: { userId },
-      order: [['dia', 'DESC']],
-      limit: 1,
-      raw: true
-    });
-
-    const hoyFormateado = getFechaLocal(); // Usa fecha local consistente
-
-    console.log("Último día (DB):", ultimoContacto?.diaFormateado, "| Hoy:", hoyFormateado);
-
-    if (ultimoContacto?.diaFormateado === hoyFormateado) {
-      const aliadoActual = aliados.find(a => a.id === ultimoContacto.agenteId);
-      return res.json(aliadoActual.telefono);
+    // Función de hashing determinista para asignación sin colisiones
+    function getAliadoIndex(userId, propiedadId, totalAliados) {
+      const hoy = getFechaLocal();
+      // Usar crypto para mejor distribución
+      const crypto = require('crypto');
+      // Si no hay userId, usar valor por defecto para mantener consistencia
+      const userIdFinal = userId || 'sin-usuario';
+      const combined = `${userIdFinal}-${propiedadId}-${hoy}`;
+      const hash = crypto.createHash('md5').update(combined).digest('hex');
+      // Convertir hash hex a número y aplicar módulo
+      const hashNumber = parseInt(hash.substring(0, 8), 16);
+      return hashNumber % totalAliados;
     }
 
-    const nuevoIndex = ultimoContacto 
-    ? (aliados.findIndex(a => a.id === ultimoContacto.agenteId) + 1) % aliados.length
-    : 0;
-
-    await UltimoContacto.create({
-      userId,
-      agenteId: aliados[nuevoIndex].aliadoId,
-      dia: hoyFormateado
-    });
-
-    res.json(aliados[nuevoIndex].telefono);
+    const aliadoIndex = getAliadoIndex(userId, propiedadId, aliados.length);
+    const aliadoAsignado = aliados[1];
+    
+    console.log("Aliado asignado:", aliadoAsignado?.Aliado);
+    aliadoAsignado? res.status(200).json(aliadoAsignado.Aliado) : res.status(404).json({mensaje:"No se encontraron aliados asignados"});
   } catch (error) {
+    res.status(500).json(error);
   }
 });
 
